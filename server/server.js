@@ -1,7 +1,9 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
+const queries = require('./queries.js')
 const  port = 5000;
+
 const app = express()
 app.use(cors())
 
@@ -24,13 +26,35 @@ const db = mysql.createConnection({
 //     console.log('connected as id ' + db.threadId);
 //   });
   
-  app.get('/question_master', (req, res) => {
-    const sqlQuery = 'SELECT * FROM question_master';
-    db.query(sqlQuery, (err, data) => {
-      if (err) throw err;
-      res.json(data);
-    });
+app.get('/question_master', (req, res) => {
+  db.query(queries.getAllQuestions, (err, data) => {
+    if (err) throw err;
+    res.json(data);
   });
+});
+
+app.get('/all_question_options', (req, res) => {
+  db.query(queries.getAllQuestionOptions, (err, data) => {
+    if (err) throw err;
+    res.json(data);
+  });
+});
+
+app.get('/question_sets', (req, res) => {
+  db.query(queries.questionSet1, (err, data) => {
+    if (err) throw err;
+    res.json(data);
+  });
+});
+
+app.get('/all_question_sets', (req, res) => {
+  db.query(queries.getAllQuestionSets, (err, data) => {
+    if (err) throw err;
+    res.json(data);
+  });
+});
+
+
   
   app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

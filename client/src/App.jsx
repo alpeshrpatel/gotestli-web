@@ -84,6 +84,9 @@ import EventListPage2 from "./pages/events/event-list-2";
 import CourseSinglePage6 from "./pages/courseSingle/courses-single-6/page";
 import ScrollTopBehaviour from "./components/common/ScrollTopBehaviour";
 import NotFoundPage from "./pages/not-found";
+import SingleChoice from "./components/quiz/SingleChoice";
+import QuizResult from "./components/quiz/QuizResult";
+import QuestionSet from "./components/quiz/QuestionSet";
 
 function App() {
   useEffect(() => {
@@ -225,6 +228,9 @@ function App() {
               <Route path="login" element={<LoginPage />} />
               <Route path="signup" element={<SignupPage />} />
               <Route path="ui-elements" element={<UIElementsPage />} />
+              <Route path="quiz/singlechoice" element={<SingleChoice/>} />
+              <Route path="quiz/result" element={<QuizResult/>} />
+              <Route path="quiz/questions" element={<QuestionSet/>} />
             </Route>
           </Routes>
           <ScrollTopBehaviour />

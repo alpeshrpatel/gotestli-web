@@ -17,7 +17,7 @@ const SignInWithFacebook = () => {
   return (
     <div>
       <button
-        className="button -sm px-24 py-20 -outline-blue-3 text-blue-3 text-14"
+        className="button -sm px-24 py-20 -outline-blue-3 text-blue-3 text-14 "
         onClick={facebookLogin}
       >
         Log In via Facebook
