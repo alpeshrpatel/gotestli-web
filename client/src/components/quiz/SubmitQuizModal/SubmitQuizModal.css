@@ -1,0 +1,67 @@
+.modal-container {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 400px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+  
+  .header {
+    color: #333;
+    margin-bottom: 16px;
+    font-size: 24px;
+  }
+  
+  .note {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .note-span {
+    display: block;
+    margin-top: 8px;
+    color: #d9534f;
+    font-weight: bold;
+  }
+  
+  .submit-button {
+    background-color: #28a745;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .submit-button:hover {
+    background-color: #218838;
+  }
+  
+  .checkmark-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .checkmark-icon {
+    color: #4caf50; /* Green color */
+    font-size: 48px; /* Size of the checkmark */
+    animation: bounce 1s ease;
+  }
+  
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-30px);
+    }
+    60% {
+      transform: translateY(-15px);
+    }
+  }

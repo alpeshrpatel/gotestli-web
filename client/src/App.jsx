@@ -87,6 +87,8 @@ import NotFoundPage from "./pages/not-found";
 import SingleChoice from "./components/quiz/SingleChoice";
 import QuizResult from "./components/quiz/QuizResult";
 import QuestionSet from "./components/quiz/QuestionSet";
+import ExamInstructions from "./components/quiz/examInstructions/ExamInstructions";
+import MakeQuestionSet from "./components/makeQuestionSet/MakeQuestionSet";
 
 function App() {
   useEffect(() => {
@@ -231,6 +233,8 @@ function App() {
               <Route path="quiz/singlechoice" element={<SingleChoice/>} />
               <Route path="quiz/result" element={<QuizResult/>} />
               <Route path="quiz/questions" element={<QuestionSet/>} />
+              <Route path="quiz/start" element={<ExamInstructions/>} />
+              <Route path="make-question-set" element={<MakeQuestionSet/>} />
             </Route>
           </Routes>
           <ScrollTopBehaviour />

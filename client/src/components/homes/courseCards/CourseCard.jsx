@@ -1,15 +1,34 @@
 import React from "react";
-
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import axios from "axios";
+import "react-responsive-modal/styles.css";
+import { Modal } from "react-responsive-modal";
+import ExamInstructions from "@/components/quiz/examInstructions/ExamInstructions";
+import { API } from "@/utils/AxiosInstance";
+
 export default function CourceCard({ data, index }) {
   const [rating, setRating] = useState([]);
-  useEffect(() => {
-    for (let i = Math.round(data.rating); i >= 1; i--) {
-      setRating((pre) => [...pre, "star"]);
-    }
-  }, []);
+  const [questionSet, setQuestionsSet] = useState([]);
+  const [open, setOpen] = useState(false);
 
+  const onOpenModal = () => setOpen(true);
+  const onCloseModal = () => setOpen(false);
+
+  useEffect(() => {
+    async function getQuestionsSet() {
+      try {
+        const response = await API.get(
+          `/question_sets/${data.id}`
+        );
+        setQuestionsSet(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getQuestionsSet();
+  }, []);
+  console.log(questionSet);
   return (
     <div className="col-lg-3 col-md-6">
       <div>
@@ -17,9 +36,9 @@ export default function CourceCard({ data, index }) {
           <div className="relative">
             <div className="coursesCard__image overflow-hidden rounded-8">
               <img
-                style={{ height: "100%", width: "100%" }}
+                style={{ height: "225px", width: "350px" }}
                 className="w-1/1"
-                src={data.imageSrc}
+                src={data.image}
                 alt="image"
               />
               <div className="coursesCard__image_overlay rounded-8"></div>
@@ -47,7 +66,7 @@ export default function CourceCard({ data, index }) {
           </div>
 
           <div className="h-100 pt-15">
-            <div className="d-flex items-center">
+            {/* <div className="d-flex items-center">
               <div className="text-14 lh-1 text-yellow-1 mr-10">
                 {data.rating}
               </div>
@@ -57,12 +76,13 @@ export default function CourceCard({ data, index }) {
                 ))}
               </div>
               <div className="text-13 lh-1 ml-10">({data.ratingCount})</div>
-            </div>
+            </div> */}
 
             <div className="text-17 lh-15 fw-500 text-dark-1 mt-10">
-              <Link className="linkCustom" to={`/courses/${data.id}`}>
-                {data.title}
-              </Link>
+              <button onClick={onOpenModal}>{data.title}</button>
+              <Modal open={open} onClose={onCloseModal} center>
+                <ExamInstructions id ={data.id} time = {data.time_duration} questionSet ={questionSet}/>
+              </Modal>              
             </div>
 
             <div className="d-flex x-gap-10 items-center pt-10">
@@ -70,16 +90,16 @@ export default function CourceCard({ data, index }) {
                 <div className="mr-8">
                   <img src="assets/img/coursesCards/icons/1.svg" alt="icon" />
                 </div>
-                <div className="text-14 lh-1">{data.lessonCount} lesson</div>
+                <div className="text-14 lh-1">
+                  {data.no_of_question} Questions
+                </div>
               </div>
 
               <div className="d-flex items-center">
                 <div className="mr-8">
                   <img src="assets/img/coursesCards/icons/2.svg" alt="icon" />
                 </div>
-                <div className="text-14 lh-1">{`${Math.floor(
-                  data.duration / 60,
-                )}h ${Math.floor(data.duration % 60)}m`}</div>
+                <div className="text-14 lh-1">{`${data.time_duration}m`}</div>
               </div>
 
               <div className="d-flex items-center">
@@ -92,8 +112,8 @@ export default function CourceCard({ data, index }) {
 
             <div className="coursesCard-footer">
               <div className="coursesCard-footer__author">
-                <img src={data.authorImageSrc} alt="image" />
-                <div>{data.authorName}</div>
+                <span className="text-sm text-black-50">Created by</span>
+                <div>{data.author}</div>
               </div>
 
               <div className="coursesCard-footer__price">
@@ -109,6 +129,11 @@ export default function CourceCard({ data, index }) {
                   </>
                 )}
               </div>
+            </div>
+            <div>
+              <p className="text-muted mt-4 d-flex align-items-center  text-justify">
+                {data.short_desc}
+              </p>
             </div>
           </div>
         </div>
