@@ -1,0 +1,57 @@
+.exam-instructions-container {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+  
+  .exam-instructions-container h1, .exam-instructions-container h2 {
+    text-align: center;
+  }
+  
+  .exam-instructions-container li {
+    padding-left: 20px;
+    list-style-type:lower-roman;
+  }
+  
+  .previous-attempts {
+    margin-top: 20px;
+  }
+  
+  .previous-attempts table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .previous-attempts th, .previous-attempts td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .previous-attempts th {
+    background-color: #f2f2f2;
+  }
+  
+  .start-quiz-button {
+    display: block;
+    margin :0 auto;
+    width: 40%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  .start-quiz-button:hover {
+    background-color: #45a049;
+  }
+  

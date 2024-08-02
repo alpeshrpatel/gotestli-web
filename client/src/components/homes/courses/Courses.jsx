@@ -2,6 +2,8 @@ import React from "react";
 import CourceCard from "../courseCards/CourseCard";
 import { coursesData, catagories } from "../../../data/courses";
 import { useState, useEffect } from "react";
+import axios from "axios";
+import { API } from "@/utils/AxiosInstance";
 
 export default function Courses() {
   const [filtered, setFiltered] = useState();
@@ -16,6 +18,21 @@ export default function Courses() {
       setFiltered(filteredData);
     }
   }, [category]);
+  useEffect(()=>{
+    async function getQuestionsSet() {
+      try {
+        const { data } = await API.get(
+          "/all_question_sets"
+        );
+       
+        setFiltered(data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getQuestionsSet();
+  },[])
+  
 
   return (
     <section className="layout-pt-lg layout-pb-lg">
