@@ -10,6 +10,7 @@ import FinishExamModalPage from "./FinishExamModal/FinishExamModalPage";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import { API } from "@/utils/AxiosInstance";
+import { NULL } from "sass";
 
 const SingleChoice = ({
   questionSetId,
@@ -31,9 +32,7 @@ const SingleChoice = ({
   useEffect(() => {
     async function getOptions() {
       try {
-        const response = await API.get(
-          `/options/${questionId}`
-        );
+        const response = await API.get(`/options/${questionId}`);
         console.log(response);
         setOptions(response.data);
       } catch (error) {
@@ -68,9 +67,16 @@ const SingleChoice = ({
     }
   };
 
-  console.log(selectedOption);
+  const findSelectedOption =
+    selectedOption?.find((question) => question.id === questionId)
+      ?.selectedOption || null;
 
-  const handleReviewClick = () => {
+  const isReviewed = reviewQuestions.some((q) => q.id === questionId);
+
+  let status = findSelectedOption ? (isReviewed ? 3 : 1) : isReviewed ? 2 : 0;
+  const userId = 123;
+
+  const handleReviewClick = async () => {
     const findQuestion = reviewQuestions.find(
       (question) => questionId === question.id
     );
@@ -80,14 +86,72 @@ const SingleChoice = ({
         {
           id: questionId,
           question: question,
-          option:options,
-          
+          option: options,
         },
       ]);
-      onNext();
+      try {
+        const { data } = await API.get(
+          `/api/test-result-dtl/status/${userId}/${questionId}`
+        );
+        const reviewStatus = data[0]?.status;
+        if (reviewStatus) {
+          status =
+            reviewStatus === 0 ? 2 : reviewStatus === 1 ? 3 : reviewStatus;
+        } else {
+          status = status === 0 ? 2 : status === 1 ? 3 : status;
+        }
+        console.log(status);
+        console.log(data[0]?.status);
+
+        const [answerData, idData] = await Promise.all([
+          API.get(`/api/correctanswer/${questionId}`),
+          API.get("/lastId/test-result-dtl"),
+        ]);
+
+        const correctAnswer = answerData.data[0].correctAnswer;
+
+        const id = idData.data[0].id + 1;
+
+        onNext();
+        const res = await API.post("/api/test-result-dtl-submit", {
+          id,
+          userId,
+          questionId,
+          findSelectedOption,
+          correctAnswer,
+          status,
+        });
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
-  console.log(reviewQuestions);
+
+  const handleNextClick = async () => {
+    try {
+      const [answerData, idData] = await Promise.all([
+        API.get(`/api/correctanswer/${questionId}`),
+        API.get("/lastId/test-result-dtl"),
+      ]);
+
+      const correctAnswer = answerData.data[0].correctAnswer;
+
+      const id = idData.data[0].id + 1;
+
+      onNext();
+      const res = await API.post("/api/test-result-dtl-submit", {
+        id,
+        userId,
+        questionId,
+        findSelectedOption,
+        correctAnswer,
+        status,
+      });
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     // linear-gradient(to bottom right, #a18cd1, #fbc2eb)
     <div
@@ -100,16 +164,27 @@ const SingleChoice = ({
       >
         <div className="card-body">
           <div className="d-flex justify-content-between items-center">
-          <h4 className="card-title text-center">
-            Question {index} of {totalQuestions}{" "}
-          </h4>
-          <div className="card-title ">
-            <button className="btn btn-success px-3 py-2 w-auto text-18" onClick={onOpenModal} >Finish</button>
-            <Modal open={open} onClose={onCloseModal} center>
-                <FinishExamModalPage questionSetId={questionSetId} totalQuestions = {totalQuestions} selectedOption= {selectedOption} setSelectedOption= {setSelectedOption} reviewQuestions= {reviewQuestions} onCloseModal={onCloseModal}/>
-              </Modal>    
+            <h4 className="card-title text-center">
+              Question {index} of {totalQuestions}{" "}
+            </h4>
+            <div className="card-title ">
+              <button
+                className="btn btn-success px-3 py-2 w-auto text-18"
+                onClick={onOpenModal}
+              >
+                Finish
+              </button>
+              <Modal open={open} onClose={onCloseModal} center>
+                <FinishExamModalPage
+                  questionSetId={questionSetId}
+                  totalQuestions={totalQuestions}
+                  selectedOption={selectedOption}
+                  setSelectedOption={setSelectedOption}
+                  reviewQuestions={reviewQuestions}
+                  onCloseModal={onCloseModal}
+                />
+              </Modal>
             </div>
-
           </div>
           <hr />
           <h5 className="card-text text-center">{question}</h5>
@@ -153,7 +228,7 @@ const SingleChoice = ({
                 <button
                   className="btn btn-primary w-auto p-2"
                   style={{ backgroundColor: "#6a1b9a", borderColor: "#6a1b9a" }}
-                  onClick={onNext}
+                  onClick={handleNextClick}
                 >
                   Next{" "}
                   <FontAwesomeIcon
@@ -163,7 +238,6 @@ const SingleChoice = ({
                 </button>
               )}
             </div>
-            
 
             <div>
               <button
