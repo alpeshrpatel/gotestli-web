@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 export default function News() {
   return (
     <section className="layout-pt-lg layout-pb-lg">
-      <div className="container">
+      <div className="w-75 m-auto">
         <div className="row y-gap-20 justify-between items-center">
           <div className="col-lg-6">
             <div

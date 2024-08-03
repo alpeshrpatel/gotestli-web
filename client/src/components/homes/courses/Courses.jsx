@@ -66,7 +66,7 @@ export default function Courses() {
       </div>
 
       <div
-        className="pt-60 m-auto row y-gap-30 container pl-0 pr-0"
+        className="pt-60 m-auto row y-gap-30 w-75 pl-0 pr-0"
         data-aos="fade-right"
         data-aos-offset="80"
         data-aos-duration={800}
