@@ -63,7 +63,7 @@ const FinishExamModalPage = ({
         <div className="card p-4">
           <h2>Do You Want to Skip All the {skippedQuestion} Questions ? </h2>
           <div className="d-flex justify-content-evenly items-center mt-4 ">
-            <button className="btn btn-success ">Yes</button>
+            <button className="btn btn-success "  onClick={handleQuizSubmit} >Yes</button>
             <button className="btn btn-danger " onClick={onCloseModal}>
               No
             </button>
@@ -75,9 +75,14 @@ const FinishExamModalPage = ({
           viewReviewQuestions ? `d-none` : ``
         }  `}
       >
-        <button className="btn btn-primary p-2" onClick={handleReviewQuestions}>
-          Review Questions
-        </button>
+        {reviewQuestions.length > 0 && (
+          <button
+            className="btn btn-primary p-2"
+            onClick={handleReviewQuestions}
+          >
+            Review Questions
+          </button>
+        )}
         <button className="btn btn-secondary p-2" onClick={onCloseModal}>
           Review All Questions
         </button>

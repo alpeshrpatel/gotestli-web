@@ -3,7 +3,7 @@ import { steps } from "../../data/steps";
 export default function WhyCourse() {
   return (
     <section className="layout-pt-lg layout-pb-lg bg-dark-2">
-      <div className="container">
+      <div className="container-fluid">
         <div className="row justify-center text-center">
           <div className="col-auto">
             <div className="sectionTitle ">
