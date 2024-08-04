@@ -10,6 +10,7 @@ import FinishExamModalPage from "./FinishExamModal/FinishExamModalPage";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import { API } from "@/utils/AxiosInstance";
+import { NULL } from "sass";
 
 
 const SingleChoice = ({
@@ -32,9 +33,7 @@ const SingleChoice = ({
   useEffect(() => {
     async function getOptions() {
       try {
-        const response = await API.get(
-          `/options/${questionId}`
-        );
+        const response = await API.get(`/options/${questionId}`);
         console.log(response);
         setOptions(response.data);
       } catch (error) {
@@ -69,8 +68,15 @@ const SingleChoice = ({
     }
   };
 
-  console.log(selectedOption);
+  const findSelectedOption =
+    selectedOption?.find((question) => question.id === questionId)
+      ?.selectedOption || null;
 
+  const isReviewed = reviewQuestions.some((q) => q.id === questionId);
+
+  let status = findSelectedOption ? (isReviewed ? 3 : 1) : isReviewed ? 2 : 0;
+  const userId = 123;
+  
   async function testResultDtlSetData() {
     try {
       const { data } = await API.get(
@@ -107,6 +113,7 @@ const SingleChoice = ({
     }
   }
 
+
   const handleReviewClick = async () => {
     const findQuestion = reviewQuestions.find(
       (question) => questionId === question.id
@@ -120,13 +127,22 @@ const SingleChoice = ({
           option: options,
         },
       ]);
+       await testResultDtlSetData();
 
-      await testResultDtlSetData();
       onNext();
+      const res = await API.post("/api/test-result-dtl-submit", {
+        id,
+        userId,
+        questionId,
+        findSelectedOption,
+        correctAnswer,
+        status,
+      });
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
-
-  const handleNextClick = async () => {
+   const handleNextClick = async () => {
     await testResultDtlSetData();
     onNext();
   };
@@ -157,7 +173,8 @@ const SingleChoice = ({
             <div className="card-title ">
               <button
                 className="btn btn-success px-3 py-2 w-auto text-18"
-                onClick={onFinishQuiz}
+                 onClick={onFinishQuiz}
+
               >
                 Finish
               </button>
@@ -172,7 +189,6 @@ const SingleChoice = ({
                 />
               </Modal>
             </div>
-
           </div>
           <hr />
           <h5 className="card-text text-center">{question}</h5>
@@ -216,7 +232,7 @@ const SingleChoice = ({
                 <button
                   className="btn btn-primary w-auto p-2"
                   style={{ backgroundColor: "#6a1b9a", borderColor: "#6a1b9a" }}
-                  onClick={onNext}
+                  onClick={handleNextClick}
                 >
                   Next{" "}
                   <FontAwesomeIcon
@@ -226,7 +242,6 @@ const SingleChoice = ({
                 </button>
               )}
             </div>
-            
 
             <div>
               <button

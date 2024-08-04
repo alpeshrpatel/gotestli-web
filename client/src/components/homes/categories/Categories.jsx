@@ -17,7 +17,7 @@ const CategoriesHomeOne = () => {
   return (
     <>
       <section className="layout-pt-md layout-pb-md">
-        <div className="container">
+        <div className="w-75 m-auto">
           <div className="row justify-center text-center">
             <div className="col-auto">
               <div className="sectionTitle ">
@@ -57,7 +57,7 @@ const CategoriesHomeOne = () => {
                   },
                   1200: {
                     // when window width is >= 992px
-                    slidesPerView: 6,
+                    slidesPerView: 5,
                   },
                 }}
                 loop={true}

@@ -9,7 +9,7 @@ const Brands = ({ backgroundColorComponent, brandsTwo }) => {
           backgroundColorComponent ? backgroundColorComponent : ""
         } `}
       >
-        <div className="container">
+        <div className="w-75 m-auto">
           <div className="row justify-center">
             <div className="col text-center">
               <p className="text-lg text-dark-1">Trusted by the world’s best</p>

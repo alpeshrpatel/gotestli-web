@@ -9,7 +9,7 @@ export default function Instructors({ backgroundColor }) {
         backgroundColor ? backgroundColor : ""
       }`}
     >
-      <div className="container">
+      <div className="w-75 m-auto">
         <div className="row y-gap-20 justify-between items-center">
           <div className="col-lg-6">
             <div className="sectionTitle ">

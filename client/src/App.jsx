@@ -234,7 +234,7 @@ function App() {
               <Route path="quiz/result" element={<QuizResult/>} />
               <Route path="quiz/questions" element={<QuestionSet/>} />
               <Route path="quiz/start" element={<ExamInstructions/>} />
-              <Route path="make-question-set" element={<MakeQuestionSet/>} />
+              <Route path="/api/create/questionset" element={<MakeQuestionSet/>} />
             </Route>
           </Routes>
           <ScrollTopBehaviour />

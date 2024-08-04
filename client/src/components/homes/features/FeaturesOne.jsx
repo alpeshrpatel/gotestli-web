@@ -7,7 +7,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 export default function LearnNewSkill() {
   return (
     <section className="layout-pt-lg layout-pb-lg bg-beige-1">
-      <div className="container">
+      <div className="w-50 m-auto">
         <div className="row y-gap-30 justify-between items-center">
           <div className="col-xl-5 col-lg-6 col-md-10 order-2 order-lg-1">
             <div className="about-content">
