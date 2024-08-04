@@ -25,32 +25,32 @@ export default function PaginationTwo({
       </button>
 
       <div className="pagination__count">
-        <a
+        <span
           onClick={() => setPageNumber(1)}
-          className={pageNumber == 1 ? "-count-is-active" : ""}
+          className={` pointer border border-primary-subtle p-2 rounded ${pageNumber == 1 ? "bg-info-subtle" : ""} `}
           href="#"
         >
           1
-        </a>
+        </span>
         {data.length > pageCapacity ? (
-          <a
+          <span
             onClick={() => setPageNumber(2)}
-            className={pageNumber == 2 ? "-count-is-active" : ""}
+            className={` pointer border border-primary-subtle p-2 rounded ${pageNumber == 2 ? "bg-info-subtle" : ""} `}
             href="#"
           >
             2
-          </a>
+          </span>
         ) : (
           ""
         )}
         {data.length > pageCapacity * 2 ? (
-          <a
+          <span
             onClick={() => setPageNumber(3)}
-            className={pageNumber == 3 ? "-count-is-active" : ""}
+            className={` pointer border border-primary-subtle p-2 rounded ${pageNumber == 3 ? "bg-info-subtle" : ""} `}
             href="#"
           >
             3
-          </a>
+          </span>
         ) : (
           ""
         )}
@@ -59,24 +59,24 @@ export default function PaginationTwo({
 
         {pageNumber > 3 &&
           Math.ceil(data.length / pageCapacity) != pageNumber && (
-            <a href="#" className="-count-is-active">
+            <span href="#" className="pointer border border-primary-subtle p-2 rounded bg-info-subtle">
               {pageNumber}
-            </a>
+            </span>
           )}
         {data.length > pageCapacity * 4 &&
           pageNumber < Math.ceil(data.length / pageCapacity) - 1 &&
           pageNumber > 3 && <span className="">...</span>}
         {data.length > pageCapacity * 3 + 1 ? (
-          <a
-            className={
-              pageNumber == Math.ceil(data.length / pageCapacity)
-                ? "-count-is-active"
-                : ""
-            }
+          <span
+            className={` pointer border border-primary-subtle p-2 rounded
+             ${ pageNumber == Math.ceil(data.length / pageCapacity)
+                ? "bg-info-subtle"
+                : ""}
+            `}
             onClick={() => setPageNumber(Math.ceil(data.length / pageCapacity))}
           >
             {Math.ceil(data.length / pageCapacity)}
-          </a>
+          </span>
         ) : (
           ""
         )}

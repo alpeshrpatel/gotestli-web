@@ -11,6 +11,7 @@ import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import { API } from "@/utils/AxiosInstance";
 
+
 const SingleChoice = ({
   questionSetId,
   questionId,
@@ -70,7 +71,43 @@ const SingleChoice = ({
 
   console.log(selectedOption);
 
-  const handleReviewClick = () => {
+  async function testResultDtlSetData() {
+    try {
+      const { data } = await API.get(
+        `/api/test-result-dtl/status/${userId}/${questionId}`
+      );
+      const reviewStatus = data[0]?.status;
+      if (reviewStatus) {
+        status = reviewStatus === 0 ? 2 : reviewStatus === 1 ? 3 : reviewStatus;
+      } else {
+        status = status === 0 ? 2 : status === 1 ? 3 : status;
+      }
+      console.log(status);
+      console.log(data[0]?.status);
+
+      const [answerData, idData] = await Promise.all([
+        API.get(`/api/correctanswer/${questionId}`),
+        API.get("/lastId/test-result-dtl"),
+      ]);
+
+      const correctAnswer = answerData.data[0]?.correctAnswer || null;
+      console.log(correctAnswer);
+      const id = idData.data[0].id + 1;
+
+      const res = await API.post("/api/test-result-dtl-submit", {
+        id,
+        userId,
+        questionId,
+        findSelectedOption,
+        correctAnswer,
+        status,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleReviewClick = async () => {
     const findQuestion = reviewQuestions.find(
       (question) => questionId === question.id
     );
@@ -80,14 +117,28 @@ const SingleChoice = ({
         {
           id: questionId,
           question: question,
-          option:options,
-          
+          option: options,
         },
       ]);
+
+      await testResultDtlSetData();
       onNext();
     }
   };
-  console.log(reviewQuestions);
+
+  const handleNextClick = async () => {
+    await testResultDtlSetData();
+    onNext();
+  };
+
+  const onFinishQuiz = async () => {
+     if(index === totalQuestions){
+      await testResultDtlSetData();
+      
+     }
+     onOpenModal();
+  }
+
   return (
     // linear-gradient(to bottom right, #a18cd1, #fbc2eb)
     <div
@@ -100,14 +151,26 @@ const SingleChoice = ({
       >
         <div className="card-body">
           <div className="d-flex justify-content-between items-center">
-          <h4 className="card-title text-center">
-            Question {index} of {totalQuestions}{" "}
-          </h4>
-          <div className="card-title ">
-            <button className="btn btn-success px-3 py-2 w-auto text-18" onClick={onOpenModal} >Finish</button>
-            <Modal open={open} onClose={onCloseModal} center>
-                <FinishExamModalPage questionSetId={questionSetId} totalQuestions = {totalQuestions} selectedOption= {selectedOption} setSelectedOption= {setSelectedOption} reviewQuestions= {reviewQuestions} onCloseModal={onCloseModal}/>
-              </Modal>    
+            <h4 className="card-title text-center">
+              Question {index} of {totalQuestions}{" "}
+            </h4>
+            <div className="card-title ">
+              <button
+                className="btn btn-success px-3 py-2 w-auto text-18"
+                onClick={onFinishQuiz}
+              >
+                Finish
+              </button>
+              <Modal open={open} onClose={onCloseModal} center>
+                <FinishExamModalPage
+                  questionSetId={questionSetId}
+                  totalQuestions={totalQuestions}
+                  selectedOption={selectedOption}
+                  setSelectedOption={setSelectedOption}
+                  reviewQuestions={reviewQuestions}
+                  onCloseModal={onCloseModal}
+                />
+              </Modal>
             </div>
 
           </div>

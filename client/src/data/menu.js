@@ -100,7 +100,7 @@ export const menuList = [
     ],
   },
   {
-    title: "Events",
+    title: "Create QuestionSet",
     links: [
       { href: "/event-list-1", label: "Event List 1" },
       { href: "/event-list-2", label: "Event List 2" },

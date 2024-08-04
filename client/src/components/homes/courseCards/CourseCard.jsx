@@ -18,9 +18,7 @@ export default function CourceCard({ data, index }) {
   useEffect(() => {
     async function getQuestionsSet() {
       try {
-        const response = await API.get(
-          `/question_sets/${data.id}`
-        );
+        const response = await API.get(`/question_sets/${data.id}`);
         setQuestionsSet(response.data);
       } catch (error) {
         console.log(error);
@@ -33,8 +31,18 @@ export default function CourceCard({ data, index }) {
     <div className="col-lg-3 col-md-6">
       <div>
         <div className="coursesCard -type-1">
+          <Modal open={open} onClose={onCloseModal} center>
+            <ExamInstructions
+              id={data.id}
+              time={data.time_duration}
+              questionSet={questionSet}
+            />
+          </Modal>
           <div className="relative">
-            <div className="coursesCard__image overflow-hidden rounded-8">
+            <div
+              className="coursesCard__image overflow-hidden rounded-8 pointer "
+              onClick={onOpenModal}
+            >
               <img
                 style={{ height: "225px", width: "350px" }}
                 className="w-1/1"
@@ -80,9 +88,6 @@ export default function CourceCard({ data, index }) {
 
             <div className="text-17 lh-15 fw-500 text-dark-1 mt-10">
               <button onClick={onOpenModal}>{data.title}</button>
-              <Modal open={open} onClose={onCloseModal} center>
-                <ExamInstructions id ={data.id} time = {data.time_duration} questionSet ={questionSet}/>
-              </Modal>              
             </div>
 
             <div className="d-flex x-gap-10 items-center pt-10">
