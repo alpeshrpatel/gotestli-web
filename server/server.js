@@ -13,7 +13,8 @@ app.get("/", (req, res) => {
   return res.json("backend side");
 });
 
-const pool = mysql.createPool({
+
+dbConnectionInfo = {
   host: "localhost",
   user: "root",
   password: "gotestli",
@@ -21,19 +22,17 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+};
+
+const connection = mysql.createPool({
+  dbConnectionInfo
 });
 
-// const pool = mysql.createPool({
-//   connectionLimit:20,
-//   host: "localhost", // sql5.freemysqlhosting.net
-//   user: "root", // sql5723714
-//   password: "gotestli", //uEB7CCh1Qj
-//   database: "testli",
-// });
 
 app.get("/question_master", async (req, res) => {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    // //const connection = await mysql.createConnection(dbConfig);
+    connection = await connection.getConnection();
     const [rows] = await connection.query(queries.getAllQuestions);
     await connection.end();
     res.json(rows);
@@ -45,7 +44,7 @@ app.get("/question_master", async (req, res) => {
 
 app.get("/all_question_options", async (req, res) => {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    //const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getAllQuestionOptions);
     await connection.end();
 
@@ -59,7 +58,7 @@ app.get("/all_question_options", async (req, res) => {
 
     app.get("/all_question_sets", async (req, res) => {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    //const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getAllQuestionSets);
     await connection.end();
 
@@ -72,7 +71,7 @@ app.get("/all_question_options", async (req, res) => {
 
     app.get("/test-result", async (req, res) => {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    //const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getIdofTestResult);
     await connection.end();
 
@@ -85,7 +84,7 @@ app.get("/all_question_options", async (req, res) => {
 
     app.get("/lastId/test-result-dtl", async (req, res) => {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    //const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getIdofTestResultDtl);
     await connection.end();
 
@@ -98,7 +97,7 @@ app.get("/all_question_options", async (req, res) => {
 
 app.get("/api/get/last-question-set-id", async (req, res) => {
   try {
-      const connection = await mysql.createConnection(dbConfig);
+      //const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getIdofQuestionSet);
     await connection.end();
 
@@ -111,7 +110,7 @@ app.get("/api/get/last-question-set-id", async (req, res) => {
 
 async function getQuestionSets(id) {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    //const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.execute(
       "SELECT qsq.question_id, qm.question from testli.question_set_questions qsq, question_set qs , question_master qm where qs.id = ? and qsq.question_set_id = qs.id  and qm.id = qsq.question_id",
       [id]
@@ -138,7 +137,7 @@ app.get("/question_sets/:id", async (req, res) => {
 
 async function getOptions(questionId) {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    //const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.execute(
       "SELECT question_option AS options FROM question_options WHERE question_id = ?",
       [questionId]
@@ -180,7 +179,7 @@ app.post("/api/start/test/result", async (req, res) => {
   const date = new Date().toISOString().slice(0, 10);
   const createdDate = new Date().toISOString().slice(0, 19).replace("T", " ");
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    //const connection = await mysql.createConnection(dbConfig);
     const [results] = await connection.query(query, [
       userId,
       questionSetId,
@@ -207,7 +206,8 @@ app.post("/api/start/test/result", async (req, res) => {
 
 app.get("/categories", async (req, res) => {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    //const connection = await mysql.createConnection(dbConfig);
+    connection = await connection.getConnection();
     const [rows] = await connection.query(queries.getCategories);
     await connection.end();
 
@@ -220,7 +220,7 @@ app.get("/categories", async (req, res) => {
 
 async function getQuestionSetId(category_id) {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    //const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.execute(
       "select question_set_id from question_set_categories where category_id = ? ",
       [category_id]
@@ -248,7 +248,7 @@ app.get("/api/questionset/:categoryId", async (req, res) => {
 
 async function getCorrectAnswer(questionId) {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    //const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.execute(
       "SELECT question_option AS correctAnswer FROM question_options WHERE is_correct_answer = 1 AND question_id = ?",
       [questionId]
@@ -275,7 +275,7 @@ app.get("/api/correctanswer/:questionId", async (req, res) => {
 //// data store in test_result_dtl
 // app.post("/api/test/resultdetailsubmit", async(req, res) => {
 //   const { userResultId, questionId, correctAnswer, status } = req.body;
-//   const connection = await mysql.createConnection(dbConfig);
+//   //const connection = await mysql.createConnection(dbConfig);
 //   const query =
 //     "INSERT INTO `user_test_result_dtl` (`user_test_result_id`, `question_set_question_id`, `question_type`, `answer`, `correct_answer`, `created_by`, `created_date`, `modified_by`, `modified_date`,`status`) VALUES (?, ?, 2, NULL, ?, 10, ?, NULL, NULL,?)";
 //   const createdDate = new Date().toISOString().slice(0, 19).replace("T", " ");
@@ -300,7 +300,7 @@ app.get("/api/correctanswer/:questionId", async (req, res) => {
 
 app.post("/api/test/resultdetailsubmit", async (req, res) => {
   const { userResultId, questionId, correctAnswer, status } = req.body;
-  const connection = await mysql.createConnection(dbConfig);
+  //const connection = await mysql.createConnection(dbConfig);
   const query =
     "INSERT INTO `user_test_result_dtl` (`user_test_result_id`, `question_set_question_id`, `question_type`, `answer`, `correct_answer`, `created_by`, `created_date`, `modified_by`, `modified_date`,`status`) VALUES (?, ?, 2, NULL, ?, 10, ?, NULL, NULL,?)";
   const createdDate = new Date().toISOString().slice(0, 19).replace("T", " ");
@@ -330,7 +330,7 @@ app.post("/api/test/resultdetailsubmit", async (req, res) => {
 app.post("/api/test-result-dtl-submit",async (req, res) => {
   const { id, userId, questionId, findSelectedOption, correctAnswer, status } =
     req.body;
-    const connection = await mysql.createConnection(dbConfig);
+    //const connection = await mysql.createConnection(dbConfig);
   const query =
     "INSERT INTO `user_test_result_dtl` (`id`, `user_test_result_id`, `question_set_question_id`, `question_type`, `answer`, `correct_answer`, `created_by`, `created_date`, `modified_by`, `modified_date`,`status`) VALUES (?, ?, ?, 2, ?, ?, 10, ?, NULL, NULL,?)";
   const createdDate = new Date().toISOString().slice(0, 19).replace("T", " ");
@@ -365,7 +365,7 @@ app.post("/api/test-result-dtl-submit",async (req, res) => {
 
 async function getUserResultDtlStatus(userId, questionId) {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    //const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.execute(
       "SELECT status FROM user_test_result_dtl WHERE user_test_result_id = ?  AND question_set_question_id = ? ORDER BY id DESC LIMIT 1",
       [userId, questionId]
@@ -397,7 +397,7 @@ app.get(
 
 app.post("/api/post/questionset", async (req, res) => {
   const { id, questionSetId, questionId } = req.body;
-  const connection = await mysql.createConnection(dbConfig);
+  //const connection = await mysql.createConnection(dbConfig);
   const query =
     "INSERT INTO `question_set_questions` (`id`, `question_set_id`, `question_id`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES (?, ?, ?, 10, ?, NULL, ?)";
   const createdDate = new Date().toISOString().slice(0, 19).replace("T", " ");
