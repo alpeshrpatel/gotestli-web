@@ -13,12 +13,15 @@ app.get("/", (req, res) => {
   return res.json("backend side");
 });
 
-const dbConfig = {
-  host: "localhost", // sql5.freemysqlhosting.net
-  user: "root", // sql5723714
-  password: "gotestli", //uEB7CCh1Qj
+const pool = mysql.createPool({
+  host: "localhost",
+  user: "root",
+  password: "gotestli",
   database: "testli",
-};
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
 
 // const pool = mysql.createPool({
 //   connectionLimit:20,
@@ -412,6 +415,7 @@ app.post("/api/post/questionset", async (req, res) => {
           msg: "Selected option inserted successfully",
           success: true,
         });
+        return res;
       }
     }
   );
