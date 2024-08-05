@@ -22,14 +22,14 @@ const masthead_info = [
 ];
 
 const hero_content = {
-  title: "Learn New Skills Online with Top",
-  text_underline: "Educators",
-  info_hero: (
-    <>
-      Build skills with courses, certificates, and degrees online from
-      <br /> world-class universities and companies.
-    </>
-  ),
+  title: "Learn New Skills Online with Top Educators",
+  text_underline: "",
+  // info_hero: (
+  //   <>
+  //     Build skills with courses, certificates, and degrees online from
+  //     <br /> world-class universities and companies.
+  //   </>
+  // ),
   starts: [
     "icon-star text-yellow-1 text-11",
     "icon-star text-yellow-1 text-11",
@@ -129,7 +129,7 @@ const HomeHero = () => {
                   data-aos-duration="300"
                   className="masthead-info row y-gap-15 sm:d-none"
                 >
-                  {masthead_info.map((item, i) => (
+                  {/* {masthead_info.map((item, i) => (
                     <div
                       key={i}
                       className="masthead-info__item d-flex items-center text-white"
@@ -141,12 +141,12 @@ const HomeHero = () => {
                         {item.text}
                       </div>
                     </div>
-                  ))}
+                  ))} */}
                 </div>
               </div>
             </div>
 
-            <div
+            {/* <div
               className="col-xl-6 col-lg-6"
               data-aos="fade-up"
               data-aos-delay="700"
@@ -235,12 +235,12 @@ const HomeHero = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 
         {/* animated shape start */}
-        <ShapeRendering />
+        {/* <ShapeRendering /> */}
         {/* animated shape end */}
       </section>
     </>

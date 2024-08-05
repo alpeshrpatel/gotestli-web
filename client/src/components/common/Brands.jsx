@@ -2,7 +2,7 @@ import { brands } from "../../data/brands";
 const Brands = ({ backgroundColorComponent, brandsTwo }) => {
   return (
     <>
-      <section
+      {/* <section
         className={` ${
           brandsTwo ? "layout-pt-md" : "layout-pt-lg"
         }  layout-pb-md  ${
@@ -37,7 +37,7 @@ const Brands = ({ backgroundColorComponent, brandsTwo }) => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
     </>
   );
 };
