@@ -16,7 +16,7 @@ const CategoriesHomeOne = () => {
 
   return (
     <>
-      <section className="layout-pt-md layout-pb-md">
+      {/* <section className="layout-pt-md layout-pb-md">
         <div className="w-75 m-auto">
           <div className="row justify-center text-center">
             <div className="col-auto">
@@ -104,7 +104,7 @@ const CategoriesHomeOne = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
     </>
   );
 };

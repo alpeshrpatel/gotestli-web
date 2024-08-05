@@ -2,7 +2,7 @@ const express = require("express");
 const mysql = require("mysql2/promise");
 const cors = require("cors");
 const queries = require("./queries.js");
-const port = 5000;
+const port = 3000;
 
 const app = express();
 app.use(cors());
@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
 const pool = mysql.createPool({
   host: "localhost",
   user: "root",
-  password: "gotestli",
+  password: "Padra@1979!",
   database: "testli",
   waitForConnections: true,
   connectionLimit: 10,
@@ -310,7 +310,7 @@ app.post('/api/post/questionset',async(req,res)=>{
     const {id,questionSetId,questionId} = req.body;
     const query = "INSERT INTO `question_set_questions` (`id`, `question_set_id`, `question_id`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES (?, ?, ?, 10, ?, NULL, ?)";
     const createdDate = new Date().toISOString().slice(0, 19).replace("T", " ");
- const data = await pool.query(
+    const data = await pool.query(
     query,
     [
       id,
@@ -328,6 +328,7 @@ app.post('/api/post/questionset',async(req,res)=>{
           msg: "Selected option inserted successfully",
           success: true,
         });
+        return res;
       }
     }
 )})
