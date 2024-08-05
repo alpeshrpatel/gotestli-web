@@ -16,7 +16,8 @@ app.get("/", (req, res) => {
 const pool = mysql.createPool({
   host: "localhost",
   user: "root",
-  password: "Padra@1979!",
+  password: "gotestli",
+  port: 3306,
   database: "testli",
   waitForConnections: true,
   connectionLimit: 10,
