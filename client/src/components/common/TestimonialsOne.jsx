@@ -14,7 +14,7 @@ export default function TestimonialsOne() {
   }, []);
   return (
     <section className="layout-pt-lg mt-80 layout-pb-lg bg-purple-1">
-      <div className="container ">
+      <div className="container-fluid ">
         <div className="row justify-center text-center">
           <div className="col-auto">
             <div className="sectionTitle ">

@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState, useMemo } from "react";
 import "./MakeQuestionSet.css";
 import { API } from "@/utils/AxiosInstance";
@@ -17,8 +15,8 @@ const MakeQuestionSet = () => {
   const [filter, setFilter] = useState("");
   const [categories, setCategories] = useState([]);
   const [questions, setQuestions] = useState([]);
-  const [questionSets,setQuestionSets] = useState([])
-  const [questionSetsQuestions,setQuestionSetsQuestions] = useState([])
+  const [questionSets, setQuestionSets] = useState([]);
+  const [questionSetsQuestions, setQuestionSetsQuestions] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [open, setOpen] = useState(false);
@@ -39,8 +37,6 @@ const MakeQuestionSet = () => {
         ]);
         setCategories(categoriesResponse.data);
         setQuestions(questionsResponse.data);
-        console.log("Categories:", categoriesResponse.data);
-        console.log("Questions:", questionsResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -55,8 +51,8 @@ const MakeQuestionSet = () => {
   const getQuestionSetId = async (categoryId) => {
     try {
       const { data } = await API.get(`/api/questionset/${categoryId}`);
-      console.log("Question Set ID:", data);
-      setQuestionSets(data); // Update questions state here
+
+      setQuestionSets(data);
     } catch (error) {
       console.error("Error fetching question set:", error);
     }
@@ -66,36 +62,34 @@ const MakeQuestionSet = () => {
     const selectedFilter = event.target.value;
     setFilter(selectedFilter);
     setSelectedQuestions([]);
+
     const filteredCategory = categories.find(
-      (category) => category.title?.toLowerCase() === selectedFilter?.toLowerCase()
+      (category) =>
+        category.title?.toLowerCase() === selectedFilter?.toLowerCase()
     );
     if (filteredCategory) {
       getQuestionSetId(filteredCategory.id);
     }
-   
+
   };
 
   const getQuestionsFromQSetId = async (questionId) => {
     try {
       const { data } = await API.get(`/question_sets/${questionId}`);
-      console.log("Question Sets :", data);
-      setQuestionSetsQuestions(prevQuestions => [
-        ...prevQuestions,
-        ...data
-      ]);
+
+      setQuestionSetsQuestions((prevQuestions) => [...prevQuestions, ...data]);
     } catch (error) {
       console.error("Error fetching question set:", error);
     }
   };
-  console.log(questionSetsQuestions)
 
   useEffect(() => {
-    console.log(questionSets);
-    setQuestionSetsQuestions([])
+    setQuestionSetsQuestions([]);
     questionSets.forEach((q) => {
       getQuestionsFromQSetId(q.question_set_id);
     });
-  }, [questionSets]); 
+  }, [questionSets]);
+
   const handleCheckboxChange = (question) => {
     setSelectedQuestions((prevSelectedQuestions) =>
       prevSelectedQuestions.includes(question)
@@ -111,12 +105,11 @@ const MakeQuestionSet = () => {
         questionSetsQuestions.some(
           (q) => q.question?.toLowerCase() === question.question?.toLowerCase()
         ))
-   
+
   );
 
   console.log(selectedQuestions);
-
-  const questionSetStore = async (id, questionSetId, questionId) => {
+   const questionSetStore = async (id, questionSetId, questionId) => {
     try {
       const res = await API.post("/api/post/questionset", {
         id,
@@ -182,7 +175,7 @@ const MakeQuestionSet = () => {
               </div>
             ))}
         </ul>
-        {shouldRenderPagination && (
+ {shouldRenderPagination && (
           <div className="w-75 m-auto d-flex align-items-center justify-content-center">
             <PaginationTwo
               pageNumber={currentPage}
@@ -207,6 +200,7 @@ const MakeQuestionSet = () => {
         <Modal open={open} onClose={onCloseModal} center>
                <QuestionSetDetailForm />
         </Modal>
+
       </div>
     </div>
   );

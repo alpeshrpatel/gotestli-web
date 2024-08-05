@@ -45,6 +45,8 @@ app.get("/all_question_options", async (req, res) => {
     const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getAllQuestionOptions);
     await connection.end();
+
+
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -52,11 +54,12 @@ app.get("/all_question_options", async (req, res) => {
   }
 });
 
-app.get("/all_question_sets", async (req, res) => {
+    app.get("/all_question_sets", async (req, res) => {
   try {
     const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getAllQuestionSets);
     await connection.end();
+
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -64,11 +67,12 @@ app.get("/all_question_sets", async (req, res) => {
   }
 });
 
-app.get("/test-result", async (req, res) => {
+    app.get("/test-result", async (req, res) => {
   try {
     const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getIdofTestResult);
     await connection.end();
+
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -76,11 +80,12 @@ app.get("/test-result", async (req, res) => {
   }
 });
 
-app.get("/lastId/test-result-dtl", async (req, res) => {
+    app.get("/lastId/test-result-dtl", async (req, res) => {
   try {
     const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getIdofTestResultDtl);
     await connection.end();
+
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -90,9 +95,10 @@ app.get("/lastId/test-result-dtl", async (req, res) => {
 
 app.get("/api/get/last-question-set-id", async (req, res) => {
   try {
-    const connection = await mysql.createConnection(dbConfig);
+      const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getIdofQuestionSet);
     await connection.end();
+
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -108,6 +114,7 @@ async function getQuestionSets(id) {
       [id]
     );
     await connection.end();
+
     return rows;
   } catch (err) {
     console.error(err);
@@ -134,6 +141,7 @@ async function getOptions(questionId) {
       [questionId]
     );
     await connection.end();
+
     return rows;
   } catch (err) {
     console.error(err);
@@ -162,12 +170,12 @@ app.post("/api/start/test/result", async (req, res) => {
     totalReviewed,
     notVisited,
   } = req.body;
+
   const query =
     "INSERT INTO user_test_result(`org_id`, `user_id`, `question_set_id`, `total_question`, `total_answered`, `total_not_answered`, `total_reviewed`, `total_not_visited`, `percentage`, `marks_obtained`, `date`, `flag`, `created_by`, `created_date`, `modified_by`, `modified_date`,`status`) VALUES (1, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?, NULL, 17, ?, NULL, NULL, 0)";
 
   const date = new Date().toISOString().slice(0, 10);
   const createdDate = new Date().toISOString().slice(0, 19).replace("T", " ");
-
   try {
     const connection = await mysql.createConnection(dbConfig);
     const [results] = await connection.query(query, [
@@ -180,7 +188,7 @@ app.post("/api/start/test/result", async (req, res) => {
       notVisited,
       date,
       createdDate,
-    ]);
+       ]);
     await connection.end();
     console.log("Query successful:", results);
     res.json({
@@ -199,6 +207,7 @@ app.get("/categories", async (req, res) => {
     const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getCategories);
     await connection.end();
+
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -219,6 +228,7 @@ async function getQuestionSetId(category_id) {
     throw err;
   }
 }
+
 
 app.get("/api/questionset/:categoryId", async (req, res) => {
   try {

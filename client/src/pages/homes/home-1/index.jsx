@@ -33,7 +33,7 @@ export default function HomePage1() {
       <MetaComponent meta={metadata} />
       <Header />
 
-      <div className="content-wrapper  js-content-wrapper overflow-hidden">
+      <div className="content-wrapper  js-content-wrapper overflow-hidden w-100" >
         <HomeHero />
         <Brands />
         <Categories />
