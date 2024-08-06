@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import "./ExamInstructions.css";
 import { useNavigate } from "react-router-dom";
 import { API } from "@/utils/AxiosInstance";
 
 const ExamInstructions = ({ id, time, questionSet }) => {
+  const [startTestResultData, setStartTestResultData] = useState([]);
   const navigate = useNavigate();
   const userId = 99;
   const questionSetId = id;
@@ -14,79 +15,8 @@ const ExamInstructions = ({ id, time, questionSet }) => {
   const skippedQuestion = 0;
   const totalReviewed = 0;
   let userResultId;
-  let count = 0;
 
-  // async function testResultDtlSetData(questionId,userResultId) {
-  //   count++
-  //   try {
-  //     const answerData = await API.get(`/api/correctanswer/${questionId}`);
-
-  //     const correctAnswer = answerData.data[0]?.correctAnswer || null;
-  //     console.log(correctAnswer);
-  //     const status = 0;
-  //     const res = await API.post("/api/test/resultdetailsubmit", {
-  //       userResultId,
-  //       questionId,
-  //       correctAnswer,
-  //       status,
-  //     });
-  //     console.log(res);
-  //     console.log(count)
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-
-  // const handleStartQuiz = async () => {
-  //   count++;
-  //   try {
-  //     const res = await API.post("/api/start/test/result", {
-  //       userId,
-  //       questionSetId,
-  //       totalQuestions,
-  //       totalAnswered,
-  //       notAnswered,
-  //       totalReviewed,
-  //       notVisited,
-  //       skippedQuestion,
-  //     });
-  //     console.log(res.data.user_test_result_id);
-  //     userResultId = res.data.user_test_result_id;
-  //     for(let i=0; i<questionSet.length;i++){
-  //       const question = questionSet[i];
-  //        testResultDtlSetData(question.question_id,userResultId);
-  //     }
-     
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  //   navigate("/quiz/questions", {
-  //     state: { questionSetId: id, questionSet: questionSet, time: time },
-  //   });
-  // };
-  async function testResultDtlSetData(questionId, userResultId) {
-    count++;
-    try {
-      const answerData = await API.get(`/api/correctanswer/${questionId}`);
-      const correctAnswer = answerData.data[0]?.correctAnswer || null;
-      console.log('Correct Answer:', correctAnswer);
-  
-      const status = 0;
-      const res = await API.post("/api/test/resultdetailsubmit", {
-        userResultId,
-        questionId,
-        correctAnswer,
-        status,
-      });
-      console.log('Response:', res);
-      console.log('Count:', count);
-    } catch (error) {
-      console.error('Error in testResultDtlSetData:', error);
-    }
-  }
-  
   const handleStartQuiz = async () => {
-    count++;
     try {
       const res = await API.post("/api/start/test/result", {
         userId,
@@ -98,32 +28,57 @@ const ExamInstructions = ({ id, time, questionSet }) => {
         notVisited,
         skippedQuestion,
       });
-      console.log('Start Quiz Response:', res.data.user_test_result_id);
+      console.log(res.data.user_test_result_id);
       userResultId = res.data.user_test_result_id;
-  
-      if (Array.isArray(questionSet) && questionSet.length > 0) {
-        const promises = questionSet.map(question => {
-          if (question.question_id) {
-            return testResultDtlSetData(question.question_id, userResultId);
-          } else {
-            console.warn(`Question has no question_id:`, question);
-            return Promise.resolve(); 
+      console.log(questionSet)
+      const newData = await Promise.all(
+        questionSet.map(async (question) => {
+          try {
+            const correctAnswer = await getQuestionId(question.question_id);
+            console.log(correctAnswer);
+            return {
+              userResultId: userResultId,
+              questionId: question.question_id,
+              correctAnswer: correctAnswer,
+              status: 0,
+            };
+          } catch (error) {
+            console.error('Error fetching correct answer:', error);
           }
-        });
-  
-        
-        await Promise.all(promises);
-      } else {
-        console.warn('questionSet is not an array or is empty:', questionSet);
-      }
+        })
+      );
+      setStartTestResultData(newData);
+      await testResultDtlSetData(newData);
     } catch (error) {
-      console.error('Error in handleStartQuiz:', error);
+      console.error('Error starting quiz:', error);
     }
-  
     navigate("/quiz/questions", {
       state: { questionSetId: id, questionSet: questionSet, time: time },
     });
   };
+  
+  const getQuestionId = async (questionId) => {
+    try {
+      const answerData = await API.get(`/api/correctanswer/${questionId}`);
+      const correctAnswer = answerData.data[0]?.correctAnswer || null;
+      console.log(answerData)
+      return correctAnswer;
+    } catch (error) {
+      console.error('Error fetching correct answer:', error);
+    }
+  };
+  
+  const testResultDtlSetData = async (jsonData) => {
+    try {
+      const res = await API.post("/api/test/resultdetailsubmit", {
+        jsonData, timeout: 30000
+      });
+      console.log(res);
+    } catch (error) {
+      console.error('Error submitting test result details:', error);
+    }
+  };
+ console.log(startTestResultData)
   return (
     <div className="exam-instructions-container">
       <h2>Exam Instructions</h2>
@@ -210,3 +165,5 @@ const ExamInstructions = ({ id, time, questionSet }) => {
 };
 
 export default ExamInstructions;
+
+
