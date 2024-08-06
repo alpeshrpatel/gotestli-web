@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
   return res.json("backend side");
 });
 
-const pool = require('./config/dbConnection');
+// const pool = require('./config/dbConnection');
  
 
 
@@ -35,9 +35,8 @@ const connection = mysql.createPool({
 
 app.get("/categories", async (req, res) => {
   try {
-    const connection = await pool.getConnection();
     const [rows] = await connection.query(queries.getCategories);
-    // await connection.end();
+    // 
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -50,7 +49,7 @@ app.get("/question_master", async (req, res) => {
     // connection = await connection.getConnection();
     console.log(queries.getAllQuestions)
     const [rows] = await connection.query(queries.getAllQuestions);
-    // await connection.end();
+    // 
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -62,7 +61,7 @@ app.get("/all_question_options", async (req, res) => {
   try {
     //const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getAllQuestionOptions);
-    // await connection.end();
+    // 
 
 
     res.json(rows);
@@ -76,7 +75,7 @@ app.get("/all_question_options", async (req, res) => {
   try {
     //const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getAllQuestionSets);
-    // await connection.end();
+    // 
 
     res.json(rows);
   } catch (err) {
@@ -89,7 +88,7 @@ app.get("/all_question_options", async (req, res) => {
   try {
     //const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getIdofTestResult);
-    await connection.end();
+    
 
     res.json(rows);
   } catch (err) {
@@ -102,7 +101,7 @@ app.get("/all_question_options", async (req, res) => {
   try {
     //const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getIdofTestResultDtl);
-    await connection.end();
+    
 
     res.json(rows);
   } catch (err) {
@@ -115,7 +114,7 @@ app.get("/api/get/last-question-set-id", async (req, res) => {
   try {
       //const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getIdofQuestionSet);
-    await connection.end();
+    
 
     res.json(rows);
   } catch (err) {
@@ -131,7 +130,7 @@ async function getQuestionSets(id) {
       "SELECT qsq.question_id, qm.question from testli.question_set_questions qsq, question_set qs , question_master qm where qs.id = ? and qsq.question_set_id = qs.id  and qm.id = qsq.question_id",
       [id]
     );
-    await connection.end();
+    
 
     return rows;
   } catch (err) {
@@ -158,7 +157,7 @@ async function getOptions(questionId) {
       "SELECT question_option AS options FROM question_options WHERE question_id = ?",
       [questionId]
     );
-    await connection.end();
+    
 
     return rows;
   } catch (err) {
@@ -207,7 +206,7 @@ app.post("/api/start/test/result", async (req, res) => {
       date,
       createdDate,
        ]);
-    await connection.end();
+    
     console.log("Query successful:", results);
     res.json({
       msg: "Selected option inserted successfully",
@@ -256,7 +255,7 @@ async function getCorrectAnswer(questionId) {
       "SELECT question_option AS correctAnswer FROM question_options WHERE is_correct_answer = 1 AND question_id = ?",
       [questionId]
     );
-    await connection.end();
+    
     return rows;
   } catch (err) {
     console.error(err);
@@ -298,7 +297,7 @@ app.get("/api/correctanswer/:questionId", async (req, res) => {
 //       }
 //     }
 //   );
-//   await connection.end();
+//   
 // });
 
 app.post("/api/test/resultdetailsubmit", async (req, res) => {
@@ -327,7 +326,7 @@ app.post("/api/test/resultdetailsubmit", async (req, res) => {
     }
   );
 
-  await connection.end();
+  
 });
 
 app.post("/api/test-result-dtl-submit",async (req, res) => {
@@ -361,7 +360,7 @@ app.post("/api/test-result-dtl-submit",async (req, res) => {
       }
     }
   );
-  await connection.end();
+  
 });
 
 //// getting status from test_result_dtl
@@ -373,7 +372,7 @@ async function getUserResultDtlStatus(userId, questionId) {
       "SELECT status FROM user_test_result_dtl WHERE user_test_result_id = ?  AND question_set_question_id = ? ORDER BY id DESC LIMIT 1",
       [userId, questionId]
     );
-    await connection.end();
+    
     return rows;
   } catch (err) {
     console.error(err);
@@ -422,22 +421,9 @@ app.post("/api/post/questionset", async (req, res) => {
       }
     }
   );
-  await connection.end();
+  
 });
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
-  (async () => {
-    try {
-      const connection = await pool.getConnection();
-      console.log('Connected to the MySQL server.');
-   
-      // Perform your database operations here
-      // Example: SELECT * FROM users
-   
-      connection.release();
-    } catch (error) {
-      console.error('Error connecting to the MySQL server:', error);
-    }
-  })();
 });
