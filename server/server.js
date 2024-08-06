@@ -13,28 +13,44 @@ app.get("/", (req, res) => {
   return res.json("backend side");
 });
 
+const pool = require('./config/dbConnection');
+ 
 
-dbConnectionInfo = {
+
+
+const connection = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "gotestli",
+  port: 3306,
   database: "testli",
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0,
-};
-
-const connection = mysql.createPool({
-  dbConnectionInfo
+  keepAliveInitialDelay: 10000, // 0 by default.
+  enableKeepAlive: true, // false by default.
 });
 
 
+
+
+app.get("/categories", async (req, res) => {
+  try {
+    const connection = await pool.getConnection();
+    const [rows] = await connection.query(queries.getCategories);
+    // await connection.end();
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+});
 app.get("/question_master", async (req, res) => {
   try {
     // //const connection = await mysql.createConnection(dbConfig);
-    connection = await connection.getConnection();
+    // connection = await connection.getConnection();
+    console.log(queries.getAllQuestions)
     const [rows] = await connection.query(queries.getAllQuestions);
-    await connection.end();
+    // await connection.end();
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -46,7 +62,7 @@ app.get("/all_question_options", async (req, res) => {
   try {
     //const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getAllQuestionOptions);
-    await connection.end();
+    // await connection.end();
 
 
     res.json(rows);
@@ -60,7 +76,7 @@ app.get("/all_question_options", async (req, res) => {
   try {
     //const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.query(queries.getAllQuestionSets);
-    await connection.end();
+    // await connection.end();
 
     res.json(rows);
   } catch (err) {
@@ -204,19 +220,6 @@ app.post("/api/start/test/result", async (req, res) => {
   }
 });
 
-app.get("/categories", async (req, res) => {
-  try {
-    //const connection = await mysql.createConnection(dbConfig);
-    connection = await connection.getConnection();
-    const [rows] = await connection.query(queries.getCategories);
-    await connection.end();
-
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Internal Server Error");
-  }
-});
 
 async function getQuestionSetId(category_id) {
   try {
@@ -424,4 +427,17 @@ app.post("/api/post/questionset", async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
+  (async () => {
+    try {
+      const connection = await pool.getConnection();
+      console.log('Connected to the MySQL server.');
+   
+      // Perform your database operations here
+      // Example: SELECT * FROM users
+   
+      connection.release();
+    } catch (error) {
+      console.error('Error connecting to the MySQL server:', error);
+    }
+  })();
 });
