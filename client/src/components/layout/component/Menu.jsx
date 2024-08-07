@@ -26,12 +26,15 @@ export default function Menu({ allClasses, headerPosition }) {
       });
     });
   }, []);
+  console.log(menuItem)
+  console.log(submenu)
 
   return (
     <div
       className={`header-menu js-mobile-menu-toggle  ${
         headerPosition ? headerPosition : ""
       }`}
+      style={{marginTop:'20px', display:'flex', justifyContent:'space-between',alignItems:'center',gap:'5px'}}
     >
       <div className="header-menu__content">
         <div className="mobile-bg js-mobile-bg"></div>
@@ -46,20 +49,21 @@ export default function Menu({ allClasses, headerPosition }) {
         </div>
 
         <div className="menu js-navList">
-          <ul className={`${allClasses ? allClasses : ""}`}>
+          <ul className={`${allClasses ? allClasses : ""}`} style={{paddingLeft:0, display:'flex',gap:'15px'}}>
             <li className="menu-item-has-children">
               <Link
                 data-barba
                 to="#"
                 className={menuItem == "Home" ? "activeMenu" : ""}
+                style={{fontSize:'18px'}}
               >
                 Home <i className="icon-chevron-right text-13 ml-10"></i>
               </Link>
 
               <ul className="subnav">
-                <li className="menu__backButton js-nav-list-back">
-                  <Link to="#">
-                    <i className="icon-chevron-left text-13 mr-10"></i> Home
+                <li className="menu__backButton js-nav-list-back" >
+                  <Link to="#" className="text-reset">
+                    <i className="icon-chevron-left text-13 mr-10" ></i> Home
                   </Link>
                 </li>
 
@@ -82,9 +86,10 @@ export default function Menu({ allClasses, headerPosition }) {
               <Link
                 data-barba
                 to="#"
-                className={menuItem == "Courses" ? "activeMenu" : ""}
+                className={menuItem == "Quizzes" ? "activeMenu" : ""}
+                style={{fontSize:'18px'}}
               >
-                Courses <i className="icon-chevron-right text-13 ml-10"></i>
+                Quizzes <i className="icon-chevron-right text-13 ml-10"></i>
               </Link>
 
               <div className="mega xl:d-none">
@@ -92,7 +97,7 @@ export default function Menu({ allClasses, headerPosition }) {
                   <div className="row x-gap-40">
                     <div className="col">
                       <h4 className="text-17 fw-500 mb-20">
-                        Course List Layouts
+                        Quiz List Layouts
                       </h4>
 
                       <ul className="mega__list">
@@ -115,7 +120,7 @@ export default function Menu({ allClasses, headerPosition }) {
 
                     <div className="col">
                       <h4 className="text-17 fw-500 mb-20">
-                        Course Single Layouts
+                      Quiz Single Layouts
                       </h4>
 
                       <ul className="mega__list">
@@ -137,7 +142,7 @@ export default function Menu({ allClasses, headerPosition }) {
                     </div>
 
                     <div className="col">
-                      <h4 className="text-17 fw-500 mb-20">About Courses</h4>
+                      <h4 className="text-17 fw-500 mb-20">About Quizzes</h4>
 
                       <ul className="mega__list">
                         {menuList[1].links[2].links.map((elm, i) => (
@@ -158,31 +163,10 @@ export default function Menu({ allClasses, headerPosition }) {
                     </div>
 
                     <div className="col">
-                      <h4 className="text-17 fw-500 mb-20">Dashboard Pages</h4>
+                      <h4 className="text-17 fw-500 mb-20">Popular Quizzes</h4>
 
                       <ul className="mega__list">
                         {menuList[1].links[3].links.map((elm, i) => (
-                          <li
-                            key={i}
-                            className={
-                              pathname.split("/")[1] == elm.href.split("/")[1]
-                                ? "activeMenu"
-                                : "inActiveMegaMenu"
-                            }
-                          >
-                            <Link data-barba to={elm.href}>
-                              {elm.label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="col">
-                      <h4 className="text-17 fw-500 mb-20">Popular Courses</h4>
-
-                      <ul className="mega__list">
-                        {menuList[1].links[4].links.map((elm, i) => (
                           <li
                             key={i}
                             className={
@@ -223,6 +207,7 @@ export default function Menu({ allClasses, headerPosition }) {
                 data-barba
                 to="/api/create/questionset"
                 className={menuItem == "Create QuestionSet" ? "activeMenu" : ""}
+                style={{fontSize:'18px'}}
               >
                 Create QuestionSet <i className="icon-chevron-right text-13 ml-10"></i>
               </Link>
@@ -255,6 +240,7 @@ export default function Menu({ allClasses, headerPosition }) {
                 data-barba
                 to="#"
                 className={menuItem == "Blogs" ? "activeMenu" : ""}
+                style={{fontSize:'18px'}}
               >
                 Blog <i className="icon-chevron-right text-13 ml-10"></i>
               </Link>
@@ -265,7 +251,7 @@ export default function Menu({ allClasses, headerPosition }) {
                   </Link>
                 </li>
 
-                {menuList[3].links.map((elm, i) => (
+                {menuList[4].links.map((elm, i) => (
                   <li
                     key={i}
                     className={
@@ -287,6 +273,7 @@ export default function Menu({ allClasses, headerPosition }) {
                 data-barba
                 to="#"
                 className={menuItem == "Pages" ? "activeMenu" : ""}
+                style={{fontSize:'18px'}}
               >
                 Pages <i className="icon-chevron-right text-13 ml-10"></i>
               </Link>
@@ -315,7 +302,7 @@ export default function Menu({ allClasses, headerPosition }) {
                       </Link>
                     </li>
 
-                    {menuList[4].links[0].links.map((elm, i) => (
+                    {menuList[5].links[0].links.map((elm, i) => (
                       <li
                         key={i}
                         className={
@@ -338,18 +325,19 @@ export default function Menu({ allClasses, headerPosition }) {
                     className={
                       submenu == "Contact" ? "activeMenu" : "inActiveMenu"
                     }
+                    
                   >
                     Contact<div className="icon-chevron-right text-11"></div>
                   </Link>
                   <ul className="subnav">
                     <li className="menu__backButton js-nav-list-back">
-                      <Link to="#">
+                      <Link to="#" style={{fontSize:'18px'}}>
                         <i className="icon-chevron-left text-13 mr-10"></i>
                         Contact
                       </Link>
                     </li>
 
-                    {menuList[4].links[1].links.map((elm, i) => (
+                    {menuList[5].links[1].links.map((elm, i) => (
                       <li
                         key={i}
                         className={
@@ -382,7 +370,7 @@ export default function Menu({ allClasses, headerPosition }) {
                       </Link>
                     </li>
 
-                    {menuList[4].links[2].links.map((elm, i) => (
+                    {menuList[5].links[2].links.map((elm, i) => (
                       <li
                         key={i}
                         className={
@@ -399,7 +387,7 @@ export default function Menu({ allClasses, headerPosition }) {
                   </ul>
                 </li>
 
-                {menuList[4].links
+                {menuList[5].links
                   .filter((el) => el.href)
                   .map((elm, i) => (
                     <li

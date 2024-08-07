@@ -26,11 +26,9 @@ export default function CourceCard({ data, index }) {
     }
     getQuestionsSet();
   }, []);
-  console.log(questionSet);
+  console.log(open);
   return (
     <div className="col-lg-3 col-md-6">
-      <div>
-        <div className="coursesCard -type-1">
           <Modal open={open} onClose={onCloseModal} center>
             <ExamInstructions
               id={data.id}
@@ -38,17 +36,21 @@ export default function CourceCard({ data, index }) {
               questionSet={questionSet}
             />
           </Modal>
+      <div>
+        <div className="coursesCard -type-1">
           <div className="relative">
             <div
-              className="coursesCard__image overflow-hidden rounded-8 pointer "
-              onClick={onOpenModal}
+              className="coursesCard__image cardImage overflow-hidden rounded-8  "
             >
+              {/* <button  className="coursesCard__image cardImage overflow-hidden rounded-8  " style={{cursor:'pointer'}} onClick={onOpenModal}> */}
               <img
-                style={{ height: "225px", width: "350px" }}
                 className="w-1/1"
+                style={{ height: "200px", width: "400px" }}
                 src={data.image}
+                onClick={onOpenModal}
                 alt="image"
               />
+              {/* </button> */}
               <div className="coursesCard__image_overlay rounded-8"></div>
             </div>
             {data.popular && (
