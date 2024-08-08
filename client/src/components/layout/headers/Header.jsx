@@ -1,17 +1,39 @@
 import React, { useEffect } from "react";
+import { useState } from "react";
 import { HeaderExplore } from "../component/header-explore";
 import SearchToggle from "../component/SearchToggle";
 import CartToggle from "../component/CartToggle";
 import Menu from "../component/Menu";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import MobileMenu from "../component/MobileMenu";
 import { auth } from "@/firebase/Firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
+import { menuList } from "@/data/menu";
 
 export default function Header() {
   const [activeMobileMenu, setActiveMobileMenu] = useState(false);
   const [user, setUser] = useState(null);
+  const [menuItem, setMenuItem] = useState("");
+  const [submenu, setSubmenu] = useState("");
+  const { pathname } = useLocation();
+  console.log(pathname);
+
+  useEffect(() => {
+    menuList.forEach((elm) => {
+      elm?.links?.forEach((elm2) => {
+        if (elm2.href?.split("/")[1] == pathname.split("/")[1]) {
+          setMenuItem(elm.title);
+        } else {
+          elm2?.links?.map((elm3) => {
+            if (elm3.href?.split("/")[1] == pathname.split("/")[1]) {
+              setMenuItem(elm.title);
+              setSubmenu(elm2.title);
+            }
+          });
+        }
+      });
+    });
+  }, []);
 
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
@@ -41,11 +63,11 @@ export default function Header() {
                 </div>
 
                 {/* header explore start */}
-                <HeaderExplore
+                {/* <HeaderExplore
                   allClasses={
                     "header__explore text-green-1 ml-60 xl:ml-30 xl:d-none"
                   }
-                />
+                /> */}
                 {/* header explore end */}
               </div>
             </div>
@@ -65,34 +87,102 @@ export default function Header() {
 
                   {/* cart toggle start */}
                   <CartToggle
-                    parentClassess={"relative ml-30 xl:ml-20"}
+                    parentClassess={"relative ml-20 mr-20 xl:ml-20"}
                     allClasses={"d-flex items-center text-white"}
                   />
                   {/* cart toggle end */}
 
-                  <div className="d-none xl:d-block ml-20">
+                  <div className="d-block d-xl-none ml-20" style={{margin:'4px', right:'0vw',color:'white !important'}}>
                     <button
                       onClick={() => setActiveMobileMenu(true)}
                       className="text-white items-center"
-                      data-el-toggle=".js-mobile-menu-toggle"
+                      data-el-toggle=".js-mobile-menu-toggle"   
                     >
                       <i className="text-11 icon icon-mobile-menu"></i>
                     </button>
                   </div>
                 </div>
 
-                <div>
+                <div className="d-none d-xl-block">
                   {user ? (
-                    <div className="header-right__buttons d-flex items-center ml-30 md:d-none">
-                      <button
-                        className="button -sm -white text-dark-1 ml-30"
-                        onClick={handleSignOut}
-                      >
-                        Logout
-                      </button>
-                      <h5 className="text-white ml-30   ">
+                    <div className=" d-flex justify-space-between items-center mt-2" style={{margin:'0 8vw'}}>
+                      {/* <h5 className="text-white ml-30   ">
                         {user.displayName}
-                      </h5>
+                      </h5> */}
+                      <div>
+                        <div
+                          className={`header-menu js-mobile-menu-toggle`}
+                          style={{ left: "84vw", fontSize:'18px' }}
+                        >
+                          <div className="header-menu__content" >
+                            <div className="menu js-navList" >
+                              <ul className={"menu__nav text-white -is-active"} >
+                                <li className="menu-item-has-children -has-mega-menu" >
+                                  <Link
+                                    data-barba
+                                    to="#"
+                                    className={
+                                      menuItem == "User Profile"
+                                        ? "activeMenu"
+                                        : ""
+                                    }
+                                  >
+                                    {user.displayName}
+                                    <i className="icon-chevron-right text-13 ml-10"></i>
+                                  </Link>
+                                  <div className="mega " >
+                                    <div className="mega__menu"  >
+                                      <div className="row x-gap-40">
+                                        <div className="col" >
+                                          <h4
+                                            className="text-17 fw-500 mb-20"
+                                            style={{ color: "black" }}
+                                          >
+                                            Dashboard Pages
+                                          </h4>
+
+                                          <ul className="mega__list" >
+                                            {menuList[2].links[0].links.map(
+                                              (elm, i) => (
+                                                <li
+                                                  key={i}
+                                                  className={
+                                                    pathname?.split("/")[1] ==
+                                                    elm.href?.split("/")[1]
+                                                      ? "activeMenu"
+                                                      : "inActiveMegaMenu"
+                                                  }
+                                                >
+                                                  <Link
+                                                    data-barba
+                                                    to={elm.href}
+                                                  >
+                                                    {elm.label}
+                                                  </Link>
+                                                </li>
+                                              )
+                                            )}
+                                          </ul>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="d-none d-xl-block" style={{position:"absolute", right:0}} >
+                        <button
+                          className="button -sm -white text-dark-1 "
+                          onClick={handleSignOut}
+                        >
+                          Logout
+                        </button>
+
+                        
+                      </div>
                     </div>
                   ) : (
                     <div className="header-right__buttons d-flex items-center ml-30 md:d-none">

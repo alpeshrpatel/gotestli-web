@@ -63,7 +63,10 @@ const FinishExamModalPage = ({
         <div className="card p-4">
           <h2>Do You Want to Skip All the {skippedQuestion} Questions ? </h2>
           <div className="d-flex justify-content-evenly items-center mt-4 ">
-            <button className="btn btn-success "  onClick={handleQuizSubmit} >Yes</button>
+     <button className="btn btn-success " onClick={onOpenModal}>
+              Yes
+            </button>
+
             <button className="btn btn-danger " onClick={onCloseModal}>
               No
             </button>
@@ -87,7 +90,18 @@ const FinishExamModalPage = ({
           Review All Questions
         </button>
       </div>
-
+      <Modal open={open} onClose={onCloseSubmitModal} center>
+        <SubmitQuizModal
+          questionSetId={questionSetId}
+          totalQuestions={totalQuestions}
+          selectedOption={selectedOption}
+          setSelectedOption={setSelectedOption}
+          totalAnswered={totalAnswered}
+          totalReviewed={totalReviewed}
+          skippedQuestion={skippedQuestion}
+          reviewQuestions={reviewQuestions}
+        />
+      </Modal>
       {viewReviewQuestions && (
         <div>
           {reviewQuestions.length > 0 ? (
@@ -149,18 +163,6 @@ const FinishExamModalPage = ({
             >
               Submit
             </button>
-            <Modal open={open} onClose={onCloseSubmitModal} center>
-              <SubmitQuizModal
-                questionSetId={questionSetId}
-                totalQuestions={totalQuestions}
-                selectedOption={selectedOption}
-                setSelectedOption={setSelectedOption}
-                totalAnswered={totalAnswered}
-                totalReviewed={totalReviewed}
-                skippedQuestion={skippedQuestion}
-                reviewQuestions={reviewQuestions}
-              />
-            </Modal>
           </div>
         </div>
       )}

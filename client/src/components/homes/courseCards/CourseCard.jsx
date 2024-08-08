@@ -18,9 +18,7 @@ export default function CourceCard({ data, index }) {
   useEffect(() => {
     async function getQuestionsSet() {
       try {
-        const response = await API.get(
-          `/question_sets/${data.id}`
-        );
+        const response = await API.get(`/question_sets/${data.id}`);
         setQuestionsSet(response.data);
       } catch (error) {
         console.log(error);
@@ -28,19 +26,31 @@ export default function CourceCard({ data, index }) {
     }
     getQuestionsSet();
   }, []);
-  console.log(questionSet);
+  console.log(open);
   return (
     <div className="col-lg-3 col-md-6">
+          <Modal open={open} onClose={onCloseModal} center>
+            <ExamInstructions
+              id={data.id}
+              time={data.time_duration}
+              questionSet={questionSet}
+            />
+          </Modal>
       <div>
         <div className="coursesCard -type-1">
           <div className="relative">
-            <div className="coursesCard__image overflow-hidden rounded-8">
+            <div
+              className="coursesCard__image cardImage overflow-hidden rounded-8  "
+            >
+              {/* <button  className="coursesCard__image cardImage overflow-hidden rounded-8  " style={{cursor:'pointer'}} onClick={onOpenModal}> */}
               <img
-                style={{ height: "225px", width: "350px" }}
                 className="w-1/1"
+                style={{ height: "200px", width: "400px" }}
                 src={data.image}
+                onClick={onOpenModal}
                 alt="image"
               />
+              {/* </button> */}
               <div className="coursesCard__image_overlay rounded-8"></div>
             </div>
             {data.popular && (
@@ -80,9 +90,6 @@ export default function CourceCard({ data, index }) {
 
             <div className="text-17 lh-15 fw-500 text-dark-1 mt-10">
               <button onClick={onOpenModal}>{data.title}</button>
-              <Modal open={open} onClose={onCloseModal} center>
-                <ExamInstructions id ={data.id} time = {data.time_duration} questionSet ={questionSet}/>
-              </Modal>              
             </div>
 
             <div className="d-flex x-gap-10 items-center pt-10">

@@ -12,6 +12,7 @@ import { Modal } from "react-responsive-modal";
 import { API } from "@/utils/AxiosInstance";
 import { NULL } from "sass";
 
+
 const SingleChoice = ({
   questionSetId,
   questionId,
@@ -67,6 +68,7 @@ const SingleChoice = ({
     }
   };
 
+  console.log(selectedOption);
   const findSelectedOption =
     selectedOption?.find((question) => question.id === questionId)
       ?.selectedOption || null;
@@ -75,6 +77,45 @@ const SingleChoice = ({
 
   let status = findSelectedOption ? (isReviewed ? 3 : 1) : isReviewed ? 2 : 0;
   const userId = 123;
+
+  
+  
+  async function testResultDtlSetData() {
+    try {
+      const { data } = await API.get(
+        `/api/test-result-dtl/status/${userId}/${questionId}`
+      );
+      const reviewStatus = data[0]?.status;
+      if (reviewStatus) {
+        status = reviewStatus === 0 ? 2 : reviewStatus === 1 ? 3 : reviewStatus;
+      } else {
+        status = status === 0 ? 2 : status === 1 ? 3 : status;
+      }
+      console.log(status);
+      console.log(data[0]?.status);
+
+      const [answerData, idData] = await Promise.all([
+        API.get(`/api/correctanswer/${questionId}`),
+        API.get("/lastId/test-result-dtl"),
+      ]);
+
+      const correctAnswer = answerData.data[0]?.correctAnswer || null;
+      console.log(correctAnswer);
+      const id = idData.data[0].id + 1;
+
+      const res = await API.post("/api/test-result-dtl-submit", {
+        id,
+        userId,
+        questionId,
+        findSelectedOption,
+        correctAnswer,
+        status,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
 
   const handleReviewClick = async () => {
     const findQuestion = reviewQuestions.find(
@@ -89,68 +130,23 @@ const SingleChoice = ({
           option: options,
         },
       ]);
-      try {
-        const { data } = await API.get(
-          `/api/test-result-dtl/status/${userId}/${questionId}`
-        );
-        const reviewStatus = data[0]?.status;
-        if (reviewStatus) {
-          status =
-            reviewStatus === 0 ? 2 : reviewStatus === 1 ? 3 : reviewStatus;
-        } else {
-          status = status === 0 ? 2 : status === 1 ? 3 : status;
-        }
-        console.log(status);
-        console.log(data[0]?.status);
-
-        const [answerData, idData] = await Promise.all([
-          API.get(`/api/correctanswer/${questionId}`),
-          API.get("/lastId/test-result-dtl"),
-        ]);
-
-        const correctAnswer = answerData.data[0].correctAnswer;
-
-        const id = idData.data[0].id + 1;
-
-        onNext();
-        const res = await API.post("/api/test-result-dtl-submit", {
-          id,
-          userId,
-          questionId,
-          findSelectedOption,
-          correctAnswer,
-          status,
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
-  const handleNextClick = async () => {
-    try {
-      const [answerData, idData] = await Promise.all([
-        API.get(`/api/correctanswer/${questionId}`),
-        API.get("/lastId/test-result-dtl"),
-      ]);
-
-      const correctAnswer = answerData.data[0].correctAnswer;
-
-      const id = idData.data[0].id + 1;
+       await testResultDtlSetData();
 
       onNext();
-      const res = await API.post("/api/test-result-dtl-submit", {
-        id,
-        userId,
-        questionId,
-        findSelectedOption,
-        correctAnswer,
-        status,
-      });
-    } catch (error) {
-      console.error("Error:", error);
-    }
+      
   };
+   const handleNextClick = async () => {
+    await testResultDtlSetData();
+    onNext();
+  };
+
+  const onFinishQuiz = async () => {
+     if(index === totalQuestions){
+      await testResultDtlSetData();
+      
+     }
+     onOpenModal();
+  }
 
   return (
     // linear-gradient(to bottom right, #a18cd1, #fbc2eb)
@@ -170,7 +166,8 @@ const SingleChoice = ({
             <div className="card-title ">
               <button
                 className="btn btn-success px-3 py-2 w-auto text-18"
-                onClick={onOpenModal}
+                 onClick={onFinishQuiz}
+
               >
                 Finish
               </button>
@@ -253,6 +250,7 @@ const SingleChoice = ({
       </div>
     </div>
   );
-};
-
+}
+}
 export default SingleChoice;
+

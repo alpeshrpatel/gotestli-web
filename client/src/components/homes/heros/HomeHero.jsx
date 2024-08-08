@@ -22,8 +22,8 @@ const masthead_info = [
 ];
 
 const hero_content = {
-  title: "Learn New Skills Online with Top Educators",
-  text_underline: "",
+  title: "Attend New Quizzes Created by Top ",
+  text_underline: "Instructors",
   // info_hero: (
   //   <>
   //     Build skills with courses, certificates, and degrees online from
@@ -74,20 +74,20 @@ const HomeHero = () => {
 
   return (
     <>
-      <section className="masthead -type-1 js-mouse-move-container">
-        <div className="masthead__bg">
+      <section className="masthead -type-1 js-mouse-move-container" style={{height:'100%',paddingTop:'140px',paddingBottom:'200px'}}>
+        <div className="masthead__bg " style={{height:'90%'}}>
           <img src={"/assets/img/home-1/hero/bg.png"} alt="image" />
         </div>
 
-        <div className="container">
-          <div className="row y-gap-30 justify-between items-end">
+        <div className="container bg-transparent border-0 ">
+          <div className="row y-gap-30 justify-center items-end mx-auto ">
             <div className="col-xl-6 col-lg-6 col-sm-10">
               <div
                 className="masthead__content"
                 data-aos="fade-up"
                 data-aos-delay="500"
               >
-                <h1 className="masthead__title">
+                <h1 className="masthead__title " style={{color:'white'}}>
                   {title}{" "}
                   <span className="text-green-1 underline">
                     {text_underline}
@@ -120,16 +120,16 @@ const HomeHero = () => {
                       to="/courses-list-1"
                       className="button -md -outline-green-1 text-green-1"
                     >
-                      Find Courses
+                      Find Quizzes
                     </Link>
                   </div>
                 </div>
-                <div
+                {/* <div
                   data-aos="fade-up"
                   data-aos-duration="300"
                   className="masthead-info row y-gap-15 sm:d-none"
                 >
-                  {/* {masthead_info.map((item, i) => (
+                  {masthead_info.map((item, i) => (
                     <div
                       key={i}
                       className="masthead-info__item d-flex items-center text-white"
@@ -141,8 +141,8 @@ const HomeHero = () => {
                         {item.text}
                       </div>
                     </div>
-                  ))} */}
-                </div>
+                  ))}
+                </div> */}
               </div>
             </div>
 

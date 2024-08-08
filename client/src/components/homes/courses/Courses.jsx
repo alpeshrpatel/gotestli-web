@@ -35,7 +35,7 @@ export default function Courses() {
   
 
   return (
-    <section className="layout-pt-lg layout-pb-lg">
+    <section className="layout-pt-lg layout-pb-lg" style={{paddingTop:'10px'}}>
       <div className="row justify-center text-center">
         <div className="col-auto">
           <div className="sectionTitle ">
@@ -81,8 +81,7 @@ export default function Courses() {
                 data-aos-duration={(index + 1) * 300}
               />
             ))
-          : coursesData
-              .slice(0, 8)
+          : coursesData             
               .map((elm, index) => <CourceCard key={index} data={elm} />)}
       </div>
     </section>

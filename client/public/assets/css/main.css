@@ -1253,7 +1253,7 @@ a {
   line-height: inherit;
   font-weight: inherit;
   transition: color 0.2s ease-in-out;
-  text-decoration: none;
+  text-decoration: none !important;
 }
 
 a:hover {
@@ -1262,7 +1262,7 @@ a:hover {
 }
 
 a, a:focus, a:visited {
-  text-decoration: inherit;
+  text-decoration: none;
   font-weight: inherit;
 }
 
@@ -1342,8 +1342,9 @@ button:focus {
 }
 
 .button.-underline:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
+
 
 .button.-white {
   background-color: var(--color-white);
@@ -3699,6 +3700,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .coursesCard.-type-1 .coursesCard__image {
   overflow: hidden;
+  cursor:pointer !important;
+  pointer-events: auto !important;
 }
 
 .coursesCard.-type-1 .coursesCard__image_overlay {
@@ -3717,6 +3720,7 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
   transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
+
 
 .coursesCard.-type-1 .coursesCard-footer {
   display: flex;
@@ -9727,7 +9731,9 @@ h1, h2, h3, h4, h5, h6 {
 .pointer-events-none {
   pointer-events: none !important;
 }
-
+.cardImage > img{
+  pointer-events: auto !important;
+}
 .bg-image {
   background-size: cover;
   background-repeat: no-repeat;
@@ -15722,3 +15728,13 @@ table.table td {
   background: white;
 }
 
+img{
+  cursor:pointer !important;
+  pointer-events: auto !important;
+}
+
+.coursesCard.-type-1 .coursesCard__image img {
+  overflow: hidden;
+  cursor:pointer !important;
+  pointer-events: auto !important;
+}
