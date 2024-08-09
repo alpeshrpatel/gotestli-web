@@ -13,7 +13,7 @@ export default function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-
+ 
       const data = await signInWithEmailAndPassword(auth, email, password);
       navigate("/");
       console.log("Logged in Successfully!!");
@@ -24,10 +24,10 @@ export default function LoginForm() {
 
   return (
     <div className="form-page__content lg:py-50">
-      <div className="container">
-        <div className="row justify-center items-center">
-          <div className="col-xl-6 col-lg-8">
-            <div className="px-50 py-50 md:px-25 md:py-25 bg-white shadow-1 rounded-16">
+      <div className="container " style={{backgroundColor:'#bfdeee'}}>
+        <div className="row justify-center items-center ">
+          <div className="col-xl-8 col-lg-8">
+            <div className=" bg-transparent shadow-1 rounded-16">
               <h3 className="text-30 lh-13">Login</h3>
               <p className="mt-10">
                 Don't have an account yet?
@@ -37,7 +37,7 @@ export default function LoginForm() {
               </p>
 
               <form
-                className="contact-form respondForm__form row y-gap-20 pt-30"
+                className="contact-form respondForm__form row y-gap-20 pt-30 "
                 onSubmit={handleSubmit}
               >
                 <div className="col-12">
@@ -45,6 +45,7 @@ export default function LoginForm() {
                     Email
                   </label>
                   <input
+                  className="bg-white"
                     required
                     type="text"
                     name="title"
@@ -61,6 +62,7 @@ export default function LoginForm() {
                   </label>
                   <input
                     required
+                    className="bg-white"
                     type="password"
                     name="title"
                     placeholder="Password"
@@ -72,7 +74,7 @@ export default function LoginForm() {
                     type="submit"
                     name="submit"
                     id="submit"
-                    className="button -md -green-1 text-dark-1 fw-500 w-1/1"
+                    className="button -md -purple-1 text-white fw-500 w-1/1"
                   >
                     Login
                   </button>

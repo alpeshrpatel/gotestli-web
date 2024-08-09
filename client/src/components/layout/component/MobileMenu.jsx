@@ -7,7 +7,12 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-export default function MobileMenu({ setActiveMobileMenu, activeMobileMenu }) {
+export default function MobileMenu({
+  setActiveMobileMenu,
+  activeMobileMenu,
+  user,
+  handleSignOut
+}) {
   const [showMenu, setShowMenu] = useState(false);
   const [menuNesting, setMenuNesting] = useState([]);
   const [menuItem, setMenuItem] = useState("");
@@ -42,10 +47,23 @@ export default function MobileMenu({ setActiveMobileMenu, activeMobileMenu }) {
       <div className="header-menu__content">
         <div className="mobile-bg js-mobile-bg"></div>
 
-        <div className="d-none xl:d-flex items-center px-20 py-20 border-bottom-light">
+        {user ? (
+          <div
+            className="d-flex d-xl-none mt-10 ml-10"
+            
+          >
+            <button
+              className="button -sm -purple-1 text-white fw-500 w-10 text-dark-1 "
+              onClick={handleSignOut}
+            >
+              Logout
+            </button>
+          </div>
+        ) : (
+          <div className="d-flex d-xl-none items-center px-20 py-20 border-bottom-light">
           <Link
             to="/login"
-            className={`text-dark-1 ${
+            className={`button -sm -purple-1 text-white fw-500 w-10 text-dark-1 ${
               pathname == "/login" ? "activeMenu" : "inActiveMenu"
             } `}
           >
@@ -53,13 +71,14 @@ export default function MobileMenu({ setActiveMobileMenu, activeMobileMenu }) {
           </Link>
           <Link
             to="/signup"
-            className={`text-dark-1 ml-30 ${
+            className={`button -sm -green-1 text-white fw-500 w-10 text-dark-1 ml-30 ${
               pathname == "/signup" ? "activeMenu" : "inActiveMenu"
             } `}
           >
             Sign Up
           </Link>
         </div>
+        )}
 
         {showMenu && activeMobileMenu && (
           <div className="mobileMenu text-dark-1">
@@ -71,7 +90,7 @@ export default function MobileMenu({ setActiveMobileMenu, activeMobileMenu }) {
                       className="title"
                       onClick={() =>
                         setMenuNesting((pre) =>
-                          pre[0] == elm.title ? [] : [elm.title],
+                          pre[0] == elm.title ? [] : [elm.title]
                         )
                       }
                     >
@@ -124,7 +143,7 @@ export default function MobileMenu({ setActiveMobileMenu, activeMobileMenu }) {
                                   setMenuNesting((pre) =>
                                     pre[1] == itm.title
                                       ? [pre[0]]
-                                      : [pre[0], itm.title],
+                                      : [pre[0], itm.title]
                                   )
                                 }
                               >

@@ -76,18 +76,20 @@ export default function Header() {
             <MobileMenu
               setActiveMobileMenu={setActiveMobileMenu}
               activeMobileMenu={activeMobileMenu}
+              user={user}
+              handleSignOut= {handleSignOut}
             />
 
             <div className="col-auto">
               <div className="header-right d-flex items-center">
-                <div className="header-right__icons text-white d-flex items-center">
+                <div className="header-right__icons text-white d-flex items-center mt-2">
                   {/* search toggle start */}
                   <SearchToggle />
                   {/* search toggle end */}
 
                   {/* cart toggle start */}
                   <CartToggle
-                    parentClassess={"relative ml-20 mr-20 xl:ml-20"}
+                    parentClassess={"relative ml-30 mr-30 xl:ml-20"}
                     allClasses={"d-flex items-center text-white"}
                   />
                   {/* cart toggle end */}
@@ -109,10 +111,10 @@ export default function Header() {
                       {/* <h5 className="text-white ml-30   ">
                         {user.displayName}
                       </h5> */}
-                      <div>
+                      <div className="mt-3">
                         <div
                           className={`header-menu js-mobile-menu-toggle`}
-                          style={{ left: "84vw", fontSize:'18px' }}
+                          style={{ left: "82.5vw", fontSize:'18px' }}
                         >
                           <div className="header-menu__content" >
                             <div className="menu js-navList" >
@@ -127,10 +129,10 @@ export default function Header() {
                                         : ""
                                     }
                                   >
-                                    {user.displayName}
+                                    {user.displayName.split(' ')[0]}
                                     <i className="icon-chevron-right text-13 ml-10"></i>
                                   </Link>
-                                  <div className="mega " >
+                                  <div className="mega " style={{fontSize:'18px',width:'30vw',overflow:'auto'}} >
                                     <div className="mega__menu"  >
                                       <div className="row x-gap-40">
                                         <div className="col" >

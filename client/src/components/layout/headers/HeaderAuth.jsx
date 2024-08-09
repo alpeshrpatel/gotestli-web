@@ -7,7 +7,7 @@ export default function HeaderAuth() {
   const [activeMobileMenu, setActiveMobileMenu] = useState(false);
   return (
     <header className="header -base js-header">
-      <div className="header__container py-10">
+      <div className="header__container py-10 " style={{backgroundColor:'#1a064f', borderBottom:'0.5px solid white'}}>
         <div className="row justify-between items-center">
           <div className="col-auto">
             <div className="header-left">
@@ -21,11 +21,11 @@ export default function HeaderAuth() {
 
           <div className="col-auto">
             <div className="header-right d-flex items-center">
-              <Menu allClasses={"menu__nav text-dark-1 -is-active"} />
+              {/* <Menu allClasses={"menu__nav text-white -is-active"} />
               <MobileMenu
                 activeMobileMenu={activeMobileMenu}
                 setActiveMobileMenu={setActiveMobileMenu}
-              />
+              /> */}
 
               <div className="mr-30">
                 <div className="d-none xl:d-block ml-20">
@@ -39,10 +39,11 @@ export default function HeaderAuth() {
                 </div>
               </div>
 
-              <div className="header-right__buttons md:d-none">
+              <div className="header-right__buttons md:d-none" >
                 <a
                   href="signup"
-                  className="button -sm -rounded -dark-1 text-white"
+                  className="button signUpButton -sm -rounded -dark-1 text-white "
+                  style={{backgroundColor:'#6440fb'}}
                 >
                   Sign Up
                 </a>

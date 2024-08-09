@@ -12,7 +12,6 @@ import { Modal } from "react-responsive-modal";
 import { API } from "@/utils/AxiosInstance";
 import { NULL } from "sass";
 
-
 const SingleChoice = ({
   questionSetId,
   questionId,
@@ -78,8 +77,6 @@ const SingleChoice = ({
   let status = findSelectedOption ? (isReviewed ? 3 : 1) : isReviewed ? 2 : 0;
   const userId = 123;
 
-  
-  
   async function testResultDtlSetData() {
     try {
       const { data } = await API.get(
@@ -116,7 +113,6 @@ const SingleChoice = ({
     }
   }
 
-
   const handleReviewClick = async () => {
     const findQuestion = reviewQuestions.find(
       (question) => questionId === question.id
@@ -130,127 +126,136 @@ const SingleChoice = ({
           option: options,
         },
       ]);
-       await testResultDtlSetData();
+      await testResultDtlSetData();
 
       onNext();
-      
+    }
   };
-   const handleNextClick = async () => {
-    await testResultDtlSetData();
-    onNext();
-  };
-
-  const onFinishQuiz = async () => {
-     if(index === totalQuestions){
+    const handleNextClick = async () => {
       await testResultDtlSetData();
-      
-     }
-     onOpenModal();
-  }
+      onNext();
+    };
 
-  return (
-    // linear-gradient(to bottom right, #a18cd1, #fbc2eb)
-    <div
-      className="d-flex justify-content-center align-items-center vh-100"
-      style={{ background: "rgb(26,6,79)" }}
-    >
-      <div
-        className="card shadow p-4"
-        style={{ width: "60vw", borderRadius: "15px" }}
-      >
-        <div className="card-body">
-          <div className="d-flex justify-content-between items-center">
-            <h4 className="card-title text-center">
-              Question {index} of {totalQuestions}{" "}
-            </h4>
-            <div className="card-title ">
-              <button
-                className="btn btn-success px-3 py-2 w-auto text-18"
-                 onClick={onFinishQuiz}
+    const onFinishQuiz = async () => {
+      if (index === totalQuestions) {
+        await testResultDtlSetData();
+      }
+      onOpenModal();
+    };
 
-              >
-                Finish
-              </button>
-              <Modal open={open} onClose={onCloseModal} center>
-                <FinishExamModalPage
-                  questionSetId={questionSetId}
-                  totalQuestions={totalQuestions}
-                  selectedOption={selectedOption}
-                  setSelectedOption={setSelectedOption}
-                  reviewQuestions={reviewQuestions}
-                  onCloseModal={onCloseModal}
-                />
-              </Modal>
-            </div>
-          </div>
-          <hr />
-          <h5 className="card-text text-center">{question}</h5>
-          <ul className="list-group list-group-flush mt-3 mb-4">
-            {options?.map((option, id) => (
-              <li
-                key={id}
-                className={`list-group-item border-1 border-secondary-subtle rounded mb-2 `}
-                onClick={() => handleOptionClick(option.options)}
-                style={{
-                  backgroundColor: selectedOption.some(
-                    (selected) =>
-                      selected.id === questionId &&
-                      selected.selectedOption === option.options
-                  )
-                    ? "rgb(247, 191, 234)"
-                    : "",
-                  cursor: "pointer",
-                }}
-              >
-                {option.options}
-              </li>
-            ))}
-          </ul>
-          <div className="d-flex justify-content-around">
-            <div className="d-flex justify-content-center gap-3">
-              {index > 1 && (
-                <button
-                  className="btn btn-primary w-auto p-2"
-                  style={{ backgroundColor: "#6a1b9a", borderColor: "#6a1b9a" }}
-                  onClick={onPrevious}
-                >
-                  <FontAwesomeIcon
-                    icon={faAngleDoubleLeft}
-                    className="fa-lg mr-5"
-                  />
-                  Previous{" "}
-                </button>
-              )}
-              {index !== totalQuestions && (
-                <button
-                  className="btn btn-primary w-auto p-2"
-                  style={{ backgroundColor: "#6a1b9a", borderColor: "#6a1b9a" }}
-                  onClick={handleNextClick}
-                >
-                  Next{" "}
-                  <FontAwesomeIcon
-                    icon={faAngleDoubleRight}
-                    className="fa-lg ml-5"
-                  />
-                </button>
-              )}
-            </div>
+    return (
+      // linear-gradient(to bottom right, #a18cd1, #fbc2eb)
+      <>
+        <div
+          className="d-flex justify-content-center align-items-center vh-100"
+          style={{ background: "rgb(26,6,79)" }}
+        >
+          <div>hii</div>
+          <div
+            className="card shadow p-4 "
+            style={{ width: "60vw", borderRadius: "15px" }}
+          >
+            <div className="card-body ">
+              <div className="d-flex justify-content-between items-center">
+                <h4 className="card-title text-center">
+                  Question {index} of {totalQuestions}{" "}
+                </h4>
+                <div className="card-title ">
+                  <button
+                    className="btn btn-success px-3 py-2 w-auto text-18"
+                    onClick={onFinishQuiz}
+                  >
+                    Finish
+                  </button>
+                  <Modal open={open} onClose={onCloseModal} center>
+                    <FinishExamModalPage
+                      questionSetId={questionSetId}
+                      totalQuestions={totalQuestions}
+                      selectedOption={selectedOption}
+                      setSelectedOption={setSelectedOption}
+                      reviewQuestions={reviewQuestions}
+                      onCloseModal={onCloseModal}
+                    />
+                  </Modal>
+                </div>
+              </div>
+              <hr />
+              <h5 className="card-text text-center">{question}</h5>
+              <ul className="list-group list-group-flush mt-3 mb-4">
+                {options?.map((option, id) => (
+                  <li
+                    key={id}
+                    className={`list-group-item border-1 border-secondary-subtle rounded mb-2 `}
+                    onClick={() => handleOptionClick(option.options)}
+                    style={{
+                      backgroundColor: selectedOption.some(
+                        (selected) =>
+                          selected.id === questionId &&
+                          selected.selectedOption === option.options
+                      )
+                        ? "rgb(247, 191, 234)"
+                        : "",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {option.options}
+                  </li>
+                ))}
+              </ul>
+              <div className="d-flex justify-content-around">
+                <div className="d-flex justify-content-center gap-3">
+                  {index > 1 && (
+                    <button
+                      className="btn btn-primary w-auto p-2"
+                      style={{
+                        backgroundColor: "#6a1b9a",
+                        borderColor: "#6a1b9a",
+                      }}
+                      onClick={onPrevious}
+                    >
+                      <FontAwesomeIcon
+                        icon={faAngleDoubleLeft}
+                        className="fa-lg mr-5"
+                      />
+                      Previous{" "}
+                    </button>
+                  )}
+                  {index !== totalQuestions && (
+                    <button
+                      className="btn btn-primary w-auto p-2"
+                      style={{
+                        backgroundColor: "#6a1b9a",
+                        borderColor: "#6a1b9a",
+                      }}
+                      onClick={handleNextClick}
+                    >
+                      Next{" "}
+                      <FontAwesomeIcon
+                        icon={faAngleDoubleRight}
+                        className="fa-lg ml-5"
+                      />
+                    </button>
+                  )}
+                </div>
 
-            <div>
-              <button
-                className="btn btn-primary w-auto p-2"
-                style={{ backgroundColor: "#6a1b9a", borderColor: "#6a1b9a" }}
-                onClick={handleReviewClick}
-              >
-                Review
-              </button>
+                <div>
+                  <button
+                    className="btn btn-primary w-auto p-2"
+                    style={{
+                      backgroundColor: "#6a1b9a",
+                      borderColor: "#6a1b9a",
+                    }}
+                    onClick={handleReviewClick}
+                  >
+                    Review
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
-}
+      </>
+    );
+  
+};
 export default SingleChoice;
-

@@ -192,7 +192,6 @@ app.post("/api/start/test/result", async (req, res) => {
       date,
       createdDate,
        ]);  
-    console.log("Query successful:", results);
     res.json({
       msg: "Selected option inserted successfully",
       success: true,
@@ -249,7 +248,6 @@ async function getCorrectAnswer(questionId) {
 app.get("/api/correctanswer/:questionId", async (req, res) => {
   try {
     const questionId = req.params.questionId;
-    console.log(questionId)
     const options = await getCorrectAnswer(questionId);
     res.json(options);
   } catch (error) {
@@ -261,7 +259,7 @@ app.get("/api/correctanswer/:questionId", async (req, res) => {
 
 app.post("/api/test/resultdetailsubmit", async (req, res) => {
   const { jsonData } = req.body;
-  console.log('Received JSON Data:', jsonData);
+   console.log('Received JSON Data:', jsonData);
   const query = 
     "INSERT INTO user_test_result_dtl " +
     "(user_test_result_id, question_set_question_id, question_type, answer, correct_answer, created_by, created_date, modified_by, modified_date, status) " +
@@ -269,23 +267,22 @@ app.post("/api/test/resultdetailsubmit", async (req, res) => {
   ;
   const createdDate = new Date().toISOString().slice(0, 19).replace("T", " ");
   try {
-    const promises = jsonData.map(entry => {
-      return new Promise((resolve, reject) => {
-        connection.execute(query, [entry.userResultId, entry.questionId, entry.correctAnswer, createdDate, entry.status], (err, result) => {
-          if (err) {
-            console.error('Error executing query:', err);
-            return reject(err);
-          }
-          resolve(result.insertId);
-        });
-      });
-    });
-   
+    const results = [];
 
-    const results = await Promise.all(promises);
-    pool.end();
-    console.log('Insert Results:', results);
-    res.status(200).json({ message: 'Data inserted successfully', ids: results });
+    for (const entry of jsonData) {
+      console.log(entry)
+      const result = await connection.query(query, [
+        entry.userResultId,
+        entry.questionId,
+        entry.correctAnswer,
+        createdDate,
+        entry.status
+      ]);
+      results.push(result);
+     
+    }
+     console.log(results);
+    res.status(200).json({ message: 'Data inserted successfully', results });
   } catch (error) {
     console.error('Error submitting test result details:', error);
     res.status(500).json({ error: error.message });
@@ -319,7 +316,7 @@ app.post("/api/test-result-dtl-submit",async (req, res) => {
         console.error(err);
         res.status(500).json({ msg: "Server error" });
       } else {
-        console.log("Query successful:", results);
+       
         res.json({
           msg: "Selected option inserted successfully",
           success: true,
@@ -351,7 +348,7 @@ app.get(
     const { userId, questionId } = req.params;
     try {
       const options = await getUserResultDtlStatus(userId, questionId);
-      console.log(options);
+      
       res.json(options);
     } catch (error) {
       console.error(error);
@@ -376,8 +373,7 @@ app.post("/api/post/questionset", async (req, res) => {
         console.error(err);
         res.status(500).json({ msg: "Server error" });
       } else {
-        console.log(data);
-        console.log("Query successful:", results);
+        
         res.json({
           msg: "Selected option inserted successfully",
           success: true,

@@ -60,8 +60,8 @@ export default function Menu({ allClasses, headerPosition }) {
                 Home <i className="icon-chevron-right text-13 ml-10"></i>
               </Link>
 
-              <ul className="subnav">
-                <li className="menu__backButton js-nav-list-back" >
+              <ul className="subnav" style={{fontSize:'18px'}}>
+                <li className="menu__backButton js-nav-list-back text-black" >
                   <Link to="#" className="text-reset">
                     <i className="icon-chevron-left text-13 mr-10" ></i> Home
                   </Link>
@@ -92,11 +92,11 @@ export default function Menu({ allClasses, headerPosition }) {
                 Quizzes <i className="icon-chevron-right text-13 ml-10"></i>
               </Link>
 
-              <div className="mega xl:d-none">
+              <div className="mega xl:d-none" style={{fontSize:'18px',width:'80vw'}}>
                 <div className="mega__menu">
                   <div className="row x-gap-40">
                     <div className="col">
-                      <h4 className="text-17 fw-500 mb-20">
+                      <h4 className="text-17 fw-500 mb-20 text-black">
                         Quiz List Layouts
                       </h4>
 
@@ -119,7 +119,7 @@ export default function Menu({ allClasses, headerPosition }) {
                     </div>
 
                     <div className="col">
-                      <h4 className="text-17 fw-500 mb-20">
+                      <h4 className="text-17 fw-500 mb-20 text-black">
                       Quiz Single Layouts
                       </h4>
 
@@ -142,7 +142,7 @@ export default function Menu({ allClasses, headerPosition }) {
                     </div>
 
                     <div className="col">
-                      <h4 className="text-17 fw-500 mb-20">About Quizzes</h4>
+                      <h4 className="text-17 fw-500 mb-20 text-black">About Quizzes</h4>
 
                       <ul className="mega__list">
                         {menuList[1].links[2].links.map((elm, i) => (
@@ -163,7 +163,7 @@ export default function Menu({ allClasses, headerPosition }) {
                     </div>
 
                     <div className="col">
-                      <h4 className="text-17 fw-500 mb-20">Popular Quizzes</h4>
+                      <h4 className="text-17 fw-500 mb-20 text-black">Popular Quizzes</h4>
 
                       <ul className="mega__list">
                         {menuList[1].links[3].links.map((elm, i) => (
@@ -184,7 +184,7 @@ export default function Menu({ allClasses, headerPosition }) {
                     </div>
                   </div>
 
-                  <div className="mega-banner bg-purple-1 ml-40">
+                  {/* <div className="mega-banner bg-purple-1 ml-40">
                     <div className="text-24 lh-15 text-white fw-700">
                       Join more than
                       <br />
@@ -197,7 +197,7 @@ export default function Menu({ allClasses, headerPosition }) {
                     >
                       Start Learning For Free
                     </Link>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </li>
@@ -235,7 +235,7 @@ export default function Menu({ allClasses, headerPosition }) {
               </ul> */}
             </li>
 
-            <li className="menu-item-has-children">
+            {/* <li className="menu-item-has-children">
               <Link
                 data-barba
                 to="#"
@@ -404,7 +404,7 @@ export default function Menu({ allClasses, headerPosition }) {
                     </li>
                   ))}
               </ul>
-            </li>
+            </li> */}
 
             <li>
               <Link
@@ -413,6 +413,7 @@ export default function Menu({ allClasses, headerPosition }) {
                 className={
                   pathname == "/contact-1" ? "activeMenu" : "inActiveMenuTwo"
                 }
+                style={{fontSize:'18px'}}
               >
                 Contact
               </Link>

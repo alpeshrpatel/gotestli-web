@@ -15728,7 +15728,13 @@ table.table td {
   background: white;
 }
 
-img{
+header-right__buttons .signUpButton :hover{
+ background-color: '#6440fb' !important;
+ color:white !important;
+}
+
+
+/* img{
   cursor:pointer !important;
   pointer-events: auto !important;
 }
@@ -15737,4 +15743,4 @@ img{
   overflow: hidden;
   cursor:pointer !important;
   pointer-events: auto !important;
-}
+} */
