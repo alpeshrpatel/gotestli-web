@@ -22,7 +22,7 @@ const SubmitQuizModal = ({
   const navigate = useNavigate();
 
   const user = auth.currentUser;
-  const userId = user.uid;
+ 
 
   let id = 0;
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));

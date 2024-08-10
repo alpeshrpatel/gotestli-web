@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import SubmitQuizModal from "../SubmitQuizModal/SubmitQuizModal";
+import { API } from "@/utils/AxiosInstance";
 
 const FinishExamModalPage = ({
+  
   questionSetId,
   totalQuestions,
   selectedOption,
@@ -13,8 +15,33 @@ const FinishExamModalPage = ({
   onCloseModal,
 }) => {
   const [viewReviewQuestions, setViewReviewQuestions] = useState(false);
+  const [reviewData, setReviewData] = useState([]);
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    async function getOptions() {
+      try {
+        const reviewQuestionsData = await Promise.all(
+          selectedOption.map(async (q) => {
+            const response = await API.get(`/options/${q.id}`);
+            const { data } = await API.get(`/api/question_master/${q.id}`);
+            return {
+              id: q.id,
+              question: data[0].question,
+              options: response.data,
+              status: q.status,
+              selectedOption: q.selectedOption,
+            };
+          })
+        );
+        setReviewData(reviewQuestionsData);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getOptions();
+  }, [selectedOption]);
+  console.log(reviewData);
   const onOpenModal = () => setOpen(true);
   const onCloseSubmitModal = () => setOpen(false);
 
@@ -55,15 +82,13 @@ const FinishExamModalPage = ({
     onOpenModal();
   };
 
-  console.log(selectedOption);
-  console.log(reviewQuestions);
   return (
     <div>
       {skippedQuestion > 0 && (
         <div className="card p-4">
           <h2>Do You Want to Skip All the {skippedQuestion} Questions ? </h2>
           <div className="d-flex justify-content-evenly items-center mt-4 ">
-     <button className="btn btn-success " onClick={onOpenModal}>
+            <button className="btn btn-success " onClick={onOpenModal}>
               Yes
             </button>
 
@@ -73,21 +98,25 @@ const FinishExamModalPage = ({
           </div>
         </div>
       )}
-      <div
-        className={`d-flex justify-content-evenly items-center gap-4 mt-4 ${
-          viewReviewQuestions ? `d-none` : ``
-        }  `}
-      >
-        {reviewQuestions.length > 0 && (
-          <button
-            className="btn btn-primary p-2"
-            onClick={handleReviewQuestions}
-          >
-            Review Questions
+      <div className={` ${viewReviewQuestions ? `d-none` : ``}  `}>
+        <div className="d-flex justify-content-evenly items-center gap-4 mt-4">
+          {reviewQuestions.length > 0 && (
+            <button
+              className="btn btn-primary p-2"
+              onClick={handleReviewQuestions}
+            >
+              Review Questions
+            </button>
+          )}
+          <button className="btn btn-secondary p-2" onClick={onCloseModal}>
+            Review All Questions
           </button>
-        )}
-        <button className="btn btn-secondary p-2" onClick={onCloseModal}>
-          Review All Questions
+        </div>
+        <button
+          className="btn btn-success px-3 py-2 w-auto text-18 mt-4 ml-90  "
+          onClick={handleQuizSubmit}
+        >
+          Submit
         </button>
       </div>
       <Modal open={open} onClose={onCloseSubmitModal} center>
@@ -108,43 +137,48 @@ const FinishExamModalPage = ({
             <>
               <h3>Review Questions</h3>
               <ul className="list-group">
-                {reviewQuestions.map((reviewQuestion, index) => (
-                  <div className="card-body" key={index}>
-                    <li
-                      key={index}
-                      className="list-group-item text-18 text-black "
-                    >
-                      {reviewQuestion.question}
-                    </li>
-                    <ul className="list-group list-group-flush mt-3 mb-4">
-                      {reviewQuestion.option.map((option, index) => (
-                        <li
-                          key={index}
-                          className="list-group-item border-1 border-secondary-subtle rounded mb-2 "
-                          onClick={() =>
-                            handleOptionClick(
-                              reviewQuestion.id,
-                              reviewQuestion.question,
-                              option.options
-                            )
-                          }
-                          style={{
-                            backgroundColor: selectedOption.some(
-                              (selected) =>
-                                selected.id === reviewQuestion.id &&
-                                selected.selectedOption === option.options
-                            )
-                              ? "rgb(247, 191, 234)"
-                              : "",
-                            cursor: "pointer",
-                          }}
-                        >
-                          {option.options}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                {reviewData
+                  .filter(
+                    (reviewQuestion) =>
+                      reviewQuestion.status === 2 || reviewQuestion.status === 3
+                  )
+                  .map((reviewQuestion, index) => (
+                    <div className="card-body" key={reviewQuestion.id}>
+                      <li
+                        key={reviewQuestion.id}
+                        className="list-group-item text-18 text-black "
+                      >
+                        {reviewQuestion.question}
+                      </li>
+                      <ul className="list-group list-group-flush mt-3 mb-4">
+                        {reviewQuestion.options.map((option, index) => (
+                          <li
+                            key={index}
+                            className="list-group-item border-1 border-secondary-subtle rounded mb-2 "
+                            onClick={() =>
+                              handleOptionClick(
+                                reviewQuestion.id,
+                                reviewQuestion.question,
+                                option.options
+                              )
+                            }
+                            style={{
+                              backgroundColor: selectedOption.some(
+                                (selected) =>
+                                  selected.id === reviewQuestion.id &&
+                                  selected.selectedOption === option.options
+                              )
+                                ? "rgb(247, 191, 234)"
+                                : "",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {option.options}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
               </ul>
             </>
           ) : (
