@@ -51,7 +51,7 @@ app.get("/question_master", async (req, res) => {
   }
 });
 
-async function getQuestion(questionId){
+async function getQuestion(questionId) {
   try {
     const [rows] = await connection.execute(
       "SELECT question  FROM question_master WHERE id = ?",
@@ -65,11 +65,11 @@ async function getQuestion(questionId){
   }
 }
 
-app.get('/api/question_master/:questionId',async(req,res)=>{
+app.get("/api/question_master/:questionId", async (req, res) => {
   try {
     // //const connection = await mysql.createConnection(dbConfig);
     // connection = await connection.getConnection();
-    
+
     const questionId = req.params.questionId;
     const result = await getQuestion(questionId);
     res.json(result);
@@ -77,7 +77,7 @@ app.get('/api/question_master/:questionId',async(req,res)=>{
     console.error(err);
     res.status(500).send("Internal Server Error");
   }
-})
+});
 
 app.get("/all_question_options", async (req, res) => {
   try {
@@ -221,6 +221,92 @@ app.post("/api/start/test/result", async (req, res) => {
   }
 });
 
+/// submiting quiz on test_result
+app.put("/api/put/testresult", async (req, res) => {
+  const {
+    userResultId,
+    questionSetId,
+    totalQuestions,
+    totalAnswered,
+    skippedQuestion,
+    totalReviewed,
+    marks,
+    percentage
+  } = req.body;
+
+  const query = `UPDATE user_test_result SET total_answered = ? , total_not_answered = ?, total_reviewed = ? , percentage = ?, marks_obtained = ?, status = 1 WHERE id = ?`
+  try {
+
+    const [results] = await connection.query(query, [
+      totalAnswered,
+      skippedQuestion,
+      totalReviewed,
+      percentage,
+      marks,
+      userResultId,
+      
+    ]);
+    console.log(results);
+    res.json({
+      msg: "Selected option inserted successfully",
+      success: true,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "Server error" });
+  }
+
+});
+
+/// getting data to calculate result
+async function getPassCriteria(questionSetId){
+  try {
+    const [rows] = await connection.execute(
+      "select totalmarks, pass_percentage from question_set where id = ? ",
+      [questionSetId]
+    );
+    return rows;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+app.get('/api/get/questionset/passcriteria/:questionSetId',async (req,res)=>{
+  try {
+    const questionSetId = req.params.questionSetId;
+    const result = await getPassCriteria(questionSetId);
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+})
+
+async function getAnswers(userResultId){
+  try {
+    const [rows] = await connection.execute(
+      "select answer, correct_answer from user_test_result_dtl where user_test_result_id = ?",
+      [userResultId]
+    );
+    return rows;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+app.get('/api/get/testresult/answers/:userResultId',async (req,res)=>{
+  try {
+    const userResultId = req.params.userResultId;
+    const result = await getAnswers(userResultId);
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+})
+
 async function getQuestionSetId(category_id) {
   try {
     const [rows] = await connection.execute(
@@ -320,7 +406,7 @@ async function getUserResultId(userId, questionSetId) {
 
 app.get("/api/get/userresultid/:userId/:questionSetId", async (req, res) => {
   const { userId, questionSetId } = req.params;
-  
+
   try {
     const results = await getUserResultId(userId, questionSetId);
     console.log(results);
@@ -363,15 +449,15 @@ app.put("/api/update/testresultdtl", async (req, res) => {
       msg: "Selected option inserted successfully",
       success: true,
     });
-  }catch (err) {
+  } catch (err) {
     console.error(err);
     res.status(500).json({ msg: "Server error" });
   }
 });
 
-/// getting selected options from test_result_dtl 
+/// getting selected options from test_result_dtl
 
-async function getUserResultAnswers(userResultId, length){
+async function getUserResultAnswers(userResultId, length) {
   try {
     const [rows] = await connection.query(
       "SELECT question_set_question_id, answer, status FROM user_test_result_dtl WHERE user_test_result_id = ?  ORDER BY id DESC LIMIT ?",
@@ -384,10 +470,12 @@ async function getUserResultAnswers(userResultId, length){
   }
 }
 
-app.get('/api/get/answers/:userResultId/:questionSetLength',async (req,res) =>{
-    const {userResultId, questionSetLength} = req.params;
+app.get(
+  "/api/get/answers/:userResultId/:questionSetLength",
+  async (req, res) => {
+    const { userResultId, questionSetLength } = req.params;
     const length = parseInt(questionSetLength);
-    
+
     try {
       const answers = await getUserResultAnswers(userResultId, length);
       res.json(answers);
@@ -395,8 +483,8 @@ app.get('/api/get/answers/:userResultId/:questionSetLength',async (req,res) =>{
       console.error(error);
       res.status(500).send("Internal Server Error");
     }
-
-})
+  }
+);
 
 //// getting status from test_result_dtl
 
@@ -413,11 +501,11 @@ async function getUserResultDtlStatus(userResultId, questionId) {
   }
 }
 
-app.get( 
+app.get(
   "/api/update/testresultdtl/status/:userResultId/:questionId",
   async (req, res) => {
     const { userResultId, questionId } = req.params;
-    console.log(userResultId,questionId)
+    console.log(userResultId, questionId);
     try {
       const options = await getUserResultDtlStatus(userResultId, questionId);
 

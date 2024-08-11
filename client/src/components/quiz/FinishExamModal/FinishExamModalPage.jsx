@@ -13,6 +13,7 @@ const FinishExamModalPage = ({
   setSelectedOption,
   reviewQuestions,
   onCloseModal,
+  userResultId
 }) => {
   const [viewReviewQuestions, setViewReviewQuestions] = useState(false);
   const [reviewData, setReviewData] = useState([]);
@@ -45,9 +46,19 @@ const FinishExamModalPage = ({
   const onOpenModal = () => setOpen(true);
   const onCloseSubmitModal = () => setOpen(false);
 
-  const totalAnswered = selectedOption.length;
-  const totalReviewed = reviewQuestions.length;
-  const skippedQuestion = totalQuestions - selectedOption.length;
+  const attempted = selectedOption.filter((q)=>( q.selectedOption !== null  ));
+  const reviewed = selectedOption.filter((q)=>( (q.status == 2 || q.status == 3)));
+  console.log(reviewed)
+  const skipped = selectedOption.filter((q)=> ( q.status === 0 ))
+  console.log(skipped)
+
+  const totalAnswered = attempted.length;
+  const totalReviewed = reviewed.length;
+  const skippedQuestion = skipped.length;
+
+  console.log("totalanswered"+totalAnswered)
+  console.log("totalReviewed"+totalReviewed)
+  console.log("skipped"+skippedQuestion)
 
   const handleReviewQuestions = () => {
     setViewReviewQuestions(true);
@@ -129,6 +140,7 @@ const FinishExamModalPage = ({
           totalReviewed={totalReviewed}
           skippedQuestion={skippedQuestion}
           reviewQuestions={reviewQuestions}
+          userResultId={userResultId}
         />
       </Modal>
       {viewReviewQuestions && (

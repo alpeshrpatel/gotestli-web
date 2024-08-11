@@ -112,8 +112,12 @@ const SingleChoice = ({
     }
   }
 
-  async function getUpdatedStatus(isReviewed) {
+  async function getUpdatedStatus(isReviewed,newstatus = 0) {
     console.log(isReviewed)
+    if(newstatus == 3){
+      setUpdatedStatus(3)
+      return 3;
+    }
     let newStatus;
     if (status === 0) {
       newStatus = isReviewed ? 2 : 1;
@@ -151,12 +155,16 @@ const SingleChoice = ({
         },
       ]);
     }
-    await testResultDtlSetData(option);
+
+   
+   await testResultDtlSetData(option);
+   console.log(selectedOption)
+   
   };
 
-  async function testResultDtlSetData(findSelectedOption,isReviewed = 0) {
+  async function testResultDtlSetData(findSelectedOption,isReviewed = 0,newstatus = 0) {
     try {
-      const status = await getUpdatedStatus(isReviewed);
+      const status = await getUpdatedStatus(isReviewed,newstatus);
       console.log(status);
       const res = await API.put("/api/update/testresultdtl", {
         userResultId,
@@ -202,7 +210,12 @@ const SingleChoice = ({
       ]);
     }
      const isReviewed = 1
-    const response = await testResultDtlSetData(findSelectedOption,isReviewed);
+     console.log("status"+status);
+    console.log("findselectedoption"+ findSelectedOption)
+    let newstatus;
+    findSelectedOption && ( newstatus = 3)
+    const response = await testResultDtlSetData(findSelectedOption,isReviewed,newstatus);
+    console.log(" updatedstatus :"+updatedStatus)
     if (response?.status == 200) {
       console.log("review");
       onNext();
@@ -214,7 +227,7 @@ const SingleChoice = ({
     // if (response?.status == 200) {
     //   onNext();
     // }
-    onNext();
+   onNext();
   };
 
   const handlePreviousClick = async () => {
@@ -231,7 +244,7 @@ const SingleChoice = ({
       onOpenModal();
     }
   };
-  
+  console.log(selectedOption)
   return (
     // linear-gradient(to bottom right, #a18cd1, #fbc2eb)
     <>
@@ -263,6 +276,7 @@ const SingleChoice = ({
                     setSelectedOption={setSelectedOption}
                     reviewQuestions={reviewQuestions}
                     onCloseModal={onCloseModal}
+                    userResultId={userResultId}
                   />
                 </Modal>
               </div>
