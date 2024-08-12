@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./ExamInstructions.css";
 import { useNavigate } from "react-router-dom";
 import { API } from "@/utils/AxiosInstance";
 
 const ExamInstructions = ({ id, time, questionSet }) => {
   const [startTestResultData, setStartTestResultData] = useState([]);
+  const [inProgressQuizId,setInProgressQuizId] = useState();
   const navigate = useNavigate();
   const userId = 99;
   const questionSetId = id;
@@ -17,6 +18,16 @@ const ExamInstructions = ({ id, time, questionSet }) => {
   let userResultId;
   
 
+  useEffect(() => {
+    async function getPendingQuiz (){
+      const {data} = await API.get(`/api/get/pendingquiz/testresultid/${questionSetId}/${userId}`)
+      setInProgressQuizId(data[0].id)
+    
+    }
+    getPendingQuiz();
+  }, [])
+  
+  console.log(inProgressQuizId)
   async function testResultDtlSetData(jsonData) {
     try {
       const res = await API.post("/api/test/resultdetailsubmit", { jsonData });
@@ -80,6 +91,13 @@ const ExamInstructions = ({ id, time, questionSet }) => {
     }
   
   };
+
+  const handleResumeQuiz = () => {
+    navigate("/quiz/questions", {
+      state: { userResultId:inProgressQuizId, questionSetId: id, questionSet: questionSet, time: time },
+    });
+  }
+
   return (
     <div className="exam-instructions-container">
       <h2>Exam Instructions</h2>
@@ -158,9 +176,17 @@ const ExamInstructions = ({ id, time, questionSet }) => {
           </tbody>
         </table>
       </div>
+      {
+        !inProgressQuizId ? (
       <button className="start-quiz-button" onClick={handleStartQuiz}>
-        Start quiz
+        Start Quiz
       </button>
+        ) : (
+          <button className=" button -sm px-24 py-20 -blue-3 text-white text-blue-3 text-14 mx-auto mt-4 " onClick={handleResumeQuiz}>
+      Resume Quiz
+      </button>
+        )
+      }
     </div>
   );
 };

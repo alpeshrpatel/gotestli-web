@@ -2,6 +2,7 @@ const express = require("express");
 const mysql = require("mysql2/promise");
 const cors = require("cors");
 const queries = require("./queries.js");
+const { default: axios } = require("axios");
 const port = 3000;
 
 const app = express();
@@ -182,6 +183,32 @@ app.get("/options/:questionId", async (req, res) => {
   }
 });
 
+//// getting testresultid of in-progress quiz
+
+async function getTestResultId(questionSetId,userId){
+  try {
+    const [rows] = await connection.execute(
+      "SELECT id FROM user_test_result WHERE question_set_id = ? AND user_id = ? AND status = 2 ORDER BY id DESC LIMIT 1 ",
+      [questionSetId,userId]
+    );
+    return rows;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+app.get('/api/get/pendingquiz/testresultid/:questionSetId/:userId',async(req,res)=>{
+   const {questionSetId,userId} = req.params;
+   try {
+    const result = await getTestResultId(questionSetId,userId);
+    res.json(result);
+   } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+   }
+})
+
 app.post("/api/start/test/result", async (req, res) => {
   const {
     userId,
@@ -194,7 +221,7 @@ app.post("/api/start/test/result", async (req, res) => {
   } = req.body;
 
   const query =
-    "INSERT INTO user_test_result(`org_id`, `user_id`, `question_set_id`, `total_question`, `total_answered`, `total_not_answered`, `total_reviewed`, `total_not_visited`, `percentage`, `marks_obtained`, `date`, `flag`, `created_by`, `created_date`, `modified_by`, `modified_date`,`status`) VALUES (1, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?, NULL, 17, ?, NULL, NULL, 0)";
+    "INSERT INTO user_test_result(`org_id`, `user_id`, `question_set_id`, `total_question`, `total_answered`, `total_not_answered`, `total_reviewed`, `total_not_visited`, `percentage`, `marks_obtained`, `date`, `flag`, `created_by`, `created_date`, `modified_by`, `modified_date`,`status`) VALUES (1, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?, NULL, 17, ?, NULL, NULL, 2)";
 
   const date = new Date().toISOString().slice(0, 10);
   const createdDate = new Date().toISOString().slice(0, 19).replace("T", " ");
@@ -231,12 +258,11 @@ app.put("/api/put/testresult", async (req, res) => {
     skippedQuestion,
     totalReviewed,
     marks,
-    percentage
+    percentage,
   } = req.body;
 
-  const query = `UPDATE user_test_result SET total_answered = ? , total_not_answered = ?, total_reviewed = ? , percentage = ?, marks_obtained = ?, status = 1 WHERE id = ?`
+  const query = `UPDATE user_test_result SET total_answered = ? , total_not_answered = ?, total_reviewed = ? , total_not_visited = 0 , percentage = ?, marks_obtained = ?, status = 1 WHERE id = ?`;
   try {
-
     const [results] = await connection.query(query, [
       totalAnswered,
       skippedQuestion,
@@ -244,7 +270,6 @@ app.put("/api/put/testresult", async (req, res) => {
       percentage,
       marks,
       userResultId,
-      
     ]);
     console.log(results);
     res.json({
@@ -255,11 +280,81 @@ app.put("/api/put/testresult", async (req, res) => {
     console.error(err);
     res.status(500).json({ msg: "Server error" });
   }
-
 });
 
-/// getting data to calculate result
-async function getPassCriteria(questionSetId){
+/// calculating result
+app.post("/api/post/result/calculate", async (req, res) => {
+  const {
+    questionSetId,
+    totalQuestions,
+    totalAnswered,
+    totalReviewed,
+    skippedQuestion,
+    reviewQuestions,
+    userResultId,
+  } = req.body;
+  try {
+    const passingCriteria = await getPassCriteria(questionSetId);
+    console.log(passingCriteria);
+    const answers = await getAnswers(userResultId);
+    console.log(answers);
+
+    let passingStatus;
+    let percentage;
+    let marks;
+    let count = 0;
+    console.log(passingCriteria[0]);
+    const totalmarks = passingCriteria[0]?.totalmarks;
+    const passPercentage = passingCriteria[0].pass_percentage;
+
+    if (passingCriteria.length > 0) {
+      const marksPerQuestion = totalmarks / totalQuestions;
+
+      answers.forEach((answer) => {
+        if (answer.answer == answer.correct_answer) {
+          count++;
+        }
+      });
+      marks = Math.round(marksPerQuestion * count);
+
+      percentage = Math.round((100 * marks) / totalmarks);
+
+      if (percentage < passPercentage) {
+        passingStatus = "Fail";
+      } else {
+        passingStatus = "Pass";
+      }
+    }
+
+    const result = await axios.put("http://localhost:3000/api/put/testresult", {
+      userResultId,
+      questionSetId,
+      totalQuestions,
+      totalAnswered,
+      skippedQuestion,
+      totalReviewed,
+      marks,
+      percentage,
+    });
+    
+    res.json({
+      msg: "option inserted successfully",
+      success: true,
+      data: {
+        correct: count,
+        wrong: totalAnswered - count,
+        marks:marks,
+        percentage:percentage,
+        passPercentage:passPercentage
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+async function getPassCriteria(questionSetId) {
   try {
     const [rows] = await connection.execute(
       "select totalmarks, pass_percentage from question_set where id = ? ",
@@ -272,18 +367,21 @@ async function getPassCriteria(questionSetId){
   }
 }
 
-app.get('/api/get/questionset/passcriteria/:questionSetId',async (req,res)=>{
-  try {
-    const questionSetId = req.params.questionSetId;
-    const result = await getPassCriteria(questionSetId);
-    res.json(result);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-  }
-})
+// app.get(
+//   "/api/get/questionset/passcriteria/:questionSetId",
+//   async (req, res) => {
+//     try {
+//       const questionSetId = req.params.questionSetId;
+//       const result = await getPassCriteria(questionSetId);
+//       res.json(result);
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).send("Internal Server Error");
+//     }
+//   }
+// );
 
-async function getAnswers(userResultId){
+async function getAnswers(userResultId) {
   try {
     const [rows] = await connection.execute(
       "select answer, correct_answer from user_test_result_dtl where user_test_result_id = ?",
@@ -296,16 +394,16 @@ async function getAnswers(userResultId){
   }
 }
 
-app.get('/api/get/testresult/answers/:userResultId',async (req,res)=>{
-  try {
-    const userResultId = req.params.userResultId;
-    const result = await getAnswers(userResultId);
-    res.json(result);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-  }
-})
+// app.get("/api/get/testresult/answers/:userResultId", async (req, res) => {
+//   try {
+//     const userResultId = req.params.userResultId;
+//     const result = await getAnswers(userResultId);
+//     res.json(result);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
 
 async function getQuestionSetId(category_id) {
   try {
