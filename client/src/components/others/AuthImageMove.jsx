@@ -39,7 +39,10 @@ export default function AuthImageMove() {
   return (
     <div className="form-page__img bg-dark-1">
       <div className="form-page-composition">
-        <div className="-bg">
+      <div className="masthead__bg " style={{height:'100%'}}>
+          <img src={"/assets/img/home-1/hero/bg.png"} style={{objectFit:'cover'}} alt="image" />
+        </div>
+        {/* <div className="-bg">
           <img
             style={{ width: "100%" }}
             data-move="30"
@@ -80,7 +83,7 @@ export default function AuthImageMove() {
             src="/assets/img/home-9/hero/3.png"
             alt="icon"
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

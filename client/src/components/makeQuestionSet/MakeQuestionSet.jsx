@@ -9,6 +9,7 @@ import { PaginationItem } from "@mui/material";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import QuestionSetDetailForm from "./QuestionSetDetailForm";
+import Header from "../layout/headers/Header";
 
 const MakeQuestionSet = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -143,7 +144,9 @@ const MakeQuestionSet = () => {
   };
 
   return (
-    <div className="container">
+    <>
+    <Header />
+    <div className="container " style={{marginTop:'110px'}}>
       <h1>Make Question Set</h1>
       <input
         type="text"
@@ -165,8 +168,9 @@ const MakeQuestionSet = () => {
           {filteredQuestions
             .slice(indexOfFirstRecord, indexOfLastRecord)
             .map((question, index) => (
-              <div key={index} className="checkboxItem">
+              <div key={index} className="checkboxItem gap-2 text-black ">
                 <input
+                  className="p-2 border-0"
                   type="checkbox"
                   checked={selectedQuestions.includes(question)}
                   onChange={() => handleCheckboxChange(question)}
@@ -203,6 +207,7 @@ const MakeQuestionSet = () => {
 
       </div>
     </div>
+    </>
   );
 };
 

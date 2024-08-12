@@ -26,57 +26,53 @@ export default function CourceCard({ data, index }) {
     }
     getQuestionsSet();
   }, []);
-  console.log(open);
   return (
-    <div className="col-lg-3 col-md-6">
-          <Modal open={open} onClose={onCloseModal} center>
-            <ExamInstructions
-              id={data.id}
-              time={data.time_duration}
-              questionSet={questionSet}
-            />
-          </Modal>
-      <div>
-        <div className="coursesCard -type-1">
-          <div className="relative">
-            <div
-              className="coursesCard__image cardImage overflow-hidden rounded-8  "
-            >
-              {/* <button  className="coursesCard__image cardImage overflow-hidden rounded-8  " style={{cursor:'pointer'}} onClick={onOpenModal}> */}
-              <img
-                className="w-1/1"
-                style={{ height: "200px", width: "400px" }}
-                src={data.image}
-                onClick={onOpenModal}
-                alt="image"
-              />
-              {/* </button> */}
-              <div className="coursesCard__image_overlay rounded-8"></div>
-            </div>
-            {data.popular && (
-              <div className="d-flex justify-between py-10 px-10 absolute-full-center z-3">
-                <div>
-                  <div className="px-15 rounded-200 bg-purple-1">
-                    <span className="text-11 lh-1 uppercase fw-500 text-white">
-                      Popular
-                    </span>
-                  </div>
-                </div>
+    <>
+      <Modal open={open} onClose={onCloseModal} center>
+        <ExamInstructions
+          id={data.id}
+          time={data.time_duration}
+          questionSet={questionSet}
+        />
+      </Modal>
+      <div className="col-lg-3 col-md-6 pointer" onClick={onOpenModal}>
+        <div>
+          <div className="coursesCard -type-1">
+            <div className="relative">
+              <div className="coursesCard__image cardImage overflow-hidden rounded-8  ">
+                <img
+                  className="w-1/1"
+                  style={{ height: "200px", width: "400px" }}
+                  src={data.image}
+                  alt="image"
+                />
 
-                <div>
-                  <div className="px-15 rounded-200 bg-green-1">
-                    <span className="text-11 lh-1 uppercase fw-500 text-dark-1">
-                      Best sellers
-                    </span>
-                  </div>
-                </div>
+                <div className="coursesCard__image_overlay rounded-8"></div>
               </div>
-            )}
-            <div className="d-flex justify-between py-10 px-10 absolute-full-center z-3"></div>
-          </div>
+              {data.popular && (
+                <div className="d-flex justify-between py-10 px-10 absolute-full-center z-3">
+                  <div>
+                    <div className="px-15 rounded-200 bg-purple-1">
+                      <span className="text-11 lh-1 uppercase fw-500 text-white">
+                        Popular
+                      </span>
+                    </div>
+                  </div>
 
-          <div className="h-100 pt-15">
-            {/* <div className="d-flex items-center">
+                  <div>
+                    <div className="px-15 rounded-200 bg-green-1">
+                      <span className="text-11 lh-1 uppercase fw-500 text-dark-1">
+                        Best sellers
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div className="d-flex justify-between py-10 px-10 absolute-full-center z-3"></div>
+            </div>
+
+            <div className="h-100 pt-15">
+              {/* <div className="d-flex items-center">
               <div className="text-14 lh-1 text-yellow-1 mr-10">
                 {data.rating}
               </div>
@@ -88,63 +84,64 @@ export default function CourceCard({ data, index }) {
               <div className="text-13 lh-1 ml-10">({data.ratingCount})</div>
             </div> */}
 
-            <div className="text-17 lh-15 fw-500 text-dark-1 mt-10">
-              <button onClick={onOpenModal}>{data.title}</button>
-            </div>
+              <div className="text-17 lh-15 fw-500 text-dark-1 mt-10">
+                <button onClick={onOpenModal}>{data.title}</button>
+              </div>
 
-            <div className="d-flex x-gap-10 items-center pt-10">
-              <div className="d-flex items-center">
-                <div className="mr-8">
-                  <img src="assets/img/coursesCards/icons/1.svg" alt="icon" />
+              <div className="d-flex x-gap-10 items-center pt-10">
+                <div className="d-flex items-center">
+                  <div className="mr-8">
+                    <img src="assets/img/coursesCards/icons/1.svg" alt="icon" />
+                  </div>
+                  <div className="text-14 lh-1">
+                    {data.no_of_question} Questions
+                  </div>
                 </div>
-                <div className="text-14 lh-1">
-                  {data.no_of_question} Questions
+
+                <div className="d-flex items-center">
+                  <div className="mr-8">
+                    <img src="assets/img/coursesCards/icons/2.svg" alt="icon" />
+                  </div>
+                  <div className="text-14 lh-1">{`${data.time_duration}m`}</div>
+                </div>
+
+                <div className="d-flex items-center">
+                  <div className="mr-8">
+                    <img src="assets/img/coursesCards/icons/3.svg" alt="icon" />
+                  </div>
+                  <div className="text-14 lh-1">{data.level}</div>
                 </div>
               </div>
 
-              <div className="d-flex items-center">
-                <div className="mr-8">
-                  <img src="assets/img/coursesCards/icons/2.svg" alt="icon" />
+              <div className="coursesCard-footer">
+                <div className="coursesCard-footer__author">
+                  <span className="text-sm text-black-50">Created by</span>
+                  <div>{data.author}</div>
                 </div>
-                <div className="text-14 lh-1">{`${data.time_duration}m`}</div>
-              </div>
 
-              <div className="d-flex items-center">
-                <div className="mr-8">
-                  <img src="assets/img/coursesCards/icons/3.svg" alt="icon" />
+                <div className="coursesCard-footer__price">
+                  {data.paid ? (
+                    <>
+                      <div>${data.originalPrice}</div>
+                      <div>${data.discountedPrice}</div>
+                    </>
+                  ) : (
+                    <>
+                      <div></div>
+                      <div>Free</div>
+                    </>
+                  )}
                 </div>
-                <div className="text-14 lh-1">{data.level}</div>
               </div>
-            </div>
-
-            <div className="coursesCard-footer">
-              <div className="coursesCard-footer__author">
-                <span className="text-sm text-black-50">Created by</span>
-                <div>{data.author}</div>
+              <div>
+                <p className="text-muted mt-4 d-flex align-items-center  text-justify">
+                  {data.short_desc}
+                </p>
               </div>
-
-              <div className="coursesCard-footer__price">
-                {data.paid ? (
-                  <>
-                    <div>${data.originalPrice}</div>
-                    <div>${data.discountedPrice}</div>
-                  </>
-                ) : (
-                  <>
-                    <div></div>
-                    <div>Free</div>
-                  </>
-                )}
-              </div>
-            </div>
-            <div>
-              <p className="text-muted mt-4 d-flex align-items-center  text-justify">
-                {data.short_desc}
-              </p>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

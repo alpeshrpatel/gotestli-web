@@ -11,7 +11,7 @@ import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import { API } from "@/utils/AxiosInstance";
 import { NULL } from "sass";
-
+import QuestionSet from "./QuestionSet";
 
 const SingleChoice = ({
   questionSetId,
@@ -26,24 +26,114 @@ const SingleChoice = ({
   const [selectedOption, setSelectedOption] = useState([]);
   const [reviewQuestions, setReviewQuestion] = useState([]);
   const [open, setOpen] = useState(false);
+  const [userResultId, setUserResultId] = useState();
+  const [answerPersist, setAnswerPersist] = useState([]);
+  const [status, setStatus] = useState(0);
+  const [updatedStatus, setUpdatedStatus] = useState(0);
 
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
+  const userId = 99;
+  const questionSetLength = totalQuestions;
+
+ 
 
   useEffect(() => {
     async function getOptions() {
       try {
         const response = await API.get(`/options/${questionId}`);
-        console.log(response);
         setOptions(response.data);
       } catch (error) {
         console.log(error);
       }
     }
     getOptions();
-  }, [questionId]);
+    async function getUserResultId() {
+      try {
+        const { data } = await API.get(
+          `/api/get/userresultid/${userId}/${questionSetId}`
+        );
 
-  const handleOptionClick = (option) => {
+        setUserResultId(data[0]?.id);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getUserResultId();
+  }, [questionId, questionSetId]);
+
+  useEffect(() => {
+    async function getAnswers() {
+      
+      try {
+        const { data } = await API.get(
+          `/api/get/answers/${userResultId}/${questionSetLength}`
+        );
+        
+        const persistedAnswers = data.map((q) => {
+          return {
+            id: q.question_set_question_id,
+            selectedOption: q.answer,
+            status: q.status,
+          };
+        });
+
+        setSelectedOption(persistedAnswers);
+        setReviewQuestion(persistedAnswers);
+        setAnswerPersist(persistedAnswers);
+
+        await getStatus();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getAnswers();
+  }, [userResultId, questionId]);
+
+ 
+  const findSelectedOption =
+    selectedOption?.find((question) => question.id === questionId)
+      ?.selectedOption || null;
+
+  async function getStatus() {
+    try {
+      const { data } = await API.get(
+        `/api/update/testresultdtl/status/${userResultId}/${questionId}`
+      );
+      const reviewStatus = data[0]?.status;
+
+      setStatus(reviewStatus);
+      
+
+      console.log(status);
+      console.log(data);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async function getUpdatedStatus(isReviewed,newstatus = 0) {
+    console.log(isReviewed)
+    if(newstatus == 3){
+      setUpdatedStatus(3)
+      return 3;
+    }
+    let newStatus;
+    if (status === 0) {
+      newStatus = isReviewed ? 2 : 1;
+    } else if (status === 1) {
+      newStatus = isReviewed ? 3 : 1;
+    } else if (findSelectedOption) {
+      newStatus = isReviewed ? 3 : 1;
+    } else {
+      newStatus = isReviewed ? 2 : 0;
+    }
+    setUpdatedStatus(newStatus)
+    return newStatus;
+     
+  }
+
+  const handleOptionClick = async (option) => {
     const findQuestion = selectedOption.find(
       (question) => questionId === question.id
     );
@@ -52,7 +142,7 @@ const SingleChoice = ({
       setSelectedOption(
         selectedOption.map((question) =>
           question.id === questionId
-            ? { ...question, selectedOption: option }
+            ? { ...question, selectedOption: option, status:1 }
             : question
         )
       );
@@ -61,196 +151,212 @@ const SingleChoice = ({
         ...selectedOption,
         {
           id: questionId,
-          question: question,
           selectedOption: option,
         },
       ]);
     }
+
+   
+   await testResultDtlSetData(option);
+   console.log(selectedOption)
+   
   };
 
-  console.log(selectedOption);
-  const findSelectedOption =
-    selectedOption?.find((question) => question.id === questionId)
-      ?.selectedOption || null;
-
-  const isReviewed = reviewQuestions.some((q) => q.id === questionId);
-
-  let status = findSelectedOption ? (isReviewed ? 3 : 1) : isReviewed ? 2 : 0;
-  const userId = 123;
-
-  
-  
-  async function testResultDtlSetData() {
+  async function testResultDtlSetData(findSelectedOption,isReviewed = 0,newstatus = 0) {
     try {
-      const { data } = await API.get(
-        `/api/test-result-dtl/status/${userId}/${questionId}`
-      );
-      const reviewStatus = data[0]?.status;
-      if (reviewStatus) {
-        status = reviewStatus === 0 ? 2 : reviewStatus === 1 ? 3 : reviewStatus;
-      } else {
-        status = status === 0 ? 2 : status === 1 ? 3 : status;
-      }
+      const status = await getUpdatedStatus(isReviewed,newstatus);
       console.log(status);
-      console.log(data[0]?.status);
-
-      const [answerData, idData] = await Promise.all([
-        API.get(`/api/correctanswer/${questionId}`),
-        API.get("/lastId/test-result-dtl"),
-      ]);
-
-      const correctAnswer = answerData.data[0]?.correctAnswer || null;
-      console.log(correctAnswer);
-      const id = idData.data[0].id + 1;
-
-      const res = await API.post("/api/test-result-dtl-submit", {
-        id,
-        userId,
+      const res = await API.put("/api/update/testresultdtl", {
+        userResultId,
         questionId,
         findSelectedOption,
-        correctAnswer,
         status,
       });
+      
+      return res;
     } catch (error) {
       console.log(error);
+      throw error;
     }
   }
-
 
   const handleReviewClick = async () => {
     const findQuestion = reviewQuestions.find(
       (question) => questionId === question.id
     );
-    if (!findQuestion) {
+
+    if (findQuestion) {
+      setReviewQuestion(
+        reviewQuestions.map((question) =>
+          question.id === questionId
+            ? {
+                ...question,
+                selectedOption: findSelectedOption,
+                status: status,
+                option: options,
+              }
+            : question
+        )
+      );
+    } else {
       setReviewQuestion([
         ...reviewQuestions,
         {
           id: questionId,
-          question: question,
+          selectedOption: findSelectedOption,
+          status: status,
           option: options,
         },
       ]);
-       await testResultDtlSetData();
-
+    }
+     const isReviewed = 1
+     console.log("status"+status);
+    console.log("findselectedoption"+ findSelectedOption)
+    let newstatus;
+    findSelectedOption && ( newstatus = 3)
+    const response = await testResultDtlSetData(findSelectedOption,isReviewed,newstatus);
+    console.log(" updatedstatus :"+updatedStatus)
+    if (response?.status == 200) {
+      console.log("review");
       onNext();
-      
+    }
   };
-   const handleNextClick = async () => {
-    await testResultDtlSetData();
-    onNext();
+
+  const handleNextClick = async () => {
+    // const response = await testResultDtlSetData();
+    // if (response?.status == 200) {
+    //   onNext();
+    // }
+   onNext();
+  };
+
+  const handlePreviousClick = async () => {
+    // const response = await testResultDtlSetData();
+    // if (response?.status == 200) {
+    //   onPrevious();
+    // }
+    onPrevious();
   };
 
   const onFinishQuiz = async () => {
-     if(index === totalQuestions){
-      await testResultDtlSetData();
-      
-     }
-     onOpenModal();
-  }
-
+    const response = await testResultDtlSetData(findSelectedOption);
+    if (response?.status == 200) {
+      onOpenModal();
+    }
+  };
+  console.log(selectedOption)
   return (
     // linear-gradient(to bottom right, #a18cd1, #fbc2eb)
-    <div
-      className="d-flex justify-content-center align-items-center vh-100"
-      style={{ background: "rgb(26,6,79)" }}
-    >
+    <>
       <div
-        className="card shadow p-4"
-        style={{ width: "60vw", borderRadius: "15px" }}
+        className="d-flex justify-content-center align-items-center vh-100"
+        style={{ background: "rgb(26,6,79)" }}
       >
-        <div className="card-body">
-          <div className="d-flex justify-content-between items-center">
-            <h4 className="card-title text-center">
-              Question {index} of {totalQuestions}{" "}
-            </h4>
-            <div className="card-title ">
-              <button
-                className="btn btn-success px-3 py-2 w-auto text-18"
-                 onClick={onFinishQuiz}
-
-              >
-                Finish
-              </button>
-              <Modal open={open} onClose={onCloseModal} center>
-                <FinishExamModalPage
-                  questionSetId={questionSetId}
-                  totalQuestions={totalQuestions}
-                  selectedOption={selectedOption}
-                  setSelectedOption={setSelectedOption}
-                  reviewQuestions={reviewQuestions}
-                  onCloseModal={onCloseModal}
-                />
-              </Modal>
+        <div
+          className="card shadow p-4 "
+          style={{ width: "60vw", borderRadius: "15px" }}
+        >
+          <div className="card-body ">
+            <div className="d-flex justify-content-between items-center">
+              <h4 className="card-title text-center">
+                Question {index} of {totalQuestions}{" "}
+              </h4>
+              <div className="card-title ">
+                <button
+                  className="btn btn-success px-3 py-2 w-auto text-18"
+                  onClick={onFinishQuiz}
+                >
+                  Finish
+                </button>
+                <Modal open={open} onClose={onCloseModal} center>
+                  <FinishExamModalPage
+                    questionSetId={questionSetId}
+                    totalQuestions={totalQuestions}
+                    selectedOption={selectedOption}
+                    setSelectedOption={setSelectedOption}
+                    reviewQuestions={reviewQuestions}
+                    onCloseModal={onCloseModal}
+                    userResultId={userResultId}
+                  />
+                </Modal>
+              </div>
             </div>
-          </div>
-          <hr />
-          <h5 className="card-text text-center">{question}</h5>
-          <ul className="list-group list-group-flush mt-3 mb-4">
-            {options?.map((option, id) => (
-              <li
-                key={id}
-                className={`list-group-item border-1 border-secondary-subtle rounded mb-2 `}
-                onClick={() => handleOptionClick(option.options)}
-                style={{
-                  backgroundColor: selectedOption.some(
-                    (selected) =>
-                      selected.id === questionId &&
-                      selected.selectedOption === option.options
-                  )
-                    ? "rgb(247, 191, 234)"
-                    : "",
-                  cursor: "pointer",
-                }}
-              >
-                {option.options}
-              </li>
-            ))}
-          </ul>
-          <div className="d-flex justify-content-around">
-            <div className="d-flex justify-content-center gap-3">
-              {index > 1 && (
+            <hr />
+            <h5 className="card-text text-center">{question}</h5>
+            <ul className="list-group list-group-flush mt-3 mb-4">
+              {options?.map((option, id) => (
+                <li
+                  key={id}
+                  className={`list-group-item border-1 border-secondary-subtle rounded mb-2 `}
+                  onClick={() => handleOptionClick(option.options)}
+                  style={{
+                    backgroundColor: selectedOption.some(
+                      (selected) =>
+                        selected.id === questionId &&
+                        selected.selectedOption === option.options
+                    )
+                      ? "rgb(247, 191, 234)"
+                      : "",
+                    cursor: "pointer",
+                  }}
+                >
+                  {option.options}
+                </li>
+              ))}
+            </ul>
+            <div className="d-flex justify-content-around">
+              <div className="d-flex justify-content-center align-align-items-center gap-5">
+                {index > 1 && (
+                  <button
+                    className="btn btn-primary w-auto p-2"
+                    style={{
+                      backgroundColor: "#6a1b9a",
+                      borderColor: "#6a1b9a",
+                    }}
+                    onClick={handlePreviousClick}
+                  >
+                    <FontAwesomeIcon
+                      icon={faAngleDoubleLeft}
+                      className="fa-lg mr-5"
+                    />
+                    Previous{" "}
+                  </button>
+                )}
+                {index !== totalQuestions && (
+                  <button
+                    className="btn btn-primary w-auto p-2"
+                    style={{
+                      backgroundColor: "#6a1b9a",
+                      borderColor: "#6a1b9a",
+                    }}
+                    onClick={handleNextClick}
+                  >
+                    Next{" "}
+                    <FontAwesomeIcon
+                      icon={faAngleDoubleRight}
+                      className="fa-lg ml-5"
+                    />
+                  </button>
+                )}
+              </div>
+
+              <div>
                 <button
                   className="btn btn-primary w-auto p-2"
-                  style={{ backgroundColor: "#6a1b9a", borderColor: "#6a1b9a" }}
-                  onClick={onPrevious}
+                  style={{
+                    backgroundColor: "#6a1b9a",
+                    borderColor: "#6a1b9a",
+                  }}
+                  onClick={handleReviewClick}
                 >
-                  <FontAwesomeIcon
-                    icon={faAngleDoubleLeft}
-                    className="fa-lg mr-5"
-                  />
-                  Previous{" "}
+                  Review
                 </button>
-              )}
-              {index !== totalQuestions && (
-                <button
-                  className="btn btn-primary w-auto p-2"
-                  style={{ backgroundColor: "#6a1b9a", borderColor: "#6a1b9a" }}
-                  onClick={handleNextClick}
-                >
-                  Next{" "}
-                  <FontAwesomeIcon
-                    icon={faAngleDoubleRight}
-                    className="fa-lg ml-5"
-                  />
-                </button>
-              )}
-            </div>
-
-            <div>
-              <button
-                className="btn btn-primary w-auto p-2"
-                style={{ backgroundColor: "#6a1b9a", borderColor: "#6a1b9a" }}
-                onClick={handleReviewClick}
-              >
-                Review
-              </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
-}
-}
+};
 export default SingleChoice;
-
