@@ -172,7 +172,7 @@ const ExamInstructions = ({ id, time, questionSet }) => {
                       <td>{id+1}</td>
                       <td>{(attempt.created_date).slice(0, 19).replace("T", " ")}</td>
                       <td>
-                        {attempt.status == 1  ? "Completed" : "In Progress"}
+                        {attempt.status == 1 || attempt.status == 0 } ? "Completed" : "In Progress"}
                       </td>
                       <td>{attempt.marks_obtained}</td>
                       <td>{attempt.percentage} %</td>
