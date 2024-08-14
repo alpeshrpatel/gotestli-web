@@ -178,6 +178,7 @@ const SingleChoice = ({
    console.log(selectedOption)
    
   };
+  console.log(userResultId)
 
   async function testResultDtlSetData(findSelectedOption,isReviewed = 0,newstatus = 0) {
     try {

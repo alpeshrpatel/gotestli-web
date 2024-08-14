@@ -136,7 +136,7 @@ app.get("/api/get/last-question-set-id", async (req, res) => {
 async function getQuestionSets(id) {
   try {
     const [rows] = await connection.execute(
-      "SELECT qsq.question_id, qm.question from testli.question_set_questions qsq, question_set qs , question_master qm where qs.id = ? and qsq.question_set_id = qs.id  and qm.id = qsq.question_id",
+      "SELECT qsq.question_id, qm.question, qs.pass_percentage from testli.question_set_questions qsq, question_set qs , question_master qm where qs.id = ? and qsq.question_set_id = qs.id  and qm.id = qsq.question_id",
       [id]
     );
 
@@ -209,6 +209,31 @@ app.get('/api/get/pendingquiz/testresultid/:questionSetId/:userId',async(req,res
    }
 })
 
+//// getting history og previous attempts
+async function getHistory(questionSetId,userId){
+  try {
+    const [rows] = await connection.execute(
+      "SELECT id,percentage,marks_obtained,created_date,status FROM user_test_result WHERE question_set_id = ? AND user_id = ?  ORDER BY id DESC LIMIT 4 ",
+      [questionSetId,userId]
+    );
+    return rows;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+app.get('/api/get/attempts/history/:questionSetId/:userId', async(req,res)=>{
+  const {questionSetId,userId} = req.params;
+   try {
+    const result = await getHistory(questionSetId,userId);
+    res.json(result);
+   } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+   }
+})
+
 app.post("/api/start/test/result", async (req, res) => {
   const {
     userId,
@@ -261,7 +286,9 @@ app.put("/api/put/testresult", async (req, res) => {
     percentage,
   } = req.body;
 
-  const query = `UPDATE user_test_result SET total_answered = ? , total_not_answered = ?, total_reviewed = ? , total_not_visited = 0 , percentage = ?, marks_obtained = ?, status = 1 WHERE id = ?`;
+  const modifiedDate = new Date().toISOString().slice(0, 19).replace("T", " ");
+
+  const query = `UPDATE user_test_result SET total_answered = ? , total_not_answered = ?, total_reviewed = ? , total_not_visited = 0 , percentage = ?, marks_obtained = ?, modified date = ?, status = 1 WHERE id = ?`;
   try {
     const [results] = await connection.query(query, [
       totalAnswered,
@@ -269,6 +296,7 @@ app.put("/api/put/testresult", async (req, res) => {
       totalReviewed,
       percentage,
       marks,
+      modifiedDate,
       userResultId,
     ]);
     console.log(results);

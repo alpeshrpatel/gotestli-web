@@ -113,8 +113,8 @@ export default function Header() {
                       </h5> */}
                       <div className="mt-3">
                         <div
-                          className={`header-menu js-mobile-menu-toggle`}
-                          style={{ left: "82.5vw", fontSize:'18px' }}
+                          className={`header-menu js-mobile-menu-toggle left-alignment`}
+                          style={{ fontSize:'18px' }}
                         >
                           <div className="header-menu__content" >
                             <div className="menu js-navList" >
@@ -175,7 +175,7 @@ export default function Header() {
                           </div>
                         </div>
                       </div>
-                      <div className="d-none d-xl-block" style={{position:"absolute", right:0}} >
+                      <div className="d-none d-xl-flex " style={{position:"absolute", right:0}} >
                         <button
                           className="button -sm -white text-dark-1 "
                           onClick={handleSignOut}
