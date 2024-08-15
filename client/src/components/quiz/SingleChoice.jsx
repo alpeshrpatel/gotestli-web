@@ -83,7 +83,7 @@ const SingleChoice = ({
             status: q.status,
           };
         });
-
+        console.log(persistedAnswers)
         setSelectedOption(persistedAnswers);
         setReviewQuestion(persistedAnswers);
         setAnswerPersist(persistedAnswers);
@@ -96,7 +96,7 @@ const SingleChoice = ({
     getAnswers();
   }, [userResultId, questionId]);
 
- 
+ console.log(selectedOption)
   const findSelectedOption =
     selectedOption?.find((question) => question.id === questionId)
       ?.selectedOption || null;
@@ -178,7 +178,7 @@ const SingleChoice = ({
    console.log(selectedOption)
    
   };
-  console.log(userResultId)
+ 
 
   async function testResultDtlSetData(findSelectedOption,isReviewed = 0,newstatus = 0) {
     try {
@@ -295,6 +295,7 @@ const SingleChoice = ({
                     reviewQuestions={reviewQuestions}
                     onCloseModal={onCloseModal}
                     userResultId={userResultId}
+                    
                   />
                 </Modal>
               </div>

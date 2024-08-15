@@ -107,7 +107,7 @@ const ExamInstructions = ({ id, time, questionSet }) => {
       },
     });
   };
- console.log(questionSet[0].pass_percentage)
+ console.log(questionSet)
   return (
     <div className="exam-instructions-container">
       <h2>Exam Instructions</h2>
@@ -116,7 +116,7 @@ const ExamInstructions = ({ id, time, questionSet }) => {
           This exam comprises of {questionSet.length} questions and you have{" "}
           {time} minutes to complete the exam, including the review.
         </li>
-        <li>You need to score at least {questionSet[0].pass_percentage}% to pass the exam.</li>
+        <li>You need to score at least {questionSet[0]?.pass_percentage}% to pass the exam.</li>
         <li>
           The exam comprises of the following types of questions:
           <ol>
@@ -170,16 +170,21 @@ const ExamInstructions = ({ id, time, questionSet }) => {
                   <>
                     <tr key={id}>
                       <td>{id+1}</td>
-                      <td>{(attempt.created_date).slice(0, 19).replace("T", " ")}</td>
+                      {
+                        attempt.modified_date ? (
+                          <td>{(attempt.modified_date).slice(0, 19).replace("T", " ")}</td>
+
+                        ): (<td> --- </td>)
+                      }
                       <td>
-                        {attempt.status == 1 || attempt.status == 0 } ? "Completed" : "In Progress"}
+                        {(attempt.status == 1 || attempt.status == 0)  ? "Completed" : "In Progress"}
                       </td>
                       <td>{attempt.marks_obtained}</td>
                       <td>{attempt.percentage} %</td>
 
                       <td>Exam</td>
                       <td>
-                        {attempt.percentage >= questionSet[0].pass_percentage
+                        {attempt.percentage >= questionSet[0]?.pass_percentage
                           ? "Pass"
                           : "Fail"}
                       </td>

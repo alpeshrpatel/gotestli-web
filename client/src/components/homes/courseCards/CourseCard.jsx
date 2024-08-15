@@ -17,15 +17,19 @@ export default function CourceCard({ data, index }) {
 
   useEffect(() => {
     async function getQuestionsSet() {
+     console.log('jiii')
       try {
         const response = await API.get(`/question_sets/${data.id}`);
-        setQuestionsSet(response.data);
+        console.log(response)
+       setQuestionsSet(response.data);
       } catch (error) {
         console.log(error);
       }
     }
     getQuestionsSet();
-  }, []);
+  }, [data.id]);
+  console.log(questionSet)
+  console.log(data.id)
   return (
     <>
       <Modal open={open} onClose={onCloseModal} center>

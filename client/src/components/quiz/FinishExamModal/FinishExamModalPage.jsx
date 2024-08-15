@@ -6,14 +6,13 @@ import SubmitQuizModal from "../SubmitQuizModal/SubmitQuizModal";
 import { API } from "@/utils/AxiosInstance";
 
 const FinishExamModalPage = ({
-  
   questionSetId,
   totalQuestions,
   selectedOption,
   setSelectedOption,
   reviewQuestions,
   onCloseModal,
-  userResultId
+  userResultId,
 }) => {
   const [viewReviewQuestions, setViewReviewQuestions] = useState(false);
   const [reviewData, setReviewData] = useState([]);
@@ -46,25 +45,48 @@ const FinishExamModalPage = ({
   const onOpenModal = () => setOpen(true);
   const onCloseSubmitModal = () => setOpen(false);
 
-  const attempted = selectedOption.filter((q)=>( q.selectedOption !== null  ));
-  const reviewed = selectedOption.filter((q)=>( (q.status == 2 || q.status == 3)));
-  console.log(reviewed)
-  const skipped = selectedOption.filter((q)=> ( q.status === 0 ))
-  console.log(skipped)
+  const attempted = selectedOption.filter((q) => q.selectedOption !== null);
+  const reviewed = selectedOption.filter((q) => q.status == 2 || q.status == 3);
+  console.log(reviewed);
+  const skipped = selectedOption.filter((q) => q.status === 0);
+  console.log(skipped);
 
   const totalAnswered = attempted.length;
   const totalReviewed = reviewed.length;
   const skippedQuestion = skipped.length;
 
-  console.log("totalanswered"+totalAnswered)
-  console.log("totalReviewed"+totalReviewed)
-  console.log("skipped"+skippedQuestion)
+  console.log("totalanswered" + totalAnswered);
+  console.log("totalReviewed" + totalReviewed);
+  console.log("skipped" + skippedQuestion);
 
   const handleReviewQuestions = () => {
     setViewReviewQuestions(true);
   };
 
-  const handleOptionClick = (questionId, question, option) => {
+  async function testResultDtlSetData(
+    questionId,
+    findSelectedOption,
+    isReviewed,
+    newstatus
+  ) {
+    try {
+      const status = newstatus;
+
+      const res = await API.put("/api/update/testresultdtl", {
+        userResultId,
+        questionId,
+        findSelectedOption,
+        status,
+      });
+
+      return res;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  const handleOptionClick = async (questionId, question, option) => {
     const findQuestion = selectedOption.find(
       (question) => questionId === question.id
     );
@@ -87,12 +109,21 @@ const FinishExamModalPage = ({
         },
       ]);
     }
+    const isReviewed = 1;
+    const newstatus = 3;
+    const response = await testResultDtlSetData(
+      questionId,
+      option,
+      isReviewed,
+      newstatus
+    );
+    console.log(response);
   };
 
   const handleQuizSubmit = () => {
     onOpenModal();
   };
-
+  console.log(reviewQuestions);
   return (
     <div>
       {skippedQuestion > 0 && (
@@ -111,7 +142,10 @@ const FinishExamModalPage = ({
       )}
       <div className={` ${viewReviewQuestions ? `d-none` : ``}  `}>
         <div className="d-flex justify-content-evenly items-center gap-4 mt-4">
-          {reviewQuestions.length > 0 && (
+          {reviewQuestions.filter(
+            (reviewQuestion) =>
+              reviewQuestion.status === 2 || reviewQuestion.status === 3
+          ).length > 0 && (
             <button
               className="btn btn-primary p-2"
               onClick={handleReviewQuestions}
@@ -119,12 +153,13 @@ const FinishExamModalPage = ({
               Review Questions
             </button>
           )}
-          <button className="btn btn-secondary p-2" onClick={onCloseModal}>
+          {/* <button className="btn btn-secondary p-2" onClick={onCloseModal}>
             Review All Questions
-          </button>
+          </button> */}
         </div>
         <button
-          className="btn btn-success px-3 py-2 w-auto text-18 mt-4 ml-90  "
+          className="btn btn-success px-3 py-2 w-auto text-18 mt-4 d-flex justify-content-center   "
+          style={{ margin: " 4px auto" }}
           onClick={handleQuizSubmit}
         >
           Submit
@@ -145,7 +180,10 @@ const FinishExamModalPage = ({
       </Modal>
       {viewReviewQuestions && (
         <div>
-          {reviewQuestions.length > 0 ? (
+          {reviewQuestions.filter(
+            (reviewQuestion) =>
+              reviewQuestion.status === 2 || reviewQuestion.status === 3
+          ).length > 0 ? (
             <>
               <h3>Review Questions</h3>
               <ul className="list-group">
@@ -154,6 +192,7 @@ const FinishExamModalPage = ({
                     (reviewQuestion) =>
                       reviewQuestion.status === 2 || reviewQuestion.status === 3
                   )
+                  .sort((a, b) => b.id - a.id)
                   .map((reviewQuestion, index) => (
                     <div className="card-body" key={reviewQuestion.id}>
                       <li
