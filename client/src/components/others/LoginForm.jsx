@@ -8,6 +8,7 @@ import SignInWithGoogle from "../common/SignInWithGoogle";
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [selectedRole, setSelectedRole] = useState();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -21,10 +22,11 @@ export default function LoginForm() {
       console.log(error);
     }
   };
+  
 
   return (
     <div className="form-page__content lg:py-50">
-      <div className="container " style={{backgroundColor:'#bfdeee'}}>
+      <div className="container mt-5" style={{backgroundColor:'#bfdeee'}}>
         <div className="row justify-center items-center ">
           <div className="col-xl-8 col-lg-8">
             <div className=" bg-transparent shadow-1 rounded-16">
@@ -40,6 +42,58 @@ export default function LoginForm() {
                 className="contact-form respondForm__form row y-gap-20 pt-30 "
                 onSubmit={handleSubmit}
               >
+                <div className="col-lg-12">
+                  <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
+                    Role *
+                  </label>
+                  <div className="role-radio-buttons bg-white p-2 rounded row  ">
+                    <div className="form-check r col-4">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        id="adminRole"
+                        name="role"
+                        value="admin"
+                        required
+                        onChange={(e) => setSelectedRole(e.target.value)}
+                      />
+                      <label className="form-check-label" htmlFor="adminRole">
+                        Admin
+                      </label>
+                    </div>
+                    <div className="form-check col-4">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        id="studentRole"
+                        name="role"
+                        value="student"
+                        required
+                        onChange={(e) => setSelectedRole(e.target.value)}
+                      />
+                      <label className="form-check-label" htmlFor="studentRole">
+                        Student
+                      </label>
+                    </div>
+                    <div className="form-check col-4">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        id="instructorRole"
+                        name="role"
+                        value="instructor"
+                        required
+                        onChange={(e) => setSelectedRole(e.target.value)}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="instructorRole"
+                      >
+                        Instructor
+                      </label>
+                    </div>
+                  </div>
+                </div>
                 <div className="col-12">
                   <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
                     Email
@@ -86,8 +140,8 @@ export default function LoginForm() {
               </div>
 
               <div className="d-flex x-gap-20 items-center justify-between pt-20">
-                <SignInWithFacebook/>
-                <SignInWithGoogle/>
+                <SignInWithFacebook selectedRole={selectedRole}/>
+                <SignInWithGoogle selectedRole={selectedRole}/>
               </div>
             </div>
           </div>

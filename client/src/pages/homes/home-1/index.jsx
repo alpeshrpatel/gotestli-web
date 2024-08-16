@@ -18,6 +18,9 @@ import FooterOne from "@/components/layout/footers/FooterOne";
 import Preloader from "@/components/common/Preloader";
 
 import MetaComponent from "@/components/common/MetaComponent";
+import { auth, db } from "@/firebase/Firebase";
+import { addDoc, collection, doc, Firestore, getDoc, setDoc } from "firebase/firestore";
+import { useEffect } from "react";
 
 const metadata = {
   title:
@@ -27,6 +30,7 @@ const metadata = {
 };
 
 export default function HomePage1() {
+  
   return (
     <>
       <Preloader />

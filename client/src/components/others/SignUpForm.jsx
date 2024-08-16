@@ -1,20 +1,26 @@
 import { Link, useNavigate } from "react-router-dom";
+import "./signupform.css";
 import React, { useState } from "react";
 import SignInWithFacebook from "../common/SignInWithFacebook";
 import SignInWithGoogle from "../common/SignInWithGoogle";
 import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
-  updateProfile
+  updateProfile,
 } from "firebase/auth";
-import { auth } from "@/firebase/Firebase";
+import { auth, db } from "@/firebase/Firebase";
+import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
 
 export default function SignUpForm() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [selectedRole, setSelectedRole] = useState();
+
   const navigate = useNavigate();
+
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,16 +30,28 @@ export default function SignUpForm() {
           auth,
           email,
           password
-        ); 
-       
-        updateProfile(auth.currentUser,{
-            displayName: userName,
-           
-          })
-          
+        );
 
+        updateProfile(auth.currentUser, {
+          displayName: userName,
+        });
+        console.log(auth.currentUser.uid)
+
+        try {
+          const docRef = await setDoc(doc(db, "roles", auth.currentUser.uid), {
+            uid: auth.currentUser.uid,                
+            role: selectedRole,
+            email: email       
+          });
+        
+          console.log("Document written ");
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
+
+       
         console.log("account created successfully!");
-      
+
         navigate("/login");
       } else {
         alert("Password not matched!!");
@@ -44,9 +62,10 @@ export default function SignUpForm() {
       alert(error.message);
     }
   };
+  console.log(selectedRole)
   return (
     <div className="form-page__content lg:py-50">
-      <div className="container" style={{backgroundColor:'#bfdeee'}}>
+      <div className="container mt-5" style={{ backgroundColor: "#bfdeee" }}>
         <div className="row justify-center items-center">
           <div className="col-xl-10 col-lg-10">
             <div className=" shadow-1 rounded-16">
@@ -59,9 +78,62 @@ export default function SignUpForm() {
               </p>
 
               <form
-                className="contact-form respondForm__form row y-gap-20 pt-30"
+                className="contact-form respondForm__form row y-gap-20 pt-30 "
                 onSubmit={handleSubmit}
               >
+                <div className="col-lg-12">
+                  <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
+                    Role *
+                  </label>
+                  <div className="role-radio-buttons bg-white p-2 rounded row  ">
+                    <div className="form-check r col-4">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        id="adminRole"
+                        name="role"
+                        value="admin"
+                        required
+                        onChange={(e) => setSelectedRole(e.target.value)}
+                      />
+                      <label className="form-check-label" htmlFor="adminRole">
+                        Admin
+                      </label>
+                    </div>
+                    <div className="form-check col-4">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        id="studentRole"
+                        name="role"
+                        value="student"
+                        required
+                        onChange={(e) => setSelectedRole(e.target.value)}
+                      />
+                      <label className="form-check-label" htmlFor="studentRole">
+                        Student
+                      </label>
+                    </div>
+                    <div className="form-check col-4">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        id="instructorRole"
+                        name="role"
+                        value="instructor"
+                        required
+                        onChange={(e) => setSelectedRole(e.target.value)}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="instructorRole"
+                      >
+                        Instructor
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="col-lg-6">
                   <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
                     Email address *
@@ -131,8 +203,8 @@ export default function SignUpForm() {
               </div>
 
               <div className="d-flex x-gap-20 items-center justify-between pt-20">
-                <SignInWithFacebook />
-                <SignInWithGoogle />
+                <SignInWithFacebook selectedRole={selectedRole}/>
+                <SignInWithGoogle selectedRole={selectedRole}/>
               </div>
             </div>
           </div>

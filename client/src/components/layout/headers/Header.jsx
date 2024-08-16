@@ -48,7 +48,7 @@ export default function Header() {
       console.log(error);
     }
   };
-
+  console.log(user)
   return (
     <>
       <header className="header -type-1 ">
