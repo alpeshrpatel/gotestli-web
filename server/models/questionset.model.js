@@ -36,6 +36,19 @@ QuestionSet.create = (newQuestionSet, result) => {
   });
 };
 
+QuestionSet.getQuestionSetByCategoryId = (category_id, result) => {
+    sql.query("select question_set_id from question_set_categories where category_id = ? ", category_id, (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+  
+      console.log("created questionset: ", { id: res.insertId, ...newQuestionSet });
+      result(null, { id: res.insertId, ...newQuestionSet });
+    });
+};
+
 QuestionSet.findById = (id, result) => {
   sql.query(`SELECT * FROM question_set WHERE id = ${id}`, (err, res) => {
     if (err) {
