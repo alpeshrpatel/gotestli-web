@@ -9,7 +9,7 @@ export default function FooterOne() {
   };
   return (
     <footer className="footer -type-1 bg-dark-1 -green-links">
-      <div className="container">
+      <div className="container-fluid w-75">
         <div className="footer-header">
           <div className="row y-gap-20 justify-between items-center">
             <div className="col-auto">

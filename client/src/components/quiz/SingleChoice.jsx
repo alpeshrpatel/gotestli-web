@@ -14,6 +14,7 @@ import { NULL } from "sass";
 import QuestionSet from "./QuestionSet";
 
 const SingleChoice = ({
+  resumeQuizUserResultId,
   questionSetId,
   questionId,
   totalQuestions,
@@ -49,14 +50,19 @@ const SingleChoice = ({
     }
     getOptions();
     async function getUserResultId() {
-      try {
-        const { data } = await API.get(
-          `/api/get/userresultid/${userId}/${questionSetId}`
-        );
+      if(resumeQuizUserResultId){
+        setUserResultId(resumeQuizUserResultId)
+      }else{
+        try {
+          const { data } = await API.get(
+            `/api/get/userresultid/${userId}/${questionSetId}`
+          );
+  
+          setUserResultId(data[0]?.id);
+        } catch (error) {
+          console.log(error);
+        }
 
-        setUserResultId(data[0]?.id);
-      } catch (error) {
-        console.log(error);
       }
     }
     getUserResultId();
@@ -77,7 +83,7 @@ const SingleChoice = ({
             status: q.status,
           };
         });
-
+        console.log(persistedAnswers)
         setSelectedOption(persistedAnswers);
         setReviewQuestion(persistedAnswers);
         setAnswerPersist(persistedAnswers);
@@ -90,7 +96,7 @@ const SingleChoice = ({
     getAnswers();
   }, [userResultId, questionId]);
 
- 
+ console.log(selectedOption)
   const findSelectedOption =
     selectedOption?.find((question) => question.id === questionId)
       ?.selectedOption || null;
@@ -117,6 +123,9 @@ const SingleChoice = ({
     if(newstatus == 3){
       setUpdatedStatus(3)
       return 3;
+    }else if(newstatus == 1){
+      setUpdatedStatus(1)
+      return 1;
     }
     let newStatus;
     if (status === 0) {
@@ -155,12 +164,21 @@ const SingleChoice = ({
         },
       ]);
     }
-
+    let isReviewed;
+    let newStatus;
+    if(status == 2 || status == 3){
+      isReviewed = 1
+      newStatus= 3
+    }else{
+      isReviewed = 0
+      newStatus = 1
+    }
    
-   await testResultDtlSetData(option);
+   await testResultDtlSetData(option,isReviewed ,newStatus );
    console.log(selectedOption)
    
   };
+ 
 
   async function testResultDtlSetData(findSelectedOption,isReviewed = 0,newstatus = 0) {
     try {
@@ -277,6 +295,7 @@ const SingleChoice = ({
                     reviewQuestions={reviewQuestions}
                     onCloseModal={onCloseModal}
                     userResultId={userResultId}
+                    
                   />
                 </Modal>
               </div>

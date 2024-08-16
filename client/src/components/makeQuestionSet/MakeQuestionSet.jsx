@@ -10,6 +10,7 @@ import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import QuestionSetDetailForm from "./QuestionSetDetailForm";
 import Header from "../layout/headers/Header";
+import axios from "axios";
 
 const MakeQuestionSet = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -71,7 +72,6 @@ const MakeQuestionSet = () => {
     if (filteredCategory) {
       getQuestionSetId(filteredCategory.id);
     }
-
   };
 
   const getQuestionsFromQSetId = async (questionId) => {
@@ -106,14 +106,13 @@ const MakeQuestionSet = () => {
         questionSetsQuestions.some(
           (q) => q.question?.toLowerCase() === question.question?.toLowerCase()
         ))
-
   );
 
   console.log(selectedQuestions);
-   const questionSetStore = async (id, questionSetId, questionId) => {
+  const questionSetStore = async (questionSetId, questionId) => {
     try {
       const res = await API.post("/api/post/questionset", {
-        id,
+       
         questionSetId,
         questionId,
       });
@@ -128,15 +127,21 @@ const MakeQuestionSet = () => {
     try {
       async function getId() {
         const { data } = await API.get("/api/get/last-question-set-id");
-        const id = data[0].id + 1;
-        const questionSetId = data[0].question_set_id + 1;
-        return { id, questionSetId };
+       
+        console.log(data)
+        const questionSetId = data[0].id + 1;
+       
+        return {  questionSetId };
       }
-      let { id, questionSetId } = await getId();
+      let {  questionSetId } = await getId();
+      
+      
       selectedQuestions.forEach((question) => {
-        questionSetStore(id, questionSetId, question.id);
-        id++;
+        questionSetStore(questionSetId, question.id);
+        
       });
+      
+     
       onOpenModal();
     } catch (error) {
       console.log(error);
@@ -145,68 +150,77 @@ const MakeQuestionSet = () => {
 
   return (
     <>
-    <Header />
-    <div className="container " style={{marginTop:'110px'}}>
-      <h1>Make Question Set</h1>
-      <input
-        type="text"
-        placeholder="Search questions..."
-        value={searchTerm}
-        onChange={handleSearch}
-        className="searchInput"
-      />
-      <select value={filter} onChange={handleFilter} className="filterDropdown">
-        <option value="">All</option>
-        {categories.map((category, index) => (
-          <option key={index} value={category?.title?.toLowerCase()}>
-            {category.title}
-          </option>
-        ))}
-      </select>
-      <div className="checkboxContainer">
-        <ul>
-          {filteredQuestions
-            .slice(indexOfFirstRecord, indexOfLastRecord)
-            .map((question, index) => (
-              <div key={index} className="checkboxItem gap-2 text-black ">
-                <input
-                  className="p-2 border-0"
-                  type="checkbox"
-                  checked={selectedQuestions.includes(question)}
-                  onChange={() => handleCheckboxChange(question)}
-                />
-                <label>{question.question}</label>
-              </div>
-            ))}
-        </ul>
- {shouldRenderPagination && (
-          <div className="w-75 m-auto d-flex align-items-center justify-content-center">
-            <PaginationTwo
-              pageNumber={currentPage}
-              setPageNumber={setCurrentPage}
-              data={questions}
-              pageCapacity={10}
-            />
-          </div>
-        )}
-
-        {
-          selectedQuestions.length > 0 && (
-        <button
-          className="btn btn-success px-3 py-2 w-50 text-18 mt-4 mx-auto"
-          onClick={handleSubmit}
+      <Header />
+      <div className="container " style={{ marginTop: "110px" }}>
+        <h1>Make Question Set</h1>
+        <input
+          type="text"
+          placeholder="Search questions..."
+          value={searchTerm}
+          onChange={handleSearch}
+          className="searchInput"
+        />
+        <select
+          value={filter}
+          onChange={handleFilter}
+          className="filterDropdown"
         >
-          Create
-        </button>
+          <option value="">All</option>
+          {categories.map((category, index) => (
+            <option key={index} value={category?.title?.toLowerCase()}>
+              {category.title}
+            </option>
+          ))}
+        </select>
+        <div className="checkboxContainer">
+          <ul>
+            {filteredQuestions
+              .slice(indexOfFirstRecord, indexOfLastRecord)
+              .map((question, index) => (
+                <div key={index} className="checkboxItem gap-2 text-black ">
+                  <input
+                    className="p-2 border-0"
+                    type="checkbox"
+                    checked={selectedQuestions.includes(question)}
+                    onChange={() => handleCheckboxChange(question)}
+                  />
+                  <label>{question.question}</label>
+                </div>
+              ))}
+          </ul>
+          {shouldRenderPagination && (
+            <div className="w-75 m-auto d-flex align-items-center justify-content-center">
+              <PaginationTwo
+                pageNumber={currentPage}
+                setPageNumber={setCurrentPage}
+                data={questions}
+                pageCapacity={10}
+              />
+            </div>
+          )}
 
-          )
-        }
-        <Modal open={open} onClose={onCloseModal} center>
-               <QuestionSetDetailForm />
-        </Modal>
-
+          {selectedQuestions.length > 0 && (
+            <button
+              className="btn btn-success px-3 py-2 w-50 text-18 mt-4 mx-auto"
+              onClick={handleSubmit}
+            >
+              Create
+            </button>
+          )}
+        </div>
       </div>
-    </div>
+      <Modal
+        open={open}
+        onClose={onCloseModal}
+        center
+        styles={{
+          modal: {
+            width: "75vw",
+          },
+        }}
+      >
+        <QuestionSetDetailForm selectedQuestions={selectedQuestions} />
+      </Modal>
     </>
   );
 };

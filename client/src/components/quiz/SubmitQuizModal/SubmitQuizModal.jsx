@@ -26,92 +26,50 @@ const SubmitQuizModal = ({
   const [answers, setAnswers] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    async function getPassCriteria() {
-      try {
-        const [dataResponse, answersResponse] = await Promise.all([
-          API.get(`/api/get/questionset/passcriteria/${questionSetId}`),
-          API.get(`/api/get/testresult/answers/${userResultId}`),
-        ]);
-
-        const data = dataResponse.data;
-        const response = answersResponse.data;
-        setPassingCriteria(data);
-        setAnswers(response);
-        console.log(data);
-        console.log(response);
-      } catch (error) {
-        throw error;
-      }
-    }
-    getPassCriteria();
-  }, []);
-
   const user = auth.currentUser;
 
-  let passingStatus;
-  let percentage;
-  let marks;
-  let count = 0;
-  if (passingCriteria.length > 0) {
-    const totalmarks = passingCriteria[0]?.totalmarks;
-    const marksPerQuestion = totalmarks / totalQuestions;
-
-    answers.forEach((answer) => {
-      if (answer.answer == answer.correct_answer) {
-        count++;
-      }
-    });
-    marks = Math.round(marksPerQuestion * count);
-
-    percentage = Math.round((100 * marks) / passingCriteria[0].totalmarks);
-
-    if (percentage < passingCriteria[0].pass_percentage) {
-      passingStatus = "Fail";
-    } else {
-      passingStatus = "Pass";
-    }
-  }
-
-  
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const SubmitUserResult = async () => {
     try {
-      
-      console.log("About to post test result");
-      const response = await API.put("/api/put/testresult", {
-        userResultId,
+      const { data } = await API.post("/api/post/result/calculate", {
         questionSetId,
         totalQuestions,
         totalAnswered,
-        skippedQuestion,
         totalReviewed,
-        marks,
-        percentage,
+        skippedQuestion,
+        reviewQuestions,
+        userResultId,
       });
-      console.log("Post response:", response);
+
+      console.log(data);
+      const correct = data.data.correct;
+      const wrong = data.data.wrong;
+      const percentage = data.data.percentage;
+      const passPercentage = data.data.passPercentage;
+      console.log(correct);
+      console.log(wrong);
 
       setIsSubmitted(true);
       await delay(3000);
       setTimeout(() => {
         setIsSubmitted(false);
       }, 3000);
+
+      navigate("/quiz/result", {
+        state: {
+          totalQuestions: totalQuestions,
+          correct: correct,
+          wrong: wrong,
+          skippedQuestion: skippedQuestion,
+          percentage: percentage,
+          passPercentage: passPercentage,
+        },
+      });
     } catch (error) {
       console.log(error);
       console.log("Error posting test result:", error);
     }
-
-    navigate("/quiz/result", {
-      state: {
-        totalQuestions: totalQuestions,
-        correct: count,
-        wrong: totalAnswered - count,
-        skippedQuestion: skippedQuestion,
-        percentage: percentage,
-        passPercentage: passingCriteria[0].pass_percentage,
-      },
-    });
   };
 
   return (

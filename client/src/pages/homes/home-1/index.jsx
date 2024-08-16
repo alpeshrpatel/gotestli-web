@@ -38,13 +38,13 @@ export default function HomePage1() {
         <Brands />
         <Categories />
         <Courses />
-        <TestimonialsOne />
+        {/* <TestimonialsOne />
         <FeaturesOne />
         <WhyCourse />
         <Instructors />
         <GetApp />
         <Blog />
-        <Join />
+        <Join /> */}
         <FooterOne />
       </div>
     </>

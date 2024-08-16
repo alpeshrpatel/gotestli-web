@@ -15733,6 +15733,26 @@ header-right__buttons .signUpButton :hover{
  color:white !important;
 }
 
+.left-alignment{
+  @media (min-width: 1200px) {
+    left:82.5vw !important;
+  }
+  @media (min-width: 1600px){
+    left:79vw !important;
+  }
+  @media (min-width: 1650px){
+    left:76vw !important;
+  }
+  @media (min-width: 1730px){
+    left:73vw !important;
+  }
+  @media (min-width: 1800px){
+    left:1280px !important;
+  }
+  @media (min-width: 2000px){
+    left:1420px !important;
+  }
+}
 
 /* img{
   cursor:pointer !important;
