@@ -85,22 +85,10 @@ export default function SignUpForm() {
                   <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
                     Role *
                   </label>
-                  <div className="role-radio-buttons bg-white p-2 rounded row  ">
-                    <div className="form-check r col-4">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        id="adminRole"
-                        name="role"
-                        value="admin"
-                        required
-                        onChange={(e) => setSelectedRole(e.target.value)}
-                      />
-                      <label className="form-check-label" htmlFor="adminRole">
-                        Admin
-                      </label>
-                    </div>
-                    <div className="form-check col-4">
+                  <div className="role-radio-buttons bg-white ps-5 pt-3 rounded row  ">
+                    
+                  
+                    <div className="form-check col-6">
                       <input
                         className="form-check-input"
                         type="radio"
@@ -114,7 +102,7 @@ export default function SignUpForm() {
                         Student
                       </label>
                     </div>
-                    <div className="form-check col-4">
+                    <div className="form-check col-6">
                       <input
                         className="form-check-input"
                         type="radio"

@@ -92,6 +92,7 @@ import MakeQuestionSet from "./components/makeQuestionSet/MakeQuestionSet";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ProtectedRoute from "./privateroutes/ProtectedRoute";
+import HomePage from "./pages/instructorspages/HomePage";
 
 function App() {
   useEffect(() => {
@@ -146,6 +147,9 @@ function App() {
             <Route path="/signup" element={<SignupPage />} />
 
             {/* Student Routes */}
+            {/* <Route path="/" element={
+                <ProtectedRoute element={<HomePage1 />} role="student" />
+              } /> */}
             <Route
               path="quiz/singlechoice"
               element={
@@ -181,10 +185,19 @@ function App() {
 
             {/* Instructor Routes */}
             <Route
-              path="/api/create/questionset"
+              path="/create/questionset"
               element={
                 <ProtectedRoute
                   element={<MakeQuestionSet />}
+                  role="instructor"
+                />
+              }
+            />
+            <Route
+              path="/instructor/home"
+              element={
+                <ProtectedRoute
+                  element={<HomePage/> }
                   role="instructor"
                 />
               }

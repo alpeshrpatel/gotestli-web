@@ -2,32 +2,70 @@ import { FacebookAuthProvider, signInWithPopup } from "firebase/auth";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "@/firebase/Firebase";
-import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  Firestore,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 
-const SignInWithFacebook = ({selectedRole}) => {
+const SignInWithFacebook = ({ selectedRole }) => {
   const navigate = useNavigate();
   const facebookLogin = async () => {
-    if(!selectedRole){
-      alert('*Please select any Role');
+    if (!selectedRole) {
+      alert("*Please select any Role");
       return;
     }
     try {
       const provider = new FacebookAuthProvider();
       await signInWithPopup(auth, provider);
 
-      try {
-        const docRef = await setDoc(doc(db, "roles", auth.currentUser.uid), {
-          uid: auth.currentUser.uid,                
-          role: selectedRole,
-          email: auth.currentUser.email       
-        });
-      
-        console.log("Document written ");
-      } catch (e) {
-        console.error("Error adding document: ", e);
-      }
+      const email = auth.currentUser.email;
+      let userRole;
 
-      navigate("/");
+      const rolesRef = collection(db, "roles");
+      const q = query(rolesRef, where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        try {
+          await setDoc(doc(db, "roles", auth.currentUser.uid), {
+            uid: auth.currentUser.uid,
+            role: selectedRole,
+            email: email,
+          });
+          console.log("Document written ");
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
+      } else {
+        console.log("Email already exists in roles collection.");
+      }
+      if (auth.currentUser) {
+        const userId = auth.currentUser.uid;
+        const docRef = doc(db, "roles", userId);
+        const docSnap = await getDoc(docRef);
+        console.log(docRef);
+        if (docSnap.exists()) {
+          userRole = docSnap.data().role;
+          // setUserRole(docSnap.data().role);
+          console.log(docSnap.data().role);
+        } else {
+          console.log("No role found for this user");
+        }
+      } else {
+        console.log("No user is logged in ");
+      }
+      userRole == "instructor"
+        ? navigate("/instructor/home")
+        : userRole == "student"
+        ? navigate("/")
+        : navigate("/admin/dashboard");
     } catch (error) {
       console.log(error);
     }

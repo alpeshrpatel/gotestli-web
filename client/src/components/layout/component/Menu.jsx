@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import MobileFooter from "./MobileFooter";
-
+import { auth, db } from "@/firebase/Firebase";
+import {
+  addDoc,
+  collection,
+  doc,
+  Firestore,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
 import { menuList } from "@/data/menu";
 import { useLocation } from "react-router-dom";
 
 export default function Menu({ allClasses, headerPosition }) {
   const [menuItem, setMenuItem] = useState("");
   const [submenu, setSubmenu] = useState("");
+  const [userRole, setUserRole] = useState("");
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -25,16 +34,37 @@ export default function Menu({ allClasses, headerPosition }) {
         }
       });
     });
+    async function checkUserRole() {
+      if (auth.currentUser) {
+        const userId = auth.currentUser.uid;
+        const docRef = doc(db, "roles", userId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setUserRole(docSnap.data().role);
+          console.log(docSnap.data().role);
+        } else {
+          console.log("No role found for this user");
+        }
+      } else {
+        console.log("No user is logged in");
+      }
+    }
+    checkUserRole();
   }, []);
-  console.log(menuItem)
-  console.log(submenu)
 
   return (
     <div
       className={`header-menu js-mobile-menu-toggle  ${
         headerPosition ? headerPosition : ""
       }`}
-      style={{marginTop:'20px', display:'flex', justifyContent:'space-between',alignItems:'center',gap:'5px'}}
+      style={{
+        marginTop: "20px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: "5px",
+      }}
     >
       <div className="header-menu__content">
         <div className="mobile-bg js-mobile-bg"></div>
@@ -49,21 +79,24 @@ export default function Menu({ allClasses, headerPosition }) {
         </div>
 
         <div className="menu js-navList">
-          <ul className={`${allClasses ? allClasses : ""}`} style={{paddingLeft:0, display:'flex',gap:'15px'}}>
+          <ul
+            className={`${allClasses ? allClasses : ""}`}
+            style={{ paddingLeft: 0, display: "flex", gap: "15px" }}
+          >
             <li className="menu-item-has-children">
               <Link
                 data-barba
-                to="#"
+                to={`${userRole == 'admin' ? `/admin/dashboard` :( (userRole == 'instructor') ? `/instructor/home` : `/`) }`}
                 className={menuItem == "Home" ? "activeMenu" : ""}
-                style={{fontSize:'18px'}}
+                style={{ fontSize: "18px" }}
               >
                 Home <i className="icon-chevron-right text-13 ml-10"></i>
               </Link>
 
-              <ul className="subnav" style={{fontSize:'18px'}}>
-                <li className="menu__backButton js-nav-list-back text-black" >
+              {/* <ul className="subnav" style={{ fontSize: "18px" }}>
+                <li className="menu__backButton js-nav-list-back text-black">
                   <Link to="#" className="text-reset">
-                    <i className="icon-chevron-left text-13 mr-10" ></i> Home
+                    <i className="icon-chevron-left text-13 mr-10"></i> Home
                   </Link>
                 </li>
 
@@ -79,112 +112,120 @@ export default function Menu({ allClasses, headerPosition }) {
                     <Link to={elm.href}>{elm.label}</Link>
                   </li>
                 ))}
-              </ul>
+              </ul> */}
             </li>
 
-            <li className="menu-item-has-children -has-mega-menu">
-              <Link
-                data-barba
-                to="#"
-                className={menuItem == "Quizzes" ? "activeMenu" : ""}
-                style={{fontSize:'18px'}}
-              >
-                Quizzes <i className="icon-chevron-right text-13 ml-10"></i>
-              </Link>
+            {userRole == "student" && (
+              <li className="menu-item-has-children -has-mega-menu">
+                <Link
+                  data-barba
+                  to="#"
+                  className={menuItem == "Quizzes" ? "activeMenu" : ""}
+                  style={{ fontSize: "18px" }}
+                >
+                  Quizzes <i className="icon-chevron-right text-13 ml-10"></i>
+                </Link>
 
-              <div className="mega xl:d-none" style={{fontSize:'18px',width:'80vw'}}>
-                <div className="mega__menu">
-                  <div className="row x-gap-40">
-                    <div className="col">
-                      <h4 className="text-17 fw-500 mb-20 text-black">
-                        Quiz List Layouts
-                      </h4>
+                <div
+                  className="mega xl:d-none"
+                  style={{ fontSize: "18px", width: "80vw" }}
+                >
+                  <div className="mega__menu">
+                    <div className="row x-gap-40">
+                      <div className="col">
+                        <h4 className="text-17 fw-500 mb-20 text-black">
+                          Quiz List Layouts
+                        </h4>
 
-                      <ul className="mega__list">
-                        {menuList[1].links[0].links.map((elm, i) => (
-                          <li
-                            key={i}
-                            className={
-                              pathname.split("/")[1] == elm.href.split("/")[1]
-                                ? "activeMenu"
-                                : "inActiveMegaMenu"
-                            }
-                          >
-                            <Link data-barba to={elm.href}>
-                              {elm.label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
+                        <ul className="mega__list">
+                          {menuList[1].links[0].links.map((elm, i) => (
+                            <li
+                              key={i}
+                              className={
+                                pathname.split("/")[1] == elm.href.split("/")[1]
+                                  ? "activeMenu"
+                                  : "inActiveMegaMenu"
+                              }
+                            >
+                              <Link data-barba to={elm.href}>
+                                {elm.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="col">
+                        <h4 className="text-17 fw-500 mb-20 text-black">
+                          Quiz Single Layouts
+                        </h4>
+
+                        <ul className="mega__list">
+                          {menuList[1].links[1].links.map((elm, i) => (
+                            <li
+                              key={i}
+                              className={
+                                pathname.split("/")[1] == elm.href.split("/")[1]
+                                  ? "activeMenu"
+                                  : "inActiveMegaMenu"
+                              }
+                            >
+                              <Link data-barba to={elm.href}>
+                                {elm.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="col">
+                        <h4 className="text-17 fw-500 mb-20 text-black">
+                          About Quizzes
+                        </h4>
+
+                        <ul className="mega__list">
+                          {menuList[1].links[2].links.map((elm, i) => (
+                            <li
+                              key={i}
+                              className={
+                                pathname.split("/")[1] == elm.href.split("/")[1]
+                                  ? "activeMenu"
+                                  : "inActiveMegaMenu"
+                              }
+                            >
+                              <Link data-barba to={elm.href}>
+                                {elm.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="col">
+                        <h4 className="text-17 fw-500 mb-20 text-black">
+                          Popular Quizzes
+                        </h4>
+
+                        <ul className="mega__list">
+                          {menuList[1].links[3].links.map((elm, i) => (
+                            <li
+                              key={i}
+                              className={
+                                pathname.split("/")[1] == elm.href.split("/")[1]
+                                  ? "activeMenu"
+                                  : "inActiveMegaMenu"
+                              }
+                            >
+                              <Link data-barba to={elm.href}>
+                                {elm.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
 
-                    <div className="col">
-                      <h4 className="text-17 fw-500 mb-20 text-black">
-                      Quiz Single Layouts
-                      </h4>
-
-                      <ul className="mega__list">
-                        {menuList[1].links[1].links.map((elm, i) => (
-                          <li
-                            key={i}
-                            className={
-                              pathname.split("/")[1] == elm.href.split("/")[1]
-                                ? "activeMenu"
-                                : "inActiveMegaMenu"
-                            }
-                          >
-                            <Link data-barba to={elm.href}>
-                              {elm.label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="col">
-                      <h4 className="text-17 fw-500 mb-20 text-black">About Quizzes</h4>
-
-                      <ul className="mega__list">
-                        {menuList[1].links[2].links.map((elm, i) => (
-                          <li
-                            key={i}
-                            className={
-                              pathname.split("/")[1] == elm.href.split("/")[1]
-                                ? "activeMenu"
-                                : "inActiveMegaMenu"
-                            }
-                          >
-                            <Link data-barba to={elm.href}>
-                              {elm.label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="col">
-                      <h4 className="text-17 fw-500 mb-20 text-black">Popular Quizzes</h4>
-
-                      <ul className="mega__list">
-                        {menuList[1].links[3].links.map((elm, i) => (
-                          <li
-                            key={i}
-                            className={
-                              pathname.split("/")[1] == elm.href.split("/")[1]
-                                ? "activeMenu"
-                                : "inActiveMegaMenu"
-                            }
-                          >
-                            <Link data-barba to={elm.href}>
-                              {elm.label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-
-                  {/* <div className="mega-banner bg-purple-1 ml-40">
+                    {/* <div className="mega-banner bg-purple-1 ml-40">
                     <div className="text-24 lh-15 text-white fw-700">
                       Join more than
                       <br />
@@ -198,20 +239,24 @@ export default function Menu({ allClasses, headerPosition }) {
                       Start Learning For Free
                     </Link>
                   </div> */}
+                  </div>
                 </div>
-              </div>
-            </li>
-
-            <li className="menu-item-has-children">
-              <Link
-                data-barba
-                to="/api/create/questionset"
-                className={menuItem == "Create QuestionSet" ? "activeMenu" : ""}
-                style={{fontSize:'18px'}}
-              >
-                Create QuestionSet <i className="icon-chevron-right text-13 ml-10"></i>
-              </Link>
-              {/* <ul className="subnav">
+              </li>
+            )}
+            {userRole == "instructor" && (
+              <li className="menu-item-has-children">
+                <Link
+                  data-barba
+                  to="/create/questionset"
+                  className={
+                    menuItem == "Create QuestionSet" ? "activeMenu" : ""
+                  }
+                  style={{ fontSize: "18px" }}
+                >
+                  Create QuestionSet{" "}
+                  <i className="icon-chevron-right text-13 ml-10"></i>
+                </Link>
+                {/* <ul className="subnav">
                 <li className="menu__backButton js-nav-list-back">
                   <Link to="#">
                     <i className="icon-chevron-left text-13 mr-10"></i> Events
@@ -233,7 +278,8 @@ export default function Menu({ allClasses, headerPosition }) {
                   </li>
                 ))}
               </ul> */}
-            </li>
+              </li>
+            )}
 
             {/* <li className="menu-item-has-children">
               <Link
@@ -413,7 +459,7 @@ export default function Menu({ allClasses, headerPosition }) {
                 className={
                   pathname == "/contact-1" ? "activeMenu" : "inActiveMenuTwo"
                 }
-                style={{fontSize:'18px'}}
+                style={{ fontSize: "18px" }}
               >
                 Contact
               </Link>

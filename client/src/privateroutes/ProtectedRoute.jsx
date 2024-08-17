@@ -45,7 +45,12 @@ const ProtectedRoute = ({ element, role }) => {
   }
 
   if (role && userRole !== role) {
-    return <Navigate to="/" />; 
+    if(userRole == 'instructor'){
+      return <Navigate to="/instructor/home" />; 
+    }else if(userRole == 'admin'){
+      return <Navigate to="/admin/dashboard" />; 
+    }
+    
   }
 
   return element;

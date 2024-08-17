@@ -1,32 +1,69 @@
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
-import { auth } from "@/firebase/Firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import SignInWithFacebook from "../common/SignInWithFacebook";
 import SignInWithGoogle from "../common/SignInWithGoogle";
+import { auth, db } from "@/firebase/Firebase";
+import {
+  addDoc,
+  collection,
+  doc,
+  Firestore,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [selectedRole, setSelectedRole] = useState();
+  //const [userRole,setUserRole] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let userRole = "";
+   
     try {
- 
+     
+
+      
       const data = await signInWithEmailAndPassword(auth, email, password);
-      navigate("/");
+
+      if (auth.currentUser ) {
+        const userId = auth.currentUser.uid;
+        const docRef = doc(db, "roles", userId);
+        const docSnap = await getDoc(docRef);
+        console.log(docRef)
+        if (docSnap.exists()) {
+          userRole = docSnap.data().role;
+          // setUserRole(docSnap.data().role);
+          console.log(docSnap.data().role);
+        } else {
+          console.log("No role found for this user");
+        }
+      } else {
+        console.log("No user is logged in ");
+      }
+
       console.log("Logged in Successfully!!");
     } catch (error) {
       console.log(error);
     }
+    console.log(userRole);
+    userRole == "instructor"
+      ? navigate("/instructor/home")
+      : userRole == "student"
+      ? navigate("/")
+      : navigate("/admin/dashboard");
   };
-  
 
   return (
     <div className="form-page__content lg:py-50">
-      <div className="container mt-5" style={{backgroundColor:'#bfdeee'}}>
+      <div className="container mt-5" style={{ backgroundColor: "#bfdeee" }}>
         <div className="row justify-center items-center ">
           <div className="col-xl-8 col-lg-8">
             <div className=" bg-transparent shadow-1 rounded-16">
@@ -46,22 +83,8 @@ export default function LoginForm() {
                   <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
                     Role *
                   </label>
-                  <div className="role-radio-buttons bg-white p-2 rounded row  ">
-                    <div className="form-check r col-4">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        id="adminRole"
-                        name="role"
-                        value="admin"
-                        required
-                        onChange={(e) => setSelectedRole(e.target.value)}
-                      />
-                      <label className="form-check-label" htmlFor="adminRole">
-                        Admin
-                      </label>
-                    </div>
-                    <div className="form-check col-4">
+                  <div className="role-radio-buttons bg-white ps-5 pt-3 rounded row  ">
+                    <div className="form-check col-6">
                       <input
                         className="form-check-input"
                         type="radio"
@@ -75,7 +98,7 @@ export default function LoginForm() {
                         Student
                       </label>
                     </div>
-                    <div className="form-check col-4">
+                    <div className="form-check col-6">
                       <input
                         className="form-check-input"
                         type="radio"
@@ -99,7 +122,7 @@ export default function LoginForm() {
                     Email
                   </label>
                   <input
-                  className="bg-white"
+                    className="bg-white"
                     required
                     type="text"
                     name="title"
@@ -108,10 +131,7 @@ export default function LoginForm() {
                   />
                 </div>
                 <div className="col-12">
-                  <label
-                    className="text-16 lh-1 fw-500 text-dark-1 mb-10"
-                    
-                  >
+                  <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
                     Password
                   </label>
                   <input
@@ -140,8 +160,8 @@ export default function LoginForm() {
               </div>
 
               <div className="d-flex x-gap-20 items-center justify-between pt-20">
-                <SignInWithFacebook selectedRole={selectedRole}/>
-                <SignInWithGoogle selectedRole={selectedRole}/>
+                <SignInWithFacebook selectedRole={selectedRole} />
+                <SignInWithGoogle selectedRole={selectedRole} />
               </div>
             </div>
           </div>

@@ -42,7 +42,7 @@ app.get("/question_master", async (req, res) => {
   try {
     // //const connection = await mysql.createConnection(dbConfig);
     // connection = await connection.getConnection();
-    console.log(queries.getAllQuestions);
+   
     const [rows] = await connection.query(queries.getAllQuestions);
     //
     res.json(rows);
@@ -150,7 +150,7 @@ app.get("/question_sets/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const questionSet = await getQuestionSets(id);
-    console.log(questionSet)
+   
     res.json(questionSet);
   } catch (err) {
     console.error(err);
@@ -176,7 +176,7 @@ app.post("/api/post/create/questionsetdtl", async (req, res) => {
     totalmarks,
     pass_percentage,
   } = formData;
-  console.log(title);
+  
 
   const query = "INSERT INTO question_set(`org_id`,`title`,`question_set_url`,`image`,`author`,`short_desc`,`description`,`start_time`,`end_time`,`start_date`,`end_date`,`time_duration`,`no_of_question`,`status_id`,`is_demo`,`created_by`,`modified_by`,`totalmarks`,`pass_percentage`) VALUES   (1, ?, NULL , ?, ?, ?, ?,NULL ,NULL ,?, ?, ?, ?, NULL, ?, NULL, NULL, ?, ? )";
   try {
@@ -382,7 +382,7 @@ app.post("/api/post/result/calculate", async (req, res) => {
     let percentage;
     let marks;
     let count = 0;
-    console.log(passingCriteria[0]);
+   
     const totalmarks = passingCriteria[0]?.totalmarks;
     const passPercentage = passingCriteria[0].pass_percentage;
 
@@ -592,7 +592,7 @@ app.put("/api/update/testresultdtl", async (req, res) => {
       userResultId,
       questionId,
     ]);
-    console.log(results);
+    
     res.json({
       msg: "Selected option inserted successfully",
       success: true,
@@ -694,3 +694,31 @@ app.post("/api/post/questionset", async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+
+
+/// getting sets of instructor
+
+async function getQuestionSetsOfInstructor(author){
+  try {
+    const [rows] = await connection.execute(
+      "SELECT title, short_desc, no_of_question, time_duration, totalmarks, is_demo from question_set where author = ?",
+      [author]
+    );
+    return rows;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+app.get('/api/instructor/questionset/:author',async(req,res)=>{
+  const author = req.params.author;
+  try {
+    const result = await getQuestionSetsOfInstructor(author);
+
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+})
