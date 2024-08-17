@@ -44,7 +44,7 @@ exports.create = (req, res) => {
 };
 
 // Retrieve all Categories from the database (with condition).
-exports.findAll = (req, res) => {
+exports.findAll = async(req, res) => {
   Category.getAll((err, data) => {
     if (err)
       res.status(500).send({
@@ -56,7 +56,7 @@ exports.findAll = (req, res) => {
 };
 
 // Find a single Categoryby Id
-exports.findOne = (req, res) => {
+exports.findOne = async (req, res) => {
   Category.findById(req.params.id, (err, data) => {
     if (err) {
       if (err.kind === "not_found") {

@@ -2,79 +2,78 @@ const QuestionSet = require("../models/questionset.model");
 
 // Create and Save a new QuestionSet
 exports.create = (req, res) => {
-  // Validate request
-  if (!req.body) {
-    res.status(400).send({
-      message: "Content can not be empty!"
-    });
-  }
+      // Validate request
+      if (!req.body) {
+        res.status(400).send({
+          message: "Content can not be empty!"
+        });
+      }
 
-  // Create a QuestionSet
-  const questionset = new QuestionSet({
-    id:req.body.id,
-    org_id:req.body.org_id,
-    title:req.body.title,
-    question_set_url:req.body.question_set_url,
-    image:req.body.image,
-    author:req.body.author,
-    short_desc:req.body.short_desc,
-    description:req.body.description,
-    start_time:req.body.start_time,
-    end_time:req.body.end_time,
-    start_date:req.body.start_date,
-    end_date:req.body.end_date,
-    time_duration:req.body.time_duration,
-    no_of_question:req.body.no_of_question,
-    status_id:req.body.status_id,
-    is_demo:req.body.is_demo,
-    // created_by:req.body.created_by,
-    // created_date:req.body.created_date,
-    // modified_by:req.body.modified_by,
-    // modified_date:req.body.modified_date
-  });
+      // Create a QuestionSet
+      const questionset = new QuestionSet({
+        id:req.body.id,
+        org_id:req.body.org_id,
+        title:req.body.title,
+        question_set_url:req.body.question_set_url,
+        image:req.body.image,
+        author:req.body.author,
+        short_desc:req.body.short_desc,
+        description:req.body.description,
+        start_time:req.body.start_time,
+        end_time:req.body.end_time,
+        start_date:req.body.start_date,
+        end_date:req.body.end_date,
+        time_duration:req.body.time_duration,
+        no_of_question:req.body.no_of_question,
+        status_id:req.body.status_id,
+        is_demo:req.body.is_demo,
+        // created_by:req.body.created_by,
+        // created_date:req.body.created_date,
+        // modified_by:req.body.modified_by,
+        // modified_date:req.body.modified_date
+      });
+
+      // Save QuestionSet in the database
+      QuestionSet.create(questionset, (err, data) => {
+        if (err)
+          res.status(500).send({
+            message:
+              err.message || "Some error occurred while creating the QuestionSet."
+          });
+        else res.send(data);
+      });
+};
 
 
 
   // Find a single QuestionSet by Id
-exports.getQuestionSetIdByCategoryId = (req, res) => {
-  QuestionSet.getQuestionSetByCategoryId(req.params.id, (err, data) => {
-    if (err) {
-      if (err.kind === "not_found") {
-        res.status(404).send({
-          message: `Not found QuestionSet with id ${req.params.id}.`
-        });
-      } else {
-        res.status(500).send({
-          message: "Error retrieving QuestionSet with id " + req.params.id
-        });
-      }
-    } else res.send(data);
-  });
-};
-
-  // Save QuestionSet in the database
-  QuestionSet.create(questionset, (err, data) => {
-    if (err)
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the QuestionSet."
-      });
-    else res.send(data);
-  });
-};
-
+exports.getQuestionSetIdByCategoryId =  (req, res) => {
+    QuestionSet.getQuestionSetIdByCategoryId(req.params.id, (err, data) => {
+      if (err) {
+        if (err.kind === "not_found") {
+          res.status(404).send({
+            message: `Not found QuestionSet with id ${req.params.id}.`
+          });
+        } else {
+          res.status(500).send({
+            message: "Error retrieving QuestionSet with id " + req.params.id
+          });
+        }
+      } else res.send(data);
+    });
+  };
 // Retrieve all QuestionSets from the database (with condition).
 exports.findAll = (req, res) => {
-  const title = req.query.title;
+    const title = req.query.title;
 
-  QuestionSet.getAll(title, (err, data) => {
-    if (err)
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving questionsets."
-      });
-    else res.send(data);
-  });
+    QuestionSet.getAll(title, (err, data) => {
+      if (err)
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving questionsets."
+        });
+      else res.send(data);
+    });
 };
 
 // Find a single QuestionSet by Id
