@@ -1,5 +1,5 @@
-const sql = require("../config/mysql.db.config");
-
+const connection = require("../config/mysql.db.config");
+const logger = require("../logger")
 // constructor
 const QuestionMaster = function(questionmaster) {
 
@@ -20,7 +20,7 @@ const QuestionMaster = function(questionmaster) {
 };
 
 QuestionMaster.create = (newQuestionMaster, result) => {
-  sql.query("INSERT INTO question_master SET ?", newQuestionMaster, (err, res) => {
+  connection.execute("INSERT INTO question_master SET ?", newQuestionMaster, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -33,7 +33,7 @@ QuestionMaster.create = (newQuestionMaster, result) => {
 };
 
 QuestionMaster.findById = (id, result) => {
-  sql.query(`SELECT * FROM question_master WHERE id = ${id}`, (err, res) => {
+  connection.execute(`SELECT * FROM question_master WHERE id = ${id}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -51,28 +51,30 @@ QuestionMaster.findById = (id, result) => {
   });
 };
 
-QuestionMaster.getAll = (title, result) => {
+
+
+QuestionMaster.findAll = (tags, result) => {
   let query = "SELECT * FROM question_master";
 
-  if (title) {
-    query += ` WHERE title LIKE '%${title}%'`;
+  if (tags) {
+    query += ` WHERE tags LIKE '%${tags}%'`;
   }
 
-  sql.query(query, (err, res) => {
+  connection.execute(query, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
       return;
     }
 
-    console.log("question_master: ", res);
+    // console.log("question_master: ", res);
     result(null, res);
   });
 };
 
 
 QuestionMaster.updateById = (id, questionmaster, result) => {
-  sql.query(
+  connection.execute(
     "UPDATE question_master SET org_id= ?, question_master_url= ? ," + 
             "image= ? ," + 
             "short_desc= ? , description= ? ," + 
@@ -109,7 +111,7 @@ QuestionMaster.updateById = (id, questionmaster, result) => {
 };
 
 QuestionMaster.remove = (id, result) => {
-  sql.query("DELETE FROM question_master WHERE id = ?", id, (err, res) => {
+  connection.execute("DELETE FROM question_master WHERE id = ?", id, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -128,7 +130,7 @@ QuestionMaster.remove = (id, result) => {
 };
 
 QuestionMaster.removeAll = result => {
-  sql.query("DELETE FROM question_master", (err, res) => {
+  connection.execute("DELETE FROM question_master", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);

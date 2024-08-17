@@ -41,7 +41,7 @@ app.get("/question_master", async (req, res) => {
   try {
     // //const connection = await mysql.createConnection(dbConfig);
     // connection = await connection.getConnection();
-    console.log(queries.getAllQuestions);
+    // console.log(queries.getAllQuestions);
     const [rows] = await connection.query(queries.getAllQuestions);
     //
     res.json(rows);
