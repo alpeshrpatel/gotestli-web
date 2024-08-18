@@ -191,8 +191,8 @@ export default function SignUpForm() {
               </div>
 
               <div className="d-flex x-gap-20 items-center justify-between pt-20">
-                <SignInWithFacebook selectedRole={selectedRole}/>
-                <SignInWithGoogle selectedRole={selectedRole}/>
+                <SignInWithFacebook />
+                <SignInWithGoogle />
               </div>
             </div>
           </div>

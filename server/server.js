@@ -701,7 +701,7 @@ app.listen(port, () => {
 async function getQuestionSetsOfInstructor(author){
   try {
     const [rows] = await connection.execute(
-      "SELECT title, short_desc, no_of_question, time_duration, totalmarks, is_demo from question_set where author = ?",
+      "SELECT id, title, short_desc, no_of_question, time_duration, totalmarks, is_demo from question_set where author = ?",
       [author]
     );
     return rows;
@@ -716,6 +716,33 @@ app.get('/api/instructor/questionset/:author',async(req,res)=>{
   try {
     const result = await getQuestionSetsOfInstructor(author);
 
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+})
+
+/// getting students who attempted quiz
+
+async function getStudentsList(questionSetId){
+  try {
+    const [rows] = await connection.execute(
+      "SELECT user_id, total_answered, percentage, marks_obtained, status from user_test_result where question_set_id = ?",
+      [questionSetId]
+    );
+    return rows;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+app.get("/api/get/userslist/:id",async (req,res)=>{
+  const questionSetId = req.params.id;
+ 
+  try {
+    const result = await getStudentsList(questionSetId);
     res.json(result);
   } catch (error) {
     console.error(error);

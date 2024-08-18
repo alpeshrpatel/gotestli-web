@@ -79,7 +79,7 @@ export default function LoginForm() {
                 className="contact-form respondForm__form row y-gap-20 pt-30 "
                 onSubmit={handleSubmit}
               >
-                <div className="col-lg-12">
+                {/* <div className="col-lg-12">
                   <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
                     Role *
                   </label>
@@ -116,7 +116,7 @@ export default function LoginForm() {
                       </label>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 <div className="col-12">
                   <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
                     Email
@@ -160,8 +160,8 @@ export default function LoginForm() {
               </div>
 
               <div className="d-flex x-gap-20 items-center justify-between pt-20">
-                <SignInWithFacebook selectedRole={selectedRole} />
-                <SignInWithGoogle selectedRole={selectedRole} />
+                <SignInWithFacebook  />
+                <SignInWithGoogle  />
               </div>
             </div>
           </div>

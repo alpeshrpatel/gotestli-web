@@ -1,6 +1,8 @@
 import { FacebookAuthProvider, signInWithPopup } from "firebase/auth";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "react-responsive-modal/styles.css";
+import { Modal } from "react-responsive-modal";
 import { auth, db } from "@/firebase/Firebase";
 import {
   addDoc,
@@ -14,13 +16,18 @@ import {
   where,
 } from "firebase/firestore";
 
-const SignInWithFacebook = ({ selectedRole }) => {
+const SignInWithFacebook = () => {
+  const [open, setOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("");
+
+  const onOpenModal = () => {
+    setOpen(true);
+  };
+
+  const onCloseModal = () => setOpen(false);
   const navigate = useNavigate();
   const facebookLogin = async () => {
-    if (!selectedRole) {
-      alert("*Please select any Role");
-      return;
-    }
+   
     try {
       const provider = new FacebookAuthProvider();
       await signInWithPopup(auth, provider);
@@ -72,11 +79,57 @@ const SignInWithFacebook = ({ selectedRole }) => {
   };
   return (
     <div>
+       <Modal open={open} onClose={onCloseModal} center>
+        <div className="col-lg-12 border-1 rounded">
+          <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
+            * Please Select Role
+          </label>
+          <div className="role-radio-buttons bg-white px-5  rounded row gap-2">
+            <div className="form-check col-12">
+              <input
+                className="form-check-input"
+                type="radio"
+                id="studentRole"
+                name="role"
+                value="student"
+                required
+                onChange={(e) => setSelectedRole(e.target.value)}
+              />
+              <label className="form-check-label" htmlFor="studentRole">
+                Student
+              </label>
+            </div>
+            <div className="form-check col-12">
+              <input
+                className="form-check-input"
+                type="radio"
+                id="instructorRole"
+                name="role"
+                value="instructor"
+                required
+                onChange={(e) => setSelectedRole(e.target.value)}
+              />
+              <label className="form-check-label" htmlFor="instructorRole">
+                Instructor
+              </label>
+            </div>
+          </div>
+          {selectedRole && (
+            <button
+              className="button -sm px-24 py-10 -blue-3 mt-3 text-white fw-500  text-14 mx-auto"
+              onClick={facebookLogin}
+            >
+              Continue with Facebook
+            </button>
+          )}
+        </div>
+      </Modal>
       <button
-        className="button -sm px-24 py-20 -outline-blue-3 text-blue-3 text-14 "
-        onClick={facebookLogin}
+        className="button -sm px-24 py-25 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm "
+        onClick={onOpenModal}
       >
-        Log In via Facebook
+         <i className="fa fa-facebook text-24 me-2" aria-hidden="true"></i>
+        Facebook
       </button>
     </div>
   );
