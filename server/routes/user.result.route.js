@@ -1,22 +1,22 @@
 module.exports = app => {
-    const questionset = require("../controller/questionset.controller");
+    const userresult = require("../controller/user.result.controller");
   
     var router = require("express").Router();
   
     // Create a new QuestionSet
-    router.post("/", questionset.create);
+    router.post("/", userresult.create);
   
     // Retrieve a single QuestionSet with id
-    router.get("/:id", questionset.findOne);
+    router.get("/:id", userresult.findOne);
   
     // Update a QuestionSet with id
-    router.put("/:id", questionset.update);
+    router.put("/:id", userresult.update);
   
     // Delete a QuestionSet with id
-    router.delete("/:id", questionset.delete);
+    router.delete("/:id", userresult.delete);
   
     // Delete all QuestionSets
-    router.delete("/", questionset.deleteAll);
+    router.delete("/", userresult.deleteAll);
   
     app.use('/api/userresult', router);
   };

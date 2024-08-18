@@ -181,4 +181,4 @@ UserResult.removeAll = result => {
   });
 };
 
-module.exports = UserResultDetails;
+module.exports = UserResult;
