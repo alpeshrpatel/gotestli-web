@@ -4,7 +4,7 @@ const logger = require("../logger")
 const QuestionMaster = function(questionmaster) {
 
 
-    this.id = questionmaster.id;
+    // this.id = questionmaster.id;
     this.org_id = questionmaster.org_id;
     this.question = questionmaster.question;
     this.question_type_id = questionmaster.question_type_id;
@@ -55,11 +55,12 @@ QuestionMaster.findById = (id, result) => {
 
 QuestionMaster.findAll = (tags, result) => {
   let query = "SELECT * FROM question_master";
-
+  console.log("tags : " + tags);
+  tags = req.params.id;
   if (tags) {
     query += ` WHERE tags LIKE '%${tags}%'`;
   }
-
+  console.log("findAll : " + query)
   connection.execute(query, (err, res) => {
     if (err) {
       console.log("error: ", err);
