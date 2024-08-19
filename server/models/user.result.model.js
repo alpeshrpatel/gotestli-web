@@ -58,7 +58,7 @@ UserResult.findById = (id, result) => {
 
 
 UserResult.findByUserId = (user_id, result) => {
-  connection.query(`SELECT * FROM user_test_result WHERE user_id = ${user_id} order by created_date asc`, (err, res) => {
+  connection.query(`SELECT * FROM user_test_result WHERE user_id = ${user_id} order by created_date desc`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -66,8 +66,8 @@ UserResult.findByUserId = (user_id, result) => {
     }
 
     if (res.length) {
-      console.log("found questionset: ", res[0]);
-      result(null, res[0]);
+      console.log("found questionset: ", res);
+      result(null, res);
       return;
     }
 

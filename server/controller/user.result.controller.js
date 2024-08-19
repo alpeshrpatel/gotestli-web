@@ -5,7 +5,7 @@ const UserResult = require("../models/user.result.model");
 
 // Retrieve all UserResult by UserId (with condition).
 exports.findByUserId = (req, res) => {
-  console.log("req.params.id : " + req.params.id)
+  // console.log("req.params.id : " + req.params.id)
   const userId = req.params.userid
   UserResult.findByUserId(userId, (err, data) => {
     if (err)
