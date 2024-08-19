@@ -8,6 +8,9 @@ module.exports = app => {
   
     // Retrieve a single QuestionSet with id
     router.get("/:id", userresult.findOne);
+
+    // Retrieve a single QuestionSet with id
+    router.get("/user/:userid", userresult.findByUserId);
   
     // Update a QuestionSet with id
     router.put("/:id", userresult.update);

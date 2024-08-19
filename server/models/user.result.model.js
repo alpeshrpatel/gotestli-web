@@ -58,7 +58,7 @@ UserResult.findById = (id, result) => {
 
 
 UserResult.findByUserId = (user_id, result) => {
-  connection.query(`SELECT * FROM user_test_result WHERE user_id = ${user_id}`, (err, res) => {
+  connection.query(`SELECT * FROM user_test_result WHERE user_id = ${user_id} order by created_date asc`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);

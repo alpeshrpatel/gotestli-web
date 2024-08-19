@@ -9,10 +9,10 @@ const UserResultDetails = function(userresultdetails) {
     this.answer = userresultdetails.answer;
     this.correct_answer = userresultdetails.correct_answer;
     this.status = userresultdetails.status;
-    // this.created_by = userresultdetails.created_by;
-    // this.created_date = userresultdetails.created_date;
-    // this.modified_by = userresultdetails.modified_by;
-    // this.modified_date = userresultdetails.modified_date;
+    this.created_by = userresultdetails.created_by;
+    this.created_date = userresultdetails.created_date;
+    this.modified_by = userresultdetails.modified_by;
+    this.modified_date = userresultdetails.modified_date;
 };
 
 

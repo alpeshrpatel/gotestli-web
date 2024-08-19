@@ -1,5 +1,42 @@
 const UserResult = require("../models/user.result.model");
 
+
+
+
+// Retrieve all UserResult by UserId (with condition).
+exports.findByUserId = (req, res) => {
+  console.log("req.params.id : " + req.params.id)
+  const userId = req.params.userid
+  UserResult.findByUserId(userId, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving userresults."
+      });
+    else res.send(data);
+  });
+};
+
+
+// Retrieve all UserResult by UserId (with condition).
+exports.findQuestionSetByUserId = (req, res) => {
+  console.log("req.params.id : " + req.params.id)
+  const userId = req.params.userid
+  UserResult.findQuestionSetByUserId(userId, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving userresults."
+      });
+    else res.send(data);
+  });
+};
+
+
+
+
+
+
 // Create and Save a new UserResult
 exports.create = (req, res) => {
   // Validate request
