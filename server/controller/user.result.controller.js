@@ -20,9 +20,12 @@ exports.findByUserId = (req, res) => {
 
 // Retrieve all UserResult by UserId (with condition).
 exports.findQuestionSetByUserId = (req, res) => {
-  console.log("req.params.id : " + req.params.id)
+  console.log("req.params.id : " + req.params.userid)
+  console.log("req.params.id : " + req.params.questionsetid)
   const userId = req.params.userid
-  UserResult.findQuestionSetByUserId(userId, (err, data) => {
+  const questionset = req.params.questionsetid;// query = {questionset:1}
+
+  UserResult.findQuestionSetByUserId(userId, questionset, (err, data) => {
     if (err)
       res.status(500).send({
         message:

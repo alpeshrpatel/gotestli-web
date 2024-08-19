@@ -76,8 +76,8 @@ UserResult.findByUserId = (user_id, result) => {
   });
 };
 
-UserResult.findQuestionSetByUserId = (questionset_id, user_id, result) => {
-  connection.query(`SELECT * FROM user_test_result WHERE user_id = ${user_id} and question_set_id = ${questionset_id}`, (err, res) => {
+UserResult.findQuestionSetByUserId = (user_id, questionset_id,  result) => {
+  connection.query(`SELECT * FROM user_test_result WHERE user_id = ${user_id} and question_set_id = ${questionset_id} order by created_date desc`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -85,8 +85,8 @@ UserResult.findQuestionSetByUserId = (questionset_id, user_id, result) => {
     }
 
     if (res.length) {
-      console.log("found questionset: ", res[0]);
-      result(null, res[0]);
+      // console.log("found questionset: ", res);
+      result(null, res);
       return;
     }
 
