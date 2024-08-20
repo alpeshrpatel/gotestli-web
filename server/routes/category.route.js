@@ -7,7 +7,7 @@ module.exports = app => {
      * /category:
      *   post:
      *     summary: Create a new category
-     *     tags: [Ctaegory]
+     *     tags: [Cataegory]
      *     requestBody:
      *       description: Category object to be added
      *       required: true
