@@ -1,23 +1,26 @@
 module.exports = app => {
-    const questionset = require("../controller/questionset.controller");
+    const userresultdetails = require("../controller/user.result.details.controller");
   
     var router = require("express").Router();
   
-    // Create a new QuestionSet
-    router.post("/", questionset.create);
+    // Create a new UserResultDetails
+    router.post("/", userresultdetails.create);
   
-    // Retrieve a single QuestionSet with id
-    router.get("/:id", questionset.findOne);
+    // Retrieve a single UserResultDetails with id
+    router.get("/:id", userresultdetails.findOne);
+
+    // Retrieve a single UserResultDetails with id
+    router.get("/userresult/:userresultid", userresultdetails.findUserResultDetailsByUserResultId);
   
-    // Update a QuestionSet with id
-    router.put("/:id", questionset.update);
+    // Update a UserResultDetails with id
+    router.put("/:id", userresultdetails.update);
   
-    // Delete a QuestionSet with id
-    router.delete("/:id", questionset.delete);
+    // Delete a UserResultDetails with id
+    router.delete("/:id", userresultdetails.delete);
   
-    // Delete all QuestionSets
-    router.delete("/", questionset.deleteAll);
+    // Delete all UserResultDetails
+    router.delete("/", userresultdetails.deleteAll);
   
-    app.use('/api/questionset', router);
+    app.use('/api/userresultdetails', router);
   };
   

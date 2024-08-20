@@ -46,7 +46,7 @@ UserResult.findById = (id, result) => {
     }
 
     if (res.length) {
-      console.log("found questionset: ", res[0]);
+      console.log("found UserResult: ", res[0]);
       result(null, res[0]);
       return;
     }
@@ -66,7 +66,7 @@ UserResult.findByUserId = (user_id, result) => {
     }
 
     if (res.length) {
-      console.log("found questionset: ", res);
+      console.log("found UserResult: ", res);
       result(null, res);
       return;
     }
@@ -85,7 +85,7 @@ UserResult.findQuestionSetByUserId = (user_id, questionset_id,  result) => {
     }
 
     if (res.length) {
-      // console.log("found questionset: ", res);
+      // console.log("found UserResult: ", res);
       result(null, res);
       return;
     }

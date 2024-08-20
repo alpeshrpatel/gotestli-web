@@ -36,11 +36,28 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to testli-api." });
 });
 
+// Custom middleware to intercept all requests
+// app.use((req, res, next) => {
+//   // Modify the response body or perform any other actions
+//   console.log(`Intercepted request: ${req.method} ${req.url}`);
+//   next(); 
+// });
+
 
 require("./routes/questionset.route.js")(app);
 require("./routes/category.route.js")(app);
 require("./routes/questionmaster.route.js")(app);
 require("./routes/user.result.route.js")(app);
+require("./routes/user.result.detail.route.js")(app);
+
+
+
+// // Custom middleware to intercept all requests
+// app.use((req, res, next) => {
+//   // Modify the response body or perform any other actions
+//   console.log(`Intercepted response: ${res.json} `);
+//   next(); 
+// });
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3000;

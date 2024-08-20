@@ -1,4 +1,5 @@
 const sql = require("../config/mysql.db.config");
+const queries = require('../queries')
 
 // constructor
 const UserResultDetails = function(userresultdetails) {
@@ -53,8 +54,29 @@ UserResultDetails.findById = (id, result) => {
     }
 
     if (res.length) {
-      console.log("found questionset: ", res[0]);
-      result(null, res[0]);
+      console.log("found UserResultDetails: ", res);
+      result(null, res);
+      return;
+    }
+
+    // not found UserResultDetails with the id
+    result({ kind: "not_found" }, null);
+  });
+};
+
+
+
+UserResultDetails.findUserResultDetailsByUserResultId = (userresultid, result) => {
+  sql.query(`SELECT * FROM user_test_result_dtl WHERE user_test_result_id = ${userresultid}`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if (res.length) {
+      console.log("found UserResultDetails: ", res);
+      result(null, res);
       return;
     }
 
