@@ -8,11 +8,10 @@ import { API } from "@/utils/AxiosInstance";
 import { auth } from "@/firebase/Firebase";
 
 const metadata = {
-  title:
-    "Home-1 || Educrat - Professional LMS Online Education Course ReactJS Template",
-  description:
-    "Elevate your e-learning content with Educrat, the most impressive LMS template for online courses, education and LMS platforms.",
+  title: " Instructor Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
+  description: "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges."
 };
+
 
 const HomePage = () => {
   const [questionSets, setQuestionSets] = useState([]);

@@ -91,6 +91,9 @@ const ExamInstructions = ({ id, time, questionSet }) => {
   }
 
   const handleStartQuiz = async () => {
+    if(!userRole){
+    return  navigate('/login')
+    }
     try {
       const res = await API.post("/api/start/test/result", {
         userId,
@@ -125,6 +128,9 @@ const ExamInstructions = ({ id, time, questionSet }) => {
   };
 
   const handleResumeQuiz = () => {
+    if(userRole !== 'student'){
+      navigate('/login')
+    }
     navigate("/quiz/questions", {
       state: {
         userResultId: inProgressQuizId,

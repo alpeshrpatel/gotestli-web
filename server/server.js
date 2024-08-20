@@ -180,7 +180,7 @@ app.post("/api/post/create/questionsetdtl", async (req, res) => {
 
   const query = "INSERT INTO question_set(`org_id`,`title`,`question_set_url`,`image`,`author`,`short_desc`,`description`,`start_time`,`end_time`,`start_date`,`end_date`,`time_duration`,`no_of_question`,`status_id`,`is_demo`,`created_by`,`modified_by`,`totalmarks`,`pass_percentage`) VALUES   (1, ?, NULL , ?, ?, ?, ?,NULL ,NULL ,?, ?, ?, ?, NULL, ?, NULL, NULL, ?, ? )";
   try {
-    const [results] = await connection.query(query, [
+    const [results] = await connection.execute(query, [
       title,
       image,
       author,

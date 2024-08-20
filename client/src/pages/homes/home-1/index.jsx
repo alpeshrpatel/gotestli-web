@@ -19,28 +19,63 @@ import Preloader from "@/components/common/Preloader";
 
 import MetaComponent from "@/components/common/MetaComponent";
 import { auth, db } from "@/firebase/Firebase";
-import { addDoc, collection, doc, Firestore, getDoc, setDoc } from "firebase/firestore";
-import { useEffect } from "react";
+import {
+  addDoc,
+  collection,
+  doc,
+  Firestore,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
+import { useEffect, useState } from "react";
 
 const metadata = {
-  title:
-    "Home-1 || Educrat - Professional LMS Online Education Course ReactJS Template",
+  title: " Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
   description:
-    "Elevate your e-learning content with Educrat, the most impressive LMS template for online courses, education and LMS platforms.",
+    "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges.",
 };
 
 export default function HomePage1() {
-  
+  const [userRole, setUserRole] = useState("");
+
+  useEffect(() => {
+    async function checkUserRole() {
+      if (auth.currentUser) {
+        const userId = auth.currentUser.uid;
+        const docRef = doc(db, "roles", userId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setUserRole(docSnap.data().role);
+          console.log(docSnap.data().role);
+        } else {
+          console.log("No role found for this user");
+        }
+      } else {
+        console.log("No user is logged in");
+      }
+    }
+    checkUserRole();
+  }, []);
+
   return (
     <>
       <Preloader />
       <MetaComponent meta={metadata} />
       <Header />
 
-      <div className="content-wrapper  js-content-wrapper overflow-hidden w-100" >
-        <HomeHero />
-        <Brands />
-        <Categories />
+      <div className="content-wrapper  js-content-wrapper overflow-hidden w-100">
+        {!userRole && (
+          <>
+            <HomeHero />
+            <Brands />
+            <Categories />
+          </>
+        )}
+       
+       <div className={`${userRole && `mt-80`}`}>
+        
+       </div>
         <Courses />
         {/* <TestimonialsOne />
         <FeaturesOne />

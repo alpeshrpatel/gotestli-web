@@ -36,7 +36,7 @@ const QuestionSetDetailForm = ({selectedQuestions}) => {
     e.preventDefault();
     console.log(formData);
     const response = await API.post("/api/post/create/questionsetdtl", {
-      formData,
+      formData
     });
     if(response){
       toast.success('QuestionSet Created Successfully!') 
