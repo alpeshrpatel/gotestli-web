@@ -11,10 +11,8 @@ import React from "react";
 import MetaComponent from "@/components/common/MetaComponent";
 
 const metadata = {
-  title:
-    "Login || Educrat - Professional LMS Online Education Course ReactJS Template",
-  description:
-    "Elevate your e-learning content with Educrat, the most impressive LMS template for online courses, education and LMS platforms.",
+  title: " Login || GoTestli - Ultimate School & General Purpose Quiz Platform",
+  description: "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges."
 };
 export default function LoginPage() {
   return (

@@ -129,7 +129,7 @@ const MakeQuestionSet = () => {
         const { data } = await API.get("/api/get/last-question-set-id");
        
         console.log(data)
-        const questionSetId = data[0].id + 1;
+        const questionSetId = data[0]?.id + 1 || 1;
        
         return {  questionSetId };
       }

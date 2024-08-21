@@ -16,7 +16,7 @@ export default function Header() {
   const [menuItem, setMenuItem] = useState("");
   const [submenu, setSubmenu] = useState("");
   const { pathname } = useLocation();
-  console.log(pathname);
+  
 
   useEffect(() => {
     menuList.forEach((elm) => {
@@ -48,7 +48,7 @@ export default function Header() {
       console.log(error);
     }
   };
-
+  
   return (
     <>
       <header className="header -type-1 ">
@@ -58,7 +58,7 @@ export default function Header() {
               <div className="header-left">
                 <div className="header__logo ">
                   <Link to="/">
-                    <img src="/assets/img/general/logo.svg" alt="logo" />
+                    <img src="/assets/img/header-logo.png" alt="logo" style={{height:'30px', width:'180px'}}/>
                   </Link>
                 </div>
 
@@ -129,7 +129,7 @@ export default function Header() {
                                         : ""
                                     }
                                   >
-                                    {user.displayName.split(' ')[0]}
+                                    {user.displayName?.split(' ')[0]}
                                     <i className="icon-chevron-right text-13 ml-10"></i>
                                   </Link>
                                   <div className="mega " style={{fontSize:'18px',width:'30vw',overflow:'auto'}} >

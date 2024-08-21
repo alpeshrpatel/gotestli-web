@@ -2,11 +2,21 @@ import React, { useEffect, useState } from "react";
 import "./ExamInstructions.css";
 import { useNavigate } from "react-router-dom";
 import { API } from "@/utils/AxiosInstance";
+import { auth, db } from "@/firebase/Firebase";
+import {
+  addDoc,
+  collection,
+  doc,
+  Firestore,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
 
 const ExamInstructions = ({ id, time, questionSet }) => {
   const [startTestResultData, setStartTestResultData] = useState([]);
   const [inProgressQuizId, setInProgressQuizId] = useState();
   const [history, setHistory] = useState([]);
+  const [userRole, setUserRole] = useState("");
   const navigate = useNavigate();
   const userId = 99;
   const questionSetId = id;
@@ -34,9 +44,26 @@ const ExamInstructions = ({ id, time, questionSet }) => {
       setHistory(data);
     }
     getHistory();
+
+    async function checkUserRole() {
+      if (auth.currentUser) {
+        const userId = auth.currentUser.uid;
+        const docRef = doc(db, "roles", userId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setUserRole(docSnap.data().role);
+          console.log(docSnap.data().role);
+        } else {
+          console.log("No role found for this user");
+        }
+      } else {
+        console.log("No user is logged in");
+      }
+    }
+    checkUserRole();
   }, []);
 
-  
   async function testResultDtlSetData(jsonData) {
     try {
       const res = await API.post("/api/test/resultdetailsubmit", { jsonData });
@@ -64,6 +91,9 @@ const ExamInstructions = ({ id, time, questionSet }) => {
   }
 
   const handleStartQuiz = async () => {
+    if(!userRole){
+    return  navigate('/login')
+    }
     try {
       const res = await API.post("/api/start/test/result", {
         userId,
@@ -98,6 +128,9 @@ const ExamInstructions = ({ id, time, questionSet }) => {
   };
 
   const handleResumeQuiz = () => {
+    if(userRole !== 'student'){
+      navigate('/login')
+    }
     navigate("/quiz/questions", {
       state: {
         userResultId: inProgressQuizId,
@@ -107,7 +140,7 @@ const ExamInstructions = ({ id, time, questionSet }) => {
       },
     });
   };
- console.log(questionSet)
+  console.log(questionSet);
   return (
     <div className="exam-instructions-container">
       <h2>Exam Instructions</h2>
@@ -116,12 +149,14 @@ const ExamInstructions = ({ id, time, questionSet }) => {
           This exam comprises of {questionSet.length} questions and you have{" "}
           {time} minutes to complete the exam, including the review.
         </li>
-        <li>You need to score at least {questionSet[0]?.pass_percentage}% to pass the exam.</li>
+        <li>
+          You need to score at least {questionSet[0]?.pass_percentage}% to pass
+          the exam.
+        </li>
         <li>
           The exam comprises of the following types of questions:
           <ol>
             <li>Multiple Choice Single Response (MCSR)</li>
-            
           </ol>
         </li>
         <li>There is no negative marking.</li>
@@ -129,78 +164,87 @@ const ExamInstructions = ({ id, time, questionSet }) => {
           There is a timer at the upper-right corner of the exam screen that
           indicates the time remaining for the completion of the exam.
         </li>
-        
+
         {/* <li>
           You can go to any question in random by clicking on the question
           number displayed on the left hand side.
         </li> */}
         <li>
-          Mark for Review - You can Review particular question during submission of quiz.
+          Mark for Review - You can Review particular question during submission
+          of quiz.
         </li>
         <li>
           At any point of time during the exam, you can go back to any question
           and modify your choice(s) by clicking on the Previous and the Next
           buttons.
         </li>
+        <li>You can stop the Quiz by clicking on the 'Finish' button.</li>
         <li>
-          You can stop the Quiz by clicking on the 'Finish' button.
+          Click the 'Start Quiz' Now to start the exam or 'Resume Quiz' to
+          resume the in-progress quiz.
         </li>
-        <li>Click the 'Start Quiz' Now to start the exam or 'Resume Quiz' to resume the in-progress quiz.</li>
       </ul>
-      <div className="previous-attempts">
-        {history.length > 0 ? (
-          <>
-            <h3>Your Last {history.length} Attempts</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Attempt(s)</th>
-                  <th>Completed on</th>
-                  <th>Status</th>
-                  <th>Marks Obtained</th>
-                  <th>Percentage(%)</th>
+      {userRole == "student" && (
+        <div className="previous-attempts">
+          {history.length > 0 ? (
+            <>
+              <h3>Your Last {history.length} Attempts</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Attempt(s)</th>
+                    <th>Completed on</th>
+                    <th>Status</th>
+                    <th>Marks Obtained</th>
+                    <th>Percentage(%)</th>
 
-                  <th>Mode</th>
-                  <th>Result</th>
-                  <th>Report</th>
-                </tr>
-              </thead>
-              <tbody>
-                {history.map((attempt, id) => (
-                  <>
-                    <tr key={id}>
-                      <td>{id+1}</td>
-                      {
-                        attempt.modified_date ? (
-                          <td>{(attempt.modified_date).slice(0, 19).replace("T", " ")}</td>
+                    <th>Mode</th>
+                    <th>Result</th>
+                    <th>Report</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {history.map((attempt, id) => (
+                    <>
+                      <tr key={id}>
+                        <td>{id + 1}</td>
+                        {attempt.modified_date ? (
+                          <td>
+                            {attempt.modified_date
+                              .slice(0, 19)
+                              .replace("T", " ")}
+                          </td>
+                        ) : (
+                          <td> --- </td>
+                        )}
+                        <td>
+                          {attempt.status == 1 || attempt.status == 0
+                            ? "Completed"
+                            : "In Progress"}
+                        </td>
+                        <td>{attempt.marks_obtained}</td>
+                        <td>{attempt.percentage} %</td>
 
-                        ): (<td> --- </td>)
-                      }
-                      <td>
-                        {(attempt.status == 1 || attempt.status == 0)  ? "Completed" : "In Progress"}
-                      </td>
-                      <td>{attempt.marks_obtained}</td>
-                      <td>{attempt.percentage} %</td>
-
-                      <td>Exam</td>
-                      <td>
-                        {attempt.percentage >= questionSet[0]?.pass_percentage
-                          ? "Pass"
-                          : "Fail"}
-                      </td>
-                      <td>
-                        <a href="#report">Report</a>
-                      </td>
-                    </tr>
-                  </>
-                ))}
-              </tbody>
-            </table>
-          </>
-        ) : (
-          <h3>No Previous Attempt of this Question Set</h3>
-        )}
-      </div>
+                        <td>Exam</td>
+                        <td>
+                          {attempt.percentage >= questionSet[0]?.pass_percentage
+                            ? "Pass"
+                            : "Fail"}
+                        </td>
+                        <td>
+                          <a href="#report">Report</a>
+                        </td>
+                      </tr>
+                    </>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          ) : (
+            <h3>No Previous Attempt of this Question Set</h3>
+          )}
+        </div>
+      )}
       {!inProgressQuizId ? (
         <button className="start-quiz-button" onClick={handleStartQuiz}>
           Start Quiz

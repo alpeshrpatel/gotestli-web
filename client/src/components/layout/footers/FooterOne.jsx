@@ -14,7 +14,7 @@ export default function FooterOne() {
           <div className="row y-gap-20 justify-between items-center">
             <div className="col-auto">
               <div className="footer-header__logo">
-                <img src="/assets/img/footer/footer-logo.svg" alt="logo" />
+              <img src="/assets/img/header-logo.png" alt="logo" style={{height:'30px', width:'180px'}}/>
               </div>
             </div>
             <div className="col-auto">

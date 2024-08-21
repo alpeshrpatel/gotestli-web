@@ -3,6 +3,7 @@ import "./QuestionSetDetailForm.css";
 import { API } from "@/utils/AxiosInstance";
 import { auth } from "@/firebase/Firebase";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const QuestionSetDetailForm = ({selectedQuestions}) => {
   const user = auth.currentUser.displayName;
@@ -35,9 +36,12 @@ const QuestionSetDetailForm = ({selectedQuestions}) => {
     e.preventDefault();
     console.log(formData);
     const response = await API.post("/api/post/create/questionsetdtl", {
-      formData,
+      formData
     });
-    navigate('/')
+    if(response){
+      toast.success('QuestionSet Created Successfully!') 
+      navigate('/')
+    }
   };
 
   return (

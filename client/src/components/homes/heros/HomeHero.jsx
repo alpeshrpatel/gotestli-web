@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ShapeRendering } from "../../../svg/index";
 import React, { useEffect } from "react";
 
+
 const masthead_info = [
   {
     id: 1,
@@ -41,6 +42,7 @@ const hero_content = {
 const { title, text_underline, info_hero, starts } = hero_content;
 
 const HomeHero = () => {
+ 
   useEffect(() => {
     const parallaxIt = () => {
       const target = document.querySelectorAll(".js-mouse-move-container");
