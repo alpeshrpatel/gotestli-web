@@ -96,9 +96,9 @@ exports.update = (req, res) => {
       message: "Content can not be empty!"
     });
   }
-  // console.log(JSON.stringify(req.body));
+
   const userDetails = new UserResultDetail(req.body)
-  console.log("userDetails : " + JSON.stringify(userDetails));
+
   UserResultDetail.updateById(
     req.params.id,
     userDetails,

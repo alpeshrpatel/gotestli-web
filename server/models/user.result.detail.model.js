@@ -118,7 +118,7 @@ UserResultDetails.updateById = (id, userresultdetails, result) => {
                       "modified_by= ? ,"+
                       "modified_date='" + new Date().toISOString().replace("T"," ").substring(0, 19)+"' "+ 
                       " WHERE id = ?"
-  console.log("updatestmt :" + updatestmt);
+
   connection.query(updatestmt
            ,
           [ 
