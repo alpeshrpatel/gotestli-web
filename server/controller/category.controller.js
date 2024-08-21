@@ -33,7 +33,7 @@ exports.create = (req, res) => {
   });
 
   // Save Categoryin the database
-  Category.create(categrory, (err, data) => {
+  Category.create(category, (err, data) => {
     if (err)
       res.status(500).send({
         message:
@@ -102,7 +102,7 @@ exports.findOne = async (req, res) => {
 //   );
 // };
 
-// Delete a Categorywith the specified id in the request
+// Delete a Category with the specified id in the request
 exports.delete = (req, res) => {
   Category.remove(req.params.id, (err, data) => {
     if (err) {

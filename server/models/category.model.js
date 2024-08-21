@@ -27,7 +27,7 @@ const Category = function(category) {
 };
 
 Category.create = (newCategory, result) => {
-  connection.getConnection().query("INSERT INTO categories SET ?", newCategory, (err, res) => {
+  connection.query("INSERT INTO categories SET ?", newCategory, (err, res) => {
     if (err) {
       console.log("error= ", err);
       result(err, null);

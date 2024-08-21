@@ -50,6 +50,9 @@ require("./routes/category.route.js")(app);
 require("./routes/questionmaster.route.js")(app);
 require("./routes/user.result.route.js")(app);
 require("./routes/user.result.detail.route.js")(app);
+require("./routes/users.route.js")(app);
+require("./routes/questionoptions.route.js")(app)
+require("./routes/questionsetcategory.route.js")(app)
 
   
 
