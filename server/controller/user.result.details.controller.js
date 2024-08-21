@@ -70,7 +70,7 @@ exports.findOne = (req, res) => {
 
 // Find a single UserResultDetail by Id
 exports.findUserResultDetailsByUserResultId = (req, res) => {
-  console.log("req.params.userresultid : " + req.params.userresultid)
+  
   UserResultDetail.findUserResultDetailsByUserResultId(req.params.userresultid, (err, data) => {
     console.log("response :" + res.status)
     if (err) {
