@@ -14,7 +14,7 @@ module.exports = app => {
   
     // Update a UserResultDetails with id
     router.put("/:id", userresultdetails.update);
-  
+
     // Delete a UserResultDetails with id
     router.delete("/:id", userresultdetails.delete);
   

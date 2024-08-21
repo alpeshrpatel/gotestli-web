@@ -123,7 +123,7 @@ exports.update = (req, res) => {
     });
   }
 
-  //console.log(req.body);
+  console.log(req.body);
 
   UserResult.updateById(
     req.params.id,

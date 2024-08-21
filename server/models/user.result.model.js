@@ -32,7 +32,7 @@ UserResult.create = (newUserResult, result) => {
       return;
     }
 
-    console.log("created questionset: ", { id: res.insertId, ...newUserResult });
+    console.log("created userresult: ", { id: res.insertId, ...newUserResult });
     result(null, { id: res.insertId, ...newUserResult });
   });
 };
@@ -76,8 +76,8 @@ UserResult.findByUserId = (user_id, result) => {
   });
 };
 
-UserResult.findQuestionSetByUserId = (user_id, questionset_id,  result) => {
-  connection.query(`SELECT * FROM user_test_result WHERE user_id = ${user_id} and question_set_id = ${questionset_id} order by created_date desc`, (err, res) => {
+UserResult.findQuestionSetByUserId = (user_id, userresult_id,  result) => {
+  connection.query(`SELECT * FROM user_test_result WHERE user_id = ${user_id} and question_set_id = ${userresult_id} order by created_date desc`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -112,22 +112,20 @@ UserResult.getAll = (result) => {
 };
 
 
-UserResult.updateById = (id, questionset, result) => {
+UserResult.updateById = (id, userresult, result) => {
   connection.query(
-    "UPDATE user_test_result SET org_id= ?, user_test_result_url= ? ," + 
-            "image= ? ," + 
-            "short_desc= ? , description= ? ," + 
-            "start_time= ? , end_time= ? ," + 
-            "start_date= ? , end_date= ? ," + 
-            "time_duration= ? , no_of_question= ? ," + 
-            "status_id= ? , is_demo= ? " + 
+    "UPDATE user_test_result SET " + 
+            "org_id= ?, user_id= ? ," +  
+            "question_set_id= ? , total_question= ? ," + 
+            "total_answered= ? , total_not_answered= ? ," + 
+            "total_reviewed= ? , total_not_visited= ? ," + 
+            "total_not_visited= ? , flag= ? ," + 
             "WHERE id = ?",
     [ 
-      questionset.org_id, questionset.user_test_result_url, questionset.image, 
-      questionset.short_desc, questionset.description, questionset.start_time ,
-      questionset.end_time, questionset.start_date, questionset.end_date ,
-      questionset.time_duration, questionset.no_of_question, questionset.status_id ,
-      questionset.is_demo ,
+      userresult.org_id, userresult.user_id, userresult.question_set_id, 
+      userresult.total_answered, userresult.total_not_answered, userresult.total_reviewed ,
+      userresult.total_not_visited, userresult.total_not_visited, userresult.total_not_visited ,
+      userresult.flag,
       id
     ],
     (err, res) => {
@@ -143,8 +141,8 @@ UserResult.updateById = (id, questionset, result) => {
         return;
       }
 
-      console.log("updated questionset: ", { id: id, ...questionset });
-      result(null, { id: id, ...questionset });
+      console.log("updated userresult: ", { id: id, ...userresult });
+      result(null, { id: id, ...userresult });
     }
   );
 };
@@ -163,7 +161,7 @@ UserResult.remove = (id, result) => {
       return;
     }
 
-    console.log("deleted questionset with id: ", id);
+    console.log("deleted userresult with id: ", id);
     result(null, res);
   });
 };

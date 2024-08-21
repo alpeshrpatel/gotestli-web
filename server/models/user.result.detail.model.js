@@ -1,11 +1,12 @@
-const sql = require("../config/mysql.db.config");
+const connection = require("../config/mysql.db.config");
 const queries = require('../queries')
+const util = require("../utils/util")
 
 // constructor
 const UserResultDetails = function(userresultdetails) {
     this.id = userresultdetails.id;
     this.user_test_result_id = userresultdetails.user_test_result_id;
-    this.user_test_result_dtl_question_id = userresultdetails.user_test_result_dtl_question_id;
+    this.question_set_question_id = userresultdetails.question_set_question_id;
     this.question_type = userresultdetails.question_type;
     this.answer = userresultdetails.answer;
     this.correct_answer = userresultdetails.correct_answer;
@@ -20,7 +21,7 @@ const UserResultDetails = function(userresultdetails) {
 
 UserResultDetails.getAnswers = (userResultId, result)=>{
   try {
-    sql.query(
+    connection.query(
       "select answer, correct_answer from user_test_result_dtl where user_test_result_id = ?",
       [userResultId]
     );
@@ -33,20 +34,20 @@ UserResultDetails.getAnswers = (userResultId, result)=>{
 
 
 UserResultDetails.create = (newUserResultDetails, result) => {
-  sql.query("INSERT INTO user_test_result_dtl SET ?", newUserResultDetails, (err, res) => {
+  connection.query("INSERT INTO user_test_result_dtl SET ?", newUserResultDetails, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
       return;
     }
 
-    console.log("created questionset: ", { id: res.insertId, ...newUserResultDetails });
+    console.log("created userresultdetails: ", { id: res.insertId, ...newUserResultDetails });
     result(null, { id: res.insertId, ...newUserResultDetails });
   });
 };
 
 UserResultDetails.findById = (id, result) => {
-  sql.query(`SELECT * FROM user_test_result_dtl WHERE id = ${id}`, (err, res) => {
+  connection.query(`SELECT * FROM user_test_result_dtl WHERE id = ${id}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -67,7 +68,7 @@ UserResultDetails.findById = (id, result) => {
 
 
 UserResultDetails.findUserResultDetailsByUserResultId = (userresultid, result) => {
-  sql.query(`SELECT * FROM user_test_result_dtl WHERE user_test_result_id = ${userresultid}`, (err, res) => {
+  connection.query(`SELECT * FROM user_test_result_dtl WHERE user_test_result_id = ${userresultid}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -92,7 +93,7 @@ UserResultDetails.getAll = (title, result) => {
     query += ` WHERE title LIKE '%${title}%'`;
   }
 
-  sql.query(query, (err, res) => {
+  connection.query(query, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -105,30 +106,39 @@ UserResultDetails.getAll = (title, result) => {
 };
 
 
-UserResultDetails.updateById = (id, questionset, result) => {
-  sql.query(
-    "UPDATE user_test_result_dtl SET org_id= ?, user_test_result_dtl_url= ? ," + 
-            "image= ? ," + 
-            "short_desc= ? , description= ? ," + 
-            "start_time= ? , end_time= ? ," + 
-            "start_date= ? , end_date= ? ," + 
-            "time_duration= ? , no_of_question= ? ," + 
-            "status_id= ? , is_demo= ? " + 
-            "WHERE id = ?",
-    [ 
-      questionset.org_id, questionset.user_test_result_dtl_url, questionset.image, 
-      questionset.short_desc, questionset.description, questionset.start_time ,
-      questionset.end_time, questionset.start_date, questionset.end_date ,
-      questionset.time_duration, questionset.no_of_question, questionset.status_id ,
-      questionset.is_demo ,
-      id
-    ],
-    (err, res) => {
-      if (err) {
-        console.log("error: ", err);
-        result(null, err);
-        return;
+UserResultDetails.updateById = (id, userresultdetails, result) => {
+  // console.log("userresultdetails : " + JSON.stringify(userresultdetails));
+  const updatestmt =  "UPDATE user_test_result_dtl SET "+
+                      "user_test_result_id= ?, "+
+                      "question_set_question_id= ? ," + 
+                      "question_type= ? , "+ 
+                      "answer= ? ," + 
+                      "correct_answer= ? , "+
+                      "status= ? ," + 
+                      "modified_by= ? ,"+
+                      "modified_date='" + new Date().toISOString().replace("T"," ").substring(0, 19)+"' "+ 
+                      " WHERE id = ?"
+  console.log("updatestmt :" + updatestmt);
+  connection.query(updatestmt
+           ,
+          [ 
+            userresultdetails.user_test_result_id, 
+            userresultdetails.question_set_question_id, 
+            userresultdetails.question_type, 
+            userresultdetails.answer, 
+            userresultdetails.correct_answer, 
+            userresultdetails.status ,
+            userresultdetails.modified_by, 
+            id
+          ],
+        (err, res) => {
+          // console.log(JSON.stringify(res))
+          if (err) {
+            console.log("error: ", err);
+            result(null, err);
+            return;
       }
+      console.log(res.affectedRows)
 
       if (res.affectedRows == 0) {
         // not found UserResultDetails with the id
@@ -136,14 +146,15 @@ UserResultDetails.updateById = (id, questionset, result) => {
         return;
       }
 
-      console.log("updated questionset: ", { id: id, ...questionset });
-      result(null, { id: id, ...questionset });
+      console.log("updated userresultdetails: ", { id: id, ...userresultdetails });
+      result(null, { id: id, ...userresultdetails });
     }
   );
+  
 };
 
 UserResultDetails.remove = (id, result) => {
-  sql.query("DELETE FROM user_test_result_dtl WHERE id = ?", id, (err, res) => {
+  connection.query("DELETE FROM user_test_result_dtl WHERE id = ?", id, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -156,13 +167,13 @@ UserResultDetails.remove = (id, result) => {
       return;
     }
 
-    console.log("deleted questionset with id: ", id);
+    console.log("deleted userresultdetails with id: ", id);
     result(null, res);
   });
 };
 
 UserResultDetails.removeAll = result => {
-  sql.query("DELETE FROM user_test_result_dtl", (err, res) => {
+  connection.query("DELETE FROM user_test_result_dtl", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);

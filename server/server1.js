@@ -37,11 +37,12 @@ app.get("/", (req, res) => {
 });
 
 // Custom middleware to intercept all requests
-// app.use((req, res, next) => {
-//   // Modify the response body or perform any other actions
-//   console.log(`Intercepted request: ${req.method} ${req.url}`);
-//   next(); 
-// });
+app.use((req, res, next) => {
+  // Modify the response body or perform any other actions
+  console.log(`Intercepted request: ${req.method} ${req.url}`);
+  console.log(JSON.stringify(req.body));
+  next(); 
+});
 
 
 require("./routes/questionset.route.js")(app);
@@ -50,12 +51,13 @@ require("./routes/questionmaster.route.js")(app);
 require("./routes/user.result.route.js")(app);
 require("./routes/user.result.detail.route.js")(app);
 
-
+  
 
 // // Custom middleware to intercept all requests
 // app.use((req, res, next) => {
 //   // Modify the response body or perform any other actions
 //   console.log(`Intercepted response: ${res.json} `);
+//   console.log(JSON.stringify(res));
 //   next(); 
 // });
 
