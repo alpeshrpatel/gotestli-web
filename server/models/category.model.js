@@ -1,9 +1,7 @@
 const connection = require("../config/mysql.db.config");
-
+const logger = require("../logger");
 // constructor
 const Category = function(category) {
-
-
   this.id = category.id,
   this.org_id = category.org_id,
   this.parent_id = category.parent_id,
@@ -29,7 +27,7 @@ const Category = function(category) {
 };
 
 Category.create = (newCategory, result) => {
-  connection.getConnection().query("INSERT INTO categories SET ?", newCategory, (err, res) => {
+  connection.query("INSERT INTO categories SET ?", newCategory, (err, res) => {
     if (err) {
       console.log("error= ", err);
       result(err, null);
@@ -70,7 +68,7 @@ Category.getAll = ( result) => {
       return;
     }
 
-    console.log("categories: ", res);
+    logger.info("categories: ", res);
     result(null, res);
   });
 };

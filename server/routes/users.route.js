@@ -1,15 +1,15 @@
 module.exports = app => {
-    const category = require("../controller/category.controller");
+    const users = require("../controller/users.controller");
   
     var router = require("express").Router();
     /**
      * @swagger
-     * /category:
+     * /users:
      *   post:
-     *     summary: Create a new category
+     *     summary: Create a new users
      *     tags: [Cataegory]
      *     requestBody:
-     *       description: Category object to be added
+     *       description: users object to be added
      *       required: true
      *       content:
      *         application/json:
@@ -42,24 +42,24 @@ module.exports = app => {
      *       400:
      *         description: Invalid request
      */
-    // Create a new Category
-    router.post("/", category.create);
+    // Create a new user
+    router.post("/", users.create);
   
-    // Retrieve a single Category with id
-    router.get("/:id", category.findOne);
+    // Retrieve a single users with id
+    router.get("/:id", users.findOne);
 
-    // Retrieve all Category with id
-    router.get("/", category.findAll);
+    // Retrieve all users with id
+    router.get("/", users.findAll);
   
-    // Update a Category with id
-    // router.put("/:id", category.update);
+    // Update a users with id
+    // router.put("/:id", users.update);
   
-    // Delete a Category with id
-    router.delete("/:id", category.delete);
+    // Delete a users with id
+    router.delete("/:id", users.delete);
   
-    // Delete all Categorys
-    router.delete("/", category.deleteAll);
+    // Delete all userss
+    router.delete("/", users.deleteAll);
   
-    app.use('/api/category', router);
+    app.use('/api/users', router);
   };
   
