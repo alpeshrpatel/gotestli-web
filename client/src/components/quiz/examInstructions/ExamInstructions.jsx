@@ -30,15 +30,15 @@ const ExamInstructions = ({ id, time, questionSet }) => {
 
   useEffect(() => {
     async function getPendingQuiz() {
-      const { data } = await API.get(
-        `/api/get/pendingquiz/testresultid/${questionSetId}/${userId}`
+      const { data } = await API.get( 
+        `/api/userresult/user/${userId}/questionset/${questionSetId}`
       );
       setInProgressQuizId(data[0]?.id);
     }
     getPendingQuiz();
     async function getHistory() {
       const { data } = await API.get(
-        `/api/get/attempts/history/${questionSetId}/${userId}`
+        `/api/userresult/history/user/${userId}/questionset/${questionSetId}`
       );
       console.log(data);
       setHistory(data);
@@ -95,7 +95,7 @@ const ExamInstructions = ({ id, time, questionSet }) => {
     return  navigate('/login')
     }
     try {
-      const res = await API.post("/api/start/test/result", {
+      const res = await API.post("/api/userresult", {
         userId,
         questionSetId,
         totalQuestions,

@@ -36,8 +36,22 @@ exports.findQuestionSetByUserId = (req, res) => {
 };
 
 
+// Retrieve UserResult by UserId and questionId (with condition).
+exports.getHistoryOfUser = (req, res) => {
+  console.log("req.params.id : " + req.params.userid)
+  console.log("req.params.id : " + req.params.questionsetid)
+  const userId = req.params.userid
+  const questionset = req.params.questionsetid;
 
-
+  UserResult.getHistoryOfUser(userId, questionset, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving userresults."
+      });
+    else res.send(data);
+  });
+};
 
 
 // Create and Save a new UserResult

@@ -19,7 +19,7 @@ export default function CourceCard({ data, index }) {
     async function getQuestionsSet() {
      
       try {
-        const response = await API.get(`/question_sets/${data.id}`);
+        const response = await API.get(`/api/questionset/questions/${data.id}`);
         
        setQuestionsSet(response.data);
       } catch (error) {

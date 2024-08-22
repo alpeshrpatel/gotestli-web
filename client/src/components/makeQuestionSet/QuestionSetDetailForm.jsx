@@ -35,7 +35,7 @@ const QuestionSetDetailForm = ({selectedQuestions}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
-    const response = await API.post("/api/post/create/questionsetdtl", {
+    const response = await API.post("/api/questionset", {
       formData
     });
     if(response){

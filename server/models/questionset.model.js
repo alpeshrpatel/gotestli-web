@@ -1,4 +1,5 @@
 const connection = require("../config/mysql.db.config");
+const { logger } = require("../logger");
 
 // constructor
 const QuestionSet = function(questionset) {
@@ -66,6 +67,25 @@ QuestionSet.getQuestionSetIdByCategoryId = async (category_id, result) => {
   // }
 };
 
+QuestionSet.getQuestionSet = async (question_set_id, result) => {
+  connection.execute(`SELECT qsq.question_id, qm.question, qs.pass_percentage from testli.question_set_questions qsq, question_set qs , question_master qm where qs.id = ${question_set_id} and qsq.question_set_id = qs.id  and qm.id = qsq.question_id`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if (res.length) {
+      console.log("found questionset: ", res);
+      result(null, res);
+      return;
+    }
+
+    // not found QuestionSet with the id
+    result({ kind: "not_found" }, null);
+  });
+};
+
 QuestionSet.findById = (id, result) => {
   connection.query(`SELECT * FROM question_set WHERE id = ${id}`, (err, res) => {
     if (err) {
@@ -85,13 +105,9 @@ QuestionSet.findById = (id, result) => {
   });
 };
 
-QuestionSet.getAll = (title, result) => {
+
+QuestionSet.getAll = ( result) => {
   let query = "SELECT * FROM question_set";
-
-  if (title) {
-    query += ` WHERE title LIKE '%${title}%'`;
-  }
-
   connection.query(query, (err, res) => {
     if (err) {
       console.log("error: ", err);
@@ -99,11 +115,10 @@ QuestionSet.getAll = (title, result) => {
       return;
     }
 
-    console.log("question_set: ", res);
+    logger.info("users: ", res);
     result(null, res);
   });
 };
-
 
 QuestionSet.updateById = (id, questionset, result) => {
   connection.query(

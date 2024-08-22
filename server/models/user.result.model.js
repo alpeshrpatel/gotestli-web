@@ -95,6 +95,25 @@ UserResult.findQuestionSetByUserId = (user_id, userresult_id,  result) => {
   });
 };
 
+UserResult.getHistoryOfUser = (user_id, userresult_id,  result) => { 
+  connection.query(`SELECT id,percentage,marks_obtained,modified_date,status FROM user_test_result WHERE user_id = ${user_id} and question_set_id = ${userresult_id} order by created_date desc LIMIT 4`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if (res.length) {
+      
+      result(null, res);
+      return;
+    }
+
+    // not found UserResultDetails with the id
+    result({ kind: "not_found" }, null);
+  });
+};
+
 
 UserResult.getAll = (result) => {
   let query = "SELECT * FROM user_test_result";
