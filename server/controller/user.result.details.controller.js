@@ -36,6 +36,54 @@ exports.create = (req, res) => {
   });
 };
 
+
+// Create and Save a new UserResultDetail
+exports.addAllQuestionForQuestionSet = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty!"
+    });
+  }
+
+  var data =[];
+  var dataSet=[];
+    req.body.forEach((val,index)=>{
+      if(req.body[index]!==null){
+        for(var i in req.body[index]) {
+            data.push(req.body[index][i]);
+        }
+        dataSet.push(data);
+        data=[];
+      }	
+    })
+
+  console.log(dataSet)
+  // Create a UserResultDetail
+  // const userresultdetail = new UserResultDetail({
+  //   id : req.body.id,
+  //   user_test_result_id : req.body.user_test_result_id,
+  //   question_set_question_id : req.body.question_set_question_id,
+  //   question_type : req.body.question_type,
+  //   answer : req.body.answer,
+  //   correct_answer : req.body.correct_answer,
+  //   status : req.body.status,
+  //   // created_by:req.body.created_by,
+  //   // created_date:req.body.created_date,
+  //   // modified_by:req.body.modified_by,
+  //   // modified_date:req.body.modified_date
+  // });
+
+  // Save UserResultDetail in the database
+  UserResultDetail.create(dataSet, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while creating the UserResultDetail."
+      });
+    else res.send(data);
+  });
+};
 // Retrieve all UserResultDetail from the database (with condition).
 exports.findAll = (req, res) => {
   const title = req.query.title;

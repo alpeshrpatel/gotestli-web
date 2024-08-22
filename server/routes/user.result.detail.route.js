@@ -5,6 +5,9 @@ module.exports = app => {
   
     // Create a new UserResultDetails
     router.post("/", userresultdetails.create);
+
+    // Create a new UserResultDetails
+    router.post("/add/questions", userresultdetails.addAllQuestionForQuestionSet);
   
     // Retrieve a single UserResultDetails with id
     router.get("/:id", userresultdetails.findOne);
