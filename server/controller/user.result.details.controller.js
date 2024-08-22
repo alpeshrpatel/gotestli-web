@@ -75,7 +75,7 @@ exports.addAllQuestionForQuestionSet = (req, res) => {
   // });
 
   // Save UserResultDetail in the database
-  UserResultDetail.create(dataSet, (err, data) => {
+  UserResultDetail.addAllQuestionForQuestionSet(dataSet, (err, data) => {
     if (err)
       res.status(500).send({
         message:

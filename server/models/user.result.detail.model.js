@@ -50,17 +50,17 @@ UserResultDetails.create = (newUserResultDetails, result) => {
 
 
 UserResultDetails.addAllQuestionForQuestionSet = (listUserResultDetails, result) => {
-  console.log(listUserResultDetails)
-  // connection.query("INSERT INTO user_test_result_dtl SET ?", listUserResultDetails, (err, res) => {
-  //   if (err) {
-  //     console.log("error: ", err);
-  //     result(err, null);
-  //     return;
-  //   }
+  const query = "INSERT INTO user_test_result_dtl(user_test_result_id,question_set_question_id, question_type,answer,created_by, modified_by,status) values  ?";
+  connection.query(query, [listUserResultDetails], (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
 
-  //   console.log("created userresultdetails: ", { id: res.insertId, ...listUserResultDetails });
-  //   result(null, { id: res.insertId, ...newUserResultDetails });
-  // });
+    console.log("created userresultdetails: ", { id: res.insertId, ...listUserResultDetails });
+    result(null, { id: res.insertId, ...listUserResultDetails });
+  });
 };
 
 
