@@ -1,43 +1,39 @@
-const sql = require("../config/mysql.db.config");
-
+const connection = require("../config/mysql.db.config");
+const logger = require("../logger")
 // constructor
-const QuestionSet = function(questionset) {
-    this.org_id = questionset.org_id;
-    this.title = questionset.title;
-    this.question_set_url = questionset.question_set_url;
-    this.image = questionset.image;
-    this.author=questionset.author;
-    this.short_desc=questionset.short_desc;
-    this.description=questionset.description;
-    this.start_time=questionset.start_time;
-    this.end_time=questionset.end_time;
-    this.start_date=questionset.start_date;
-    this.end_date=questionset.end_date;
-    this.time_duration=questionset.time_duration;
-    this.no_of_question=questionset.no_of_question;
-    this.status_id=questionset.status_id;
-    this.is_demo=questionset.is_demo;
-    // this.created_by=created_by;
-    // this.created_date=created_date;
-    // this.modified_by=modified_by;
-    // this.modified_date=modified_date;
+const QuestionMaster = function(questionmaster) {
+
+
+    // this.id = questionmaster.id;
+    this.org_id = questionmaster.org_id;
+    this.question = questionmaster.question;
+    this.question_type_id = questionmaster.question_type_id;
+    this.status_id = questionmaster.status_id;
+    this.marks = questionmaster.marks;
+    this.is_negative = questionmaster.is_negative;
+    this.negative_marks = questionmaster.negative_marks;
+    this.tags = questionmaster.tags;
+    // this.created_by = questionmaster.created_by;
+    // this.created_date = questionmaster.created_date;
+    // this.modified_by = questionmaster.modified_by;
+    // this.modified_date = questionmaster.modified_date;
 };
 
-QuestionSet.create = (newQuestionSet, result) => {
-  sql.query("INSERT INTO question_set SET ?", newQuestionSet, (err, res) => {
+QuestionMaster.create = (newQuestionMaster, result) => {
+  connection.execute("INSERT INTO question_master SET ?", newQuestionMaster, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
       return;
     }
 
-    console.log("created questionset: ", { id: res.insertId, ...newQuestionSet });
-    result(null, { id: res.insertId, ...newQuestionSet });
+    console.log("created questionmaster: ", { id: res.insertId, ...newQuestionMaster });
+    result(null, { id: res.insertId, ...newQuestionMaster });
   });
 };
 
-QuestionSet.findById = (id, result) => {
-  sql.query(`SELECT * FROM question_set WHERE id = ${id}`, (err, res) => {
+QuestionMaster.findById = (id, result) => {
+  connection.execute(`SELECT * FROM question_master WHERE id = ${id}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -45,39 +41,42 @@ QuestionSet.findById = (id, result) => {
     }
 
     if (res.length) {
-      console.log("found questionset: ", res[0]);
+      console.log("found questionmaster: ", res[0]);
       result(null, res[0]);
       return;
     }
 
-    // not found QuestionSet with the id
+    // not found QuestionMaster with the id
     result({ kind: "not_found" }, null);
   });
 };
 
-QuestionSet.getAll = (title, result) => {
-  let query = "SELECT * FROM question_set";
 
-  if (title) {
-    query += ` WHERE title LIKE '%${title}%'`;
+
+QuestionMaster.findAll = (tags, result) => {
+  let query = "SELECT * FROM question_master";
+  console.log("tags : " + tags);
+  tags = req.params.id;
+  if (tags) {
+    query += ` WHERE tags LIKE '%${tags}%'`;
   }
-
-  sql.query(query, (err, res) => {
+  console.log("findAll : " + query)
+  connection.execute(query, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
       return;
     }
 
-    console.log("question_set: ", res);
+    // console.log("question_master: ", res);
     result(null, res);
   });
 };
 
 
-QuestionSet.updateById = (id, questionset, result) => {
-  sql.query(
-    "UPDATE question_set SET org_id= ?, question_set_url= ? ," + 
+QuestionMaster.updateById = (id, questionmaster, result) => {
+  connection.execute(
+    "UPDATE question_master SET org_id= ?, question_master_url= ? ," + 
             "image= ? ," + 
             "short_desc= ? , description= ? ," + 
             "start_time= ? , end_time= ? ," + 
@@ -86,11 +85,11 @@ QuestionSet.updateById = (id, questionset, result) => {
             "status_id= ? , is_demo= ? " + 
             "WHERE id = ?",
     [ 
-      questionset.org_id, questionset.question_set_url, questionset.image, 
-      questionset.short_desc, questionset.description, questionset.start_time ,
-      questionset.end_time, questionset.start_date, questionset.end_date ,
-      questionset.time_duration, questionset.no_of_question, questionset.status_id ,
-      questionset.is_demo ,
+      questionmaster.org_id, questionmaster.question_master_url, questionmaster.image, 
+      questionmaster.short_desc, questionmaster.description, questionmaster.start_time ,
+      questionmaster.end_time, questionmaster.start_date, questionmaster.end_date ,
+      questionmaster.time_duration, questionmaster.no_of_question, questionmaster.status_id ,
+      questionmaster.is_demo ,
       id
     ],
     (err, res) => {
@@ -101,19 +100,19 @@ QuestionSet.updateById = (id, questionset, result) => {
       }
 
       if (res.affectedRows == 0) {
-        // not found QuestionSet with the id
+        // not found QuestionMaster with the id
         result({ kind: "not_found" }, null);
         return;
       }
 
-      console.log("updated questionset: ", { id: id, ...questionset });
-      result(null, { id: id, ...questionset });
+      console.log("updated questionmaster: ", { id: id, ...questionmaster });
+      result(null, { id: id, ...questionmaster });
     }
   );
 };
 
-QuestionSet.remove = (id, result) => {
-  sql.query("DELETE FROM question_set WHERE id = ?", id, (err, res) => {
+QuestionMaster.remove = (id, result) => {
+  connection.execute("DELETE FROM question_master WHERE id = ?", id, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -121,27 +120,27 @@ QuestionSet.remove = (id, result) => {
     }
 
     if (res.affectedRows == 0) {
-      // not found QuestionSet with the id
+      // not found QuestionMaster with the id
       result({ kind: "not_found" }, null);
       return;
     }
 
-    console.log("deleted questionset with id: ", id);
+    console.log("deleted questionmaster with id: ", id);
     result(null, res);
   });
 };
 
-QuestionSet.removeAll = result => {
-  sql.query("DELETE FROM question_set", (err, res) => {
+QuestionMaster.removeAll = result => {
+  connection.execute("DELETE FROM question_master", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
       return;
     }
 
-    console.log(`deleted ${res.affectedRows} question_set`);
+    console.log(`deleted ${res.affectedRows} question_master`);
     result(null, res);
   });
 };
 
-module.exports = QuestionSet;
+module.exports = QuestionMaster;

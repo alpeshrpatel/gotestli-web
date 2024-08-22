@@ -8,7 +8,7 @@ module.exports = app => {
   
     // Retrieve a single QuestionSet with id
     router.get("/:id", questionset.findOne);
-  
+
     // Update a QuestionSet with id
     router.put("/:id", questionset.update);
   
@@ -17,6 +17,9 @@ module.exports = app => {
   
     // Delete all QuestionSets
     router.delete("/", questionset.deleteAll);
+
+    // Retrieve a single QuestionSet with id
+    router.get("/category/:id", questionset.getQuestionSetIdByCategoryId);
   
     app.use('/api/questionset', router);
   };

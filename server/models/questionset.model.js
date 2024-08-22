@@ -1,4 +1,4 @@
-const sql = require("../config/mysql.db.config");
+const connection = require("../config/mysql.db.config");
 
 // constructor
 const QuestionSet = function(questionset) {
@@ -24,7 +24,7 @@ const QuestionSet = function(questionset) {
 };
 
 QuestionSet.create = (newQuestionSet, result) => {
-  sql.query("INSERT INTO question_set SET ?", newQuestionSet, (err, res) => {
+  connection.query("INSERT INTO question_set SET ?", newQuestionSet, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -36,8 +36,38 @@ QuestionSet.create = (newQuestionSet, result) => {
   });
 };
 
+QuestionSet.getQuestionSetIdByCategoryId = async (category_id, result) => {
+  connection.execute(`select question_set_id from question_set_categories where category_id = ${category_id}`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if (res.length) {
+      console.log("found questionset: ", res);
+      result(null, res);
+      return;
+    }
+
+    // not found QuestionSet with the id
+    result({ kind: "not_found" }, null);
+  });
+  // return rows;
+  // try {
+  //   const [rows] = await connection.execute(
+  //     "select question_set_id from question_set_categories where category_id = ? ",
+  //     [category_id]
+  //   );
+  //   return rows;
+  // } catch (err) {
+  //   console.error(err);
+  //   throw err;
+  // }
+};
+
 QuestionSet.findById = (id, result) => {
-  sql.query(`SELECT * FROM question_set WHERE id = ${id}`, (err, res) => {
+  connection.query(`SELECT * FROM question_set WHERE id = ${id}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -62,7 +92,7 @@ QuestionSet.getAll = (title, result) => {
     query += ` WHERE title LIKE '%${title}%'`;
   }
 
-  sql.query(query, (err, res) => {
+  connection.query(query, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -76,7 +106,7 @@ QuestionSet.getAll = (title, result) => {
 
 
 QuestionSet.updateById = (id, questionset, result) => {
-  sql.query(
+  connection.query(
     "UPDATE question_set SET org_id= ?, question_set_url= ? ," + 
             "image= ? ," + 
             "short_desc= ? , description= ? ," + 
@@ -113,7 +143,7 @@ QuestionSet.updateById = (id, questionset, result) => {
 };
 
 QuestionSet.remove = (id, result) => {
-  sql.query("DELETE FROM question_set WHERE id = ?", id, (err, res) => {
+  connection.query("DELETE FROM question_set WHERE id = ?", id, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -132,7 +162,7 @@ QuestionSet.remove = (id, result) => {
 };
 
 QuestionSet.removeAll = result => {
-  sql.query("DELETE FROM question_set", (err, res) => {
+  connection.query("DELETE FROM question_set", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
