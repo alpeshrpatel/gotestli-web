@@ -1,20 +1,2 @@
-server/node_modules/.package-lock.json
-server/node_modules/axios/CHANGELOG.md
-server/node_modules/axios/dist/axios.js
-server/node_modules/axios/dist/axios.js.map
-server/node_modules/axios/dist/axios.min.js
-server/node_modules/axios/dist/axios.min.js.map
-server/node_modules/axios/dist/browser/axios.cjs
-server/node_modules/axios/dist/browser/axios.cjs.map
-server/node_modules/axios/dist/esm/axios.js
-server/node_modules/axios/dist/esm/axios.js.map
-server/node_modules/axios/dist/esm/axios.min.js
-server/node_modules/axios/dist/esm/axios.min.js.map
-server/node_modules/axios/dist/node/axios.cjs
-server/node_modules/axios/dist/node/axios.cjs.map
-server/node_modules/axios/lib/adapters/http.js
-server/node_modules/axios/lib/env/data.js
-server/node_modules/axios/package.json
-server/package-lock.json
-server/server.js
+
 
