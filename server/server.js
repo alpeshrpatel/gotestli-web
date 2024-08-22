@@ -1,31 +1,54 @@
 const express = require("express");
-const mysql = require("mysql2/promise");
+const mysql = require("mysql2");
 const cors = require("cors");
 const queries = require("./queries.js");
+const { default: axios } = require("axios");
+
+const bodyParser = require("body-parser");
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+const connection = require("./config/mysql.db.config.js");
+const option = require('./swagger.js')
+
 const port = 3000;
+var corsOptions = {
+  origin: "http://localhost:8081"
+};
+
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cors(corsOptions));
+const specs = swaggerJsdoc(options);
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(specs)
+);
+// simple route
 app.get("/", (req, res) => {
-  return res.json("backend side");
+  res.json({ message: "Welcome to testli-api." });
+});
+// Custom middleware to intercept all requests
+app.use((req, res, next) => {
+  // Modify the response body or perform any other actions
+  console.log(`Intercepted request: ${req.method} ${req.url}`);
+  console.log(JSON.stringify(req.body));
+  next(); 
 });
 
-// const pool = require('./config/dbConnection');
+require("./routes/questionset.route.js")(app);
+require("./routes/category.route.js")(app);
+require("./routes/questionmaster.route.js")(app);
+require("./routes/user.result.route.js")(app);
+require("./routes/user.result.detail.route.js")(app);
+require("./routes/users.route.js")(app);
+require("./routes/questionoptions.route.js")(app)
+require("./routes/questionsetcategory.route.js")(app)
 
-const connection = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "gotestli",
-  port: 3306,
-  database: "testli",
-  waitForConnections: true,
-  connectionLimit: 10,
-  keepAliveInitialDelay: 10000, // 0 by default.
-  enableKeepAlive: true, // false by default.
-});
+
 
 app.get("/categories", async (req, res) => {
   try {
@@ -41,7 +64,7 @@ app.get("/question_master", async (req, res) => {
   try {
     // //const connection = await mysql.createConnection(dbConfig);
     // connection = await connection.getConnection();
-    // console.log(queries.getAllQuestions);
+   
     const [rows] = await connection.query(queries.getAllQuestions);
     //
     res.json(rows);
@@ -135,10 +158,9 @@ app.get("/api/get/last-question-set-id", async (req, res) => {
 async function getQuestionSets(id) {
   try {
     const [rows] = await connection.execute(
-      "SELECT qsq.question_id, qm.question from testli.question_set_questions qsq, question_set qs , question_master qm where qs.id = ? and qsq.question_set_id = qs.id  and qm.id = qsq.question_id",
+      "SELECT qsq.question_id, qm.question, qs.pass_percentage from testli.question_set_questions qsq, question_set qs , question_master qm where qs.id = ? and qsq.question_set_id = qs.id  and qm.id = qsq.question_id",
       [id]
     );
-
     return rows;
   } catch (err) {
     console.error(err);
@@ -150,10 +172,57 @@ app.get("/question_sets/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const questionSet = await getQuestionSets(id);
+   
     res.json(questionSet);
   } catch (err) {
     console.error(err);
     res.status(500).send("Internal Server Error");
+  }
+});
+
+/// creating new question set
+
+app.post("/api/post/create/questionsetdtl", async (req, res) => {
+  const {formData} = req.body
+  const {
+    title,
+    image,
+    author,
+    short_desc,
+    description,
+    start_date,
+    end_date,
+    time_duration,
+    no_of_question,
+    is_demo,
+    totalmarks,
+    pass_percentage,
+  } = formData;
+  
+
+  const query = "INSERT INTO question_set(`org_id`,`title`,`question_set_url`,`image`,`author`,`short_desc`,`description`,`start_time`,`end_time`,`start_date`,`end_date`,`time_duration`,`no_of_question`,`status_id`,`is_demo`,`created_by`,`modified_by`,`totalmarks`,`pass_percentage`) VALUES   (1, ?, NULL , ?, ?, ?, ?,NULL ,NULL ,?, ?, ?, ?, NULL, ?, NULL, NULL, ?, ? )";
+  try {
+    const [results] = await connection.execute(query, [
+      title,
+      image,
+      author,
+      short_desc,
+      description,
+      start_date,
+      end_date,
+      time_duration,
+      no_of_question,
+      is_demo,
+      totalmarks,
+      pass_percentage,
+    ]);
+    res.json({
+      msg: "Selected option inserted successfully",
+      success: true,      
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Server error" });
   }
 });
 
@@ -182,6 +251,63 @@ app.get("/options/:questionId", async (req, res) => {
   }
 });
 
+//// getting testresultid of in-progress quiz
+
+async function getTestResultId(questionSetId, userId) {
+  try {
+    const [rows] = await connection.execute(
+      "SELECT id FROM user_test_result WHERE question_set_id = ? AND user_id = ? AND status = 2  ",
+      [questionSetId, userId]
+    );
+    return rows;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+app.get(
+  "/api/get/pendingquiz/testresultid/:questionSetId/:userId",
+  async (req, res) => {
+    const { questionSetId, userId } = req.params;
+    try {
+      const result = await getTestResultId(questionSetId, userId);
+      res.json(result);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
+  }
+);
+
+//// getting history og previous attempts
+async function getHistory(questionSetId, userId) {
+  try {
+    const [rows] = await connection.execute(
+      "SELECT id,percentage,marks_obtained,modified_date,status FROM user_test_result WHERE question_set_id = ? AND user_id = ?  ORDER BY id DESC LIMIT 4 ",
+      [questionSetId, userId]
+    );
+    return rows;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+app.get(
+  "/api/get/attempts/history/:questionSetId/:userId",
+  async (req, res) => {
+    const { questionSetId, userId } = req.params;
+    try {
+      const result = await getHistory(questionSetId, userId);
+      res.json(result);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
+  }
+);
+
 app.post("/api/start/test/result", async (req, res) => {
   const {
     userId,
@@ -194,7 +320,7 @@ app.post("/api/start/test/result", async (req, res) => {
   } = req.body;
 
   const query =
-    "INSERT INTO user_test_result(`org_id`, `user_id`, `question_set_id`, `total_question`, `total_answered`, `total_not_answered`, `total_reviewed`, `total_not_visited`, `percentage`, `marks_obtained`, `date`, `flag`, `created_by`, `created_date`, `modified_by`, `modified_date`,`status`) VALUES (1, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?, NULL, 17, ?, NULL, NULL, 0)";
+    "INSERT INTO user_test_result(`org_id`, `user_id`, `question_set_id`, `total_question`, `total_answered`, `total_not_answered`, `total_reviewed`, `total_not_visited`, `percentage`, `marks_obtained`, `date`, `flag`, `created_by`, `created_date`, `modified_by`, `modified_date`,`status`) VALUES (1, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?, NULL, 17, ?, NULL, NULL, 2)";
 
   const date = new Date().toISOString().slice(0, 10);
   const createdDate = new Date().toISOString().slice(0, 19).replace("T", " ");
@@ -231,35 +357,105 @@ app.put("/api/put/testresult", async (req, res) => {
     skippedQuestion,
     totalReviewed,
     marks,
-    percentage
+    percentage,
   } = req.body;
 
-  const query = `UPDATE user_test_result SET total_answered = ? , total_not_answered = ?, total_reviewed = ? , percentage = ?, marks_obtained = ?, status = 1 WHERE id = ?`
-  try {
+  const modifiedDate = new Date().toISOString().slice(0, 19).replace("T", " ");
 
+  const query = `UPDATE user_test_result SET total_answered = ? , total_not_answered = ?, total_reviewed = ? , total_not_visited = 0 , percentage = ?, marks_obtained = ?, modified_date = ?, status = 1 WHERE id = ?`;
+  try {
     const [results] = await connection.query(query, [
       totalAnswered,
       skippedQuestion,
       totalReviewed,
       percentage,
       marks,
+      modifiedDate,
       userResultId,
-      
     ]);
-    console.log(results);
+
     res.json({
       msg: "Selected option inserted successfully",
       success: true,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ msg: "Server error" });
+    console.log(err);
+    res.status(500).json({ msg: err });
   }
-
 });
 
-/// getting data to calculate result
-async function getPassCriteria(questionSetId){
+/// calculating result
+app.post("/api/post/result/calculate", async (req, res) => {
+  const {
+    questionSetId,
+    totalQuestions,
+    totalAnswered,
+    totalReviewed,
+    skippedQuestion,
+    reviewQuestions,
+    userResultId,
+  } = req.body;
+  try {
+    const passingCriteria = await getPassCriteria(questionSetId);
+
+    const answers = await getAnswers(userResultId);
+
+    let passingStatus;
+    let percentage;
+    let marks;
+    let count = 0;
+   
+    const totalmarks = passingCriteria[0]?.totalmarks;
+    const passPercentage = passingCriteria[0].pass_percentage;
+
+    if (passingCriteria.length > 0) {
+      const marksPerQuestion = totalmarks / totalQuestions;
+
+      answers.forEach((answer) => {
+        if (answer.answer == answer.correct_answer) {
+          count++;
+        }
+      });
+      marks = Math.round(marksPerQuestion * count);
+
+      percentage = Math.round((100 * marks) / totalmarks);
+
+      if (percentage < passPercentage) {
+        passingStatus = "Fail";
+      } else {
+        passingStatus = "Pass";
+      }
+    }
+
+    const result = await axios.put("http://localhost:3000/api/put/testresult", {
+      userResultId,
+      questionSetId,
+      totalQuestions,
+      totalAnswered,
+      skippedQuestion,
+      totalReviewed,
+      marks,
+      percentage,
+    });
+
+    res.json({
+      msg: "option inserted successfully",
+      success: true,
+      data: {
+        correct: count,
+        wrong: totalAnswered - count,
+        marks: marks,
+        percentage: percentage,
+        passPercentage: passPercentage,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+async function getPassCriteria(questionSetId) {
   try {
     const [rows] = await connection.execute(
       "select totalmarks, pass_percentage from question_set where id = ? ",
@@ -272,18 +468,7 @@ async function getPassCriteria(questionSetId){
   }
 }
 
-app.get('/api/get/questionset/passcriteria/:questionSetId',async (req,res)=>{
-  try {
-    const questionSetId = req.params.questionSetId;
-    const result = await getPassCriteria(questionSetId);
-    res.json(result);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-  }
-})
-
-async function getAnswers(userResultId){
+async function getAnswers(userResultId) {
   try {
     const [rows] = await connection.execute(
       "select answer, correct_answer from user_test_result_dtl where user_test_result_id = ?",
@@ -295,17 +480,6 @@ async function getAnswers(userResultId){
     throw err;
   }
 }
-
-app.get('/api/get/testresult/answers/:userResultId',async (req,res)=>{
-  try {
-    const userResultId = req.params.userResultId;
-    const result = await getAnswers(userResultId);
-    res.json(result);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-  }
-})
 
 async function getQuestionSetId(category_id) {
   try {
@@ -320,7 +494,6 @@ async function getQuestionSetId(category_id) {
   }
 }
 
-//Done
 app.get("/api/questionset/:categoryId", async (req, res) => {
   try {
     const categoryId = req.params.categoryId;
@@ -410,7 +583,7 @@ app.get("/api/get/userresultid/:userId/:questionSetId", async (req, res) => {
 
   try {
     const results = await getUserResultId(userId, questionSetId);
-    console.log(results);
+
     res.json(results);
   } catch (error) {
     console.error(error);
@@ -420,10 +593,6 @@ app.get("/api/get/userresultid/:userId/:questionSetId", async (req, res) => {
 
 app.put("/api/update/testresultdtl", async (req, res) => {
   const { userResultId, questionId, findSelectedOption, status } = req.body;
-  console.log(findSelectedOption);
-  console.log(status);
-  console.log(userResultId);
-  console.log(questionId);
 
   const query = `UPDATE user_test_result_dtl 
      SET answer = ?, status = ? 
@@ -445,7 +614,7 @@ app.put("/api/update/testresultdtl", async (req, res) => {
       userResultId,
       questionId,
     ]);
-    console.log(results);
+    
     res.json({
       msg: "Selected option inserted successfully",
       success: true,
@@ -506,7 +675,7 @@ app.get(
   "/api/update/testresultdtl/status/:userResultId/:questionId",
   async (req, res) => {
     const { userResultId, questionId } = req.params;
-    console.log(userResultId, questionId);
+
     try {
       const options = await getUserResultDtlStatus(userResultId, questionId);
 
@@ -521,14 +690,14 @@ app.get(
 /// storing question set in question_set_questions
 
 app.post("/api/post/questionset", async (req, res) => {
-  const { id, questionSetId, questionId } = req.body;
+  const { questionSetId, questionId } = req.body;
 
   const query =
-    "INSERT INTO `question_set_questions` (`id`, `question_set_id`, `question_id`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES (?, ?, ?, 10, ?, NULL, ?)";
+    "INSERT INTO `question_set_questions` ( `question_set_id`, `question_id`, `created_by`,  `modified_by` ) VALUES (?, ?,  10, NULL )";
   const createdDate = new Date().toISOString().slice(0, 19).replace("T", " ");
   const data = await connection.query(
     query,
-    [id, questionSetId, questionId, createdDate, createdDate],
+    [questionSetId, questionId],
     (err, results) => {
       if (err) {
         console.error(err);
@@ -544,6 +713,72 @@ app.post("/api/post/questionset", async (req, res) => {
   );
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+
+// set port, listen for requests
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
+  connection.getConnection(err => {
+    if (err) {
+      console.error('Error connecting to MySQL:', err);
+      return;
+    }
+    console.log('Connected to MySQL!');
+  });
 });
+// ====================================
+
+
+/// getting sets of instructor
+
+async function getQuestionSetsOfInstructor(author){
+  try {
+    const [rows] = await connection.execute(
+      "SELECT id, title, short_desc, no_of_question, time_duration, totalmarks, is_demo from question_set where author = ?",
+      [author]
+    );
+    return rows;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+app.get('/api/instructor/questionset/:author',async(req,res)=>{
+  const author = req.params.author;
+  try {
+    const result = await getQuestionSetsOfInstructor(author);
+
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+})
+
+/// getting students who attempted quiz
+
+async function getStudentsList(questionSetId){
+  try {
+    const [rows] = await connection.execute(
+      "SELECT user_id, total_answered, percentage, marks_obtained, status from user_test_result where question_set_id = ?",
+      [questionSetId]
+    );
+    return rows;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+app.get("/api/get/userslist/:id",async (req,res)=>{
+  const questionSetId = req.params.id;
+ 
+  try {
+    const result = await getStudentsList(questionSetId);
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+})
