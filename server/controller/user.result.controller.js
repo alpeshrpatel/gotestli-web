@@ -1,8 +1,5 @@
 const UserResult = require("../models/user.result.model");
 
-
-
-
 // Retrieve all UserResult by UserId (with condition).
 exports.findByUserId = (req, res) => {
   // console.log("req.params.id : " + req.params.id)
@@ -34,6 +31,28 @@ exports.findQuestionSetByUserId = (req, res) => {
     else res.send(data);
   });
 };
+
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
+// Create and Save a new UserResult
+exports.calculate = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty!"
+    });
+  }
+  let userresult = new UserResult({
+    id: req.body.userResultId,
+    question_set_id : req.body.questionSetId,
+    total_question : req.body.totalQuestions,
+    total_answered : req.body.totalAnswered,
+    total_not_answered : req.body.skippedQuestion,
+    total_reviewed : req.body.totalReviewed
+  });
 
 
 // Retrieve UserResult by UserId and questionId (with condition).
@@ -68,6 +87,7 @@ exports.calculate = (req, res) => {
     total_not_answered : req.body.skippedQuestion,
     total_reviewed : req.body.totalReviewed
   });
+
 
   console.log("-----userresult : " + JSON.stringify(userresult));
   
