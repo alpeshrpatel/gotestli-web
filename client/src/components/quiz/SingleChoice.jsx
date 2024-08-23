@@ -42,7 +42,7 @@ const SingleChoice = ({
   useEffect(() => {
     async function getOptions() {
       try {
-        const response = await API.get(`/options/${questionId}`);
+        const response = await API.get(`/api/options${questionId}`);
         setOptions(response.data);
       } catch (error) {
         console.log(error);
@@ -55,7 +55,7 @@ const SingleChoice = ({
       }else{
         try {
           const { data } = await API.get(
-            `/api/get/userresultid/${userId}/${questionSetId}`
+            `/user/${userId}/questionset/${questionSetId}`
           );
   
           setUserResultId(data[0]?.id);
