@@ -66,7 +66,7 @@ const ExamInstructions = ({ id, time, questionSet }) => {
 
   async function testResultDtlSetData(jsonData) {
     try {
-      const res = await API.post("/api/test/resultdetailsubmit", { jsonData });
+      const res = await API.post("/api/userresultdetails/add/questions", { jsonData });
       if (res.status == 200) {
         navigate("/quiz/questions", {
           state: { questionSetId: id, questionSet: questionSet, time: time },
@@ -78,17 +78,6 @@ const ExamInstructions = ({ id, time, questionSet }) => {
     }
   }
 
-  async function getQuestionId(questionId) {
-    try {
-      const answerData = await API.get(`/api/correctanswer/${questionId}`);
-      const correctAnswer = answerData.data[0]?.correctAnswer || null;
-      console.log("Answer Data:", answerData);
-      return correctAnswer;
-    } catch (error) {
-      console.error("Error in getQuestionId:", error);
-      return null;
-    }
-  }
 
   const handleStartQuiz = async () => {
     if(!userRole){
@@ -110,11 +99,10 @@ const ExamInstructions = ({ id, time, questionSet }) => {
 
       const newData = await Promise.all(
         questionSet.map(async (question) => {
-          const correctAnswer = await getQuestionId(question.question_id);
+          
           return {
             userResultId,
             questionId: question.question_id,
-            correctAnswer,
             status: 0,
           };
         })
