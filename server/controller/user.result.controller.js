@@ -53,7 +53,7 @@ exports.calculate = (req, res) => {
     total_not_answered : req.body.skippedQuestion,
     total_reviewed : req.body.totalReviewed
   });
-
+};
 
 // Retrieve UserResult by UserId and questionId (with condition).
 exports.getHistoryOfUser = (req, res) => {
