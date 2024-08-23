@@ -119,7 +119,7 @@ function updateTestResult (
  */
 
 // 
-function updateUserResult (userresult, result){
+UserResult.updateUserResult =  (userresult, result) => {
     const modifiedDate = new Date().toISOString().replace("T"," ").substring(0, 19);
 
     const query = `UPDATE user_test_result SET 
@@ -149,8 +149,8 @@ function updateUserResult (userresult, result){
           return;
         }
   
-        console.log("updated userresult: ", { id: id, ...userresult });
-        result(null, { id: id, ...userresult });
+        // console.log("updated userresult: ", { id: id, ...userresult });
+        result(null, { id: userresult.id, ...userresult });
       }
     );
 }
@@ -212,22 +212,52 @@ UserResult.calculateResult  = (userResult, result) => {
       userResult.marksObtained = achievedMarks;
       userResult.percentage = percentage;
       userResult.status = 1;
+      userResult.passingStatus = passingStatus;
 
       console.log(userResult);
 
-      userResult = updateUserResult(userResult);
+      let userresult = userResult;
 
-      console.log("updated userresult: ", { ...userResult });
-      result(null, { ...userResult });
+      // updateUserResult(userResult);
 
-      // res.json({
-      //   msg: "option inserted successfully",
-      //   success: true,
-      // }
-      // );
+      // console.log("updated userresult: ", { ...userResult });
+      // result(null, { ...userResult });
+      const modifiedDate = new Date().toISOString().replace("T"," ").substring(0, 19);
+
+      const query = `UPDATE user_test_result SET 
+                      total_answered = ? , total_not_answered = ?, 
+                      total_reviewed = ? , total_not_visited = 0 , 
+                      percentage = ?, marks_obtained = ?, 
+                      modified_date = ?, status = ?
+                    WHERE id = ?`;
+      connection.query(
+         query,
+        [ 
+          userresult.total_answered, userresult.total_not_answered, 
+          userresult.total_reviewed , 
+          userresult.percentage, userresult.marksObtained ,modifiedDate,
+          userresult.status,userresult.id
+        ],
+        (err, res) => {
+          if (err) {
+            console.log("error: ", err);
+            result(null, err);
+            return;
+          }
+    
+          if (res.affectedRows == 0) {
+            // not found UserResultDetails with the id
+            result({ kind: "not_found" }, null);
+            return;
+          }
+    
+          console.log("updated userresult: ", { id: userresult.id, ...userresult });
+          result(null, { id: userresult.id, ...userresult });
+        }
+      );
       
-      // result(null, res);
-      // return;
+      // result(null, this.updateUserResult(userResult));
+      return;
     }
    
 
@@ -237,61 +267,6 @@ UserResult.calculateResult  = (userResult, result) => {
     result({ kind: "not_found" }, null);
   });
 
-    // const totalmarks = passingCriteria[0]?.totalmarks;
-    // const passPercentage = passingCriteria[0].pass_percentage;
-
-
-    // const passingCriteria =  connection.execute(
-    //         "select totalmarks, pass_percentage from question_set where id = ? ",[userResult.question_set_id]);
-    // console.log("passingCriteria --> "+ passingCriteria);
-
-    // const totalmarks = passingCriteria[0]?.totalmarks;
-    // const passPercentage = passingCriteria[0].pass_percentage;
-
-
-    // const answers =  connection.execute(
-    //         "select answer, correct_answer from user_test_result_dtl where user_test_result_id = ?",
-    //         [userResult.userResultId]
-    // );
-    //   if (passingCriteria.length > 0) {
-    //   const marksPerQuestion = totalmarks / totalQuestions;
-
-    //   answers.forEach((answer) => {
-    //     if (answer.answer == answer.correct_answer) {
-    //       count++;
-    //     }
-    //   });
-    //   marks = Math.round(marksPerQuestion * count);
-
-    //   percentage = Math.round((100 * marks) / totalmarks);
-
-    //   if (percentage < passPercentage) {
-    //     passingStatus = "Fail";
-    //   } else {
-    //     passingStatus = "Pass";
-    //   }
-    // }
-
-    // this.updateTestResult( userResult.userResultId,
-    //   userResult.questionSetId,
-    //   userResult.totalQuestions,
-    //   userResult.totalAnswered,
-    //   userResult.skippedQuestion,
-    //   userResult.totalReviewed,
-    //   userResult.marks,
-    //   userResult.percentage);
-
-    // res.json({
-    //   msg: "option inserted successfully",
-    //   success: true,
-    //   data: {
-    //     correct: count,
-    //     wrong: totalAnswered - count,
-    //     marks: marks,
-    //     percentage: percentage,
-    //     passPercentage: passPercentage,
-    //   },
-    // });
 };
 
 
