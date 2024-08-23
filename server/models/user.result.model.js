@@ -187,7 +187,7 @@ UserResult.calculateResult  = (userResult, result) => {
       let passPercentage =res[0].pass_percentage;
 
       res.forEach((record ) => {
-        console.log(record.marks + " : "+record.answer + " : " + record.correct_answer);
+        // console.log(record.marks + " : "+record.answer + " : " + record.correct_answer);
         totalMarks+=record.marks;
         if (record.answer == record.correct_answer) {
               achievedMarks +=  record.marks;
@@ -214,7 +214,7 @@ UserResult.calculateResult  = (userResult, result) => {
       userResult.status = 1;
       userResult.passingStatus = passingStatus;
 
-      console.log(userResult);
+      // console.log(userResult);
 
       let userresult = userResult;
 
