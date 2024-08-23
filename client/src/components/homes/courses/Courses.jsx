@@ -22,7 +22,7 @@ export default function Courses() {
     async function getQuestionsSet() {
       try {
         const { data } = await API.get(
-          "/all_question_sets"
+          "/api/questionset"
         );
        
         setFiltered(data);

@@ -23,8 +23,8 @@ const FinishExamModalPage = ({
       try {
         const reviewQuestionsData = await Promise.all(
           selectedOption.map(async (q) => {
-            const response = await API.get(`/options/${q.id}`);
-            const { data } = await API.get(`/api/question_master/${q.id}`);
+            const response = await API.get(`/api/options${q.id}`);
+            const { data } = await API.get(`/api/questionmaster${q.id}`);
             return {
               id: q.id,
               question: data[0].question,

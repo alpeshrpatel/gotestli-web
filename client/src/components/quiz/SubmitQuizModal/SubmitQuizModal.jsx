@@ -32,14 +32,13 @@ const SubmitQuizModal = ({
 
   const SubmitUserResult = async () => {
     try {
-      const { data } = await API.post("/api/post/result/calculate", {
+      const { data } = await API.post("/api/userresult/calculate/finalresult", {
+        userResultId,
         questionSetId,
         totalQuestions,
         totalAnswered,
-        totalReviewed,
         skippedQuestion,
-        reviewQuestions,
-        userResultId,
+        totalReviewed,
       });
 
       console.log(data);

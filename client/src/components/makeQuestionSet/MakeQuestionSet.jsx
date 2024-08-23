@@ -34,8 +34,8 @@ const MakeQuestionSet = () => {
     const fetchData = async () => {
       try {
         const [categoriesResponse, questionsResponse] = await Promise.all([
-          API.get("/categories"),
-          API.get("/question_master"),
+          API.get("/api/category"),
+          API.get("/api/questionmaster"),
         ]);
         setCategories(categoriesResponse.data);
         setQuestions(questionsResponse.data);
@@ -52,7 +52,7 @@ const MakeQuestionSet = () => {
 
   const getQuestionSetId = async (categoryId) => {
     try {
-      const { data } = await API.get(`/api/questionset/${categoryId}`);
+      const { data } = await API.get(`/api/questionset/category/${categoryId}`);
 
       setQuestionSets(data);
     } catch (error) {
@@ -76,7 +76,7 @@ const MakeQuestionSet = () => {
 
   const getQuestionsFromQSetId = async (questionId) => {
     try {
-      const { data } = await API.get(`/question_sets/${questionId}`);
+      const { data } = await API.get(`/api/questionset/questions/${questionId}`);
 
       setQuestionSetsQuestions((prevQuestions) => [...prevQuestions, ...data]);
     } catch (error) {

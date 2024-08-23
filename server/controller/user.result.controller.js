@@ -54,6 +54,41 @@ exports.calculate = (req, res) => {
     total_reviewed : req.body.totalReviewed
   });
 
+
+// Retrieve UserResult by UserId and questionId (with condition).
+exports.getHistoryOfUser = (req, res) => {
+  console.log("req.params.id : " + req.params.userid)
+  console.log("req.params.id : " + req.params.questionsetid)
+  const userId = req.params.userid
+  const questionset = req.params.questionsetid;
+
+  UserResult.getHistoryOfUser(userId, questionset, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving userresults."
+      });
+    else res.send(data);
+  });
+};
+
+exports.calculate = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty!"
+    });
+  }
+  let userresult = new UserResult({
+    id: req.body.userResultId,
+    question_set_id : req.body.questionSetId,
+    total_question : req.body.totalQuestions,
+    total_answered : req.body.totalAnswered,
+    total_not_answered : req.body.skippedQuestion,
+    total_reviewed : req.body.totalReviewed
+  });
+
+
   console.log("-----userresult : " + JSON.stringify(userresult));
   
   // Save UserResult in the database
@@ -66,6 +101,7 @@ exports.calculate = (req, res) => {
     else res.send(data);
   });
 };
+
 
 
 

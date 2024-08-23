@@ -280,7 +280,7 @@ app.get(
   }
 );
 
-//// getting history og previous attempts
+//// getting history of previous attempts
 async function getHistory(questionSetId, userId) {
   try {
     const [rows] = await connection.execute(
