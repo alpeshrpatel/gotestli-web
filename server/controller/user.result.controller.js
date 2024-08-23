@@ -1,8 +1,5 @@
 const UserResult = require("../models/user.result.model");
 
-
-
-
 // Retrieve all UserResult by UserId (with condition).
 exports.findByUserId = (req, res) => {
   // console.log("req.params.id : " + req.params.id)
@@ -35,7 +32,40 @@ exports.findQuestionSetByUserId = (req, res) => {
   });
 };
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
+// Create and Save a new UserResult
+exports.calculate = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty!"
+    });
+  }
+  let userresult = new UserResult({
+    id: req.body.userResultId,
+    question_set_id : req.body.questionSetId,
+    total_question : req.body.totalQuestions,
+    total_answered : req.body.totalAnswered,
+    total_not_answered : req.body.skippedQuestion,
+    total_reviewed : req.body.totalReviewed
+  });
 
+  console.log("-----userresult : " + JSON.stringify(userresult));
+  
+  // Save UserResult in the database
+  UserResult.calculateResult(userresult, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while creating the UserResult."
+      });
+    else res.send(data);
+  });
+};
 
 
 

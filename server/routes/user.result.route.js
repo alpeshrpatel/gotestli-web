@@ -18,6 +18,9 @@ module.exports = app => {
     // Update a QuestionSet with id
     router.put("/:id", userresult.update);
   
+    // Update a QuestionSet with id
+    router.put("/calculate/finalresult", userresult.calculate);
+
     // Delete a QuestionSet with id
     router.delete("/:id", userresult.delete);
   
