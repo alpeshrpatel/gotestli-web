@@ -114,6 +114,56 @@ UserResultDetails.findUserResultDetailsByUserResultId = (
   );
 };
 
+UserResultDetails.getUserResultAnswers = (
+  userResultId, questionSetLength,
+  result
+) => {
+  connection.query(
+    ` SELECT question_set_question_id, answer, status FROM user_test_result_dtl WHERE user_test_result_id = ${userResultId}  ORDER BY id DESC LIMIT ${questionSetLength}`,
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+
+      if (res.length) {
+        console.log("found selected options: ", res);
+        result(null, res);
+        return;
+      }
+
+      // not found UserResultDetails with the id
+      result({ kind: "not_found" }, null);
+    }
+  );
+};
+
+UserResultDetails.getStatus = (
+  userResultId, questionId,
+  result
+) => {
+  connection.query(
+    ` SELECT status FROM user_test_result_dtl WHERE user_test_result_id = ${userResultId}  AND question_set_question_id = ${questionId} ORDER BY id DESC LIMIT 1`,
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+
+      if (res.length) {
+        console.log("found status: ", res);
+        result(null, res);
+        return;
+      }
+
+      // not found UserResultDetails with the id
+      result({ kind: "not_found" }, null);
+    }
+  );
+};
+
 UserResultDetails.getAll = (title, result) => {
   let query = "SELECT * FROM user_test_result_dtl";
 
@@ -132,34 +182,47 @@ UserResultDetails.getAll = (title, result) => {
     result(null, res);
   });
 };
-
-UserResultDetails.updateById = (id, userresultdetails, result) => {
+// userResultId, questionId, findSelectedOption, status
+UserResultDetails.updateById = (userresultdetails, result) => {
   // console.log("userresultdetails : " + JSON.stringify(userresultdetails));
-  const updatestmt =
-    "UPDATE user_test_result_dtl SET " +
-    "user_test_result_id= ?, " +
-    "question_set_question_id= ? ," +
-    "question_type= ? , " +
-    "answer= ? ," +
-    "correct_answer= ? , " +
-    "status= ? ," +
-    "modified_by= ? ," +
-    "modified_date='" +
-    new Date().toISOString().replace("T", " ").substring(0, 19) +
-    "' " +
-    " WHERE id = ?";
-
+  // const updatestmt =
+  //   "UPDATE user_test_result_dtl SET " +
+  //   "user_test_result_id= ?, " +
+  //   "question_set_question_id= ? ," +
+  //   // "question_type= ? , " +
+  //   "answer= ? ," +
+  //   // "correct_answer= ? , " +
+  //   "status= ? ," +
+  //   // "modified_by= ? ," +
+  //   // "modified_date='" +
+  //   // new Date().toISOString().replace("T", " ").substring(0, 19) +
+  //   "' " +
+  //   " WHERE id = ?";
+  const query = `UPDATE user_test_result_dtl 
+  SET answer = ?, status = ?, modified_date = ?
+  WHERE id = (
+      SELECT id 
+      FROM (
+          SELECT id 
+          FROM user_test_result_dtl 
+          WHERE user_test_result_id = ? AND question_set_question_id = ? 
+          ORDER BY id DESC 
+          LIMIT 1
+      ) AS temp
+  )`;
+  const modifiedDate = new Date().toISOString().replace("T", " ").substring(0, 19)
   connection.query(
-    updatestmt,
+    query,
     [
+      userresultdetails.answer,
+      userresultdetails.status,
+      modifiedDate,
       userresultdetails.user_test_result_id,
       userresultdetails.question_set_question_id,
-      userresultdetails.question_type,
-      userresultdetails.answer,
-      userresultdetails.correct_answer,
-      userresultdetails.status,
-      userresultdetails.modified_by,
-      id,
+      // userresultdetails.question_type,
+      // userresultdetails.correct_answer,
+      // userresultdetails.modified_by,
+      //id,
     ],
     (err, res) => {
       // console.log(JSON.stringify(res))
@@ -177,10 +240,10 @@ UserResultDetails.updateById = (id, userresultdetails, result) => {
       }
 
       console.log("updated userresultdetails: ", {
-        id: id,
+        
         ...userresultdetails,
       });
-      result(null, { id: id, ...userresultdetails });
+      result(null, { ...userresultdetails });
     }
   );
 };

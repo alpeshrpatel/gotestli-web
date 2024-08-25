@@ -21,6 +21,7 @@ const MakeQuestionSet = () => {
   const [questionSetsQuestions, setQuestionSetsQuestions] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [questionSetId,setQuestionSetId] = useState();
   const [open, setOpen] = useState(false);
 
   const onOpenModal = () => setOpen(true);
@@ -109,13 +110,11 @@ const MakeQuestionSet = () => {
   );
 
   console.log(selectedQuestions);
-  const questionSetStore = async (questionSetId, questionId) => {
+  const questionSetStore = async (jsonData) => {
     try {
-      const res = await API.post("/api/post/questionset", {
-       
-        questionSetId,
-        questionId,
-      });
+      const res = await API.post("/api/questionset/question",
+       jsonData
+      );
       console.log("successfully");
       console.log(res);
     } catch (error) {
@@ -126,20 +125,21 @@ const MakeQuestionSet = () => {
   const handleSubmit = async () => {
     try {
       async function getId() {
-        const { data } = await API.get("/api/get/last-question-set-id");
+        const { data } = await API.get("/api/questionset/question/questionsetid");
        
         console.log(data)
-        const questionSetId = data[0]?.id + 1 || 1;
-       
-        return {  questionSetId };
+        const questionsetid = data?.id + 1 || 1;
+       setQuestionSetId(questionsetid)
+        return {  questionsetid };
       }
-      let {  questionSetId } = await getId();
+      let {  questionsetid } = await getId();
       
-      
+      let jsonData = [];
       selectedQuestions.forEach((question) => {
-        questionSetStore(questionSetId, question.id);
+        jsonData.push({question_set_id:questionsetid, question_id:question.id})
         
       });
+      questionSetStore(jsonData);
       
      
       onOpenModal();

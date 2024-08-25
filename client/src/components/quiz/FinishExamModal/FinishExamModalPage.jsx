@@ -23,11 +23,12 @@ const FinishExamModalPage = ({
       try {
         const reviewQuestionsData = await Promise.all(
           selectedOption.map(async (q) => {
-            const response = await API.get(`/api/options${q.id}`);
-            const { data } = await API.get(`/api/questionmaster${q.id}`);
+            const response = await API.get(`/api/options/${q.id}`);
+            const { data } = await API.get(`/api/questionmaster/${q.id}`);
+            console.log(data)
             return {
               id: q.id,
-              question: data[0].question,
+              question: data.question,
               options: response.data,
               status: q.status,
               selectedOption: q.selectedOption,
@@ -72,11 +73,11 @@ const FinishExamModalPage = ({
     try {
       const status = newstatus;
 
-      const res = await API.put("/api/update/testresultdtl", {
-        userResultId,
-        questionId,
-        findSelectedOption,
-        status,
+      const res = await API.put("/api/userresultdetails", {
+        user_test_result_id:userResultId,
+        question_set_question_id:questionId ,
+        answer:findSelectedOption,
+        status:status,
       });
 
       return res;

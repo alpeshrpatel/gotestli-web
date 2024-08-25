@@ -30,9 +30,8 @@ const ExamInstructions = ({ id, time, questionSet }) => {
 
   useEffect(() => {
     async function getPendingQuiz() {
-      const { data } = await API.get( 
-        `/api/userresult/user/${userId}/questionset/${questionSetId}`
-      );
+      const { data } = await API.get(`/api/userresult/user/${userId}/questionset/${questionSetId}`);
+      console.log(data)
       setInProgressQuizId(data[0]?.id);
     }
     getPendingQuiz();
@@ -66,7 +65,7 @@ const ExamInstructions = ({ id, time, questionSet }) => {
 
   async function testResultDtlSetData(jsonData) {
     try {
-      const res = await API.post("/api/userresultdetails/add/questions", { jsonData });
+      const res = await API.post("/api/userresultdetails/add/questions", jsonData);
       if (res.status == 200) {
         navigate("/quiz/questions", {
           state: { questionSetId: id, questionSet: questionSet, time: time },
@@ -78,31 +77,40 @@ const ExamInstructions = ({ id, time, questionSet }) => {
     }
   }
 
-
   const handleStartQuiz = async () => {
-    if(!userRole){
-    return  navigate('/login')
+    if (!userRole) {
+      return navigate("/login");
     }
     try {
+      const createdDate = new Date()
+        .toISOString()
+        .replace("T", " ")
+        .substring(0, 19);
+      const date = new Date().toISOString().slice(0, 10);
       const res = await API.post("/api/userresult", {
-        userId,
-        questionSetId,
-        totalQuestions,
-        totalAnswered,
-        notAnswered,
-        totalReviewed,
-        notVisited,
-        skippedQuestion,
+        user_id: userId,
+        question_set_id: questionSetId,
+        total_question: totalQuestions,
+        total_answered: totalAnswered,
+        total_not_answered: notAnswered,
+        total_reviewed: totalReviewed,
+        total_not_visited: notVisited,
+        percentage: 0,
+        marks_obtained: 0,
+        status: 2,
+        created_by: null,
+        created_date: createdDate,
+        modified_by: null,
+        modified_date: createdDate,
       });
-      console.log("Start Quiz Response:", res.data.user_test_result_id);
-      userResultId = res.data.user_test_result_id;
+      console.log("Start Quiz Response:", res);
+      userResultId = res.data.userResultId;
 
       const newData = await Promise.all(
-        questionSet.map(async (question) => {
-          
+        questionSet.map( async (question) => {
           return {
-            userResultId,
-            questionId: question.question_id,
+            user_test_result_id: userResultId,
+            question_set_question_id: question.question_id,
             status: 0,
           };
         })
@@ -116,8 +124,8 @@ const ExamInstructions = ({ id, time, questionSet }) => {
   };
 
   const handleResumeQuiz = () => {
-    if(userRole !== 'student'){
-      navigate('/login')
+    if (userRole !== "student") {
+      navigate("/login");
     }
     navigate("/quiz/questions", {
       state: {

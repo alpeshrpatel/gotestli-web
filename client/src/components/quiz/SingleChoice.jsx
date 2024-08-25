@@ -42,7 +42,7 @@ const SingleChoice = ({
   useEffect(() => {
     async function getOptions() {
       try {
-        const response = await API.get(`/api/options${questionId}`);
+        const response = await API.get(`/api/options/${questionId}`);
         setOptions(response.data);
       } catch (error) {
         console.log(error);
@@ -55,9 +55,9 @@ const SingleChoice = ({
       }else{
         try {
           const { data } = await API.get(
-            `/user/${userId}/questionset/${questionSetId}`
+            `/api/userresult/user/${userId}/questionset/${questionSetId}`
           );
-  
+          console.log(data)
           setUserResultId(data[0]?.id);
         } catch (error) {
           console.log(error);
@@ -73,7 +73,7 @@ const SingleChoice = ({
       
       try {
         const { data } = await API.get(
-          `/api/get/answers/${userResultId}/${questionSetLength}`
+          `/api/userresultdetails/get/answers/userresult/${userResultId}/length/${questionSetLength}`
         );
         
         const persistedAnswers = data.map((q) => {
@@ -104,7 +104,7 @@ const SingleChoice = ({
   async function getStatus() {
     try {
       const { data } = await API.get(
-        `/api/update/testresultdtl/status/${userResultId}/${questionId}`
+        `/api/userresultdetails/status/userresult/${userResultId}/questionid/${questionId}`
       );
       const reviewStatus = data[0]?.status;
 
@@ -184,11 +184,11 @@ const SingleChoice = ({
     try {
       const status = await getUpdatedStatus(isReviewed,newstatus);
       console.log(status);
-      const res = await API.put("/api/update/testresultdtl", {
-        userResultId,
-        questionId,
-        findSelectedOption,
-        status,
+      const res = await API.put("/api/userresultdetails", {
+        user_test_result_id:userResultId,
+        question_set_question_id:questionId ,
+        answer:findSelectedOption,
+        status:status,
       });
       
       return res;

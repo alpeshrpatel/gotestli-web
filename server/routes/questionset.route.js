@@ -12,6 +12,15 @@ module.exports = app => {
     //Retrieve all question sets
     router.get("/", questionset.findAll)
 
+    // Retrieve a single QuestionSet with id
+    router.get("/category/:id", questionset.getQuestionSetIdByCategoryId);
+
+    //Retrieve questions of questionset
+    router.get("/questions/:id", questionset.getQuestionSet);
+
+    // Retrieve question sets of instructor
+    router.get("/instructor/:author", questionset.getQuestionSetsOfInstructor)
+    
     // Update a QuestionSet with id
     router.put("/:id", questionset.update);
   
@@ -21,11 +30,6 @@ module.exports = app => {
     // Delete all QuestionSets
     router.delete("/", questionset.deleteAll);
 
-    // Retrieve a single QuestionSet with id
-    router.get("/category/:id", questionset.getQuestionSetIdByCategoryId);
-
-    //Retrive questions of questionset
-    router.get("/questions/:id", questionset.getQuestionSet);
   
     app.use('/api/questionset', router);
   };

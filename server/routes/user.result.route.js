@@ -15,8 +15,11 @@ module.exports = app => {
     // Retrieve a single QuestionSet with id
     router.get("/user/:userid/questionset/:questionsetid", userresult.findQuestionSetByUserId);
 
-    // Retrieve a history of results od user
+    // Retrieve a history of results of user
     router.get("/history/user/:userid/questionset/:questionsetid", userresult.getHistoryOfUser);
+
+    // Retrieve users list who attempted quiz
+    router.get("/students/list/:questionSetId", userresult.getStudentsList);
 
      // Update a QuestionSet with id
      router.put("/calculate/finalresult", userresult.calculate);
