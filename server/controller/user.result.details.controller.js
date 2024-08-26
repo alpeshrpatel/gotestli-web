@@ -1,4 +1,5 @@
 const UserResultDetail = require("../models/user.result.detail.model");
+
 const { usertestresult } = require("../queries");
 const util = require("../utils/util");
 
@@ -38,6 +39,32 @@ exports.create = (req, res) => {
   });
 };
 
+
+exports.addQuestionsOnStartQuiz= (req, res) => {
+  if (!req.body) {
+    return res.status(400).send({
+      message: "Content can not be empty!",
+    });
+  }
+
+
+
+
+  UserResultDetail.addQuestionsOnStartQuiz(
+    req.body.questionSetId,
+    req.body.userResultId, 
+    (err, data) => {
+      if (err) {
+        return res.status(500).send({
+          message:
+            err.message ||
+            "Some error occurred while creating the UserResultDetail.",
+        });
+      } else {
+        return res.send(data);
+      }
+    });      
+};
 
 exports.addAllQuestionForQuestionSet = (req, res) => {
   if (!req.body) {

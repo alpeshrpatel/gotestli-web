@@ -1,7 +1,6 @@
 const connection = require("../config/mysql.db.config");
 const queries = require("../queries");
 const util = require("../utils/util");
-
 // constructor
 const UserResultDetails = function (userresultdetails) {
   this.id = userresultdetails.id;
@@ -65,6 +64,60 @@ UserResultDetails.addAllQuestionForQuestionSet = (listUserResultDetails, result)
   });
 };
 
+
+UserResultDetails.addQuestionsOnStartQuiz = (questionSetId,
+  userResultId, result) => {
+
+  console.log("questionSetId --> " + questionSetId);
+
+  console.log("userResultId --> " + userResultId);
+  connection.query(`
+        INSERT INTO user_test_result_dtl (
+                user_test_result_id,
+                question_set_question_id,
+                question_type,
+                correct_answer,
+                created_by,
+                created_date,
+                modified_by,
+                modified_date,
+                status
+              ) 
+            SELECT  
+              utr.id  as user_test_result_id ,   
+              qm.id as question_set_question_id, 
+              qm.question_type_id as question_type , 
+              qo.question_option as correct_answer,
+              10 as created_by,
+              CURRENT_TIMESTAMP()  as created_date ,
+              10 as modified_by,
+              CURRENT_TIMESTAMP()  as modified_date ,
+              1 as status 
+            from 
+              question_master qm ,  
+              question_set qs , 
+              user_test_result utr , 
+              question_options qo ,
+              question_set_questions qsq 
+            where 
+              qm.id = qo.question_id 
+              and qo.is_correct_answer =1 
+              and qs.id = utr.question_set_id 
+              and qs.id = qsq.question_set_id 
+              and qsq.question_id = qm.id
+              and qs.id = ${questionSetId}
+              and utr.id = ${userResultId}  `, 
+     (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("created userresultdetails: ", { id: res.insertId });
+    result(null, { id: res.insertId });
+  });
+};
 
 
 UserResultDetails.findById = (id, result) => {
