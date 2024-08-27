@@ -32,20 +32,13 @@ const SubmitQuizModal = ({
 
   const SubmitUserResult = async () => {
     try {
-      const { data } = await API.post("/api/userresult/calculate/finalresult", {
-        userResultId,
-        questionSetId,
-        totalQuestions,
-        totalAnswered,
-        skippedQuestion,
-        totalReviewed,
-      });
+      const { data } = await API.put("/api/userresult/calculate/finalresult", {userResultId, questionSetId, totalQuestions, totalAnswered, skippedQuestion, totalReviewed});
 
       console.log(data);
-      const correct = data.data.correct;
-      const wrong = data.data.wrong;
-      const percentage = data.data.percentage;
-      const passPercentage = data.data.passPercentage;
+      const correct = data.correct;
+      const wrong = data.wrong;
+      const percentage = data.percentage;
+      const passPercentage = data.passPercentage;
       console.log(correct);
       console.log(wrong);
 

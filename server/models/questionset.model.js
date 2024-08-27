@@ -86,6 +86,25 @@ QuestionSet.getQuestionSet = async (question_set_id, result) => {
   });
 };
 
+QuestionSet.getQuestionSetsOfInstructor =  (author, result) => {
+  connection.execute(`SELECT id, title, short_desc, no_of_question, time_duration, totalmarks, is_demo from question_set where author = '${author}'`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if (res.length) {
+      console.log("found questionset: ", res);
+      result(null, res);
+      return;
+    }
+
+    // not found QuestionSet with the id
+    result({ kind: "not_found" }, null);
+  });
+};
+
 QuestionSet.findById = (id, result) => {
   connection.query(`SELECT * FROM question_set WHERE id = ${id}`, (err, res) => {
     if (err) {
@@ -106,7 +125,7 @@ QuestionSet.findById = (id, result) => {
 };
 
 
-QuestionSet.getAll = ( result) => {
+QuestionSet.getAll = (result) => {
   let query = "SELECT * FROM question_set";
   connection.query(query, (err, res) => {
     if (err) {

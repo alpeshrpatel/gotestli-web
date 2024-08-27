@@ -8,23 +8,23 @@ import { API } from "@/utils/AxiosInstance";
 export default function Courses() {
   const [filtered, setFiltered] = useState();
   const [category, setCategory] = useState("All Categories");
-  useEffect(() => {
-    if (category == "All Categories") {
-      setFiltered();
-    } else {
-      const filteredData = coursesData.filter(
-        (elm) => elm.category == category,
-      );
-      setFiltered(filteredData);
-    }
-  }, [category]);
+  // useEffect(() => {
+  //   if (category == "All Categories") {
+  //     setFiltered();
+  //   } else {
+  //     const filteredData = coursesData.filter(
+  //       (elm) => elm.category == category,
+  //     );
+  //     //setFiltered(filteredData);
+  //   }
+  // }, [category]);
   useEffect(()=>{
     async function getQuestionsSet() {
       try {
         const { data } = await API.get(
           "/api/questionset"
         );
-       
+       console.log(data)
         setFiltered(data);
       } catch (error) {
         console.log(error);
@@ -32,7 +32,7 @@ export default function Courses() {
     }
     getQuestionsSet();
   },[])
-  
+  console.log(filtered)
 
   return (
     <section className="layout-pt-lg layout-pb-lg" style={{paddingTop:'10px'}}>
@@ -71,7 +71,18 @@ export default function Courses() {
         data-aos-offset="80"
         data-aos-duration={800}
       >
-        {filtered
+        { filtered &&
+          filtered.map((elm, index) => (
+            <CourceCard
+              key={index}
+              data={elm}
+              index={index}
+              data-aos="fade-right"
+              data-aos-duration={(index + 1) * 300}
+            />
+          ))
+        }
+        {/* {filtered
           ? filtered.map((elm, index) => (
               <CourceCard
                 key={index}
@@ -82,7 +93,7 @@ export default function Courses() {
               />
             ))
           : coursesData             
-              .map((elm, index) => <CourceCard key={index} data={elm} />)}
+              .map((elm, index) => <CourceCard key={index} data={elm} />)} */}
       </div>
     </section>
   );

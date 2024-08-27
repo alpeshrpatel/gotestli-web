@@ -21,7 +21,7 @@ const HomePage = () => {
   useEffect(() => {
     const author = auth.currentUser.displayName;
     async function getQuestionSets() {
-      const { data } = await API.get(`/api/instructor/questionset/${author}`);
+      const { data } = await API.get(`/api/questionset/instructor/${author}`);
       console.log(data);
       setQuestionSets(data);
     }
@@ -32,7 +32,7 @@ const HomePage = () => {
     setExpandedRow(index === expandedRow ? null : index);
     if (index !== expandedRow) {
       try {
-        const { data } = await API.get(`/api/get/userslist/${id}`);
+        const { data } = await API.get(`/api/userresult/students/list/${id}`);
         console.log(data)
         setStudentsData(data);
       } catch (error) {

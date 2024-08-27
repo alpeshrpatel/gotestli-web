@@ -17,9 +17,15 @@ module.exports = app => {
 
     // Retrieve a single UserResultDetails with id
     router.get("/userresult/:userresultid", userresultdetails.findUserResultDetailsByUserResultId);
+
+    // Retrieve selected options from test_result_dtl
+    router.get("/get/answers/userresult/:userResultId/length/:questionSetLength",userresultdetails.getUserResultAnswers);
+
+    // Retrieve updated status of  test_result_dtl
+    router.get("/status/userresult/:userResultId/questionid/:questionId",userresultdetails.getStatus);
   
     // Update a UserResultDetails with id
-    router.put("/:id", userresultdetails.update);
+    router.put("/", userresultdetails.update);
 
     // Delete a UserResultDetails with id
     router.delete("/:id", userresultdetails.delete);

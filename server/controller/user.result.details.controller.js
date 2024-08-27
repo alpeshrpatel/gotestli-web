@@ -46,14 +46,16 @@ exports.addQuestionsOnStartQuiz= (req, res) => {
       message: "Content can not be empty!",
     });
   }
-
-
-
+  const createdDate = new Date()
+  .toISOString()
+  .replace("T", " ")
+  .substring(0, 19);
 
   UserResultDetail.addQuestionsOnStartQuiz(
     req.body.userId,
     req.body.questionSetId,
     req.body.userResultId, 
+    createdDate,
     (err, data) => {
       if (err) {
         return res.status(500).send({
@@ -75,7 +77,7 @@ exports.addAllQuestionForQuestionSet = (req, res) => {
   }
 
   let dataSet = [];
-
+console.log(req.body)
   req.body.forEach((item, index) => {
     if (item !== null) {
       UserResultDetail.getAnswers(
@@ -188,6 +190,52 @@ exports.findUserResultDetailsByUserResultId = (req, res) => {
   );
 };
 
+exports.getUserResultAnswers = (req, res) => {
+  UserResultDetail.getUserResultAnswers(
+    req.params.userResultId,
+    req.params.questionSetLength,
+    (err, data) => {
+      console.log("response :" + res.status);
+      if (err) {
+        if (err.kind === "not_found") {
+          res.status(404).send({
+            message: `Not found selected options with id ${req.params.userResultId}.`,
+          });
+        } else {
+          res.status(500).send({
+            message:
+              "Error retrieving selected options with id " +
+              req.params.userResultId,
+          });
+        }
+      } else res.send(data);
+    }
+  );
+};
+
+exports.getStatus = (req, res) => {
+  UserResultDetail.getStatus(
+    req.params.userResultId,
+    req.params.questionId,
+    (err, data) => {
+      console.log("response :" + res.status);
+      if (err) {
+        if (err.kind === "not_found") {
+          res.status(404).send({
+            message: `Not found status with id ${req.params.userResultId}.`,
+          });
+        } else {
+          res.status(500).send({
+            message:
+              "Error retrieving status with id " +
+              req.params.userResultId,
+          });
+        }
+      } else res.send(data);
+    }
+  );
+};
+
 // Update a UserResultDetail identified by the id in the request
 exports.update = (req, res) => {
   // Validate Request
@@ -199,16 +247,16 @@ exports.update = (req, res) => {
 
   const userDetails = new UserResultDetail(req.body);
 
-  UserResultDetail.updateById(req.params.id, userDetails, (err, data) => {
+  UserResultDetail.updateById( userDetails, (err, data) => {
     // console.log("req.body " + JSON.stringify(req.body));
     if (err) {
       if (err.kind === "not_found") {
         res.status(404).send({
-          message: `Not found UserResultDetail with id ${req.params.id}.`,
+          message: `Not found UserResultDetail `,
         });
       } else {
         res.status(500).send({
-          message: "Error updating UserResultDetail with id " + req.params.id,
+          message: "Error updating UserResultDetail  ",
         });
       }
     } else res.send(data);

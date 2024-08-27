@@ -16,7 +16,7 @@ function Options(options) {
 
 Options.findById = (id, result) => {
   connection.query(
-    `SELECT * FROM question_options WHERE question_id = ${id}`,
+    `SELECT question_option AS options FROM question_options WHERE question_id = ${id}`,
     (err, res) => {
       if (err) {
         console.log("error: ", err);
