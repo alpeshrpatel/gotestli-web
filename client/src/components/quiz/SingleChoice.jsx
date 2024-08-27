@@ -57,7 +57,7 @@ const SingleChoice = ({
           const { data } = await API.get(
             `/api/userresult/user/${userId}/questionset/${questionSetId}`
           );
-          console.log(data)
+          console.log(data[0]?.id.id)
           setUserResultId(data[0]?.id);
         } catch (error) {
           console.log(error);

@@ -192,7 +192,7 @@ UserResult.findByUserId = (user_id, result) => {
 };
 
 UserResult.findQuestionSetByUserId = (userid, questionsetid,  result) => {
-  connection.query(`SELECT * FROM user_test_result WHERE user_id = ${userid} and question_set_id = ${questionsetid} order by created_date desc`, (err, res) => {
+  connection.query(`SELECT id FROM user_test_result WHERE user_id = ${userid} and question_set_id = ${questionsetid} order by id desc`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);

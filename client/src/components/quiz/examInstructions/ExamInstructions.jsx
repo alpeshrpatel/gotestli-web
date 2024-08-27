@@ -30,7 +30,8 @@ const ExamInstructions = ({ id, time, questionSet }) => {
 
   useEffect(() => {
     async function getPendingQuiz() {
-      const { data } = await API.get(`/api/userresult/user/${userId}/questionset/${questionSetId}`);
+      console.log(questionSetId)
+      const { data } = await API.get(`/api/userresult/history/user/${userId}/questionset/${questionSetId}`);
       console.log(data)
       setInProgressQuizId(data[0]?.id);
     }
