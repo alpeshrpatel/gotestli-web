@@ -29,19 +29,37 @@ const ExamInstructions = ({ id, time, questionSet }) => {
   let userResultId;
 
   useEffect(() => {
-    async function getPendingQuiz() {
-      console.log(questionSetId)
-      const { data } = await API.get(`/api/userresult/history/user/${userId}/questionset/${questionSetId}`);
-      console.log(data)
-      setInProgressQuizId(data[0]?.id);
-    }
-    getPendingQuiz();
+    // async function getPendingQuiz() {
+    //   console.log(questionSetId)
+    //   const { data } = await API.get(`/api/userresult/history/user/${userId}/questionset/${questionSetId}`);
+    //   console.log(data)
+    //   setInProgressQuizId(data[0]?.id);
+    // }
+    // getPendingQuiz();
     async function getHistory() {
-      const { data } = await API.get(
-        `/api/userresult/history/user/${userId}/questionset/${questionSetId}`
-      );
-      console.log(data);
-      setHistory(data);
+      try {
+        const { data } = await API.get(`/api/userresult/history/user/${userId}/questionset/${questionSetId}`);
+        console.log(data)
+        if (data.message != "Some error occurred while retrieving userresults."){
+          if (data.length > 4) {
+            const historyData = data.slice(0, 4);
+            setHistory(historyData);
+          } else {
+            setHistory(data);
+          }
+          console.log(data);
+          data.forEach((element) => {
+            if (element.status == 2) {
+              setInProgressQuizId(data[0]?.id);
+            }
+          });
+
+        }
+        
+      } catch (error) {
+        
+        console.log(error)
+      }
     }
     getHistory();
 
@@ -64,9 +82,9 @@ const ExamInstructions = ({ id, time, questionSet }) => {
     checkUserRole();
   }, []);
 
-  async function testResultDtlSetData(jsonData) {
+  async function testResultDtlSetData(userId,questionSetId,userResultId) {
     try {
-      const res = await API.post("/api/userresultdetails/add/questions", jsonData);
+      const res = await API.post("/api/userresultdetails/add/user/questions",{userId,questionSetId,userResultId});
       if (res.status == 200) {
         navigate("/quiz/questions", {
           state: { questionSetId: id, questionSet: questionSet, time: time },
@@ -79,15 +97,11 @@ const ExamInstructions = ({ id, time, questionSet }) => {
   }
 
   const handleStartQuiz = async () => {
-    if (!userRole) {
-      return navigate("/login");
+    if (userRole !== "student") {
+      navigate("/login");
+      return;
     }
     try {
-      const createdDate = new Date()
-        .toISOString()
-        .replace("T", " ")
-        .substring(0, 19);
-      const date = new Date().toISOString().slice(0, 10);
       const res = await API.post("/api/userresult", {
         user_id: userId,
         question_set_id: questionSetId,
@@ -99,26 +113,13 @@ const ExamInstructions = ({ id, time, questionSet }) => {
         percentage: 0,
         marks_obtained: 0,
         status: 2,
-        created_by: null,
-        created_date: createdDate,
+        created_by: 10,
         modified_by: null,
-        modified_date: createdDate,
       });
       console.log("Start Quiz Response:", res);
       userResultId = res.data.userResultId;
 
-      const newData = await Promise.all(
-        questionSet.map( async (question) => {
-          return {
-            user_test_result_id: userResultId,
-            question_set_question_id: question.question_id,
-            status: 0,
-          };
-        })
-      );
-
-      setStartTestResultData(newData);
-      await testResultDtlSetData(newData);
+      await testResultDtlSetData(userId,questionSetId,userResultId);
     } catch (error) {
       console.error("Error in handleStartQuiz:", error);
     }
@@ -127,6 +128,7 @@ const ExamInstructions = ({ id, time, questionSet }) => {
   const handleResumeQuiz = () => {
     if (userRole !== "student") {
       navigate("/login");
+      return;
     }
     navigate("/quiz/questions", {
       state: {
@@ -205,7 +207,7 @@ const ExamInstructions = ({ id, time, questionSet }) => {
                     <>
                       <tr key={id}>
                         <td>{id + 1}</td>
-                        {attempt.modified_date ? (
+                        {attempt.modified_date && attempt.status == 1 ? (
                           <td>
                             {attempt.modified_date
                               .slice(0, 19)

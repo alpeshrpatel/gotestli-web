@@ -57,7 +57,7 @@ const SingleChoice = ({
           const { data } = await API.get(
             `/api/userresult/user/${userId}/questionset/${questionSetId}`
           );
-          console.log(data[0]?.id.id)
+          console.log(data[0]?.id)
           setUserResultId(data[0]?.id);
         } catch (error) {
           console.log(error);
@@ -70,28 +70,32 @@ const SingleChoice = ({
 
   useEffect(() => {
     async function getAnswers() {
-      
-      try {
-        const { data } = await API.get(
-          `/api/userresultdetails/get/answers/userresult/${userResultId}/length/${questionSetLength}`
-        );
-        
-        const persistedAnswers = data.map((q) => {
-          return {
-            id: q.question_set_question_id,
-            selectedOption: q.answer,
-            status: q.status,
-          };
-        });
-        console.log(persistedAnswers)
-        setSelectedOption(persistedAnswers);
-        setReviewQuestion(persistedAnswers);
-        setAnswerPersist(persistedAnswers);
+      if(userResultId){
+        try {
+          console.log(userResultId)
+          const { data } = await API.get(
+            `/api/userresultdetails/get/answers/userresult/${userResultId}/length/${questionSetLength}`
+          );
+          
+          const persistedAnswers = data.map((q) => {
+            return {
+              id: q.question_set_question_id,
+              selectedOption: q.answer,
+              status: q.status,
+            };
+          });
+          
+          setSelectedOption(persistedAnswers);
+          setReviewQuestion(persistedAnswers);
+          setAnswerPersist(persistedAnswers);
+  
+          await getStatus();
+        } catch (error) {
+          console.log(error);
+        }
 
-        await getStatus();
-      } catch (error) {
-        console.log(error);
       }
+
     }
     getAnswers();
   }, [userResultId, questionId]);
@@ -111,15 +115,14 @@ const SingleChoice = ({
       setStatus(reviewStatus);
       
 
-      console.log(status);
-      console.log(data);
+     
     } catch (error) {
       throw error;
     }
   }
 
   async function getUpdatedStatus(isReviewed,newstatus = 0) {
-    console.log(isReviewed)
+   
     if(newstatus == 3){
       setUpdatedStatus(3)
       return 3;
@@ -179,7 +182,6 @@ const SingleChoice = ({
    
   };
  
-
   async function testResultDtlSetData(findSelectedOption,isReviewed = 0,newstatus = 0) {
     try {
       const status = await getUpdatedStatus(isReviewed,newstatus);
@@ -232,6 +234,7 @@ const SingleChoice = ({
     console.log("findselectedoption"+ findSelectedOption)
     let newstatus;
     findSelectedOption && ( newstatus = 3)
+    console.log("newstatus"+newstatus)
     const response = await testResultDtlSetData(findSelectedOption,isReviewed,newstatus);
     console.log(" updatedstatus :"+updatedStatus)
     if (response?.status == 200) {
@@ -257,6 +260,7 @@ const SingleChoice = ({
   };
 
   const onFinishQuiz = async () => {
+   
     const response = await testResultDtlSetData(findSelectedOption);
     if (response?.status == 200) {
       onOpenModal();

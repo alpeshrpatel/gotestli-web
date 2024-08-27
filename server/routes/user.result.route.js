@@ -22,11 +22,14 @@ module.exports = app => {
     router.get("/students/list/:questionSetId", userresult.getStudentsList);
 
      // Update a QuestionSet with id
-     router.put("/calculate/finalresult", userresult.calculate);
+    //  router.put("/calculate/finalresult", userresult.calculate);
   
     // Update a QuestionSet with id
     router.put("/:id", userresult.update);
   
+    // Update a QuestionSet with id
+    router.put("/calculate/finalresult", userresult.calculate);
+
     // Delete a QuestionSet with id
     router.delete("/:id", userresult.delete);
   

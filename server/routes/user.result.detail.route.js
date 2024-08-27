@@ -8,6 +8,9 @@ module.exports = app => {
 
     // Create a new UserResultDetails
     router.post("/add/questions", userresultdetails.addAllQuestionForQuestionSet);
+
+    // Create a new UserResultDetails
+    router.post("/add/user/questions", userresultdetails.addQuestionsOnStartQuiz);
   
     // Retrieve a single UserResultDetails with id
     router.get("/:id", userresultdetails.findOne);

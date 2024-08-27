@@ -40,7 +40,7 @@ exports.getHistoryOfUser = (req, res) => {
 
   UserResult.getHistoryOfUser(userId, questionsetid, (err, data) => {
     if (err)
-      res.status(500).send({
+      res.send({
         message:
           err.message || "Some error occurred while retrieving userresults.",
       });
@@ -65,6 +65,7 @@ exports.getStudentsList = (req, res) => {
 
 exports.calculate = (req, res) => {
   // Validate request
+  console.log("requset body"+req.body)
   if (!req.body) {
     res.status(400).send({
       message: "Content can not be empty!",
@@ -78,6 +79,7 @@ exports.calculate = (req, res) => {
     total_not_answered: req.body.skippedQuestion,
     total_reviewed: req.body.totalReviewed,
   });
+
 
   console.log("-----userresult : " + JSON.stringify(userresult));
 
@@ -102,7 +104,7 @@ exports.create = (req, res) => {
   }
 
   // Create a UserResult
-  const createdDate = new Date().toISOString().replace("T", " ").substring(0, 19);
+  
   const date = new Date().toISOString().slice(0, 10);
   const userresult = new UserResult({
     // id : req.body.id,
@@ -119,9 +121,9 @@ exports.create = (req, res) => {
     date: date,
     flag: null,
     created_by: req.body.created_by,
-    created_date: req.body.created_date,
+    // created_date: req.body.created_date,
     modified_by: req.body.modified_by,
-    modified_date: req.body.modified_date,
+    // modified_date: req.body.modified_date,
     status: req.body.status,
   });
 
