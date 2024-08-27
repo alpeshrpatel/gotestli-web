@@ -65,7 +65,7 @@ UserResultDetails.addAllQuestionForQuestionSet = (listUserResultDetails, result)
 };
 
 
-UserResultDetails.addQuestionsOnStartQuiz = (questionSetId,
+UserResultDetails.addQuestionsOnStartQuiz = (userId, questionSetId,
   userResultId, result) => {
 
   console.log("questionSetId --> " + questionSetId);
@@ -85,12 +85,12 @@ UserResultDetails.addQuestionsOnStartQuiz = (questionSetId,
               ) 
             SELECT  
               utr.id  as user_test_result_id ,   
-              qm.id as question_set_question_id, 
+              qm.id as question_set_question_id,
               qm.question_type_id as question_type , 
               qo.question_option as correct_answer,
-              10 as created_by,
+              ${userId} as created_by,
               CURRENT_TIMESTAMP()  as created_date ,
-              10 as modified_by,
+              ${userId} as modified_by,
               CURRENT_TIMESTAMP()  as modified_date ,
               1 as status 
             from 
