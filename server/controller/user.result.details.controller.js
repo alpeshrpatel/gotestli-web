@@ -51,6 +51,7 @@ exports.addQuestionsOnStartQuiz= (req, res) => {
 
 
   UserResultDetail.addQuestionsOnStartQuiz(
+    req.body.userId,
     req.body.questionSetId,
     req.body.userResultId, 
     (err, data) => {
