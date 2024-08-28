@@ -11,9 +11,13 @@ const connection = require("./config/mysql.db.config.js");
 const option = require('./swagger.js')
 
 const port = 3000;
-var corsOptions = {
-  origin: "http://localhost:8081"
+
+// Define the CORS options
+const corsOptions = {
+  credentials: true,
+  origin: ['http://localhost:3000'] // Whitelist the domains you want to allow
 };
+
 
 
 const app = express();

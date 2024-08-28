@@ -9,6 +9,7 @@ export default function Courses() {
   const [filtered, setFiltered] = useState();
   const [category, setCategory] = useState("All Categories");
   useEffect(() => {
+    
     if (category == "All Categories") {
       setFiltered();
     } else {
@@ -18,6 +19,7 @@ export default function Courses() {
       setFiltered(filteredData);
     }
   }, [category]);
+
   useEffect(()=>{
     async function getQuestionsSet() {
       try {
@@ -44,7 +46,7 @@ export default function Courses() {
             </h2>
 
             <p className="sectionTitle__text ">
-              10,000+ unique online course list designs
+              10,000+ unique online quizes list designs
             </p>
           </div>
         </div>
