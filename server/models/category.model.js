@@ -60,7 +60,7 @@ Category.findById = (id, result) => {
 
 
 Category.getAll = ( result) => {
-  let query = "SELECT * FROM categories";
+  let query = "SELECT * FROM categories where show_menu=1";
   connection.query(query, (err, res) => {
     if (err) {
       console.log("error: ", err);
