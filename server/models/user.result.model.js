@@ -257,15 +257,10 @@ UserResult.calculateResult  = (userResult, result) => {
           console.log("updated userresult: ", {id: userResult.id, correct:correct, wrong: userResult.total_question - correct, percentage:percentage,passPercentage:passPercentage });
           result(null,{ id: userResult.id, correct:correct, wrong: userResult.total_question - correct, percentage:percentage,passPercentage:passPercentage });
         }
-      );
-      
+      );      
       // result(null, this.updateUserResult(userResult));
       return;
     }
-   
-
-    
-
     // not found UserResultDetails with the id
     result({ kind: "not_found" }, null);
   });
@@ -273,16 +268,20 @@ UserResult.calculateResult  = (userResult, result) => {
 };
 
 
-UserResult.create = (newUserResult, result) => {
-  connection.query("INSERT INTO user_test_result SET ?", [newUserResult], (err, res) => {
+
+UserResult.create = (userId, questionSetId , result) => {
+  console.log(userId);
+  console.log(questionSetId);
+  connection.query("INSERT INTO user_test_result(user_id, question_set_id,created_by , modified_by ) values (?,?,?,?)", [userId, questionSetId,userId, userId], (err, res) => {
+
     if (err) {
       console.log("error: ", err);
       result(err, null);
       return;
     }
-    console.log("user_result_id : /////////////"+res.insertId)
-    console.log("created userresult: ", { id: res.insertId, ...newUserResult });
-    result(null, { userResultId: res.insertId});
+    console.log("created userresult: ", { id: res.insertId });
+    result(null, { userResultId: res.insertId });
+
   });
 };
 
@@ -468,7 +467,6 @@ UserResult.getHistoryOfUser = (userId, questionsetid,  result) => {
     }
 
     if (res.length) {
-      
       result(null, res);
       return;
     }
