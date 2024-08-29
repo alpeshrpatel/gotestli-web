@@ -18,30 +18,66 @@ const FinishExamModalPage = ({
   const [reviewData, setReviewData] = useState([]);
   const [open, setOpen] = useState(false);
 
+  // useEffect(() => {
+  //   async function getOptions() {
+  //     try {
+  //       const reviewQuestionsData = await Promise.all(
+  //         selectedOption.map(async (q) => {
+  //           const response = await API.get(`/api/options/${q.id}`);
+  //           const { data } = await API.get(`/api/questionmaster/${q.id}`);
+  //           console.log(data)
+  //           console.log(response)
+  //           return {
+  //             id: q.id,
+  //             question: data.question,
+  //             options: response.data,
+  //             status: q.status,
+  //             selectedOption: q.selectedOption,
+  //           };
+  //         })
+  //       );
+  //       setReviewData(reviewQuestionsData);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  //   getOptions();
+  // }, [selectedOption]);
+
   useEffect(() => {
     async function getOptions() {
-      try {
-        const reviewQuestionsData = await Promise.all(
-          selectedOption.map(async (q) => {
-            const response = await API.get(`/api/options${q.id}`);
-            const { data } = await API.get(`/api/questionmaster${q.id}`);
-            return {
-              id: q.id,
-              question: data[0].question,
-              options: response.data,
-              status: q.status,
-              selectedOption: q.selectedOption,
-            };
-          })
-        );
-        setReviewData(reviewQuestionsData);
-      } catch (error) {
-        console.log(error);
+      const reviewQuestionsData = [];
+      console.log(selectedOption)
+      for (const q of selectedOption) {
+        try {
+          console.log(`Fetching options for id: ${q.id}`);
+          
+          const response = await API.get(`/api/options/${q.id}`);
+          const { data } = await API.get(`/api/questionmaster/${q.id}`);
+          
+          console.log('Question Data:', data);
+          console.log('Options Response:', response);
+          
+          reviewQuestionsData.push({
+            id: q.id,
+            question: data.question,
+            options: response.data,
+            status: q.status,
+            selectedOption: q.selectedOption,
+          });
+        } catch (error) {
+          console.error('Error fetching options:', error.response?.data || error.message || error);
+          break; // Optionally, stop further execution on error
+        }
       }
+      console.log(reviewQuestionsData);
+      setReviewData(reviewQuestionsData);
     }
+  
     getOptions();
   }, [selectedOption]);
-  console.log(reviewData);
+  
+  // console.log(reviewQuestionsData);
   const onOpenModal = () => setOpen(true);
   const onCloseSubmitModal = () => setOpen(false);
 
@@ -72,11 +108,11 @@ const FinishExamModalPage = ({
     try {
       const status = newstatus;
 
-      const res = await API.put("/api/update/testresultdtl", {
-        userResultId,
-        questionId,
-        findSelectedOption,
-        status,
+      const res = await API.put("/api/userresultdetails", {
+        user_test_result_id:userResultId,
+        question_set_question_id:questionId ,
+        answer:findSelectedOption,
+        status:status,
       });
 
       return res;

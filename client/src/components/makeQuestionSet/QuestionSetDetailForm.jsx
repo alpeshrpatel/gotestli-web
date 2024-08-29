@@ -35,9 +35,9 @@ const QuestionSetDetailForm = ({selectedQuestions}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
-    const response = await API.post("/api/questionset", {
+    const response = await API.post("/api/questionset", 
       formData
-    });
+    );
     if(response){
       toast.success('QuestionSet Created Successfully!') 
       navigate('/')

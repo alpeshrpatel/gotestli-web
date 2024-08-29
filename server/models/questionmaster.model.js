@@ -33,7 +33,7 @@ QuestionMaster.create = (newQuestionMaster, result) => {
 };
 
 QuestionMaster.findById = (id, result) => {
-  connection.execute(`SELECT * FROM question_master WHERE id = ${id}`, (err, res) => {
+  connection.execute(`SELECT question FROM question_master WHERE id = ${id}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -53,13 +53,13 @@ QuestionMaster.findById = (id, result) => {
 
 
 
-QuestionMaster.findAll = (tags, result) => {
+QuestionMaster.findAll = (result) => {
   let query = "SELECT * FROM question_master";
-  console.log("tags : " + tags);
-  tags = req.params.id;
-  if (tags) {
-    query += ` WHERE tags LIKE '%${tags}%'`;
-  }
+  // console.log("tags : " + tags);
+  // tags = req.params.id;
+  // if (tags) {
+  //   query += ` WHERE tags LIKE '%${tags}%'`;
+  // }
   console.log("findAll : " + query)
   connection.execute(query, (err, res) => {
     if (err) {

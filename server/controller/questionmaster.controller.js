@@ -46,9 +46,9 @@ exports.create = (req, res) => {
 
 // Retrieve all QuestionMaster from the database (with condition).
 exports.findAll = (req, res) => {
-  const title = req.query.title;
+  // const title = req.query.title;
 
-  QuestionMaster.findAll(title, (err, data) => {
+  QuestionMaster.findAll( (err, data) => {
     if (err)
       res.status(500).send({
         message:

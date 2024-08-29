@@ -80,11 +80,29 @@ exports.getQuestionSet =  (req, res) => {
   });
 };
 
+ // Get a Questionset of author by Id
+ exports.getQuestionSetsOfInstructor =  (req, res) => {
+  console.log(req.params.author)
+  QuestionSet.getQuestionSetsOfInstructor (req.params.author, (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({
+          message: `Not found QuestionSet of Instructor ${req.params.author}.`
+        });
+      } else {
+        res.status(500).send({
+          message: "Error retrieving QuestionSet of Instructor " + req.params.author
+        });
+      }
+    } else res.send(data);
+  });
+};
+
 // Retrieve all QuestionSets from the database (with condition).
 exports.findAll = (req, res) => {
-    const title = req.query.title;
+    // const title = req.query.title;
 
-    QuestionSet.getAll(title, (err, data) => {
+    QuestionSet.getAll( (err, data) => {
       if (err)
         res.status(500).send({
           message:
