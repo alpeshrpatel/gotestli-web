@@ -117,28 +117,12 @@ exports.create = (req, res) => {
 
   // Create a UserResult
   const userresult = new UserResult({
-    id : req.body.id,
-    org_id : req.body.org_id,
-    user_id : req.body.user_id,
-    question_set_id : req.body.question_set_id,
-    total_question : req.body.total_question,
-    total_answered : req.body.total_answered,
-    total_not_answered : req.body.total_not_answered,
-    total_reviewed : req.body.total_reviewed,
-    total_not_visited : req.body.total_not_visited,
-    percentage : req.body.percentage,
-    marks_obtained : req.body.marks_obtained,
-    date: req.body.date,
-    flag : req.body.flag,
-    status : req.body.status,
-    // created_by:req.body.created_by,
-    // created_date:req.body.created_date,
-    // modified_by:req.body.modified_by,
-    // modified_date:req.body.modified_date
+    user_id : req.body.userId,
+    question_set_id : req.body.questionSetId,
   });
 
   // Save UserResult in the database
-  UserResult.create(userresult, (err, data) => {
+  UserResult.create(req.body.userId, req.body.questionSetId, (err, data) => {
     if (err)
       res.status(500).send({
         message:
