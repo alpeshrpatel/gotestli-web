@@ -10,6 +10,13 @@ import {
 } from "firebase/auth";
 import { auth, db } from "@/firebase/Firebase";
 import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { API } from "@/utils/AxiosInstance";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import { TextField } from "@mui/material";
 
 export default function SignUpForm() {
   const [userName, setUserName] = useState("");
@@ -20,10 +27,9 @@ export default function SignUpForm() {
 
   const navigate = useNavigate();
 
- 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       if (password === confirmPassword) {
         const data = await createUserWithEmailAndPassword(
@@ -35,21 +41,32 @@ export default function SignUpForm() {
         updateProfile(auth.currentUser, {
           displayName: userName,
         });
-        console.log(auth.currentUser.uid)
-
+        console.log(auth.currentUser);
+        try {
+          const res = await API.post("/api/users", {
+            username: auth.currentUser.email,
+            email: auth.currentUser.email,
+            created_on: auth.currentUser.metadata?.createdAt,
+            last_login: auth.currentUser.metadata?.lastLoginAt,
+            first_name: userName,
+            uid: auth.currentUser.uid,
+          });
+          console.log(res);
+        } catch (error) {
+          console.log(error);
+        }
         try {
           const docRef = await setDoc(doc(db, "roles", auth.currentUser.uid), {
-            uid: auth.currentUser.uid,                
+            uid: auth.currentUser.uid,
             role: selectedRole,
-            email: email       
+            email: email,
           });
-        
+
           console.log("Document written ");
         } catch (e) {
           console.error("Error adding document: ", e);
         }
 
-       
         console.log("account created successfully!");
 
         navigate("/login");
@@ -62,7 +79,7 @@ export default function SignUpForm() {
       alert(error.message);
     }
   };
-  console.log(selectedRole)
+  console.log(selectedRole);
   return (
     <div className="form-page__content lg:py-50">
       <div className="container mt-5" style={{ backgroundColor: "#bfdeee" }}>
@@ -82,95 +99,81 @@ export default function SignUpForm() {
                 onSubmit={handleSubmit}
               >
                 <div className="col-lg-12">
-                  <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
+                 
+                  <FormLabel
+                    id="demo-radio-buttons-group-label"
+                    className="text-16 lh-1 fw-500 text-dark-1 mb-10"
+                  >
                     Role *
-                  </label>
-                  <div className="role-radio-buttons bg-white ps-5 pt-3 rounded row  ">
-                    
-                  
-                    <div className="form-check col-6">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        id="studentRole"
-                        name="role"
-                        value="student"
-                        required
-                        onChange={(e) => setSelectedRole(e.target.value)}
-                      />
-                      <label className="form-check-label" htmlFor="studentRole">
-                        Student
-                      </label>
-                    </div>
-                    <div className="form-check col-6">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        id="instructorRole"
-                        name="role"
-                        value="instructor"
-                        required
-                        onChange={(e) => setSelectedRole(e.target.value)}
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="instructorRole"
+                  </FormLabel>
+                  <div className="role-radio-buttons bg-white px-5  rounded row gap-2">
+                    <FormControl>
+                      <RadioGroup
+                        aria-labelledby="demo-radio-buttons-group-label"
+                        defaultValue="female"
+                        name="radio-buttons-group"
+                        className="rounded row"
                       >
-                        Instructor
-                      </label>
-                    </div>
+                        <FormControlLabel
+                          value="student"
+                          control={<Radio />}
+                          label="Student"
+                          onChange={(e) => setSelectedRole(e.target.value)}
+                        />
+                        <FormControlLabel
+                          value="instructor"
+                          control={<Radio />}
+                          label="Instructor"
+                          onChange={(e) => setSelectedRole(e.target.value)}
+                        />
+                      </RadioGroup>
+                    </FormControl>
                   </div>
                 </div>
 
-                <div className="col-lg-6">
-                  <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
-                    Email address *
-                  </label>
-                  <input
+                <div className="col-lg-6 ">
+                  <TextField
                     required
-                    className="bg-white"
-                    type="text"
-                    name="title"
-                    placeholder="Email"
+                    id="outlined-required"
+                    label="Email"
+                    type="Email"
+                    className="bg-white rounded"
                     onChange={(e) => setEmail(e.target.value)}
                   />
+                  
                 </div>
                 <div className="col-lg-6">
-                  <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
-                    Username *
-                  </label>
-                  <input
+                 
+                  <TextField
                     required
-                    className="bg-white"
+                    id="outlined-required"
+                    label="Username"
                     type="text"
-                    name="title"
-                    placeholder="Username"
+                    className="custom-height bg-white rounded "
                     onChange={(e) => setUserName(e.target.value)}
                   />
                 </div>
                 <div className="col-lg-6">
-                  <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
-                    Password *
-                  </label>
-                  <input
+                 
+                  <TextField
                     required
-                    className="bg-white"
-                    type="text"
-                    name="title"
-                    placeholder="Password"
+                    id="outlined-password-input"
+                    label="Password"
+                    type="password"
+                    autoComplete="current-password"
+                    className="bg-white rounded"
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
                 <div className="col-lg-6">
-                  <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
-                    Confirm Password *
-                  </label>
-                  <input
+                 
+                  <TextField
                     required
-                    className="bg-white"
-                    type="text"
-                    name="title"
-                    placeholder="Confirm Password"
+                    id="outlined-password-input"
+                    label="Confirm Password"
+                    type="password"
+                    autoComplete="current-password"
+                    className="bg-white rounded"
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                 </div>
