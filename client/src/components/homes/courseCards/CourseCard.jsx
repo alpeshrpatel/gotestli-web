@@ -26,7 +26,7 @@ export default function CourceCard({ data, index }) {
         console.log(error);
       }
     }
-    // getQuestionsSet();
+     getQuestionsSet();
   }, [data.id]
 );
   
