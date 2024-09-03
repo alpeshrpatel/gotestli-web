@@ -5,12 +5,13 @@ import ResponsivePagination from "react-responsive-pagination";
 import "react-responsive-pagination/themes/classic.css";
 import Pagination from "../common/Pagination";
 import PaginationTwo from "../common/PaginationTwo";
-import { PaginationItem } from "@mui/material";
+import { PaginationItem, TextField } from "@mui/material";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import QuestionSetDetailForm from "./QuestionSetDetailForm";
 import Header from "../layout/headers/Header";
 import axios from "axios";
+
 
 const MakeQuestionSet = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -47,6 +48,13 @@ const MakeQuestionSet = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    setQuestionSetsQuestions([]);
+    questionSets.forEach((q) => {
+      getQuestionsFromQSetId(q.question_set_id);
+    });
+  }, [questionSets]);
+
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -74,6 +82,7 @@ const MakeQuestionSet = () => {
       getQuestionSetId(filteredCategory.id);
     }
   };
+  
 
   const getQuestionsFromQSetId = async (questionId) => {
     try {
@@ -85,12 +94,6 @@ const MakeQuestionSet = () => {
     }
   };
 
-  useEffect(() => {
-    setQuestionSetsQuestions([]);
-    questionSets.forEach((q) => {
-      getQuestionsFromQSetId(q.question_set_id);
-    });
-  }, [questionSets]);
 
   const handleCheckboxChange = (question) => {
     setSelectedQuestions((prevSelectedQuestions) =>
@@ -152,14 +155,9 @@ const MakeQuestionSet = () => {
     <>
       <Header />
       <div className="container " style={{ marginTop: "110px" }}>
-        <h1>Make Question Set</h1>
-        <input
-          type="text"
-          placeholder="Search questions..."
-          value={searchTerm}
-          onChange={handleSearch}
-          className="searchInput"
-        />
+        <h1 className="mb-4">Make Question Set</h1>
+       
+        <TextField id="outlined-search" label="Search Questions" type="search" className="searchInput mb-2" onChange={handleSearch}/>
         <select
           value={filter}
           onChange={handleFilter}

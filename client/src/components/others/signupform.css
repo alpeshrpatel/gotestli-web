@@ -20,3 +20,9 @@
     font-size: 14px;
     color: #333;
   }
+
+  .custom-height .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
+    height: 56px !important;
+   
+    border: none !important; 
+  }

@@ -103,9 +103,18 @@ const ExamInstructions = ({ id, time, questionSet }) => {
     }
     try {
       const res = await API.post("/api/userresult", {
-        userId,
-        questionSetId,
-        status
+        user_id: userId,
+        question_set_id: questionSetId,
+        total_question: totalQuestions,
+        total_answered: totalAnswered,
+        total_not_answered: notAnswered,
+        total_reviewed: totalReviewed,
+        total_not_visited: notVisited,
+        percentage: 0,
+        marks_obtained: 0,
+        status: 2,
+        created_by: 10,
+        modified_by: null,
       });
       console.log("Start Quiz Response:", res);
       userResultId = res.data.userResultId;
