@@ -93,7 +93,7 @@ const HomePage = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              {studentsData.map((student, i) => (
+                              {studentsData && studentsData.map((student, i) => (
                                 <tr key={student.id}>
                                   <td>{i + 1}</td>
                                   <td>{student.user_id}</td>

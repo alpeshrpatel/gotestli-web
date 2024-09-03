@@ -15,7 +15,11 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 
 const SignInWithGoogle = () => {
   const [open, setOpen] = useState(false);
@@ -29,7 +33,6 @@ const SignInWithGoogle = () => {
   const navigate = useNavigate();
 
   const googleLogin = async () => {
-    
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
@@ -41,6 +44,19 @@ const SignInWithGoogle = () => {
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
+        try {
+          const res = await API.post("/api/users", {
+            username: auth.currentUser.email,
+            email: auth.currentUser.email,
+            created_on: auth.currentUser.metadata?.createdAt,
+            last_login: auth.currentUser.metadata?.lastLoginAt,
+            first_name: userName,
+            uid: auth.currentUser.uid,
+          });
+          console.log(res);
+        } catch (error) {
+          console.log(error);
+        }
         try {
           await setDoc(doc(db, "roles", auth.currentUser.uid), {
             uid: auth.currentUser.uid,
@@ -83,7 +99,7 @@ const SignInWithGoogle = () => {
     <div>
       <Modal open={open} onClose={onCloseModal} center>
         <div className="col-lg-12 border-1 rounded">
-          <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
+          {/* <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
             * Please Select Role
           </label>
           <div className="role-radio-buttons bg-white px-5  rounded row gap-2">
@@ -115,6 +131,32 @@ const SignInWithGoogle = () => {
                 Instructor
               </label>
             </div>
+          </div> */}
+          <div className="role-radio-buttons bg-white px-5  rounded row gap-2">
+          <FormControl>
+            <FormLabel id="demo-radio-buttons-group-label">
+              * Please Select Role
+            </FormLabel>
+            <RadioGroup
+              aria-labelledby="demo-radio-buttons-group-label"
+              defaultValue="female"
+              name="radio-buttons-group"
+            >
+              <FormControlLabel
+                value="student"
+                control={<Radio />}
+                label="Student"
+                onChange={(e) => setSelectedRole(e.target.value)}
+              />
+              <FormControlLabel
+                value="instructor"
+                control={<Radio />}
+                label="Instructor"
+                onChange={(e) => setSelectedRole(e.target.value)}
+              />
+            </RadioGroup>
+          </FormControl>
+
           </div>
           {selectedRole && (
             <button

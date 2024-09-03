@@ -15,6 +15,7 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
+import { TextField } from "@mui/material";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -79,67 +80,27 @@ export default function LoginForm() {
                 className="contact-form respondForm__form row y-gap-20 pt-30 "
                 onSubmit={handleSubmit}
               >
-                {/* <div className="col-lg-12">
-                  <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
-                    Role *
-                  </label>
-                  <div className="role-radio-buttons bg-white ps-5 pt-3 rounded row  ">
-                    <div className="form-check col-6">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        id="studentRole"
-                        name="role"
-                        value="student"
-                        required
-                        onChange={(e) => setSelectedRole(e.target.value)}
-                      />
-                      <label className="form-check-label" htmlFor="studentRole">
-                        Student
-                      </label>
-                    </div>
-                    <div className="form-check col-6">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        id="instructorRole"
-                        name="role"
-                        value="instructor"
-                        required
-                        onChange={(e) => setSelectedRole(e.target.value)}
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="instructorRole"
-                      >
-                        Instructor
-                      </label>
-                    </div>
-                  </div>
-                </div> */}
+                
                 <div className="col-12">
-                  <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
-                    Email
-                  </label>
-                  <input
-                    className="bg-white"
+                 
+                   <TextField
                     required
-                    type="text"
-                    name="title"
-                    placeholder="Email"
+                    id="outlined-required"
+                    label="Email"
+                    type="Email"
+                    className="bg-white rounded w-100"
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 <div className="col-12">
-                  <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
-                    Password
-                  </label>
-                  <input
+                 
+                   <TextField
                     required
-                    className="bg-white"
+                    id="outlined-password-input"
+                    label="Password"
                     type="password"
-                    name="title"
-                    placeholder="Password"
+                    autoComplete="current-password"
+                    className="bg-white rounded w-100"
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
