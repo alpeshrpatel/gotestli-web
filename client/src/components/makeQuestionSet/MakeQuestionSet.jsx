@@ -217,7 +217,7 @@ const MakeQuestionSet = () => {
           },
         }}
       >
-        <QuestionSetDetailForm selectedQuestions={selectedQuestions} />
+        <QuestionSetDetailForm selectedQuestions={selectedQuestions} categories = {categories} />
       </Modal>
     </>
   );
