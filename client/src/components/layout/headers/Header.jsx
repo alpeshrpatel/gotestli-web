@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { HeaderExplore } from "../component/header-explore";
 import SearchToggle from "../component/SearchToggle";
 import CartToggle from "../component/CartToggle";
 import Menu from "../component/Menu";

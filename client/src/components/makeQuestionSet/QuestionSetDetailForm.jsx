@@ -5,8 +5,9 @@ import { auth } from "@/firebase/Firebase";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Checkbox, FormControlLabel, TextField } from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
 
-const QuestionSetDetailForm = ({ selectedQuestions }) => {
+const QuestionSetDetailForm = ({ selectedQuestions, categories }) => {
   const user = auth.currentUser.displayName;
   const [formData, setFormData] = useState({
     title: "",
@@ -19,8 +20,8 @@ const QuestionSetDetailForm = ({ selectedQuestions }) => {
     time_duration: "",
     no_of_question: selectedQuestions.length,
     is_demo: false,
-    totalmarks:'',
-    pass_percentage:'',
+    totalmarks: "",
+    pass_percentage: "",
   });
   const navigate = useNavigate();
 
@@ -37,11 +38,11 @@ const QuestionSetDetailForm = ({ selectedQuestions }) => {
     console.log(formData);
     const response = await API.post("/api/questionset", formData);
     // if (response) {
-      toast.success("QuestionSet Created Successfully!");
-      navigate("/");
+    toast.success("QuestionSet Created Successfully!");
+    navigate("/");
     // }
   };
-
+  console.log(categories);
   return (
     <form className="quiz-form " onSubmit={handleSubmit}>
       <div className="form-group">
@@ -156,10 +157,10 @@ const QuestionSetDetailForm = ({ selectedQuestions }) => {
             id="outlined-required"
             label="Start Date"
             InputLabelProps={{
-              shrink: true, 
+              shrink: true,
             }}
             InputProps={{
-              placeholder: "Start Date", 
+              placeholder: "Start Date",
             }}
             type="date"
             name="start_date"
@@ -182,10 +183,10 @@ const QuestionSetDetailForm = ({ selectedQuestions }) => {
             id="outlined-required"
             label="End Date"
             InputLabelProps={{
-              shrink: true, 
+              shrink: true,
             }}
             InputProps={{
-              placeholder: "End Date", 
+              placeholder: "End Date",
             }}
             type="date"
             name="end_date"
@@ -211,9 +212,9 @@ const QuestionSetDetailForm = ({ selectedQuestions }) => {
           // InputLabelProps={{
           //   shrink: true,
           // }}
-          inputProps={{ 
-            max: 200, 
-            min: 0    
+          inputProps={{
+            max: 200,
+            min: 0,
           }}
           name="time_duration"
           value={formData.time_duration}
@@ -251,23 +252,23 @@ const QuestionSetDetailForm = ({ selectedQuestions }) => {
             required
             className="w-auto"
           /> */}
-           <TextField
-          required
-          id="outlined-number"
-          label="Total Marks"
-          type="number"
-          // InputLabelProps={{
-          //   shrink: true,
-          // }}
-          inputProps={{ 
-            max: 400, 
-            min: 0    
-          }}
-          name="totalmarks"
-          value={formData.totalmarks}
-          className="custom-height-questionsetform bg-white rounded w-100"
-          onChange={handleChange}
-        />
+          <TextField
+            required
+            id="outlined-number"
+            label="Total Marks"
+            type="number"
+            // InputLabelProps={{
+            //   shrink: true,
+            // }}
+            inputProps={{
+              max: 400,
+              min: 0,
+            }}
+            name="totalmarks"
+            value={formData.totalmarks}
+            className="custom-height-questionsetform bg-white rounded w-100"
+            onChange={handleChange}
+          />
         </div>
         <div className="d-flex align-content-center col gap-4">
           {/* <label className="align-content-center">Pass Percentage:</label>
@@ -279,26 +280,56 @@ const QuestionSetDetailForm = ({ selectedQuestions }) => {
             required
             className="w-auto"
           /> */}
-           <TextField
-          required
-          id="outlined-number"
-          label="Pass Percentage"
-          type="number"
-          // InputLabelProps={{
-          //   shrink: true,
-          // }}
-          inputProps={{ 
-            max: 100, 
-            min: 0    
-          }}
-          name="pass_percentage"
-          value={formData.pass_percentage}
-          className="custom-height-questionsetform bg-white rounded w-100"
-          onChange={handleChange}
-        />
+          <TextField
+            required
+            id="outlined-number"
+            label="Pass Percentage"
+            type="number"
+            // InputLabelProps={{
+            //   shrink: true,
+            // }}
+            inputProps={{
+              max: 100,
+              min: 0,
+            }}
+            name="pass_percentage"
+            value={formData.pass_percentage}
+            className="custom-height-questionsetform bg-white rounded w-100"
+            onChange={handleChange}
+          />
         </div>
       </div>
-
+      <div className="form-group" >
+        <Autocomplete
+          multiple
+          id="tags-outlined"
+          options={categories} 
+          getOptionLabel={(option) => option.title || ""} // Adjust according to your data structure
+          filterSelectedOptions
+          sx={{
+            '& .MuiInputBase-input': {
+              height: '35px',
+              border: 'none',             
+            },
+            
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Categories"
+              placeholder="Select categories"
+            />
+          )}
+         
+          className="custom-height-questionsetform bg-white rounded w-100"
+          onChange={(event, newValue) => {
+            setFormData({
+              ...formData,
+              categories: newValue,
+            });
+          }}
+        />
+      </div>
       <div className="form-group ">
         {/* <label className=" d-flex gap-2 align-content-center">
           Is Demo:
@@ -310,20 +341,19 @@ const QuestionSetDetailForm = ({ selectedQuestions }) => {
             className="align-content-center"
           />
         </label> */}
-        
-        
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={formData.is_demo}
-            onChange={handleChange}
-            name="is_demo"
-            color="primary"
-          />
-        }
-        label="Is Demo"
-        className="w-100"
-      />
+
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={formData.is_demo}
+              onChange={handleChange}
+              name="is_demo"
+              color="primary"
+            />
+          }
+          label="Is Demo"
+          className="w-100"
+        />
       </div>
       <button className="questionset-form-button " type="submit">
         Submit

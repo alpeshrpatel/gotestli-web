@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Socials from "@/components/common/Socials";
+ import Socials from "@/components/common/Socials";
 import FooterLinks from "../component/FooterLinks";
 import Links from "../component/Links";
 export default function FooterOne() {
