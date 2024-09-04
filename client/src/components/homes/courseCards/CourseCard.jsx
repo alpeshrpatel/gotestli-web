@@ -12,24 +12,22 @@ export default function CourceCard({ data, index }) {
   const [questionSet, setQuestionsSet] = useState([]);
   const [open, setOpen] = useState(false);
 
-  const onOpenModal = () => setOpen(true);
+  const onOpenModal = () => {
+    async function getQuestions() {
+      try {
+        const response = await API.get(`/api/questionset/questions/${data.id}`);
+
+        setQuestionsSet(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getQuestions();
+    setOpen(true);
+  };
+
   const onCloseModal = () => setOpen(false);
 
-//   useEffect(() => {
-//     async function getQuestionsSet() {
-     
-//       try {
-//         const response = await API.get(`/api/questionset/questions/${data.id}`);
-        
-//        setQuestionsSet(response.data);
-//       } catch (error) {
-//         console.log(error);
-//       }
-//     }
-//      getQuestionsSet();
-//   }, [data.id]
-// );
-  
   return (
     <>
       <Modal open={open} onClose={onCloseModal} center>
