@@ -1,6 +1,6 @@
 import PageLinks from "@/components/common/PageLinks";
 import Preloader from "@/components/common/Preloader";
-import EventDetails from "@/components/events/EventDetails";
+import EventDetails from "@/components/events-backup/EventDetails";
 
 import { useParams } from "react-router-dom";
 import FooterOne from "@/components/layout/footers/FooterOne";

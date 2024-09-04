@@ -1,5 +1,5 @@
 import React from "react";
-import { features } from "../../../data/learningPaths";
+import { features } from "../../../data--backup/learningPaths";
 
 import Star from "@/components/common/Star";
 export default function LearningPathSeven() {

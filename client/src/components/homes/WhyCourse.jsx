@@ -1,5 +1,5 @@
 import React from "react";
-import { steps } from "../../data/steps";
+import { steps } from "../../data--backup/steps";
 export default function WhyCourse() {
   return (
     <section className="layout-pt-lg layout-pb-lg bg-dark-2">

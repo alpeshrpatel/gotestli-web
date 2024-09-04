@@ -15,6 +15,7 @@ import {
 const ExamInstructions = ({ id, time, questionSet }) => {
   const [startTestResultData, setStartTestResultData] = useState([]);
   const [inProgressQuizId, setInProgressQuizId] = useState();
+  const [setQuestionsSet] = useState([]);
   const [history, setHistory] = useState([]);
   const [userRole, setUserRole] = useState("");
   const navigate = useNavigate();
@@ -130,6 +131,17 @@ const ExamInstructions = ({ id, time, questionSet }) => {
       navigate("/login");
       return;
     }
+    // async function getQuestionsSet() {
+     
+    //   try {
+    //     const response = await API.get(`/api/questionset/questions/${data.id}`);
+        
+    //    setQuestionsSet(response.data);
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // }
+    //  getQuestionsSet();
     navigate("/quiz/questions", {
       state: {
         userResultId: inProgressQuizId,

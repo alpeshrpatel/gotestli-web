@@ -1,5 +1,5 @@
 import React from "react";
-import { featureSix } from "../../../data/features";
+import { featureSix } from "../../../data--backup/features";
 import { Link } from "react-router-dom";
 export default function HeroEight() {
   return (

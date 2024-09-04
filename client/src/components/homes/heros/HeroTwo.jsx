@@ -6,8 +6,8 @@ import "swiper/css/pagination";
 import { useEffect, useState } from "react";
 
 import React from "react";
-import { featureTwo } from "../../../data/features";
-import { slidesData } from "../../../data/hero";
+import { featureTwo } from "../../../data--backup/features";
+import { slidesData } from "../../../data--backup/hero";
 import { useNavigate } from "react-router-dom";
 export default function HeroTwo() {
   const navigate = useNavigate();

@@ -2,9 +2,9 @@ import React from "react";
 import FooterNine from "../layout/footers/FooterNine";
 
 import PieChartComponent from "./PieCharts";
-import { activeUsers, coursesData, states, timeline } from "@/data/dashboard";
+import { activeUsers, coursesData, states, timeline } from "@/data--backup/dashboard";
 
-import { resentCourses, tags } from "@/data/courses";
+import { resentCourses, tags } from "@/data--backup/courses";
 import CourseCardTwo from "./DashBoardCards/CourseCardTwo";
 
 import PageLinksTwo from "../common/PageLinksTwo";

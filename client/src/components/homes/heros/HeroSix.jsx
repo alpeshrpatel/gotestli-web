@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { featureSix } from "../../../data/features";
+import { featureSix } from "../../../data--backup/features";
 import ModalVideo from "@/components/common/ModalVideo";
 import gsap from "gsap";
 import { Link } from "react-router-dom";

@@ -3,8 +3,8 @@ import { Navigation, Pagination } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 // import 'swiper/swiper.min.css';
-import { testimonials } from "../../data/tesimonials";
-import { counters } from "../../data/count";
+import { testimonials } from "../../data--backup/tesimonials";
+import { counters } from "../../data--backup/count";
 // SwiperCore.use([Pagination]);
 
 export default function TestimonialsOne() {

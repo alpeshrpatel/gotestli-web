@@ -1,4 +1,4 @@
-import BlogsOne from "@/components/blogs/BlogsOne";
+import BlogsOne from "@/components/blogs-backup/BlogsOne";
 import PageLinks from "@/components/common/PageLinks";
 import Preloader from "@/components/common/Preloader";
 
@@ -7,7 +7,7 @@ import Header from "@/components/layout/headers/Header";
 
 import React from "react";
 
-import CourseCart from "../../../components/cartsAndCheckout/CourseCart";
+import CourseCart from "../../../components/cartsAndCheckout-backup/CourseCart";
 import MetaComponent from "@/components/common/MetaComponent";
 
 const metadata = {

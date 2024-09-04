@@ -1,5 +1,5 @@
 import React from "react";
-import { counters } from "@/data/count";
+import { counters } from "@/data--backup/count";
 export default function Statictis() {
   return (
     <section className="layout-pt-lg layout-pb-lg bg-light-7">

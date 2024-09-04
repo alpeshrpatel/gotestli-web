@@ -1,5 +1,5 @@
 import React from "react";
-import { topCatagoriesSeven } from "@/data/topCategories";
+import { topCatagoriesSeven } from "@/data--backup/topCategories";
 import { Link } from "react-router-dom";
 export default function CategoriesSeven() {
   return (

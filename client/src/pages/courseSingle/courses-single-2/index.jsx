@@ -1,8 +1,8 @@
 import PageLinks from "@/components/common/PageLinks";
 import Preloader from "@/components/common/Preloader";
 
-import CourseDetailsTwo from "@/components/courseSingle/CourseDetailsTwo";
-import CourseSlider from "@/components/courseSingle/CourseSlider";
+import CourseDetailsTwo from "@/components/courseSingle-backup/CourseDetailsTwo";
+import CourseSlider from "@/components/courseSingle-backup/CourseSlider";
 import FooterOne from "@/components/layout/footers/FooterOne";
 import { useParams } from "react-router-dom";
 import Header from "@/components/layout/headers/Header";

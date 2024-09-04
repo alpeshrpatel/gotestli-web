@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import FooterNine from "../layout/footers/FooterNine";
-import { coursesData } from "@/data/dashboard";
+import { coursesData } from "@/data--backup/dashboard";
 import Pagination from "../common/Pagination";
 import CoursesCardDashboard from "./DashBoardCards/CoursesCardDashboard";
 const ddItems = [

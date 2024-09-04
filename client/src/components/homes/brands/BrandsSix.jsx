@@ -1,5 +1,5 @@
 import React from "react";
-import { brands } from "../../../data/brands";
+import { brands } from "../../../data--backup/brands";
 
 export default function BrandsSix() {
   return (

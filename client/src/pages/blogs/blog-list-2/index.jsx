@@ -1,4 +1,4 @@
-import BlogsTwo from "@/components/blogs/BlogsTwo";
+import BlogsTwo from "@/components/blogs-backup/BlogsTwo";
 import PageLinks from "@/components/common/PageLinks";
 import Preloader from "@/components/common/Preloader";
 

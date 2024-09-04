@@ -1,9 +1,9 @@
 import PageLinks from "@/components/common/PageLinks";
 import Preloader from "@/components/common/Preloader";
 
-import CourseDetailsSix from "@/components/courseSingle/CourseDetailsSix";
+import CourseDetailsSix from "@/components/courseSingle-backup/CourseDetailsSix";
 
-import CourseSlider from "@/components/courseSingle/CourseSlider";
+import CourseSlider from "@/components/courseSingle-backup/CourseSlider";
 import FooterOne from "@/components/layout/footers/FooterOne";
 
 import Header from "@/components/layout/headers/Header";

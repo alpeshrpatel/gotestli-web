@@ -1,6 +1,6 @@
 import PageLinks from "@/components/common/PageLinks";
 import Preloader from "@/components/common/Preloader";
-import CourseListThree from "@/components/courseList/CourseListThree";
+import CourseListThree from "@/components/courseList-backaup/CourseListThree";
 
 import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";

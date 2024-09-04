@@ -1,6 +1,6 @@
 import React from "react";
 import CourceCard from "../courseCards/CourseCard";
-import { coursesData, catagories } from "../../../data/courses";
+import { coursesData, catagories } from "../../../data--backup/courses";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { API } from "@/utils/AxiosInstance";

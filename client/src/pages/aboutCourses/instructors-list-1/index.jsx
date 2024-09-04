@@ -1,4 +1,4 @@
-import Instractors from "@/components/aboutCourses/instractors/Instractors";
+import Instractors from "@/components/aboutCourses-backup/instractors/Instractors";
 import PageLinks from "@/components/common/PageLinks";
 import Preloader from "@/components/common/Preloader";
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { teamMembers } from "../../../data/instractors";
+import { teamMembers } from "../../../data--backup/instractors";
 import { Link } from "react-router-dom";
 export default function Instructors({ backgroundColor }) {
   return (

@@ -1,5 +1,5 @@
 import React from "react";
-import { footerLinks } from "../../../data/footerLinks";
+import { footerLinks } from "../../../data--backup/footerLinks";
 import { Link } from "react-router-dom";
 export default function FooterLinksTwo({ allClasses, parentClass }) {
   return (

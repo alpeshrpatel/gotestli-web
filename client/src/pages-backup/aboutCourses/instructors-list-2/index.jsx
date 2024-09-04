@@ -1,4 +1,4 @@
-import InatractorsTwo from "@/components/aboutCourses/instractors/InatractorsTwo";
+import InatractorsTwo from "@/components/aboutCourses-backup/instractors/InatractorsTwo";
 import PageLinks from "@/components/common/PageLinks";
 import Preloader from "@/components/common/Preloader";
 import FooterOne from "@/components/layout/footers/FooterOne";

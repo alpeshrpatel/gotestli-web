@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { coursesData } from "@/data/courses";
+import { coursesData } from "@/data--backup/courses";
 import { Navigation, Pagination } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import CourceCardSeven from "@/components/homes/courseCards/CourseCardSeven";

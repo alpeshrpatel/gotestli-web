@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { pricingData } from "../../data/pricing";
+import { pricingData } from "../../data--backup/pricing";
 import { Link } from "react-router-dom";
 
 export default function Pricing() {

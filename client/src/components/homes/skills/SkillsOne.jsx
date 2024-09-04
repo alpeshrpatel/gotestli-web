@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 import "swiper/css";
 import React from "react";
-import { skillsOne } from "../../../data/skills";
+import { skillsOne } from "../../../data--backup/skills";
 
 export default function SkillsOne() {
   const [showSlider, setShowSlider] = useState(false);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Navigation, Pagination } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { testimonialsTwoFour } from "../../../data/tesimonials";
+import { testimonialsTwoFour } from "../../../data--backup/tesimonials";
 import TestimonialCard from "@/components/common/TestimonialCard";
 export default function TestimonialsFour() {
   const [showSlider, setShowSlider] = useState(false);

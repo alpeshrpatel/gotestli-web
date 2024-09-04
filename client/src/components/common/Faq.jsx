@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { faq } from "@/data/faq";
+import { faq } from "@/data--backup/faq";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export default function Faq() {

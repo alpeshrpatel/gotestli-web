@@ -1,5 +1,5 @@
 import React from "react";
-import { schoolAchievement } from "../../../data/achievements";
+import { schoolAchievement } from "../../../data--backup/achievements";
 
 export default function Achievements() {
   return (

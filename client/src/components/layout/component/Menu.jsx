@@ -10,7 +10,7 @@ import {
   getDoc,
   setDoc,
 } from "firebase/firestore";
-import { menuList } from "@/data/menu";
+import { menuList } from "@/data--backup/menu";
 import { useLocation } from "react-router-dom";
 
 export default function Menu({ allClasses, headerPosition }) {

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { learningPathFive } from "../../data/learningPaths";
+import { learningPathFive } from "../../data--backup/learningPaths";
 export default function LearningCommon() {
   return (
     <section className="layout-pt-lg layout-pb-lg">

@@ -1,4 +1,4 @@
-import { coursesData } from "@/data/dashboard";
+import { coursesData } from "@/data--backup/dashboard";
 import React from "react";
 import CourseCardTwoDash from "./DashBoardCards/CourseCardTwoDash";
 import FooterNine from "../layout/footers/FooterNine";

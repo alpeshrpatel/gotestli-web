@@ -1,5 +1,5 @@
 import React from "react";
-import { featureTwo } from "../../../data/features";
+import { featureTwo } from "../../../data--backup/features";
 
 export default function Features() {
   return (

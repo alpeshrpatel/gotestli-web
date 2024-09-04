@@ -1,4 +1,4 @@
-import { sections } from "@/data/adminitrationFeatures";
+import { sections } from "@/data--backup/adminitrationFeatures";
 import React, { useState } from "react";
 import FooterNine from "../layout/footers/FooterNine";
 import { Link } from "react-router-dom";

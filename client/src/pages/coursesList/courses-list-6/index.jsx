@@ -1,10 +1,10 @@
 import PageLinks from "@/components/common/PageLinks";
 import Preloader from "@/components/common/Preloader";
-import CourseListSix from "@/components/courseList/CourseListSix";
-import CoursesSlider from "@/components/courseList/CourseSlider";
-import Instractors from "@/components/courseList/Instractors";
+import CourseListSix from "@/components/courseList-backup/CourseListSix";
+import CoursesSlider from "@/components/courseList-backup/CourseSlider";
+import Instractors from "@/components/courseList-backup/Instractors";
 
-import PageHeading from "@/components/courseList/PageHeading";
+import PageHeading from "@/components/courseList-backup/PageHeading";
 
 import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";

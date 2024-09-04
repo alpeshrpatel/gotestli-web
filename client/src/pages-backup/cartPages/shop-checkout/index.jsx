@@ -4,7 +4,7 @@ import Preloader from "@/components/common/Preloader";
 import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";
 
-import ShopCheckOut from "@/components/cartsAndCheckout/ShopCheckOut";
+import ShopCheckOut from "@/components/cartsAndCheckout-backup/ShopCheckOut";
 import React from "react";
 import MetaComponent from "@/components/common/MetaComponent";
 

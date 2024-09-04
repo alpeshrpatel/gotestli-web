@@ -4,7 +4,7 @@ import Preloader from "@/components/common/Preloader";
 
 import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";
-import HelpCenter from "@/components/others/HelpCenter";
+import HelpCenter from "@/components/others--backup/HelpCenter";
 import Terms from "@/components/terms/Terms";
 import React from "react";
 import MetaComponent from "@/components/common/MetaComponent";

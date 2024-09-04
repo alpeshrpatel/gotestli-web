@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import React, { useEffect, useState } from "react";
 
 import CourceCardFour from "@/components/homes/courseCards/CourseCardFour";
-import { coursesData } from "@/data/courses";
+import { coursesData } from "@/data--backup/courses";
 import { Link } from "react-router-dom";
 
 export default function CoursesFour() {

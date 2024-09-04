@@ -5,7 +5,7 @@ import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";
 
 import React from "react";
-import CourseCheckOut from "@/components/cartsAndCheckout/CourseCheckout";
+import CourseCheckOut from "@/components/cartsAndCheckout-backup/CourseCheckout";
 import MetaComponent from "@/components/common/MetaComponent";
 
 const metadata = {

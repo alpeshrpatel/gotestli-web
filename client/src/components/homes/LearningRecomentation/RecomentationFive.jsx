@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { allCategories, difficulty } from "@/data/courses";
+import { allCategories, difficulty } from "@/data--backup/courses";
 import { Link } from "react-router-dom";
 export default function RecomentationFive() {
   const [currentCategory, setCurrentCategory] = useState("All");

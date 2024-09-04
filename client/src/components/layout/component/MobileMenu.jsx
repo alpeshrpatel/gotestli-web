@@ -1,6 +1,6 @@
 import MobileFooter from "./MobileFooter";
 
-import { menuList } from "../../../data/menu";
+import { menuList } from "../../../data--backup/menu";
 
 import { Link } from "react-router-dom";
 

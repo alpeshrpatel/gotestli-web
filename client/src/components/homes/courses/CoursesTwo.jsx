@@ -1,8 +1,8 @@
 import React from "react";
-import { coursesData } from "../../../data/courses";
+import { coursesData } from "../../../data--backup/courses";
 import CourceCard from "../courseCards/CourseCard";
 import { useState, useEffect } from "react";
-import { viewStatus } from "../../../data/courses";
+import { viewStatus } from "../../../data--backup/courses";
 import { Link } from "react-router-dom";
 export default function CoursesTwo() {
   const [dropdownOpen, setDropdownOpen] = useState(false);

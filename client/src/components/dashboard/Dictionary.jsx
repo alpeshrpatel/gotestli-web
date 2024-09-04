@@ -1,4 +1,4 @@
-import { letters, alphabetItems } from "@/data/dictionary";
+import { letters, alphabetItems } from "@/data--backup/dictionary";
 
 import React, { useState, useEffect } from "react";
 import PageLinksTwo from "../common/PageLinksTwo";

@@ -1,4 +1,4 @@
-import { reviews } from "@/data/reviews";
+import { reviews } from "@/data--backup/reviews";
 import React from "react";
 import Star from "../common/Star";
 

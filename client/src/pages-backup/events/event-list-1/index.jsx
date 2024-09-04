@@ -1,6 +1,6 @@
 import PageLinks from "@/components/common/PageLinks";
 import Preloader from "@/components/common/Preloader";
-import EventsOne from "@/components/events/EventsOne";
+import EventsOne from "@/components/events-backup/EventsOne";
 import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";
 import React from "react";

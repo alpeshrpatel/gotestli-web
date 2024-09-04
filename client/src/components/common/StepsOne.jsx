@@ -1,5 +1,5 @@
 import React from "react";
-import { stepsTwo } from "../../data/steps";
+import { stepsTwo } from "../../data--backup/steps";
 
 export default function StepsOne() {
   return (

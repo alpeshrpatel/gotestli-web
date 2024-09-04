@@ -1,5 +1,5 @@
-import { grades } from "@/data/dashboard";
-import { letters, alphabetItems } from "@/data/dictionary";
+import { grades } from "@/data--backup/dashboard";
+import { letters, alphabetItems } from "@/data--backup/dictionary";
 
 import React, { useState, useEffect } from "react";
 import FooterNine from "../layout/footers/FooterNine";

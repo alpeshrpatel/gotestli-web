@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import { socialMediaLinks } from "../../data/socialLinks";
+import { socialMediaLinks } from "../../data--backup/socialLinks";
 import React from "react";
 
 export default function Socials({ componentsClass, textSize }) {

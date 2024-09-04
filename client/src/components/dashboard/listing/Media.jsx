@@ -1,4 +1,4 @@
-import { mediaUpload } from "@/data/dashboard";
+import { mediaUpload } from "@/data--backup/dashboard";
 
 import React, { useState } from "react";
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { topCatagoriesEight } from "../../../data/topCategories";
+import { topCatagoriesEight } from "../../../data--backup/topCategories";
 import { Link } from "react-router-dom";
 export default function CategoriesEight() {
   return (

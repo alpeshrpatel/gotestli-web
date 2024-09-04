@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { accordionItems } from "@/data/message";
+import { accordionItems } from "@/data--backup/message";
 export default function Messages({ setMessageOpen, messageOpen }) {
   const [currentTab, setCurrentTab] = useState("message");
   const [openMessage, setOpenMessage] = useState(0);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { coursesData, catagories } from "../../../data/courses";
+import { coursesData, catagories } from "../../../data--backup/courses";
 import CourseCardSix from "@/components/homes/courseCards/CourseCardSix";
 export default function CoursesSix() {
   const [pageItems, setPageItems] = useState([]);

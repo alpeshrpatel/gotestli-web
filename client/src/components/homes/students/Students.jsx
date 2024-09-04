@@ -2,7 +2,7 @@ import { Navigation, Pagination } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import React, { useEffect, useState } from "react";
-import { students } from "../../../data/students";
+import { students } from "../../../data--backup/students";
 export default function Students() {
   const [showSlider, setShowSlider] = useState(false);
   useEffect(() => {

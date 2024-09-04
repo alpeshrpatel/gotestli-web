@@ -3,16 +3,16 @@ import Preloader from "@/components/common/Preloader";
 
 import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";
-import Accordions from "@/components/uiElements/Accordions";
-import Buttons from "@/components/uiElements/Buttons";
-import Form from "@/components/uiElements/Form";
-import MessageBoxes from "@/components/uiElements/MessageBoxes";
-import PageHeading from "@/components/uiElements/PageHeading";
-import ProgressBars from "@/components/uiElements/ProgressBars";
-import Table from "@/components/uiElements/Table";
-import Tabs from "@/components/uiElements/Tabs";
-import Tooltips from "@/components/uiElements/Tooltips";
-import Typography from "@/components/uiElements/Typography";
+import Accordions from "@/components/uiElements--backup/Accordions";
+import Buttons from "@/components/uiElements--backup/Buttons";
+import Form from "@/components/uiElements--backup/Form";
+import MessageBoxes from "@/components/uiElements--backup/MessageBoxes";
+import PageHeading from "@/components/uiElements--backup/PageHeading";
+import ProgressBars from "@/components/uiElements--backup/ProgressBars";
+import Table from "@/components/uiElements--backup/Table";
+import Tabs from "@/components/uiElements--backup/Tabs";
+import Tooltips from "@/components/uiElements--backup/Tooltips";
+import Typography from "@/components/uiElements--backup/Typography";
 import MetaComponent from "@/components/common/MetaComponent";
 
 const metadata = {

@@ -1,5 +1,5 @@
 import React from "react";
-import { learningPathSix } from "../../data/learningPaths";
+import { learningPathSix } from "../../data--backup/learningPaths";
 export default function LearningPathSix() {
   return (
     <section className="layout-pt-md layout-pb-md">

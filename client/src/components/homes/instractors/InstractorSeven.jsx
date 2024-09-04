@@ -1,5 +1,5 @@
 import React from "react";
-import { featuredTracher } from "../../../data/instractors";
+import { featuredTracher } from "../../../data--backup/instractors";
 
 export default function InstractorSeven() {
   return (

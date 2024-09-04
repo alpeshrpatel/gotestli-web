@@ -5,7 +5,7 @@ import "swiper/css";
 
 import "swiper/css/pagination";
 import { useEffect, useState } from "react";
-import { testimonials } from "../../../data/tesimonials";
+import { testimonials } from "../../../data--backup/tesimonials";
 export default function TestimonialsEight() {
   const [isOpen, setIsOpen] = useState(false);
   const [showSlider, setShowSlider] = useState(false);

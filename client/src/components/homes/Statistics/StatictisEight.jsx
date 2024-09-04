@@ -1,5 +1,5 @@
 import React from "react";
-import { statictisEight } from "@/data/features";
+import { statictisEight } from "@/data--backup/features";
 export default function StatictisEight() {
   return (
     <section className="section-bg pt-90 pb-90 lg:pt-50 lg:pb-50">

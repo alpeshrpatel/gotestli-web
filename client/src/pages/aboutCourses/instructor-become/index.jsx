@@ -1,6 +1,6 @@
-import JoinToday from "@/components/aboutCourses/become/JoinToday";
-import PageHeading from "@/components/aboutCourses/become/PageHeading";
-import Tabs from "@/components/aboutCourses/become/Tabs";
+import JoinToday from "@/components/aboutCourses-backup/become/JoinToday";
+import PageHeading from "@/components/aboutCourses-backup/become/PageHeading";
+import Tabs from "@/components/aboutCourses-backup/become/Tabs";
 import Instructors from "@/components/common/Instructors";
 import LearningCommon from "@/components/common/LearningCommon";
 

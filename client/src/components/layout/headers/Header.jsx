@@ -8,7 +8,7 @@ import { Link, useLocation } from "react-router-dom";
 import MobileMenu from "../component/MobileMenu";
 import { auth } from "@/firebase/Firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
-import { menuList } from "@/data/menu";
+import { menuList } from "@/data--backup/menu";
 
 export default function Header() {
   const [activeMobileMenu, setActiveMobileMenu] = useState(false);

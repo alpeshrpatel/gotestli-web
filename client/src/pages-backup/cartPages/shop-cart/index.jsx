@@ -1,5 +1,5 @@
-import BlogsOne from "@/components/blogs/BlogsOne";
-import ShopCart from "@/components/cartsAndCheckout/ShopCart";
+import BlogsOne from "@/components/blogs-backup/BlogsOne";
+import ShopCart from "@/components/cartsAndCheckout-backup/ShopCart";
 import PageLinks from "@/components/common/PageLinks";
 import Preloader from "@/components/common/Preloader";
 

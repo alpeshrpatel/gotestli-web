@@ -1,5 +1,5 @@
 import React from "react";
-import { topCatagoriesThree } from "../../../data/topCategories";
+import { topCatagoriesThree } from "../../../data--backup/topCategories";
 import { Link } from "react-router-dom";
 export default function CategoriesTwo() {
   return (

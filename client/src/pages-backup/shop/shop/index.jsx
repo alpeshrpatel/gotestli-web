@@ -4,8 +4,8 @@ import Preloader from "@/components/common/Preloader";
 import { useParams } from "react-router-dom";
 import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";
-import ProductDetails from "@/components/shop/ProductDetails";
-import RelatedProducts from "@/components/shop/RelatedProducts";
+import ProductDetails from "@/components/shop-backup/ProductDetails";
+import RelatedProducts from "@/components/shop-backup/RelatedProducts";
 import React from "react";
 import MetaComponent from "@/components/common/MetaComponent";
 

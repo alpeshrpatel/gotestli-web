@@ -3,7 +3,7 @@ import Preloader from "@/components/common/Preloader";
 
 import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";
-import ShopList from "@/components/shop/ShopList";
+import ShopList from "@/components/shop-backup/ShopList";
 import React from "react";
 import MetaComponent from "@/components/common/MetaComponent";
 

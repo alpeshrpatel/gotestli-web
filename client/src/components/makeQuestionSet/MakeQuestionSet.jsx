@@ -1,16 +1,16 @@
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import "./MakeQuestionSet.css";
 import { API } from "@/utils/AxiosInstance";
-import ResponsivePagination from "react-responsive-pagination";
+// import ResponsivePagination from "react-responsive-pagination";
 import "react-responsive-pagination/themes/classic.css";
-import Pagination from "../common/Pagination";
+// import Pagination from "../common/Pagination";
 import PaginationTwo from "../common/PaginationTwo";
-import { PaginationItem, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import QuestionSetDetailForm from "./QuestionSetDetailForm";
 import Header from "../layout/headers/Header";
-import axios from "axios";
+// import axios from "axios";
 
 
 const MakeQuestionSet = () => {

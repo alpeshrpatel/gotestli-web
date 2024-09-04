@@ -1,5 +1,5 @@
 import React from "react";
-import { featuresEight } from "../../../data/features";
+import { featuresEight } from "../../../data--backup/features";
 export default function FeaturesEight() {
   return (
     <section className="layout-pt-lg layout-pb-lg">

@@ -1,34 +1,34 @@
-import React from "react";
-import { Link } from "react-router-dom";
+// import React from "react";
+// import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import axios from "axios";
+// import axios from "axios";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import ExamInstructions from "@/components/quiz/examInstructions/ExamInstructions";
 import { API } from "@/utils/AxiosInstance";
 
 export default function CourceCard({ data, index }) {
-  const [rating, setRating] = useState([]);
+  // const [rating, setRating] = useState([]);
   const [questionSet, setQuestionsSet] = useState([]);
   const [open, setOpen] = useState(false);
 
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
 
-  useEffect(() => {
-    async function getQuestionsSet() {
+//   useEffect(() => {
+//     async function getQuestionsSet() {
      
-      try {
-        const response = await API.get(`/api/questionset/questions/${data.id}`);
+//       try {
+//         const response = await API.get(`/api/questionset/questions/${data.id}`);
         
-       setQuestionsSet(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-     getQuestionsSet();
-  }, [data.id]
-);
+//        setQuestionsSet(response.data);
+//       } catch (error) {
+//         console.log(error);
+//       }
+//     }
+//      getQuestionsSet();
+//   }, [data.id]
+// );
   
   return (
     <>

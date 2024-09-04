@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CartToggle from "../component/CartToggle";
-import { sidebarItems } from "../../../data/homeSidebarItems";
-import { notifications } from "@/data/notifications";
+import { sidebarItems } from "../../../data--backup/homeSidebarItems";
+import { notifications } from "@/data--backup/notifications";
 import Messages from "../component/Messages";
 import MyCourses from "../component/MyCourses";
 import { Link } from "react-router-dom";

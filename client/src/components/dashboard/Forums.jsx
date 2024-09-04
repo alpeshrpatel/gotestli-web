@@ -1,8 +1,8 @@
 import React from "react";
 import FooterNine from "../layout/footers/FooterNine";
-import { reviews } from "@/data/reviews";
+import { reviews } from "@/data--backup/reviews";
 import Star from "../common/Star";
-import { courseDiscussion } from "@/data/dashboard";
+import { courseDiscussion } from "@/data--backup/dashboard";
 
 import PageLinksTwo from "../common/PageLinksTwo";
 

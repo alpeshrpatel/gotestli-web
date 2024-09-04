@@ -1,5 +1,5 @@
 import React from "react";
-import { events } from "@/data/events";
+import { events } from "@/data--backup/events";
 
 import { Link } from "react-router-dom";
 export default function EventsSeven() {

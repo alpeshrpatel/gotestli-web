@@ -1,7 +1,7 @@
 import React from "react";
-import { blogs } from "@/data/blog";
+import { blogs } from "@/data--backup/blog";
 
-import { events } from "../../../data/events";
+import { events } from "../../../data--backup/events";
 import { Link } from "react-router-dom";
 export default function BlogsFive() {
   return (

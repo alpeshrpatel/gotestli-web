@@ -1,5 +1,5 @@
 import React from "react";
-import { instractorsNine } from "../../../data/instractors";
+import { instractorsNine } from "../../../data--backup/instractors";
 import { Link } from "react-router-dom";
 export default function InstractorsNine() {
   return (

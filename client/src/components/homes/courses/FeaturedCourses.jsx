@@ -1,5 +1,5 @@
 import React from "react";
-import { coursesData } from "@/data/courses";
+import { coursesData } from "@/data--backup/courses";
 import FeaturedCourseCard from "@/components/homes/courseCards/FeaturedCourseCard";
 import { Link } from "react-router-dom";
 export default function FeaturedCourses() {

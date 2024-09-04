@@ -1,7 +1,7 @@
-import { resentCourses } from "@/data/courses";
-import { states } from "@/data/dashboard";
-import { teamMembers } from "@/data/instractors";
-import { notifications } from "@/data/notifications";
+import { resentCourses } from "@/data--backup/courses";
+import { states } from "@/data--backup/dashboard";
+import { teamMembers } from "@/data--backup/instractors";
+import { notifications } from "@/data--backup/notifications";
 import React from "react";
 import FooterNine from "../layout/footers/FooterNine";
 import Charts from "./Charts";

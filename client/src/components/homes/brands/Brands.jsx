@@ -1,4 +1,4 @@
-import { brands } from "../../../data/brands";
+import { brands } from "../../../data--backup/brands";
 const Brands = () => {
   return (
     <>

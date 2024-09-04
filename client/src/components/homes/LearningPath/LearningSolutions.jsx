@@ -1,7 +1,7 @@
 import gsap from "gsap";
 
 import React, { useEffect } from "react";
-import { learningPath } from "../../../data/learningPaths";
+import { learningPath } from "../../../data--backup/learningPaths";
 export default function LearningSolutions() {
   useEffect(() => {
     const parallaxIt = () => {

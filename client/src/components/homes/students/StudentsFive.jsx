@@ -1,6 +1,6 @@
 import React from "react";
 
-import { students } from "@/data/students";
+import { students } from "@/data--backup/students";
 export default function StudentsFive() {
   return (
     <section className="layout-pt-lg layout-pb-lg bg-light-4">

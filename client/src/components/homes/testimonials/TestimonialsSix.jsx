@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Navigation, Pagination } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCards } from "swiper";
-import { statictis } from "../../../data/features";
-import { testimonials } from "../../../data/tesimonials";
+import { statictis } from "../../../data--backup/features";
+import { testimonials } from "../../../data--backup/tesimonials";
 import "swiper/css/effect-cards";
 export default function TestimonialsSix() {
   const [currentSlide, setCurrentSlide] = useState(0);

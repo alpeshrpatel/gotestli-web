@@ -1,9 +1,9 @@
-import { coursesData } from "../../../data/courses";
+import { coursesData } from "../../../data--backup/courses";
 import React, { useState, useEffect } from "react";
 import CourseCardTwo from "@/components/homes/courseCards/CourseCardTwo";
-import { allCategories } from "../../../data/courses";
-import { viewStatus } from "../../../data/courses";
-import { difficulty } from "../../../data/courses";
+import { allCategories } from "../../../data--backup/courses";
+import { viewStatus } from "../../../data--backup/courses";
+import { difficulty } from "../../../data--backup/courses";
 import { Link } from "react-router-dom";
 export default function CategoriesTwo() {
   const [pageItems, setPageItems] = useState([]);

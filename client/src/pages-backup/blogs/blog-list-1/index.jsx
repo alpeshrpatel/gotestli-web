@@ -1,4 +1,4 @@
-import BlogsOne from "@/components/blogs/BlogsOne";
+import BlogsOne from "@/components/blogs-backup/BlogsOne";
 import PageLinks from "@/components/common/PageLinks";
 import Preloader from "@/components/common/Preloader";
 

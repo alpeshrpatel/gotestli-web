@@ -1,8 +1,8 @@
 import React from "react";
 import { Navigation, Pagination } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { testimonialsTwo } from "../../data/tesimonials";
-import { paginationImages } from "../../data/tesimonials";
+import { testimonialsTwo } from "../../data--backup/tesimonials";
+import { paginationImages } from "../../data--backup/tesimonials";
 import { useRef, useEffect, useState } from "react";
 
 export default function Testimonials({ backgroundComponent }) {

@@ -1,7 +1,7 @@
 import Faq from "@/components/common/Faq";
 import Preloader from "@/components/common/Preloader";
 
-import ContactTwo from "@/components/contacts/ContactTwo";
+import ContactTwo from "@/components/contacts-backup/ContactTwo";
 
 import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";

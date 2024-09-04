@@ -1,6 +1,6 @@
 import React from "react";
 
-import { brands } from "@/data/brands";
+import { brands } from "@/data--backup/brands";
 export default function BrandsTwo() {
   return (
     <section className="layout-pt-sm layout-pb-sm bg-light-6">

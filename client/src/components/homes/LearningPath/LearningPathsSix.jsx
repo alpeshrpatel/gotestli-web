@@ -1,5 +1,5 @@
 import React from "react";
-import { learningfeatures } from "../../../data/learningPaths";
+import { learningfeatures } from "../../../data--backup/learningPaths";
 
 export default function LearningPathsSix() {
   return (

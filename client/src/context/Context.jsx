@@ -1,6 +1,6 @@
-import { coursesData } from "@/data/courses";
-import { events } from "@/data/events";
-import { productData } from "@/data/products";
+import { coursesData } from "@/data--backup/courses";
+import { events } from "@/data--backup/events";
+import { productData } from "@/data--backup/products";
 import React from "react";
 import { useContext, useState } from "react";
 const dataContext = React.createContext();

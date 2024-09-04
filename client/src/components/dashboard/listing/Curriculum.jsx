@@ -1,4 +1,4 @@
-import { curriculum } from "@/data/curriculum";
+import { curriculum } from "@/data--backup/curriculum";
 import React, { useState } from "react";
 
 export default function Curriculum() {

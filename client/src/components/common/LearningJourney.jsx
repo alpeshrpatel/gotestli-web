@@ -1,5 +1,5 @@
 import React from "react";
-import { learningJourney } from "../../data/learningPaths";
+import { learningJourney } from "../../data--backup/learningPaths";
 
 export default function LearningJourney() {
   return (

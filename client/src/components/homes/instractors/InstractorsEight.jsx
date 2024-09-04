@@ -5,7 +5,7 @@ import "swiper/css";
 
 import "swiper/css/pagination";
 import { useEffect, useState } from "react";
-import { instractorsEight } from "@/data/instractors";
+import { instractorsEight } from "@/data--backup/instractors";
 import { Link } from "react-router-dom";
 export default function InstractorsEight() {
   const [showSlider, setShowSlider] = useState(false);

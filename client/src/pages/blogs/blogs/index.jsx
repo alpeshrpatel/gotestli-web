@@ -1,10 +1,10 @@
-import RelatedBlogs from "@/components/blogs/RelatedBlogs";
+import RelatedBlogs from "@/components/blogs-backup/RelatedBlogs";
 import PageLinks from "@/components/common/PageLinks";
 
 import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";
 import React from "react";
-import BlogDetails from "@/components/blogs/BlogDetails";
+import BlogDetails from "@/components/blogs-backup/BlogDetails";
 import Preloader from "@/components/common/Preloader";
 import { useParams } from "react-router-dom";
 import MetaComponent from "@/components/common/MetaComponent";

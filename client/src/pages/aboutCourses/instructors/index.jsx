@@ -1,4 +1,4 @@
-import InstractorSingle from "@/components/aboutCourses/instractors/InstractorSingle";
+import InstractorSingle from "@/components/aboutCourses-backup/instractors/InstractorSingle";
 import PageLinks from "@/components/common/PageLinks";
 import Preloader from "@/components/common/Preloader";
 import FooterOne from "@/components/layout/footers/FooterOne";

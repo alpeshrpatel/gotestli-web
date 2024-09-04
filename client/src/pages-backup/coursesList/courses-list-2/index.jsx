@@ -1,7 +1,7 @@
 import PageLinks from "@/components/common/PageLinks";
 import Preloader from "@/components/common/Preloader";
 
-import CourseListTwo from "@/components/courseList/CourseListTwo";
+import CourseListTwo from "@/components/courseList-backup/CourseListTwo";
 import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";
 import React from "react";
