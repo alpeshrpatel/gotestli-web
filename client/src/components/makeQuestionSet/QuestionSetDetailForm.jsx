@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./QuestionSetDetailForm.css";
 import { API } from "@/utils/AxiosInstance";
 import { auth } from "@/firebase/Firebase";
@@ -15,14 +15,68 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories }) => {
     author: user,
     short_desc: "",
     description: "",
+    start_time:"",
+    end_time:"",
+    status_id:"",
     start_date: "",
     end_date: "",
     time_duration: "",
     no_of_question: selectedQuestions.length,
-    is_demo: false,
+    tags:"",
+    is_demo: true,
     totalmarks: "",
     pass_percentage: "",
+
   });
+
+  useEffect(() => {
+    const updateStatusId = () => {
+      const currentDate = new Date();
+      const endDate = new Date(`${formData.end_date}T00:00:00`);
+
+   
+      const newStatusId = currentDate > endDate ? 0 : 1;
+      setFormData((prevData) => ({
+        ...prevData,
+        status_id: newStatusId,
+      }));
+    };
+
+    if (formData.end_date) {
+      updateStatusId(); 
+      const intervalId = setInterval(updateStatusId, 100000); 
+      return () => clearInterval(intervalId);
+    }
+  }, [formData.end_date]);
+
+  useEffect(() => {
+    
+    if (formData.time_duration) {
+      const startTime = '12:00:00'; 
+      const minutesToAdd = parseInt(formData.time_duration, 10);
+
+      function addMinutesToTime(startTime, minutesToAdd) {
+        const [hours, minutes] = startTime.split(':').map(Number);
+        const totalMinutes = hours * 60 + minutes;
+        const newTotalMinutes = totalMinutes + minutesToAdd;
+        const newHours = Math.floor(newTotalMinutes / 60);
+        const newMinutes = newTotalMinutes % 60;
+        return `${String(newHours % 24).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}:00`;
+      }
+
+      const endTime = addMinutesToTime(startTime, minutesToAdd);
+      console.log('Calculated Start Time:', startTime);
+    console.log('Calculated End Time:', endTime);
+      setFormData((prevData) => ({
+        ...prevData,
+        start_time: startTime,
+        end_time: endTime,
+      }));
+    }
+  }, [formData]);
+
+ 
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -33,13 +87,16 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories }) => {
     });
   };
 
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+ 
     console.log(formData);
     const response = await API.post("/api/questionset", formData);
     // if (response) {
     toast.success("QuestionSet Created Successfully!");
-    navigate("/");
+    navigate("/instructor/home");
     // }
   };
   console.log(categories);
@@ -163,7 +220,7 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories }) => {
               placeholder: "Start Date",
             }}
             type="date"
-            name="start_date"
+            name="start_date"            
             value={formData.start_date}
             onChange={handleChange}
             className="custom-height-questionsetform bg-white rounded w-100"
@@ -304,7 +361,7 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories }) => {
           multiple
           id="tags-outlined"
           options={categories} 
-          getOptionLabel={(option) => option.title || ""} // Adjust according to your data structure
+          getOptionLabel={(option) => option.title || ""} 
           filterSelectedOptions
           sx={{
             '& .MuiInputBase-input': {
@@ -323,9 +380,14 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories }) => {
          
           className="custom-height-questionsetform bg-white rounded w-100"
           onChange={(event, newValue) => {
+            let tags = ''
+            console.log(newValue)
+            newValue.forEach((tag)=> {
+              tags = tags + ',' + tag.title ;
+            })
             setFormData({
               ...formData,
-              categories: newValue,
+              tags:tags.slice(1),
             });
           }}
         />
