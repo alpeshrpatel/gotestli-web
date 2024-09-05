@@ -86,7 +86,8 @@ export default function CourceCard({ data, index }) {
             <div className="coursesCard__image cardImage overflow-hidden rounded-8  ">
               <CardMedia
                 component="img"
-                height="194"
+                // height="194"
+                sx={{height: "170px", width: "400px"}}
                 image={data.image}
                 alt="Paella dish"
               />

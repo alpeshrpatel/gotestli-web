@@ -8,27 +8,23 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-// import Box from '@mui/material/Box';
-// import Tab from '@mui/material/Tab';
-// import TabContext from '@mui/lab/TabContext';
-// import TabList from '@mui/lab/TabList';
-// import TabPanel from '@mui/lab/TabPanel';
+import { Api } from "@mui/icons-material";
+import { API } from "@/utils/AxiosInstance";
+
 
 const CategoriesHomeOne = () => {
+  const [categories,setCategories] = useState([]);
   const [showSlider, setShowSlider] = useState(false);
   const [value, setValue] = React.useState('1');
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  useEffect(() => {
-    setShowSlider(true);
-  }, []);
-
+  
 
   return (
     <>
-  
+   
      {/* <Box sx={{ width: '100%', typography: 'body1' }}>
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
