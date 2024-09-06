@@ -80,7 +80,7 @@ const FinishExamModalPage = ({
   // console.log(reviewQuestionsData);
   const onOpenModal = () => setOpen(true);
   const onCloseSubmitModal = () => setOpen(false);
-
+ console.log(selectedOption)
   const attempted = selectedOption.filter((q) => q.selectedOption !== null);
   const reviewed = selectedOption.filter((q) => q.status == 2 || q.status == 3);
   console.log(reviewed);
@@ -161,7 +161,7 @@ const FinishExamModalPage = ({
   };
   console.log(reviewQuestions);
   return (
-    <div>
+    <div className="px-5 ">
       {skippedQuestion > 0 && (
         <div className="card p-4">
           <h2>Do You Want to Skip All the {skippedQuestion} Questions ? </h2>

@@ -53,7 +53,7 @@ export default function Courses() {
       }
     }
     checkUserRole();
-  }, []);
+  });
   useEffect(() => {
     async function getQuestionsSet() {
       try {
@@ -118,6 +118,7 @@ export default function Courses() {
           questionSetByInstructor.length > 0 ? (
             questionSetByInstructor.map((elm, index) => (
               <CourceCard
+                role={userRole}
                 key={index}
                 data={elm}
                 index={index}
@@ -126,12 +127,13 @@ export default function Courses() {
               />
             ))
           ) : (
-            <h4 className="no-content text-center">No Questionsets found for this instructor.</h4>
+            <h4 className="no-content text-center mt-8">No Questionsets found for this instructor.</h4>
           )
         ) : (
           filtered &&
           filtered.map((elm, index) => (
             <CourceCard
+              role={userRole}
               key={index}
               data={elm}
               index={index}

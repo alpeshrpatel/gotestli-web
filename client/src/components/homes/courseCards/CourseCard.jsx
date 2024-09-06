@@ -22,13 +22,10 @@ import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-
-
-export default function CourceCard({ data, index }) {
+export default function CourceCard({ role, data, index }) {
   // const [rating, setRating] = useState([]);
   const [questionSet, setQuestionsSet] = useState([]);
   const [open, setOpen] = useState(false);
- 
 
   const onOpenModal = () => {
     async function getQuestions() {
@@ -67,43 +64,64 @@ export default function CourceCard({ data, index }) {
       </Modal>
       <div className="col-lg-3 col-md-6 pointer " onClick={onOpenModal}>
         <div className="coursesCard -type-1">
-          <Card sx={{ maxWidth: 345, height: "100%" }} className="coursesCard -type-1">
+          <Card
+            sx={{ maxWidth: 345, height: "100%" }}
+            className="coursesCard -type-1"
+          >
             <CardHeader
-              avatar={
-                <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                  {data.author.slice(0, 1).toUpperCase()}
-                </Avatar>
+              subheader={
+                <div className="text-17 lh-15 fw-500 text-dark-1">
+                  {data.title}
+                </div>
               }
-              action={
-                <IconButton aria-label="settings">
-                  <MoreVertIcon />
-                </IconButton>
-              }
-              title={data.author}
-              subheader={formattedDate}
             />
             <div className="relative">
-            <div className="coursesCard__image cardImage overflow-hidden rounded-8  ">
-              <CardMedia
-                component="img"
-                // height="194"
-                sx={{height: "170px", width: "400px"}}
-                image={data.image}
-                alt="Paella dish"
-              />
+              <div className="coursesCard__image cardImage overflow-hidden rounded-8  ">
+                <CardMedia
+                  component="img"
+                  // height="194"
+                  sx={{ height: "170px", width: "400px" }}
+                  image={data.image}
+                  alt="Paella dish"
+                />
 
-              <div className="coursesCard__image_overlay rounded-8"></div>
-            </div>
-
+                <div className="coursesCard__image_overlay rounded-8"></div>
+              </div>
             </div>
 
             <CardContent>
-              <div className="text-17 lh-15 fw-500 text-dark-1">
-                {data.title}
-              </div>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
                 {data.short_desc}
               </Typography>
+              {
+                !(role == 'instructor') && (
+                  <div className="d-flex items-center gap-2 mt-2 ">
+                  <Typography
+                    variant="caption"
+                    gutterBottom
+                    sx={{ display: "flex" }}
+                  >
+                    Creator:
+                  </Typography>
+                  <Typography variant="body1" gutterBottom >
+                    {data.author}
+                  </Typography>
+                </div>
+                ) 
+              }
+              
+              <div className= {`d-flex items-center gap-2 ${(role == 'instructor') ? `mt-2` : `mt-0`} `}>
+                <Typography
+                  variant="caption"
+                  gutterBottom
+                  sx={{ display: "flex" }}
+                >
+                  Published on:
+                </Typography>
+                <Typography variant="body1" gutterBottom >
+                  {formattedDate}
+                </Typography>
+              </div>
             </CardContent>
             <CardActions disableSpacing>
               <div className="d-flex items-center gap-2 mr-20">

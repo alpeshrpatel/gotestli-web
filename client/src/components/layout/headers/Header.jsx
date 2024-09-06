@@ -149,7 +149,7 @@ export default function Header() {
                                     className="mega "
                                     style={{
                                       fontSize: "18px",
-                                      width: "30vw",
+                                      width: "20vw",
                                       overflow: "auto",
                                       
                                     }}
