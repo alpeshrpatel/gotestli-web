@@ -23,6 +23,7 @@ import PrivateRoutesAdmin from "@/privateroutes/PrivateRoutesAdmin";
 import DashboardPage from "@/pages/dashboard/dashboard";
 import PrivateRoutesInstructor from "@/privateroutes/PrivateRoutesInstructor";
 import MakeQuestionSet from "@/components/makeQuestionSet/MakeQuestionSet";
+import Loader from "@/components/common/Loader";
 
 const Routes = () => {
   const [userRole, setUserRole] = useState("");
@@ -51,7 +52,7 @@ const Routes = () => {
   console.log(userRole);
 
   if (loading) {
-    return <div>Loading...</div>; 
+    return <div><Loader/></div>; 
 }
 
 //   return createBrowserRouter([

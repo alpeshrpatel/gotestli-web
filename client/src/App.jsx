@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, RouterProvider } from "react-router-dom";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import Context from "@/context/Context";
 import HomePage1 from "./pages";
 // import HomePage2 from "./pages/homes/home-2";
@@ -93,6 +93,8 @@ import MakeQuestionSet from "./components/makeQuestionSet/MakeQuestionSet";
 import "react-toastify/dist/ReactToastify.css";
 import ProtectedRoute from "./privateroutes/ProtectedRoute";
 import HomePage from "./pages/instructorspages/HomePage";
+import { Bounce, ToastContainer } from "react-toastify";
+import Loader from "./components/common/Loader";
 
 function App() {
   useEffect(() => {
@@ -108,6 +110,7 @@ function App() {
 
   return (
     <>
+    <Suspense fallback={<Loader />}>
       <Context>
         <BrowserRouter>
           {/* <Routes>
@@ -206,7 +209,7 @@ function App() {
           <ScrollTopBehaviour />
         </BrowserRouter>
        
-        {/* <ToastContainer
+        <ToastContainer
           position="top-center"
           autoClose={3000}
           hideProgressBar={false}
@@ -218,8 +221,9 @@ function App() {
           pauseOnHover
           theme="dark"
           transition={Bounce}
-        /> */}
+        />
       </Context>
+    </Suspense>
     </>
   );
 }

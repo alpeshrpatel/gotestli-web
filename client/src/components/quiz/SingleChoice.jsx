@@ -99,7 +99,7 @@ const SingleChoice = ({
 
     }
     getAnswers();
-  }, [userResultId, questionId]);
+  }, [userResultId, questionId,updatedStatus]);
 
  console.log(selectedOption)
   const findSelectedOption =

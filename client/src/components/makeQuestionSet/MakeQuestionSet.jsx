@@ -82,7 +82,7 @@ const MakeQuestionSet = () => {
       getQuestionSetId(filteredCategory.id);
     }
   };
-  
+  console.log("filtered: " + questionSets)
 
   const getQuestionsFromQSetId = async (questionId) => {
     try {
@@ -118,7 +118,7 @@ const MakeQuestionSet = () => {
       const res = await API.post("/api/questionset/question",
        jsonData
       );
-      console.log("successfully");
+     
       console.log(res);
     } catch (error) {
       console.log(error);
@@ -217,7 +217,7 @@ const MakeQuestionSet = () => {
           },
         }}
       >
-        <QuestionSetDetailForm selectedQuestions={selectedQuestions} categories = {categories} />
+        <QuestionSetDetailForm selectedQuestions={selectedQuestions} categories = {categories} questionSetId = {questionSetId}/>
       </Modal>
     </>
   );

@@ -10,6 +10,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { useEffect } from "react";
+import Loader from "@/components/common/Loader";
 
 const ProtectedRoute = ({ element, role }) => {
   const [userRole, setUserRole] = useState("");
@@ -34,11 +35,11 @@ const ProtectedRoute = ({ element, role }) => {
       setLoading(false);
     }
     checkUserRole();
-  }, []);
+  });
   console.log(userRole);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader/>;
   }
   if (!userRole) {
     return <Navigate to="/login" />;

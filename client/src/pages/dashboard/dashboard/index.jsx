@@ -5,6 +5,7 @@ import HeaderDashboard from "@/components/layout/headers/HeaderDashboard";
 import React from "react";
 
 import MetaComponent from "@/components/common/MetaComponent";
+import Header from "@/components/layout/headers/Header";
 
 const metadata = {
   title:
@@ -19,7 +20,7 @@ export default function DashboardPage() {
       <MetaComponent meta={metadata} />
       <main className="main-content">
         <Preloader />
-        <HeaderDashboard />
+        <Header/>
         <div className="content-wrapper js-content-wrapper overflow-hidden">
           <div
             id="dashboardOpenClose"

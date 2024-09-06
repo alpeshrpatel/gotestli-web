@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { Checkbox, FormControlLabel, TextField } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 
-const QuestionSetDetailForm = ({ selectedQuestions, categories }) => {
+const QuestionSetDetailForm = ({ selectedQuestions, categories, questionSetId }) => {
   const user = auth.currentUser.displayName;
   const [formData, setFormData] = useState({
     title: "",
@@ -28,6 +28,10 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories }) => {
     pass_percentage: "",
 
   });
+  const [tagsId, setTagsId] = useState('');
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  
 
   useEffect(() => {
     const updateStatusId = () => {
@@ -67,13 +71,10 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories }) => {
       const endTime = addMinutesToTime(startTime, minutesToAdd);
       console.log('Calculated Start Time:', startTime);
     console.log('Calculated End Time:', endTime);
-      setFormData((prevData) => ({
-        ...prevData,
-        start_time: startTime,
-        end_time: endTime,
-      }));
+    setStartTime(startTime);
+    setEndTime(endTime);
     }
-  }, [formData]);
+  }, [formData.time_duration]);
 
  
 
@@ -91,9 +92,18 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
- 
+    const formDataWithTime = {
+      ...formData,
+      start_time: startTime,
+      end_time: endTime,
+    };
+
+    console.log(formDataWithTime);
     console.log(formData);
-    const response = await API.post("/api/questionset", formData);
+    console.log(questionSetId,tagsId);
+    const response = await API.post("/api/questionset", formDataWithTime);
+    const res = await API.post("/api/questionset/category",{tagsId, questionSetId});
+    console.log("tags res:" , res);
     // if (response) {
     toast.success("QuestionSet Created Successfully!");
     navigate("/instructor/home");
@@ -380,11 +390,14 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories }) => {
          
           className="custom-height-questionsetform bg-white rounded w-100"
           onChange={(event, newValue) => {
-            let tags = ''
+            let tags = '';
+            let tagsId = '';
             console.log(newValue)
             newValue.forEach((tag)=> {
               tags = tags + ',' + tag.title ;
+              tagsId = tagsId + ',' + tag.id;
             })
+            setTagsId(tagsId.slice(1));
             setFormData({
               ...formData,
               tags:tags.slice(1),
