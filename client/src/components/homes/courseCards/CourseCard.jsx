@@ -21,8 +21,10 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock, faFileLines } from "@fortawesome/free-solid-svg-icons";
 
-export default function CourceCard({ role, data, index }) {
+export default function CourceCard({search = null, role, data, index }) {
   // const [rating, setRating] = useState([]);
   const [questionSet, setQuestionsSet] = useState([]);
   const [open, setOpen] = useState(false);
@@ -62,7 +64,7 @@ export default function CourceCard({ role, data, index }) {
           questionSet={questionSet}
         />
       </Modal>
-      <div className="col-lg-3 col-md-6 pointer " onClick={onOpenModal}>
+      <div className={`col-lg-3 col-md-6 pointer ${search ? `col-lg-4 col-md-6 ` : `col-lg-3 col-md-6` } `} onClick={onOpenModal}>
         <div className="coursesCard -type-1">
           <Card
             sx={{ maxWidth: 345, height: "100%" }}
@@ -126,7 +128,7 @@ export default function CourceCard({ role, data, index }) {
             <CardActions disableSpacing>
               <div className="d-flex items-center gap-2 mr-20">
                 <div className="">
-                  <img src="assets/img/coursesCards/icons/1.svg" alt="icon" />
+                <FontAwesomeIcon icon={faFileLines} />
                 </div>
                 <div className="text-14 lh-1">
                   {data.no_of_question} Questions
@@ -134,7 +136,7 @@ export default function CourceCard({ role, data, index }) {
               </div>
               <div className="d-flex items-center gap-2">
                 <div className="">
-                  <img src="assets/img/coursesCards/icons/2.svg" alt="icon" />
+                <FontAwesomeIcon icon={faClock} />
                 </div>
                 <div className="text-14 lh-1">{`${data.time_duration}m`}</div>
               </div>

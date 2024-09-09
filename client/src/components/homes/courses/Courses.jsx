@@ -21,8 +21,26 @@ export default function Courses() {
   const [categories, setCategories] = useState([]);
   const [userRole, setUserRole] = useState("");
   const [value, setValue] = useState(0);
+  const[selectedCategory, setSelectedCategory] = useState('')
 
-  const handleChange = (event, newValue) => {
+  const handleChange = async(event, newValue) => {
+    console.log(event.target.textContent);
+    let title = event.target.textContent;
+    if(title == 'All Categories'){
+      setSelectedCategory(filtered);
+    }else{
+
+      try {
+        const res = await API.get(`/api/category/selected/questionsets/${title}`);
+        console.log(res);
+        if(res.data){
+          setSelectedCategory(res.data);
+        }
+      } catch (error) {
+        throw error
+      }
+    }
+    
     setValue(newValue);
   };
   useEffect(() => {
@@ -77,7 +95,7 @@ export default function Courses() {
   }
 
   console.log(questionSetByInstructor);
-
+console.log(value)
   return (
     <section
       className="layout-pt-lg layout-pb-lg"
@@ -130,17 +148,33 @@ export default function Courses() {
             <h4 className="no-content text-center mt-8">No Questionsets found for this instructor.</h4>
           )
         ) : (
-          filtered &&
-          filtered.map((elm, index) => (
-            <CourceCard
-              role={userRole}
-              key={index}
-              data={elm}
-              index={index}
-              data-aos="fade-right"
-              data-aos-duration={(index + 1) * 300}
-            />
-          ))
+          !selectedCategory ? (
+            filtered && filtered.map((elm, index) => (
+              <CourceCard
+                role={userRole}
+                key={index}
+                data={elm}
+                index={index}
+                data-aos="fade-right"
+                data-aos-duration={(index + 1) * 300}
+              />
+            ))
+          ) : (
+            selectedCategory.length > 0 ? (
+              selectedCategory.map((elm, index) => (
+                <CourceCard
+                  role={userRole}
+                  key={index}
+                  data={elm}
+                  index={index}
+                  data-aos="fade-right"
+                  data-aos-duration={(index + 1) * 300}
+                />
+            )
+            )) : (
+              <h4 className="no-content text-center mt-8">No Questionsets found for this Category.</h4>
+            )
+          )
         )}
         {/* { filtered &&
           filtered.map((elm, index) => (

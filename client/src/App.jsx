@@ -95,6 +95,7 @@ import ProtectedRoute from "./privateroutes/ProtectedRoute";
 import HomePage from "./pages/instructorspages/HomePage";
 import { Bounce, ToastContainer } from "react-toastify";
 import Loader from "./components/common/Loader";
+import SearchResult from "./pages/searchresult/SearchResult"
 
 function App() {
   useEffect(() => {
@@ -175,6 +176,12 @@ function App() {
               path="quiz/start"
               element={
                 <ProtectedRoute element={<ExamInstructions />} role="student" />
+              }
+            />
+            <Route
+              path="/search/result"
+              element={
+               <SearchResult/>
               }
             />
 
