@@ -13,6 +13,7 @@ import { Modal } from "react-responsive-modal";
 import { API } from "@/utils/AxiosInstance";
 import { NULL } from "sass";
 import QuestionSet from "./QuestionSet";
+import { useNavigate } from "react-router-dom";
 
 const SingleChoice = ({
   resumeQuizUserResultId,
@@ -39,6 +40,8 @@ const SingleChoice = ({
   const questionSetLength = totalQuestions;
 
  
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function getOptions() {
@@ -107,19 +110,11 @@ const SingleChoice = ({
       ?.selectedOption || null;
 
   async function getStatus() {
-    try {
       const { data } = await API.get(
         `/api/userresultdetails/status/userresult/${userResultId}/questionid/${questionId}`
       );
       const reviewStatus = data[0]?.status;
-
       setStatus(reviewStatus);
-      
-
-     
-    } catch (error) {
-      throw error;
-    }
   }
 
   async function getUpdatedStatus(isReviewed,newstatus = 0) {
@@ -201,6 +196,8 @@ const SingleChoice = ({
     }
   }
 
+
+
   const handleReviewClick = async () => {
     const findQuestion = reviewQuestions.find(
       (question) => questionId === question.id
@@ -260,6 +257,10 @@ const SingleChoice = ({
     onPrevious();
   };
 
+  const handleCancel = async() =>{
+    navigate("/");
+  }
+
   const onFinishQuiz = async () => {
    
     const response = await testResultDtlSetData(findSelectedOption);
@@ -284,7 +285,9 @@ const SingleChoice = ({
               <h4 className="card-title text-center">
                 Question {index} of {totalQuestions}{" "}
               </h4>
-              <div className="card-title ">
+              <div className="card-title gap-2">
+                <button className="btn btn-success px-3 py-2 w-auto text-18" onClick={handleCancel} >Cancel</button>
+                &nbsp;
                 <button
                   className="btn btn-success px-3 py-2 w-auto text-18"
                   onClick={onFinishQuiz}
