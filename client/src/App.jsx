@@ -205,6 +205,8 @@ function App() {
                 />
               }
             />
+             <Route path="/dashboard" element={<DashboardPage role="instructor"/>} role="instructor" />
+          
           </Routes>
           <ScrollTopBehaviour />
         </BrowserRouter>
