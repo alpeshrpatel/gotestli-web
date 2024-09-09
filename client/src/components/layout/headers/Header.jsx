@@ -8,12 +8,14 @@ import MobileMenu from "../component/MobileMenu";
 import { auth } from "@/firebase/Firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { menuList } from "@/data--backup/menu";
+import { TextField } from "@mui/material";
 
 export default function Header() {
   const [activeMobileMenu, setActiveMobileMenu] = useState(false);
   const [user, setUser] = useState(null);
   const [menuItem, setMenuItem] = useState("");
   const [submenu, setSubmenu] = useState("");
+  const [expand,setExpand] = useState(false);
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -47,6 +49,10 @@ export default function Header() {
       console.log(error);
     }
   };
+
+  const handleSearch = () => {
+    
+  }
 
   return (
     <>
@@ -87,6 +93,14 @@ export default function Header() {
               <div className="header-right d-flex items-center">
                 <div className="header-right__icons text-white d-flex items-center mt-2">
                   {/* search toggle start */}
+                  {/* <button onClick={()=> setExpand(true)}>Search</button>
+                  {
+                    expand && (
+                      <>
+                      <TextField id="outlined-search" label="Search Questions" type="search" className="searchInput mb-2" onChange={handleSearch}/>
+                      </>
+                    )
+                  } */}
                   <SearchToggle />
                   {/* search toggle end */}
 
