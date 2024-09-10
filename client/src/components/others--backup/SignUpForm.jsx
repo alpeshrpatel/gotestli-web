@@ -27,6 +27,13 @@ export default function SignUpForm() {
 
   const navigate = useNavigate();
 
+  let names = userName?.split(" ")
+  let firstname = names[0];
+  let lastname = '';
+  if(names.length > 1){
+    lastname = names[names.length - 1];
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -48,8 +55,11 @@ export default function SignUpForm() {
             email: auth.currentUser.email,
             created_on: auth.currentUser.metadata?.createdAt,
             last_login: auth.currentUser.metadata?.lastLoginAt,
-            first_name: userName,
+            first_name:firstname,
+            last_name:lastname,
             uid: auth.currentUser.uid,
+            role:selectedRole,
+            provider:'manual'
           });
           console.log(res);
         } catch (error) {

@@ -24,7 +24,7 @@ export default function Courses() {
   const[selectedCategory, setSelectedCategory] = useState('')
 
   const handleChange = async(event, newValue) => {
-    console.log(event.target.textContent);
+    console.log(event);
     let title = event.target.textContent;
     if(title == 'All Categories'){
       setSelectedCategory(filtered);
@@ -120,7 +120,7 @@ console.log(value)
           <Tabs value={value} onChange={handleChange} aria-label="category tabs">
             <Tab sx={{fontWeight:'bold',fontSize:'14px'}} label="All Categories" />
             {categories && categories.map((category, index) => (
-              <Tab key={index} label={category.title} sx={{fontWeight:'bold',fontSize:'14px'}} />
+              <Tab key={index} label={category.title} categoryId={category.id} sx={{fontWeight:'bold',fontSize:'14px'}} />
             ))}
           </Tabs>
         </Box>

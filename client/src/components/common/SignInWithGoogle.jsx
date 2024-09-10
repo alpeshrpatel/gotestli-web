@@ -38,6 +38,12 @@ const SignInWithGoogle = () => {
       await signInWithPopup(auth, provider);
       const email = auth.currentUser.email;
       let userRole;
+      let names = auth.currentUser?.displayName?.split(" ")
+      let firstname = names[0];
+      let lastname = '';
+      if(names.length > 1){
+        lastname = names[names.length - 1];
+      }
 
       const rolesRef = collection(db, "roles");
       const q = query(rolesRef, where("email", "==", email));
@@ -50,8 +56,11 @@ const SignInWithGoogle = () => {
             email: auth.currentUser.email,
             created_on: auth.currentUser.metadata?.createdAt,
             last_login: auth.currentUser.metadata?.lastLoginAt,
-            first_name: userName,
+            first_name:firstname,
+            last_name:lastname,
             uid: auth.currentUser.uid,
+            role:selectedRole,
+            provider:'google'
           });
           console.log(res);
         } catch (error) {

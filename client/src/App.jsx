@@ -95,7 +95,8 @@ import ProtectedRoute from "./privateroutes/ProtectedRoute";
 import HomePage from "./pages/instructorspages/HomePage";
 import { Bounce, ToastContainer } from "react-toastify";
 import Loader from "./components/common/Loader";
-import SearchResult from "./pages/searchresult/SearchResult"
+import SearchResult from "./pages/searchresult/SearchResult";
+import ProfilePage from "./pages/profilepage/ProfilePage";
 
 function App() {
   useEffect(() => {
@@ -107,14 +108,12 @@ function App() {
     });
   }, []);
 
- 
-
   return (
     <>
-    <Suspense fallback={<Loader />}>
-      <Context>
-        <BrowserRouter>
-          {/* <Routes>
+      <Suspense fallback={<Loader />}>
+        <Context>
+          <BrowserRouter>
+            {/* <Routes>
             <Route path="/">
               <Route index element={<HomePage1 />} />
               <Route path="home-1" element={<HomePage1 />} />
@@ -143,96 +142,94 @@ function App() {
               />
             </Route>
           </Routes> */}
-          
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<HomePage1 />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
 
-            {/* Student Routes */}
-            {/* <Route path="/" element={
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<HomePage1 />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+
+              {/* Student Routes */}
+              {/* <Route path="/" element={
                 <ProtectedRoute element={<HomePage1 />} role="student" />
               } /> */}
-            <Route
-              path="quiz/singlechoice"
-              element={
-                <ProtectedRoute element={<SingleChoice />} role="student" />
-              }
-            />
-            <Route
-              path="quiz/result"
-              element={
-                <ProtectedRoute element={<QuizResult />} role="student" />
-              }
-            />
-            <Route
-              path="quiz/questions"
-              element={
-                <ProtectedRoute element={<QuestionSet />} role="student" />
-              }
-            />
-            <Route
-              path="quiz/start"
-              element={
-                <ProtectedRoute element={<ExamInstructions />} role="student" />
-              }
-            />
-            <Route
-              path="/search/result"
-              element={
-               <SearchResult/>
-              }
-            />
+              <Route
+                path="quiz/singlechoice"
+                element={
+                  <ProtectedRoute element={<SingleChoice />} role="student" />
+                }
+              />
+              <Route
+                path="quiz/result"
+                element={
+                  <ProtectedRoute element={<QuizResult />} role="student" />
+                }
+              />
+              <Route
+                path="quiz/questions"
+                element={
+                  <ProtectedRoute element={<QuestionSet />} role="student" />
+                }
+              />
+              <Route
+                path="quiz/start"
+                element={
+                  <ProtectedRoute
+                    element={<ExamInstructions />}
+                    role="student"
+                  />
+                }
+              />
+              <Route path="/search/result" element={<SearchResult />} />
+              <Route path="/dshb/profilepage" element={<ProfilePage />} />
+              {/* Admin Routes */}
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <ProtectedRoute element={<DashboardPage />} role="admin" />
+                }
+              />
 
-            {/* Admin Routes */}
-            <Route
-              path="/admin/dashboard"
-              element={
-                <ProtectedRoute element={<DashboardPage />} role="admin" />
-              }
-            />
+              {/* Instructor Routes */}
+              <Route
+                path="/create/questionset"
+                element={
+                  <ProtectedRoute
+                    element={<MakeQuestionSet />}
+                    role="instructor"
+                  />
+                }
+              />
+              <Route
+                path="/instructor/home"
+                element={
+                  <ProtectedRoute element={<HomePage />} role="instructor" />
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={<DashboardPage role="instructor" />}
+                role="instructor"
+              />
+            </Routes>
+            <ScrollTopBehaviour />
+          </BrowserRouter>
 
-            {/* Instructor Routes */}
-            <Route
-              path="/create/questionset"
-              element={
-                <ProtectedRoute
-                  element={<MakeQuestionSet />}
-                  role="instructor"
-                />
-              }
-            />
-            <Route
-              path="/instructor/home"
-              element={
-                <ProtectedRoute
-                  element={<HomePage/> }
-                  role="instructor"
-                />
-              }
-            />
-             <Route path="/dashboard" element={<DashboardPage role="instructor"/>} role="instructor" />
-          
-          </Routes>
-          <ScrollTopBehaviour />
-        </BrowserRouter>
-       
-        <ToastContainer
-          position="top-center"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="dark"
-          transition={Bounce}
-        />
-      </Context>
-    </Suspense>
+          <ToastContainer
+            position="top-center"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+            transition={Bounce}
+          />
+        </Context>
+      </Suspense>
     </>
   );
 }

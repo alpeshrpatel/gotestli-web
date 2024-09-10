@@ -20,6 +20,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
+import { API } from "@/utils/AxiosInstance";
 
 const SignInWithFacebook = () => {
   const [open, setOpen] = useState(false);
@@ -38,7 +39,13 @@ const SignInWithFacebook = () => {
 
       const email = auth.currentUser.email;
       let userRole;
-
+      let names = auth.currentUser?.displayName?.split(" ")
+      let firstname = names[0];
+      let lastname = '';
+      if(names.length > 1){
+        lastname = names[names.length - 1];
+      }
+      console.log(auth.currentUser)
       const rolesRef = collection(db, "roles");
       const q = query(rolesRef, where("email", "==", email));
       const querySnapshot = await getDocs(q);
@@ -50,8 +57,11 @@ const SignInWithFacebook = () => {
             email: auth.currentUser.email,
             created_on: auth.currentUser.metadata?.createdAt,
             last_login: auth.currentUser.metadata?.lastLoginAt,
-            first_name: userName,
+            first_name:firstname,
+            last_name:lastname,
             uid: auth.currentUser.uid,
+            role:selectedRole,
+            provider:'facebook'
           });
           console.log(res);
         } catch (error) {

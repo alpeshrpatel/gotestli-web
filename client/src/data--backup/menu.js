@@ -80,7 +80,7 @@ export const menuList = [
               { href: "/dashboard", label: "Dashboard" },
               { href: "/dshb-quizzes", label: "My quizzes" },           
               // { href: "/dshb-listing", label: "Add Listing" },          
-              { href: "/dshb-settings", label: "Settings" },
+              { href: "/dshb/profilepage", label: "Profile Page" },
               { href: "/dshb-administration", label: "Administration" },          
               // { href: "/dshb-dashboard", label: "Single Dashboard" },
               // { href: "/dshb-grades", label: "Grades" },           
