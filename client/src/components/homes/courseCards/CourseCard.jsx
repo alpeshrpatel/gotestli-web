@@ -62,6 +62,8 @@ export default function CourceCard({search = null, role, data, index }) {
           id={data.id}
           time={data.time_duration}
           questionSet={questionSet}
+          data={data}
+          onCloseModal={onCloseModal}
         />
       </Modal>
       <div className={`col-lg-3 col-md-6 pointer ${search ? `col-lg-4 col-md-6 ` : `col-lg-3 col-md-6` } `} onClick={onOpenModal}>

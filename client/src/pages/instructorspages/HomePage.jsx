@@ -75,7 +75,7 @@ const HomePage = () => {
                       <td>{set.no_of_question}</td>
                       <td>{set.time_duration}</td>
                       <td>{set.totalmarks}</td>
-                      <td>{set.is_demo ? "Private" : "Public"}</td>
+                      <td>{set.is_demo ? "Public" : "Private"}</td>
                     </tr>
                     {expandedRow === index && (
                       <tr>

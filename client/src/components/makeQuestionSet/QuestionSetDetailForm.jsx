@@ -426,7 +426,7 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories, questionSetId })
               color="primary"
             />
           }
-          label="Is Demo"
+          label="Public"
           className="w-100"
         />
       </div>

@@ -1,9 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { TextField, Box, Typography, Paper, Avatar } from "@mui/material";
+// import { TextField, Box, Typography, Paper, Avatar } from "@mui/material";
+import {
+  TextField,
+  Box,
+  Typography,
+  Paper,
+  Avatar,
+  Button,
+  IconButton,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Autocomplete,
+} from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 import { auth } from "@/firebase/Firebase";
 import { API } from "@/utils/AxiosInstance";
 import { toast } from "react-toastify";
+import { Delete, Edit } from "@mui/icons-material";
+import Header from "@/components/layout/headers/Header";
 
 const ProfilePage = () => {
   const [usersData, setUsersData] = useState({});
@@ -15,6 +31,8 @@ const ProfilePage = () => {
     company: "",
     phone: "",
   });
+  const [categories, setCategories] = useState([]);
+  const [tagsId, setTagsId] = useState("");
 
   let uid = "";
   if (auth.currentUser) {
@@ -37,6 +55,11 @@ const ProfilePage = () => {
     if (uid) {
       getUserProfile();
     }
+    async function getCategory() {
+      const { data } = await API.get("/api/category");
+      setCategories(data);
+    }
+    getCategory();
   }, [uid]);
 
   const handleInputChange = (e) => {
@@ -50,7 +73,13 @@ const ProfilePage = () => {
   const handleUpdateData = async () => {
     try {
       const res = await API.put(`/api/users/${uid}`, updatedData);
-      if (res.status == 200) {
+      const data = await API.post("/api/users/preference", {
+        user_id: usersData.id,
+        tagsId,
+      });
+      console.log(data);
+
+      if (res.status == 200 && data.status == 200) {
         toast.success("User updated Successfully!");
       }
     } catch (error) {
@@ -59,7 +88,9 @@ const ProfilePage = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", p: 3 }}>
+    <>
+    <Header/>
+    <Box sx={{ display: "flex", justifyContent: "center", p: 3 ,marginTop:'5vw'}}>
       <Box sx={{ width: 300, mr: 5 }}>
         <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
           <Box
@@ -78,6 +109,14 @@ const ProfilePage = () => {
                 sx={{ bgcolor: deepPurple[500], width: 56, height: 56 }}
               >{`${usersData?.first_name?.[0]?.toUpperCase()}`}</Avatar>
             )}
+            <div className="d-flex mt-1 justify-content-center">
+              <IconButton>
+                <Edit sx={{ color: "#3f51b5" }} />
+              </IconButton>
+              <IconButton>
+                <Delete sx={{ color: "#f50057" }} />
+              </IconButton>
+            </div>
             <Typography
               variant="h6"
               sx={{ mt: 2 }}
@@ -103,91 +142,121 @@ const ProfilePage = () => {
       </Box>
 
       <Box sx={{ flex: 1 }}>
-        <Typography variant="h5" sx={{ mb: 2 }}>
-          Public profile
+        <Typography variant="h5" sx={{ mb: 2, textAlign: "center" }}>
+          Public Profile
         </Typography>
-        <Typography variant="subtitle1" sx={{ mb: 2 }}>
+        <Typography variant="subtitle1" sx={{ mb: 2, textAlign: "center" }}>
           Add information about yourself
         </Typography>
         <Box
           component="form"
-          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+          sx={{ display: "flex", flexDirection: "column", gap: 2, marginTop:'40px' }}
         >
           {/* Basics Section */}
-          <Typography variant="subtitle2" sx={{ mb: 1 }}>
-            Basics:
-          </Typography>
-          <TextField
-            label="First Name"
-            variant="outlined"
-            name="first_name"
-            fullWidth
-            required
-            className="custom-height-questionsetform bg-white rounded w-100"
-            value={updatedData.first_name}
-            onChange={handleInputChange}
-          />
-          <TextField
-            label="Last Name"
-            variant="outlined"
-            fullWidth
-            name="last_name"
-            required
-            className="custom-height-questionsetform bg-white rounded w-100"
-            value={updatedData.last_name}
-            onChange={handleInputChange}
-          />
-
-          <TextField
-            label="Role"
-            variant="outlined"
-            fullWidth
-            name="role"
-            InputProps={{ readOnly: true }}
-            InputLabelProps={{ shrink: true }}
-            className="custom-height-questionsetform bg-white rounded w-100"
-            value={usersData.role}
-          />
-
-          <TextField
-            label="Email"
-            variant="outlined"
-            fullWidth
-            name="email"
-            required
-            InputLabelProps={{ shrink: true }}
-            className="custom-height-questionsetform bg-white rounded w-100"
-            value={updatedData.email}
-            onChange={handleInputChange}
-          />
-          <TextField
-            label="Company Name"
-            variant="outlined"
-            name="company"
-            fullWidth
-            className="custom-height-questionsetform bg-white rounded w-100"
-            value={updatedData.company}
-            onChange={handleInputChange}
-          />
-          <TextField
-            label="Phone Number"
-            variant="outlined"
-            fullWidth
-            type="tel"
-            name="phone"
-            className=" bg-white rounded w-100"
-            value={updatedData.phone}
-            onChange={handleInputChange}
-          />
+          
+          <div className="row gap-2 col-12 px-4 flex justify-content-center">
+            <TextField
+              label="First Name"
+              variant="outlined"
+              name="first_name"
+              required
+              className="custom-height-questionsetform bg-white rounded col-5"
+              value={updatedData.first_name}
+              onChange={handleInputChange}
+            />
+            <TextField
+              label="Last Name"
+              variant="outlined"
+              name="last_name"
+              required
+              className="custom-height-questionsetform bg-white rounded col-5"
+              value={updatedData.last_name}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="row gap-2 col-12 px-4 flex justify-content-center">
+            <TextField
+              label="Email"
+              variant="outlined"
+              name="email"
+              required
+              InputLabelProps={{ shrink: true }}
+              className="custom-height-questionsetform bg-white rounded col-5"
+              value={updatedData.email}
+              onChange={handleInputChange}
+            />
+            <TextField
+              label="Phone Number"
+              variant="outlined"
+              type="number"
+              name="phone"
+              className="custom-height-questionsetform bg-white rounded col-5"
+              value={updatedData.phone}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="row gap-2 col-12 px-4 flex justify-content-center">
+            <TextField
+              label="Role"
+              variant="outlined"
+              name="role"
+              InputProps={{ readOnly: true }}
+              InputLabelProps={{ shrink: true }}
+              className="custom-height-questionsetform bg-white rounded col-5"
+              value={usersData.role}
+            />
+            <TextField
+              label="Company Name"
+              variant="outlined"
+              name="company"
+              className="custom-height-questionsetform bg-white rounded col-5"
+              value={updatedData.company}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="row gap-2 col-12 px-4 flex justify-content-center">
+            <Autocomplete
+              multiple
+              id="tags-outlined"
+              options={categories}
+              getOptionLabel={(option) => option.title || ""}
+              filterSelectedOptions
+              sx={{
+                "& .MuiInputBase-input": {
+                  height: "35px",
+                  border: "none",
+                },
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Add Your Preferences"
+                  placeholder="Select categories"
+                />
+              )}
+              className="custom-height-questionsetform bg-white rounded col-6"
+              onChange={(event, newValue) => {
+                let tags = "";
+                let tagsId = "";
+                console.log(newValue);
+                newValue.forEach((tag) => {
+                  tags = tags + "," + tag.title;
+                  tagsId = tagsId + "," + tag.id;
+                });
+                setTagsId(tagsId.slice(1));
+              }}
+            />
+          </div>
         </Box>
         <button
-          className="button -sm px-20 py-20 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm mt-4 mx-auto "
+          className="button -sm px-20 py-20 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm mt-4 mx-auto"
           onClick={handleUpdateData}
         >
           Save
         </button>
       </Box>
     </Box>
+    </>
   );
 };
 
