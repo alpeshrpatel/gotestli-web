@@ -21,36 +21,36 @@ export default function Courses() {
   const [categories, setCategories] = useState([]);
   const [userRole, setUserRole] = useState("");
   const [value, setValue] = useState(0);
-  const[selectedCategory, setSelectedCategory] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState("");
 
-  const handleChange = async(event, newValue) => {
+  const handleChange = async (event, newValue) => {
     console.log(event);
     let title = event.target.textContent;
-    if(title == 'All Categories'){
+    if (title == "All Categories") {
       setSelectedCategory(filtered);
-    }else{
-
+    } else {
       try {
-        const res = await API.get(`/api/category/selected/questionsets/${title}`);
+        const res = await API.get(
+          `/api/category/selected/questionsets/${title}`
+        );
         console.log(res);
-        if(res.data){
+        if (res.data) {
           setSelectedCategory(res.data);
         }
       } catch (error) {
-        throw error
+        throw error;
       }
     }
-    
+
     setValue(newValue);
   };
   useEffect(() => {
-    async function getCategory(){
-      const {data} = await API.get("/api/category/parent/categories");
-      setCategories(data)
+    async function getCategory() {
+      const { data } = await API.get("/api/category/parent/categories");
+      setCategories(data);
       console.log(data);
     }
     getCategory();
-    
   }, []);
 
   useEffect(() => {
@@ -89,13 +89,17 @@ export default function Courses() {
   console.log(userRole);
   let questionSetByInstructor = [];
   if (userRole == "instructor") {
-    questionSetByInstructor = filtered?.filter(
-      (set) => set.author.toLowerCase() == user.toLowerCase()
-    );
+    selectedCategory?.length > 0
+      ? (questionSetByInstructor = selectedCategory?.filter(
+          (set) => set.author.toLowerCase() == user.toLowerCase()
+        ))
+      : (questionSetByInstructor = filtered?.filter(
+          (set) => set.author.toLowerCase() == user.toLowerCase()
+        ));
   }
 
   console.log(questionSetByInstructor);
-console.log(value)
+  console.log(value);
   return (
     <section
       className="layout-pt-lg layout-pb-lg"
@@ -103,25 +107,46 @@ console.log(value)
     >
       <div className="row justify-center text-center">
         <div className="col-auto">
-          <div className="sectionTitle ">
-            <h2 className="sectionTitle__title sm:text-24">
-              Our Most Popular Courses
-            </h2>
+          <div className="sectionTitle mt-4 ">
+            {userRole == "instructor" ? (
+              
+              <h4 className="sectionTitle__title text-30 sm:text-24 ">
+                Preview How Your Quizzes Appear To Users In The Public View
+              </h4>
+            ) : (
+              <>
+                <h2 className="sectionTitle__title sm:text-24 ">
+                  Our Most Popular Quizzes
+                </h2>
 
-            <p className="sectionTitle__text ">
-              10,000+ unique online course list designs
-            </p>
+                <p className="sectionTitle__text ">
+                  Attend various Quizzes of different categories
+                </p>
+              </>
+            )}
           </div>
         </div>
       </div>
       <div className="tabs__controls flex-wrap  pt-50 d-flex justify-center x-gap-10 js-tabs-controls ">
-        
-        <Box sx={{ width: "100%" }} className = "d-flex justify-center">
-          <Tabs value={value} onChange={handleChange} aria-label="category tabs">
-            <Tab sx={{fontWeight:'bold',fontSize:'14px'}} label="All Categories" />
-            {categories && categories.map((category, index) => (
-              <Tab key={index} label={category.title} categoryId={category.id} sx={{fontWeight:'bold',fontSize:'14px'}} />
-            ))}
+        <Box sx={{ width: "100%" }} className="d-flex justify-center">
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="category tabs"
+          >
+            <Tab
+              sx={{ fontWeight: "bold", fontSize: "14px" }}
+              label="All Categories"
+            />
+            {categories &&
+              categories.map((category, index) => (
+                <Tab
+                  key={index}
+                  label={category.title}
+                  categoryId={category.id}
+                  sx={{ fontWeight: "bold", fontSize: "14px" }}
+                />
+              ))}
           </Tabs>
         </Box>
       </div>
@@ -145,36 +170,37 @@ console.log(value)
               />
             ))
           ) : (
-            <h4 className="no-content text-center mt-8">No Questionsets found for this instructor.</h4>
+            <h4 className="no-content text-center mt-8">
+              No Questionsets found for this instructor.
+            </h4>
           )
+        ) : !selectedCategory ? (
+          filtered &&
+          filtered.map((elm, index) => (
+            <CourceCard
+              role={userRole}
+              key={index}
+              data={elm}
+              index={index}
+              data-aos="fade-right"
+              data-aos-duration={(index + 1) * 300}
+            />
+          ))
+        ) : selectedCategory.length > 0 ? (
+          selectedCategory.map((elm, index) => (
+            <CourceCard
+              role={userRole}
+              key={index}
+              data={elm}
+              index={index}
+              data-aos="fade-right"
+              data-aos-duration={(index + 1) * 300}
+            />
+          ))
         ) : (
-          !selectedCategory ? (
-            filtered && filtered.map((elm, index) => (
-              <CourceCard
-                role={userRole}
-                key={index}
-                data={elm}
-                index={index}
-                data-aos="fade-right"
-                data-aos-duration={(index + 1) * 300}
-              />
-            ))
-          ) : (
-            selectedCategory.length > 0 ? (
-              selectedCategory.map((elm, index) => (
-                <CourceCard
-                  role={userRole}
-                  key={index}
-                  data={elm}
-                  index={index}
-                  data-aos="fade-right"
-                  data-aos-duration={(index + 1) * 300}
-                />
-            )
-            )) : (
-              <h4 className="no-content text-center mt-8">No Questionsets found for this Category.</h4>
-            )
-          )
+          <h4 className="no-content text-center mt-8">
+            No Questionsets found for this Category.
+          </h4>
         )}
         {/* { filtered &&
           filtered.map((elm, index) => (
