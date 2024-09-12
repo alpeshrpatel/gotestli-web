@@ -97,6 +97,7 @@ import { Bounce, ToastContainer } from "react-toastify";
 import Loader from "./components/common/Loader";
 import SearchResult from "./pages/searchresult/SearchResult";
 import ProfilePage from "./pages/profilepage/ProfilePage";
+import StudentQuizzes from "./pages/studentpages/StudentQuizzes";
 
 function App() {
   useEffect(() => {
@@ -180,6 +181,16 @@ function App() {
                   />
                 }
               />
+               <Route
+                path="/dshb/quizzes"
+                element={
+                  <ProtectedRoute
+                    element={<StudentQuizzes />}
+                    role="student"
+                  />
+                }
+              />
+              
               <Route path="/search/result" element={<SearchResult />} />
               <Route path="/dshb/profilepage" element={<ProfilePage />} />
               {/* Admin Routes */}
