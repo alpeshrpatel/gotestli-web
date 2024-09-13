@@ -16,12 +16,35 @@ import {
 
 import { Tabs, Tab, Box, Button } from "@mui/material";
 
-export default function Courses() {
+export default function Courses({userRole}) {
   const [filtered, setFiltered] = useState();
   const [categories, setCategories] = useState([]);
-  const [userRole, setUserRole] = useState("");
   const [value, setValue] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [isLoading,setIsLoading] = useState(false);
+
+  
+  useEffect(() => {
+    async function getCategory() {
+      const { data } = await API.get("/api/category/parent/categories");
+      setCategories(data);
+      console.log(data);
+    }
+    getCategory();
+  }, []);
+
+  useEffect(() => {
+    async function getQuestionsSet() {
+      try {
+        const { data } = await API.get("/api/questionset");
+        console.log(data);
+        setFiltered(data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getQuestionsSet();
+  }, []);
 
   const handleChange = async (event, newValue) => {
     console.log(event);
@@ -44,52 +67,12 @@ export default function Courses() {
 
     setValue(newValue);
   };
-  useEffect(() => {
-    async function getCategory() {
-      const { data } = await API.get("/api/category/parent/categories");
-      setCategories(data);
-      console.log(data);
-    }
-    getCategory();
-  }, []);
-
-  useEffect(() => {
-    async function checkUserRole() {
-      if (auth.currentUser) {
-        const userId = auth.currentUser.uid;
-        const docRef = doc(db, "roles", userId);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          setUserRole(docSnap.data().role.toLowerCase());
-          console.log(docSnap.data().role);
-        } else {
-          console.log("No role found for this user");
-        }
-      } else {
-        console.log("No user is logged in");
-      }
-    }
-    checkUserRole();
-  });
-  useEffect(() => {
-    async function getQuestionsSet() {
-      try {
-        const { data } = await API.get("/api/questionset");
-        console.log(data);
-        setFiltered(data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getQuestionsSet();
-  }, []);
   const user = auth?.currentUser?.displayName;
   console.log(filtered);
   console.log(userRole);
   let questionSetByInstructor = [];
   if (userRole == "instructor") {
-    selectedCategory?.length > 0
+    selectedCategory && selectedCategory?.length > 0
       ? (questionSetByInstructor = selectedCategory?.filter(
           (set) => set.author.toLowerCase() == user.toLowerCase()
         ))
@@ -158,7 +141,7 @@ export default function Courses() {
         data-aos-duration={800}
       >
         {userRole && userRole === "instructor" ? (
-          questionSetByInstructor.length > 0 ? (
+          questionSetByInstructor?.length > 0 ? (
             questionSetByInstructor.map((elm, index) => (
               <CourceCard
                 role={userRole}

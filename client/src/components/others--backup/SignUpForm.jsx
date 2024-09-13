@@ -16,7 +16,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import { TextField } from "@mui/material";
+import { CircularProgress, TextField } from "@mui/material";
 
 export default function SignUpForm() {
   const [userName, setUserName] = useState("");
@@ -24,6 +24,7 @@ export default function SignUpForm() {
   const [email, setEmail] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [selectedRole, setSelectedRole] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -38,6 +39,7 @@ export default function SignUpForm() {
     e.preventDefault();
 
     try {
+      setIsLoading(true);
       if (password === confirmPassword) {
         const data = await createUserWithEmailAndPassword(
           auth,
@@ -62,6 +64,7 @@ export default function SignUpForm() {
             provider:'manual'
           });
           console.log(res);
+         
         } catch (error) {
           console.log(error);
         }
@@ -78,7 +81,7 @@ export default function SignUpForm() {
         }
 
         console.log("account created successfully!");
-
+        setIsLoading(false);
         navigate("/login");
       } else {
         alert("Password not matched!!");
@@ -194,7 +197,7 @@ export default function SignUpForm() {
                     id="submit"
                     className="button -md -purple-1 text-white fw-500 w-1/1"
                   >
-                    Register
+                     {isLoading ? (<CircularProgress size={30}/>) : 'Register'}
                   </button>
                 </div>
               </form>

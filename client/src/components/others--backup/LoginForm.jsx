@@ -110,7 +110,7 @@ export default function LoginForm() {
                       id="submit"
                       className="button -md -purple-1 text-white fw-500 w-1/1"
                     >
-                      {isLoading ? (<CircularProgress />) : 'Login'}
+                      {isLoading ? (<CircularProgress size={30}/>) : 'Login'}
                      
                     </button>
                   </div>
