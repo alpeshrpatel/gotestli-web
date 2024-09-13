@@ -19,6 +19,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import Loader from "@/components/common/Loader";
 
 const metadata = {
   title: " Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
@@ -28,9 +29,11 @@ const metadata = {
 
 export default function HomePage1() {
   const [userRole, setUserRole] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function checkUserRole() {
+      setIsLoading(true);
       if (auth.currentUser) {
         const userId = auth.currentUser.uid;
         const docRef = doc(db, "roles", userId);
@@ -45,38 +48,43 @@ export default function HomePage1() {
       } else {
         console.log("No user is logged in");
       }
+      setIsLoading(false);
     }
     checkUserRole();
   }, []);
 
   return (
     <>
-      <Preloader />
-      <MetaComponent meta={metadata} />
-      <Header />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <Preloader />
+          <MetaComponent meta={metadata} />
+          <Header />
 
-      <div className="content-wrapper  js-content-wrapper overflow-hidden w-100">
-        {!userRole && (
-          <>
-            <HomeHero />
-            <Brands />
-            <Categories />
-          </>
-        )}
-       
-       <div className={`${userRole && `mt-80`}`}>
-        
-       </div>
-        <Courses />
-        {/* <TestimonialsOne />
+          <div className="content-wrapper  js-content-wrapper overflow-hidden w-100">
+            {!userRole && (
+              <>
+                <HomeHero />
+                <Brands />
+                <Categories />
+              </>
+            )}
+
+            <div className={`${userRole && `mt-80`}`}></div>
+            <Courses userRole={userRole}/>
+            {/* <TestimonialsOne />
         <FeaturesOne />
         <WhyCourse />
         <Instructors />
         <GetApp />
         <Blog />
         <Join /> */}
-        <FooterOne />
-      </div>
+            <FooterOne />
+          </div>
+        </>
+      )}
     </>
   );
 }
