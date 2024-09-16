@@ -42,7 +42,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
   const [inProgressQuizId, setInProgressQuizId] = useState();
   const [setQuestionsSet] = useState([]);
   const [history, setHistory] = useState([]);
-  const [userRole, setUserRole] = useState("");
+  // const [userRole, setUserRole] = useState("");
   const navigate = useNavigate();
   const userId = 99;
   const questionSetId = id;
@@ -90,24 +90,26 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
     }
     getHistory();
 
-    async function checkUserRole() {
-      if (auth.currentUser) {
-        const userId = auth.currentUser.uid;
-        const docRef = doc(db, "roles", userId);
-        const docSnap = await getDoc(docRef);
+  //   async function checkUserRole() {
+  //     if (auth.currentUser) {
+  //       const userId = auth.currentUser.uid;
+  //       const docRef = doc(db, "roles", userId);
+  //       const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-          setUserRole(docSnap.data().role);
-          console.log(docSnap.data().role);
-        } else {
-          console.log("No role found for this user");
-        }
-      } else {
-        console.log("No user is logged in");
-      }
-    }
-    checkUserRole();
-  }, []);
+  //       if (docSnap.exists()) {
+  //         setUserRole(docSnap.data().role);
+  //         console.log(docSnap.data().role);
+  //       } else {
+  //         console.log("No role found for this user");
+  //       }
+  //     } else {
+  //       console.log("No user is logged in");
+  //     }
+  //   }
+  //   checkUserRole();
+   }, []);
+  const user = JSON.parse( localStorage.getItem('user')) || '';
+  const userRole = user.role;
 
   async function testResultDtlSetData(userId, questionSetId, userResultId) {
     try {

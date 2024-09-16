@@ -6,6 +6,7 @@ import React from "react";
 
 import MetaComponent from "@/components/common/MetaComponent";
 import Header from "@/components/layout/headers/Header";
+import StudentDashboardOne from "./StudentDashboardOne";
 
 const metadata = {
   title:
@@ -14,13 +15,15 @@ const metadata = {
     "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges.",
 };
 
-export default function DashboardPage() {
+export default function StudentDashboard() {
+    const user = JSON.parse( localStorage.getItem('user')) || '';
+  const userRole = user.role;
   return (
     <div className="barba-container" data-barba="container">
       <MetaComponent meta={metadata} />
       <main className="main-content">
         <Preloader />
-        <Header/>
+        <Header userRole={userRole}/>
         <div className="content-wrapper js-content-wrapper overflow-hidden">
           <div
             id="dashboardOpenClose"
@@ -29,7 +32,7 @@ export default function DashboardPage() {
             <div className="dashboard__sidebar scroll-bar-1">
               <Sidebar />
             </div>
-            <DashboardOne />
+            <StudentDashboardOne />
           </div>
         </div>
       </main>

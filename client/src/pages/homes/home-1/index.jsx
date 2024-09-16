@@ -28,30 +28,32 @@ const metadata = {
 };
 
 export default function HomePage1() {
-  const [userRole, setUserRole] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  // const [userRole, setUserRole] = useState("");
+   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    async function checkUserRole() {
-      setIsLoading(true);
-      if (auth.currentUser) {
-        const userId = auth.currentUser.uid;
-        const docRef = doc(db, "roles", userId);
-        const docSnap = await getDoc(docRef);
+  // useEffect(() => {
+  //   async function checkUserRole() {
+  //     setIsLoading(true);
+  //     if (auth.currentUser) {
+  //       const userId = auth.currentUser.uid;
+  //       const docRef = doc(db, "roles", userId);
+  //       const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-          setUserRole(docSnap.data().role);
-          console.log(docSnap.data().role);
-        } else {
-          console.log("No role found for this user");
-        }
-      } else {
-        console.log("No user is logged in");
-      }
-      setIsLoading(false);
-    }
-    checkUserRole();
-  }, []);
+  //       if (docSnap.exists()) {
+  //         setUserRole(docSnap.data().role);
+  //         console.log(docSnap.data().role);
+  //       } else {
+  //         console.log("No role found for this user");
+  //       }
+  //     } else {
+  //       console.log("No user is logged in");
+  //     }
+  //     setIsLoading(false);
+  //   }
+  //   checkUserRole();
+  // }, []);
+  const user = JSON.parse( localStorage.getItem('user')) || '';
+  const userRole = user.role;
 
   return (
     <>
@@ -61,7 +63,7 @@ export default function HomePage1() {
         <>
           <Preloader />
           <MetaComponent meta={metadata} />
-          <Header />
+          <Header userRole = {userRole}/>
 
           <div className="content-wrapper  js-content-wrapper overflow-hidden w-100">
             {!userRole && (
