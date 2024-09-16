@@ -10,7 +10,7 @@ import { signOut, onAuthStateChanged } from "firebase/auth";
 import { menuList } from "@/data--backup/menu";
 import { TextField } from "@mui/material";
 
-export default function Header() {
+export default function Header({userRole}) {
   const [activeMobileMenu, setActiveMobileMenu] = useState(false);
   const [user, setUser] = useState(null);
   const [menuItem, setMenuItem] = useState("");
@@ -43,6 +43,7 @@ export default function Header() {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
+      localStorage.removeItem('user');
       console.log("Logout Successfully");
       window.location.reload();
     } catch (error) {
@@ -179,26 +180,54 @@ export default function Header() {
                                           </h4>
 
                                           <ul className="mega__list ">
-                                            {menuList[2].links[0].links.map(
-                                              (elm, i) => (
-                                                <li
-                                                  key={i}
-                                                  className={
-                                                    pathname?.split("/")[1] ==
-                                                    elm.href?.split("/")[1]
-                                                      ? "activeMenu"
-                                                      : "inActiveMegaMenu"
-                                                  }
-                                                >
-                                                  <Link
-                                                    data-barba
-                                                    to={elm.href}
-                                                  >
-                                                    {elm.label}
-                                                  </Link>
-                                                </li>
-                                              )
-                                            )}
+                                            {
+                                              userRole == 'student' &&  (
+                                                menuList[2].links[0].links.map(
+                                                  (elm, i) => (
+                                                    <li
+                                                      key={i}
+                                                      className={
+                                                        pathname?.split("/")[1] ==
+                                                        elm.href?.split("/")[1]
+                                                          ? "activeMenu"
+                                                          : "inActiveMegaMenu"
+                                                      }
+                                                    >
+                                                      <Link
+                                                        data-barba
+                                                        to={elm.href}
+                                                      >
+                                                        {elm.label}
+                                                      </Link>
+                                                    </li>
+                                                  )
+                                                )
+                                               ) 
+                                            }
+                                            {
+                                               userRole == 'instructor' &&  (
+                                                menuList[6].links[0].links.map(
+                                                  (elm, i) => (
+                                                    <li
+                                                      key={i}
+                                                      className={
+                                                        pathname?.split("/")[1] ==
+                                                        elm.href?.split("/")[1]
+                                                          ? "activeMenu"
+                                                          : "inActiveMegaMenu"
+                                                      }
+                                                    >
+                                                      <Link
+                                                        data-barba
+                                                        to={elm.href}
+                                                      >
+                                                        {elm.label}
+                                                      </Link>
+                                                    </li>
+                                                  )
+                                                )
+                                               ) 
+                                            }
                                             <button
                                               className="button -sm -purple-1 text-white fw-500 w-10 text-dark-1 mt-8"
                                               onClick={handleSignOut}

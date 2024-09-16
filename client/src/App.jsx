@@ -98,6 +98,7 @@ import Loader from "./components/common/Loader";
 import SearchResult from "./pages/searchresult/SearchResult";
 import ProfilePage from "./pages/profilepage/ProfilePage";
 import StudentQuizzes from "./pages/studentpages/StudentQuizzes";
+import StudentDashboard from "./pages/studentpages/StudentDashboard";
 
 function App() {
   useEffect(() => {
@@ -181,18 +182,22 @@ function App() {
                   />
                 }
               />
-               <Route
+              <Route
                 path="/dshb/quizzes"
                 element={
-                  <ProtectedRoute
-                    element={<StudentQuizzes />}
-                    role="student"
-                  />
+                  <ProtectedRoute element={<StudentQuizzes />} role="student" />
                 }
               />
-              
+              <Route
+                path="/student/dashboard"
+                element={
+                  <ProtectedRoute element={<StudentDashboard />} role="student" />
+                }
+              />
+
               <Route path="/search/result" element={<SearchResult />} />
               <Route path="/dshb/profilepage" element={<ProfilePage />} />
+
               {/* Admin Routes */}
               <Route
                 path="/admin/dashboard"
@@ -218,7 +223,7 @@ function App() {
                 }
               />
               <Route
-                path="/dashboard"
+                path="/instructor/dashboard"
                 element={<DashboardPage role="instructor" />}
                 role="instructor"
               />

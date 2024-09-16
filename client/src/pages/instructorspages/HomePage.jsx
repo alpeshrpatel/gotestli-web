@@ -29,6 +29,9 @@ const HomePage = () => {
     is_demo: "",
   });
 
+  const user = JSON.parse( localStorage.getItem('user')) || '';
+  const userRole = user.role;
+
   useEffect(() => {
     const author = auth.currentUser.displayName;
     async function getQuestionSets() {
@@ -104,7 +107,7 @@ const HomePage = () => {
     <div>
       <Preloader />
       <MetaComponent meta={metadata} />
-      <Header />
+      <Header userRole={userRole}/>
 
       <div className="content-wrapper js-content-wrapper overflow-hidden w-100">
         {questionSets.length > 0 ? (

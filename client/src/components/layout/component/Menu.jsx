@@ -16,7 +16,7 @@ import { useLocation } from "react-router-dom";
 export default function Menu({ allClasses, headerPosition }) {
   const [menuItem, setMenuItem] = useState("");
   const [submenu, setSubmenu] = useState("");
-  const [userRole, setUserRole] = useState("");
+  //const [userRole, setUserRole] = useState("");
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -34,24 +34,26 @@ export default function Menu({ allClasses, headerPosition }) {
         }
       });
     });
-    async function checkUserRole() {
-      if (auth.currentUser) {
-        const userId = auth.currentUser.uid;
-        const docRef = doc(db, "roles", userId);
-        const docSnap = await getDoc(docRef);
+  //   async function checkUserRole() {
+  //     if (auth.currentUser) {
+  //       const userId = auth.currentUser.uid;
+  //       const docRef = doc(db, "roles", userId);
+  //       const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-          setUserRole(docSnap.data().role);
-          console.log(docSnap.data().role);
-        } else {
-          console.log("No role found for this user");
-        }
-      } else {
-        console.log("No user is logged in");
-      }
-    }
-    checkUserRole();
-  }, []);
+  //       if (docSnap.exists()) {
+  //         setUserRole(docSnap.data().role);
+  //         console.log(docSnap.data().role);
+  //       } else {
+  //         console.log("No role found for this user");
+  //       }
+  //     } else {
+  //       console.log("No user is logged in");
+  //     }
+  //   }
+  //   checkUserRole();
+   }, []);
+  const user = JSON.parse( localStorage.getItem('user')) || '';
+  const userRole = user.role;
 
   return (
     <div

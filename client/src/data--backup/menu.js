@@ -77,15 +77,15 @@ export const menuList = [
           {
             title: "Dashboard Pages",
             links: [
-              { href: "/dashboard", label: "Dashboard" },
+              { href: "/student/dashboard", label: "Dashboard" },
               { href: "/dshb/quizzes", label: "My quizzes" },           
               // { href: "/dshb-listing", label: "Add Listing" },          
               { href: "/dshb/profilepage", label: "Profile Page" },
               { href: "/dshb-administration", label: "Administration" },          
               // { href: "/dshb-dashboard", label: "Single Dashboard" },
               // { href: "/dshb-grades", label: "Grades" },           
-              { href: "/dshb-participants", label: "Participants" },
-              { href: "/dshb-quiz", label: "Quiz" },
+              // { href: "/dshb-participants", label: "Participants" },
+              // { href: "/dshb-quiz", label: "Quiz" },
               // { href: "/dshb-survey", label: "Survey" },
             ],
           }

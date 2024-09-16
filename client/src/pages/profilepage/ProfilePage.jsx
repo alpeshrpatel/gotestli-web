@@ -40,6 +40,8 @@ const ProfilePage = () => {
   if (auth.currentUser) {
     uid = auth.currentUser.uid;
   }
+  const user = JSON.parse( localStorage.getItem('user')) || '';
+  const userRole = user.role;
 
   useEffect(() => {
     async function getUserProfile() {
@@ -101,7 +103,7 @@ const ProfilePage = () => {
 
   return (
     <>
-      <Header />
+      <Header userRole={userRole}/>
       <Box
         sx={{
           display: "flex",

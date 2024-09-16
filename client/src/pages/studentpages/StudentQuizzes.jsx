@@ -9,7 +9,7 @@ import { auth } from "@/firebase/Firebase";
 
 const metadata = {
   title:
-    " Instructor Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
+    " student Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
   description:
     "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges.",
 };

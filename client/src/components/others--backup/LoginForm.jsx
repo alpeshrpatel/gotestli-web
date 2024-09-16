@@ -17,6 +17,7 @@ import {
   where,
 } from "firebase/firestore";
 import { CircularProgress, TextField } from "@mui/material";
+import { API } from "@/utils/AxiosInstance";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -43,6 +44,8 @@ export default function LoginForm() {
           userRole = docSnap.data().role;
           // setUserRole(docSnap.data().role);
           console.log(docSnap.data().role);
+         const{ data }=  await API.get(`/api/users/${userId}`)
+          localStorage.setItem("user",JSON.stringify({id:data.id,role:userRole,email:data.email}))
         } else {
           console.log("No role found for this user");
         }
