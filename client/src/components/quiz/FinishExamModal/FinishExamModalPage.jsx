@@ -80,6 +80,11 @@ const FinishExamModalPage = ({
   // console.log(reviewQuestionsData);
   const onOpenModal = () => setOpen(true);
   const onCloseSubmitModal = () => setOpen(false);
+
+  const user = JSON.parse( localStorage.getItem('user')) || '';
+  
+  const userRole = user.role;
+  const userId = user.id;
  console.log(selectedOption)
   const attempted = selectedOption.filter((q) => q.selectedOption !== null);
   const reviewed = selectedOption.filter((q) => q.status == 2 || q.status == 3);
@@ -112,6 +117,7 @@ const FinishExamModalPage = ({
         user_test_result_id:userResultId,
         question_set_question_id:questionId ,
         answer:findSelectedOption,
+        modified_by:userId,
         status:status,
       });
 

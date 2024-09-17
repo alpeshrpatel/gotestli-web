@@ -25,14 +25,16 @@ const SubmitQuizModal = ({
   const [passingCriteria, setPassingCriteria] = useState([]);
   const [answers, setAnswers] = useState([]);
   const navigate = useNavigate();
-
+  const userdata = JSON.parse( localStorage.getItem('user')) || '';
+  const userRole = userdata.role;
+  const userId = userdata.id;
   const user = auth.currentUser;
 
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const SubmitUserResult = async () => {
     try {
-      const { data } = await API.put("/api/userresult/calculate/finalresult", {userResultId, questionSetId, totalQuestions, totalAnswered, skippedQuestion, totalReviewed});
+      const { data } = await API.put("/api/userresult/calculate/finalresult", {userResultId, questionSetId, totalQuestions, totalAnswered, skippedQuestion, totalReviewed, userId});
 
       console.log(data);
       const correct = data.correct;

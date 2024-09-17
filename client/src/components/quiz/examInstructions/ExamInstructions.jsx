@@ -42,9 +42,13 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
   const [inProgressQuizId, setInProgressQuizId] = useState();
   const [setQuestionsSet] = useState([]);
   const [history, setHistory] = useState([]);
+  const [followersData, setFollowersData] = useState([]);
   // const [userRole, setUserRole] = useState("");
   const navigate = useNavigate();
-  const userId = 99;
+  const user = JSON.parse(localStorage.getItem("user")) || "";
+
+  const userRole = user.role;
+  const userId = user.id;
   const questionSetId = id;
   const totalQuestions = questionSet.length;
   const totalAnswered = 0;
@@ -90,26 +94,19 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
     }
     getHistory();
 
-  //   async function checkUserRole() {
-  //     if (auth.currentUser) {
-  //       const userId = auth.currentUser.uid;
-  //       const docRef = doc(db, "roles", userId);
-  //       const docSnap = await getDoc(docRef);
-
-  //       if (docSnap.exists()) {
-  //         setUserRole(docSnap.data().role);
-  //         console.log(docSnap.data().role);
-  //       } else {
-  //         console.log("No role found for this user");
-  //       }
-  //     } else {
-  //       console.log("No user is logged in");
-  //     }
-  //   }
-  //   checkUserRole();
-   }, []);
-  const user = JSON.parse( localStorage.getItem('user')) || '';
-  const userRole = user.role;
+    async function getFollowersData() {
+     
+        const { data } = await API.get(
+          `/api/followers/list/${userId}`
+        );
+        console.log(data);
+        if(data.length > 0 ){
+          setFollowersData(data);
+        }
+      
+    }
+    getFollowersData();
+  }, []);
 
   async function testResultDtlSetData(userId, questionSetId, userResultId) {
     try {
@@ -146,8 +143,8 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
         percentage: 0,
         marks_obtained: 0,
         status: 2,
-        created_by: 10,
-        modified_by: null,
+        created_by: userId,
+        modified_by: userId,
       });
       console.log("Start Quiz Response:", res);
       userResultId = res.data.userResultId;
@@ -183,7 +180,34 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
       },
     });
   };
-  console.log(history);
+
+  const handleFollowClick = async (instructor_id) => {
+    const followed = followersData?.some(
+      (entry) => entry.follower_id == userId && entry.instructor_id == instructor_id
+    );
+    if (followed) {
+      const res = await API.delete(`/api/followers/list/instructor/${instructor_id}/follower/${userId}`);
+      setFollowersData((prev) =>
+        prev.filter(
+          (entry) =>
+            entry.follower_id !== userId &&
+            entry.instructor_id !== instructor_id
+        )
+      );
+      // setFollow(true)
+    } else {
+      const res = await API.post("/api/followers/list", {
+        instructor_id,
+        follower_id: userId,
+      });
+      setFollowersData((prev) => [
+        ...prev,
+        { instructor_id: instructor_id, follower_id: userId },
+      ]);
+    }
+  };
+  console.log(followersData);
+
   return (
     <div className="exam-instructions-container">
       {/* <h2>Exam Instructions</h2> */}
@@ -206,12 +230,37 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
 
                 {/* Middle - Course Title */}
                 <Grid item xs={12} sm={8} sx={{ paddingLeft: 2 }}>
-                  <Typography
-                    variant="h5"
-                    sx={{ color: "#ffffff", fontWeight: "bold" }}
-                  >
-                    {data.title}
-                  </Typography>
+                  <div className="d-flex gap-4 items-center mb-2">
+                    <Typography
+                      variant="h5"
+                      sx={{ color: "#ffffff", fontWeight: "bold" }}
+                    >
+                      {data.title}
+                    </Typography>
+                    {userRole == "student" && (
+                      <>
+                        <Typography
+                          variant="subtitle2"
+                          sx={{ color: "#ffffff" }}
+                        >
+                          By {data.author}
+                        </Typography>
+                        <button
+                          className="button -sm px-8 py-10 -purple-4 text-white text-purple-4 text-10 "
+                          style={{ height: "30px" }}
+                          onClick={() => handleFollowClick(data.created_by)}
+                        >
+                          {followersData?.some(
+                            (entry) =>
+                              entry.follower_id == userId &&
+                              entry.instructor_id == data.created_by
+                          )
+                            ? "Following"
+                            : `Follow ${data.author}`}
+                        </button>
+                      </>
+                    )}
+                  </div>
                   <Typography variant="body2" sx={{ color: "#8a8a8a" }}>
                     {data.short_desc}
                   </Typography>

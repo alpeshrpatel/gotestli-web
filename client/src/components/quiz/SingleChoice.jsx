@@ -36,7 +36,11 @@ const SingleChoice = ({
 
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
-  const userId = 99;
+  
+  const user = JSON.parse( localStorage.getItem('user')) || '';
+  
+  //const userRole = user.role;
+  const userId = user.id;
   const questionSetLength = totalQuestions;
 
  
@@ -186,6 +190,7 @@ const SingleChoice = ({
         user_test_result_id:userResultId,
         question_set_question_id:questionId ,
         answer:findSelectedOption,
+        modified_by:userId,
         status:status,
       });
       

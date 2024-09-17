@@ -31,11 +31,12 @@ const HomePage = () => {
 
   const user = JSON.parse( localStorage.getItem('user')) || '';
   const userRole = user.role;
+  const userId = user.id;
 
   useEffect(() => {
     const author = auth.currentUser.displayName;
     async function getQuestionSets() {
-      const { data } = await API.get(`/api/questionset/instructor/${author}`);
+      const { data } = await API.get(`/api/questionset/instructor/${userId}`);
       console.log(data);
       setQuestionSets(data);
     }
@@ -74,6 +75,9 @@ const HomePage = () => {
   async function handleDelete(set){
     setEditOn(set.id);
    const res = await API.delete(`/api/questionset/${set.id}`);
+    await API.delete(`/api/questionset/question/${set.id}`);
+    await API.delete(`/api/questionset/category/${set.id}`);
+    
    setEditOn(null);
    if (res.status == 200) {
     toast.success("Quiz Deleted Successfully!");
@@ -87,7 +91,7 @@ const HomePage = () => {
 
   async function handleSave(set) {
     try {
-      const res = await API.put(`/api/questionset/${set.id}`, changedQSet);
+      const res = await API.put(`/api/questionset/${set.id}`,{ changedQSet, userId});
       setEditOn(null);
       if (res.status == 200) {
         toast.success("Changes Saved!");
