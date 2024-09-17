@@ -68,16 +68,19 @@ export default function Courses({userRole}) {
     setValue(newValue);
   };
   const user = auth?.currentUser?.displayName;
+  const userData = JSON.parse( localStorage.getItem('user')) || '';
+  // const userRole = userData.role;
+  const userId = userData.id;
   console.log(filtered);
   console.log(userRole);
   let questionSetByInstructor = [];
   if (userRole == "instructor") {
     selectedCategory && selectedCategory?.length > 0
       ? (questionSetByInstructor = selectedCategory?.filter(
-          (set) => set.author.toLowerCase() == user.toLowerCase()
+          (set) => set.created_by == userId
         ))
       : (questionSetByInstructor = filtered?.filter(
-          (set) => set.author.toLowerCase() == user.toLowerCase()
+          (set) => set.created_by == userId
         ));
   }
 

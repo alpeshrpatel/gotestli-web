@@ -19,8 +19,12 @@ const StudentQuizzes = () => {
   const [studentsData, setStudentsData] = useState([]);
   const [expandedRow, setExpandedRow] = useState(null);
 
-  let userId = 99;
+  const user = JSON.parse( localStorage.getItem('user')) || '';
+  const userRole = user.role;
+
+  
   useEffect(() => {
+    let userId = user.id;
     const author = auth.currentUser.displayName;
     async function getQuestionSets() {
       const { data } = await API.get(`/api/userresult/user/${userId}`);
@@ -30,24 +34,13 @@ const StudentQuizzes = () => {
     getQuestionSets();
   }, []);
 
-  //   async function handleRowClick(id, index) {
-  //     setExpandedRow(index === expandedRow ? null : index);
-  //     if (index !== expandedRow) {
-  //       try {
-  //         const { data } = await API.get(`/api/userresult/students/list/${id}`);
-  //         console.log(data)
-  //         setStudentsData(data);
-  //       } catch (error) {
-  //         console.error("Failed to fetch student data:", error);
-  //       }
-  //     }
-  //   }
-
+  
+ 
   return (
     <div>
       <Preloader />
       <MetaComponent meta={metadata} />
-      <Header />
+      <Header userRole ={userRole}/>
 
       <div className="content-wrapper js-content-wrapper overflow-hidden w-100">
         {questionSets.length > 0 ? (

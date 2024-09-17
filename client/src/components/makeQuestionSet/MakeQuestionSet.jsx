@@ -28,6 +28,8 @@ const MakeQuestionSet = () => {
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
 
+  const user = JSON.parse( localStorage.getItem('user')) || '';
+  const userId = user.id;
   const indexOfLastRecord = currentPage * 10;
   const indexOfFirstRecord = indexOfLastRecord - 10;
   let shouldRenderPagination = questions.length > 10;
@@ -139,7 +141,7 @@ const MakeQuestionSet = () => {
       
       let jsonData = [];
       selectedQuestions.forEach((question) => {
-        jsonData.push({question_set_id:questionsetid, question_id:question.id})
+        jsonData.push({question_set_id:questionsetid, question_id:question.id, userId:userId})
         
       });
       questionSetStore(jsonData);

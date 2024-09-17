@@ -79,6 +79,10 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories, questionSetId })
  
 
   const navigate = useNavigate();
+  const userdata = JSON.parse( localStorage.getItem('user')) || '';
+  
+  const userRole = userdata.role;
+  const userId = userdata.id;
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -96,13 +100,15 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories, questionSetId })
       ...formData,
       start_time: startTime,
       end_time: endTime,
+      created_by:userId,
+      modified_by:userId
     };
 
     console.log(formDataWithTime);
     console.log(formData);
     console.log(questionSetId,tagsId);
     const response = await API.post("/api/questionset", formDataWithTime);
-    const res = await API.post("/api/questionset/category",{tagsId, questionSetId});
+    const res = await API.post("/api/questionset/category",{tagsId, questionSetId, userId});
     console.log("tags res:" , res);
     // if (response) {
     toast.success("QuestionSet Created Successfully!");

@@ -59,10 +59,13 @@ export default function StudentDashboardOne() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const user = JSON.parse( localStorage.getItem('user')) || '';
+  const userRole = user.role;
+
   useEffect(() => {
-    const userId = 99;
+    const userId = user.id;
     async function getDataAnalysis() {
-      const { data } = await API.get("/api/userresult/student/dshb/analysis");
+      const { data } = await API.get(`/api/userresult/student/dashboard/analysis/${userId}`);
       const res = await API.get(`/api/userresult/user/${userId}`);
       console.log(res.data);
       setResults(res.data);
