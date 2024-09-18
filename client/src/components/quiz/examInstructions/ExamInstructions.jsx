@@ -267,14 +267,14 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
                 </Grid>
 
                 {/* Right - Back Button */}
-                <Grid item xs={12} sm={2} sx={{ textAlign: "right" }}>
+                {/* <Grid item xs={12} sm={2} sx={{ textAlign: "right" }}>
                   <IconButton sx={{ color: "#ffffff" }} onClick={onCloseModal}>
                     <ArrowBackIcon />
                     <Typography sx={{ color: "#ffffff", marginLeft: 1 }}>
                       Back
                     </Typography>
                   </IconButton>
-                </Grid>
+                </Grid> */}
               </Grid>
             </Box>
             <Grid container spacing={3} sx={{ marginTop: "2vw" }}>

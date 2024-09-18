@@ -99,6 +99,7 @@ import SearchResult from "./pages/searchresult/SearchResult";
 import ProfilePage from "./pages/profilepage/ProfilePage";
 import StudentQuizzes from "./pages/studentpages/StudentQuizzes";
 import StudentDashboard from "./pages/studentpages/StudentDashboard";
+import ViewStudents from "./pages/instructorspages/ViewStudents";
 
 function App() {
   useEffect(() => {
@@ -220,6 +221,12 @@ function App() {
                 path="/instructor/home"
                 element={
                   <ProtectedRoute element={<HomePage />} role="instructor" />
+                }
+              />
+               <Route
+                path="/quiz/students"
+                element={
+                  <ProtectedRoute element={<ViewStudents />} role="instructor" />
                 }
               />
               <Route
