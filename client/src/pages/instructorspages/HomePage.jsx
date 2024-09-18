@@ -9,6 +9,7 @@ import { auth } from "@/firebase/Firebase";
 import { Button, IconButton, Switch } from "@mui/material";
 import { Delete, Edit, SaveAsRounded } from "@mui/icons-material";
 import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
 
 const metadata = {
   title:
@@ -28,13 +29,13 @@ const HomePage = () => {
     time_duration: 0,
     is_demo: "",
   });
-
-  const user = JSON.parse( localStorage.getItem('user')) || '';
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
   const userId = user.id;
 
   useEffect(() => {
-    const author = auth.currentUser.displayName;
+    // const author = auth.currentUser.displayName;
     async function getQuestionSets() {
       const { data } = await API.get(`/api/questionset/instructor/${userId}`);
       console.log(data);
@@ -43,18 +44,18 @@ const HomePage = () => {
     getQuestionSets();
   }, []);
 
-  async function handleRowClick(id, index) {
-    setExpandedRow(index === expandedRow ? null : index);
-    if (index !== expandedRow) {
-      try {
-        const { data } = await API.get(`/api/userresult/students/list/${id}`);
-        console.log(data);
-        setStudentsData(data);
-      } catch (error) {
-        console.error("Failed to fetch student data:", error);
-      }
-    }
-  }
+  // async function handleRowClick(id, index) {
+  //   setExpandedRow(index === expandedRow ? null : index);
+  //   if (index !== expandedRow) {
+  //     try {
+  //       const { data } = await API.get(`/api/userresult/students/list/${id}`);
+  //       console.log(data);
+  //       setStudentsData(data);
+  //     } catch (error) {
+  //       console.error("Failed to fetch student data:", error);
+  //     }
+  //   }
+  // }
 
   async function handleQSetChange(name, value) {
     setChangedQSet((prev) => ({
@@ -66,35 +67,34 @@ const HomePage = () => {
   function handleEdit(set) {
     setEditOn(set.id);
     setChangedQSet({
-      title: set.title || "",        
-      short_desc: set.short_desc || "", 
+      title: set.title || "",
+      short_desc: set.short_desc || "",
       time_duration: set.time_duration || "",
       is_demo: set.is_demo || false,
     });
   }
-  async function handleDelete(set){
+  async function handleDelete(set) {
     setEditOn(set.id);
-   const res = await API.delete(`/api/questionset/${set.id}`);
+    const res = await API.delete(`/api/questionset/${set.id}`);
     await API.delete(`/api/questionset/question/${set.id}`);
     await API.delete(`/api/questionset/category/${set.id}`);
-    
-   setEditOn(null);
-   if (res.status == 200) {
-    toast.success("Quiz Deleted Successfully!");
-    setQuestionSets((prev) =>
-      prev.filter((qSet) =>
-        qSet.id !== set.id 
-      )
-    );
-  }
+
+    setEditOn(null);
+    if (res.status == 200) {
+      
+      setQuestionSets((prev) => prev.filter((qSet) => qSet.id !== set.id));
+    }
   }
 
   async function handleSave(set) {
     try {
-      const res = await API.put(`/api/questionset/${set.id}`,{ changedQSet, userId});
+      const res = await API.put(`/api/questionset/${set.id}`, {
+        changedQSet,
+        userId,
+      });
       setEditOn(null);
       if (res.status == 200) {
-        toast.success("Changes Saved!");
+        
         setQuestionSets((prev) =>
           prev.map((qSet) =>
             qSet.id == set.id ? { ...qSet, ...changedQSet } : qSet
@@ -106,12 +106,16 @@ const HomePage = () => {
       console.error("Failed to save changes:", error);
     }
   }
+
   console.log(changedQSet);
+  const handleNavigate = (set) => {
+    navigate(`/quiz/students`,{state:{set:set}});
+  };
   return (
     <div>
       <Preloader />
       <MetaComponent meta={metadata} />
-      <Header userRole={userRole}/>
+      <Header userRole={userRole} />
 
       <div className="content-wrapper js-content-wrapper overflow-hidden w-100">
         {questionSets.length > 0 ? (
@@ -126,6 +130,7 @@ const HomePage = () => {
                   <th>Duration</th>
                   <th>Total Marks</th>
                   <th>Visible</th>
+                  <th>Total Attempted</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -133,12 +138,12 @@ const HomePage = () => {
                 {questionSets.map((set, index) => (
                   <React.Fragment key={set.id}>
                     <tr
-                      onClick={
-                        !(editOn == set.id)
-                          ? () => handleRowClick(set.id, index)
-                          : null
-                      }
-                      className={expandedRow === index ? "expanded" : ""}
+                    // onClick={
+                    //   !(editOn == set.id)
+                    //     ? () => handleRowClick(set.id, index)
+                    //     : null
+                    // }
+                    // className={expandedRow === index ? "expanded" : ""}
                     >
                       <td>{index + 1}</td>
                       <td>
@@ -186,67 +191,56 @@ const HomePage = () => {
                       <td>{set.totalmarks}</td>
                       <td>
                         {editOn === set.id ? (
+                          <>
+                          {changedQSet.is_demo ? "Public" : "Private"}
                           <Switch
-                          checked={changedQSet.is_demo}
-                          onChange={(e) =>
-                            handleQSetChange(
-                              "is_demo",
-                              e.target.checked
-                            )
-                          }
-                          inputProps={{ 'aria-label': 'controlled' }}
-                         />
-                          // <select
-                          //   value={
-                          //     changedQSet.is_demo !== undefined
-                          //       ? changedQSet.is_demo
-                          //       : set.is_demo
-                          //   }
-                          //   onChange={(e) =>
-                          //     handleQSetChange(
-                          //       "is_demo",
-                          //       e.target.value === "true"
-                          //     )
-                          //   }
-                          // >
-                          //   <option value={true}>Public</option>
-                          //   <option value={false}>Private</option>
-                          // </select>
-                        ) : set.is_demo ? (
+                            checked={changedQSet.is_demo}
+                            onChange={(e) =>
+                              handleQSetChange("is_demo", e.target.checked)
+                            }
+                            inputProps={{ "aria-label": "controlled" }}
+                          />
+                          </>
+                        ) : 
+                        set.is_demo ? (
                           "Public"
                         ) : (
                           "Private"
                         )}
                       </td>
-                        <td>
-                      <div
-                        className=" d-flex ms-1 "
-                        style={{ alignItems: "center", }}
-                      >
-                        {editOn == set.id ? (
-                          <Button
-                            onClick={() => handleSave(set)}
-                            variant="contained"
-                            color="primary"
-                            size="small"
-                          >
-                            Save
-                          </Button>
-                        ) : (
-                          <>
-                            <IconButton onClick={() => handleEdit(set)}>
-                              <Edit sx={{ color: "#3f51b5" }} />
-                            </IconButton>
-                            <IconButton onClick={() => handleDelete(set)}>
-                              <Delete sx={{ color: "#f50057" }} />
-                            </IconButton>
-                          </>
-                        )}
-                      </div>
-
-                        </td>
+                      <td onClick={() => handleNavigate(set)} style={{textDecoration:'underline', color:'blue'}}>
+                       
+                          View Students
+                        
+                      </td>
+                      <td>
+                        <div
+                          className=" d-flex ms-1 "
+                          style={{ alignItems: "center" }}
+                        >
+                          {editOn == set.id ? (
+                            <Button
+                              onClick={() => handleSave(set)}
+                              variant="contained"
+                              color="primary"
+                              size="small"
+                            >
+                              Save
+                            </Button>
+                          ) : (
+                            <>
+                              <IconButton onClick={() => handleEdit(set)}>
+                                <Edit sx={{ color: "#3f51b5" }} />
+                              </IconButton>
+                              <IconButton onClick={() => handleDelete(set)}>
+                                <Delete sx={{ color: "#f50057" }} />
+                              </IconButton>
+                            </>
+                          )}
+                        </div>
+                      </td>
                     </tr>
-                    {expandedRow === index && (
+                    {/* {expandedRow === index && (
                       <tr>
                         <td colSpan="7">
                           <table className="custom-table student-table">
@@ -294,7 +288,7 @@ const HomePage = () => {
                           </table>
                         </td>
                       </tr>
-                    )}
+                    )} */}
                   </React.Fragment>
                 ))}
               </tbody>
