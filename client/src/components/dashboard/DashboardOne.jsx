@@ -10,6 +10,7 @@ import PieChartComponent from "./PieCharts";
 import { Link } from "react-router-dom";
 
 export default function DashboardOne() {
+  
   return (
     <div className="dashboard__main">
       <div className="dashboard__content bg-light-4">
@@ -111,7 +112,7 @@ export default function DashboardOne() {
           <div className="col-xl-4 col-md-6">
             <div className="rounded-16 bg-white -dark-bg-dark-1 shadow-4 h-100">
               <div className="d-flex justify-between items-center py-20 px-30 border-bottom-light">
-                <h2 className="text-17 lh-1 fw-500">Traffic</h2>
+                <h2 className="text-17 lh-1 fw-500">Traffic11111</h2>
                 <div className="">
                   <div
                     id="dd3button"
