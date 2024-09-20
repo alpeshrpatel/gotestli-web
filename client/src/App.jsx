@@ -100,6 +100,7 @@ import ProfilePage from "./pages/profilepage/ProfilePage";
 import StudentQuizzes from "./pages/studentpages/StudentQuizzes";
 import StudentDashboard from "./pages/studentpages/StudentDashboard";
 import ViewStudents from "./pages/instructorspages/ViewStudents";
+import UploadQuestionSet from "./components/makeQuestionSet/UploadQuestionSet";
 
 function App() {
   useEffect(() => {
@@ -213,6 +214,15 @@ function App() {
                 element={
                   <ProtectedRoute
                     element={<MakeQuestionSet />}
+                    role="instructor"
+                  />
+                }
+              />
+               <Route
+                path="/upload/questionset"
+                element={
+                  <ProtectedRoute
+                    element={<UploadQuestionSet />}
                     role="instructor"
                   />
                 }
