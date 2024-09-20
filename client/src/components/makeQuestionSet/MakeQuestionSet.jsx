@@ -5,7 +5,7 @@ import { API } from "@/utils/AxiosInstance";
 import "react-responsive-pagination/themes/classic.css";
 // import Pagination from "../common/Pagination";
 import PaginationTwo from "../common/PaginationTwo";
-import { TextField } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import QuestionSetDetailForm from "./QuestionSetDetailForm";
@@ -30,6 +30,7 @@ const MakeQuestionSet = () => {
 
   const user = JSON.parse( localStorage.getItem('user')) || '';
   const userId = user.id;
+  const userRole = user.role;
   const indexOfLastRecord = currentPage * 10;
   const indexOfFirstRecord = indexOfLastRecord - 10;
   let shouldRenderPagination = questions.length > 10;
@@ -155,9 +156,9 @@ const MakeQuestionSet = () => {
 
   return (
     <>
-      <Header />
-      <div className="container " style={{ marginTop: "110px" }}>
-        <h1 className="mb-4">Make Question Set</h1>
+      <Header userRole={userRole}/>
+      <div className="mx-auto" style={{ marginTop: "100px",width:'60vw', padding:'30px',backgroundColor:'#bfdeee',borderRadius:'10px',boxShadow:'0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);'}}>
+       <Typography variant="h4" sx={{textAlign:'center',marginBottom:'10px'}}>Make Question Set</Typography>
        
         <TextField id="outlined-search" label="Search Questions" type="search" className="searchInput mb-2" onChange={handleSearch}/>
         <select

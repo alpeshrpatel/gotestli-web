@@ -246,6 +246,7 @@ export default function Menu({ allClasses, headerPosition }) {
               </li>
             )}
             {userRole == "instructor" && (
+              <>
               <li className="menu-item-has-children">
                 <Link
                   data-barba
@@ -281,6 +282,21 @@ export default function Menu({ allClasses, headerPosition }) {
                 ))}
               </ul> */}
               </li>
+              <li className="menu-item-has-children">
+              <Link
+                data-barba
+                to="/upload/questionset"
+                className={
+                  menuItem == "Create QuestionSet" ? "activeMenu" : ""
+                }
+                style={{ fontSize: "18px" }}
+              >
+                Upload QuestionSet{" "}
+                <i className="icon-chevron-right text-13 ml-10"></i>
+              </Link>
+              
+            </li>
+              </>
             )}
 
             {/* <li className="menu-item-has-children">
