@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import ExcelJS from "exceljs";
-import { Box, Button, LinearProgress, Modal, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  LinearProgress,
+  Link,
+  Modal,
+  Typography,
+} from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import axios from "axios";
 import { API } from "@/utils/AxiosInstance";
@@ -56,12 +64,12 @@ const UploadQuestionSet = () => {
 
     reader.readAsArrayBuffer(file); // Read the file as an array buffer
   };
-  console.log(fileData)
+  console.log(fileData);
   const handlePreview = () => {
     if (fileData.length > 0) {
       setOpen(true);
     } else {
-      alert("Please upload a valid Excel file.");
+      toast.warn("Please upload a valid Excel file.");
     }
   };
 
@@ -71,7 +79,7 @@ const UploadQuestionSet = () => {
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      alert("Please select a file first!");
+      toast.warn("Please select a file first!");
       return;
     }
 
@@ -94,13 +102,17 @@ const UploadQuestionSet = () => {
       console.log(response.data.data);
       let fileName = response.data.data.fileName;
       let filePath = response.data.data.filePath;
-      const data = await API.post("/api/question/files",{file_name:fileName, file_path:filePath,user_id:userId,status:0})
+      const data = await API.post("/api/question/files", {
+        file_name: fileName,
+        file_path: filePath,
+        user_id: userId,
+        status: 0,
+      });
       // if(response.status == 500){
       //     toast.error(response.message)
       // }
       setIsUploading(false);
       if (response.status == 200 && data.status == 200) {
-
         toast.success("File uploaded successfully!!");
       }
     } catch (error) {
@@ -114,6 +126,28 @@ const UploadQuestionSet = () => {
     }
   };
 
+  async function handleDownload() {
+    try {
+      const response = await API.get(
+        "/api/question/files/download/samplefile",
+        {
+          responseType: "blob", 
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data])); 
+      const link = document.createElement("a"); 
+      link.href = url;
+      link.setAttribute("download", "SampleQuestionSet.xlsx"); 
+      document.body.appendChild(link);
+      link.click(); 
+      link.remove(); 
+    } catch (error) {
+      console.error("Error downloading the sample file:", error);
+      toast.error("Failed to download sample file.");
+    }
+  }
+
   return (
     <>
       <Header userRole={userRole} />
@@ -121,7 +155,7 @@ const UploadQuestionSet = () => {
         className="mx-auto"
         style={{
           marginTop: "100px",
-          width: "60vw",
+          width: "70vw",
           padding: "30px",
           backgroundColor: "#bfdeee",
           borderRadius: "10px",
@@ -129,8 +163,149 @@ const UploadQuestionSet = () => {
             "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);",
         }}
       >
-        <Box sx={{ width: "50%", margin: "auto", textAlign: "center" }}>
-          <Typography variant="h4">Upload Question Set</Typography>
+        <Box sx={{ width: "100%", margin: "auto", textAlign: "center" }}>
+          <Typography variant="h4" sx={{ marginBottom: "10px" }}>
+            Upload Question Set
+          </Typography>
+          <Box
+            sx={{
+              width: "80%",
+              margin: "auto",
+              textAlign: "left",
+              maxHeight: "50vh",
+              overflowY: "auto",
+              "&::-webkit-scrollbar": {
+                width: "6px", // Width of the scrollbar
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#ccc", // Color of the scrollbar thumb
+                borderRadius: "10px", // Round edges of the scrollbar thumb
+              },
+              "&::-webkit-scrollbar-track": {
+                backgroundColor: "#f5f5f5", // Background of the scrollbar track
+              },
+            }}
+          >
+            <Typography variant="h5" gutterBottom>
+              Instructions for Uploading Questions Data
+            </Typography>
+
+            <Grid>
+              <Typography variant="body1" gutterBottom>
+                <strong>
+                  To ensure a smooth and successful upload of your questions,
+                  please follow these instructions carefully:
+                </strong>
+              </Typography>
+
+              <Typography variant="h6" gutterBottom>
+                Download the Sample Excel File:
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                You must use the provided sample file as a template for
+                uploading your questions.
+              </Typography>
+              <Typography
+                variant="body1"
+                gutterBottom
+                sx={{ color: "#2196f3", textDecoration: "underline" }}
+              >
+                <a onClick={handleDownload} style={{ cursor: "pointer" }}>
+                  Click here to download the sample file
+                </a>
+              </Typography>
+              <Typography variant="h6" gutterBottom>
+                Fill Your Data into the Sample File:
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                - Open the downloaded Excel file.
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                - Fill in the necessary information in the respective columns.
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                - Ensure that you{" "}
+                <strong style={{ color: "red" }}>
+                  don't change or modify{" "}
+                </strong>
+                the column titles or headers in the file. These headers are
+                critical for correctly uploading your data to the database.
+              </Typography>
+            </Grid>
+            <Grid>
+              <Typography variant="h6" gutterBottom>
+                Column Headers You Must Not Change:
+              </Typography>
+              <ul>
+                <li>
+                  <Typography variant="body2">
+                    <strong>Question</strong>: The main question text.
+                  </Typography>
+                </li>
+                <li>
+                  <Typography variant="body2">
+                    <strong>Description</strong>: Additional details about the
+                    question (optional).
+                  </Typography>
+                </li>
+                <li>
+                  <Typography variant="body2">
+                    <strong>Question_Option</strong>: Provide multiple options
+                    separated by colons (:).
+                  </Typography>
+                </li>
+                <li>
+                  <Typography variant="body2">
+                    <strong>Correct_Answer</strong>: Indicate the correct option
+                    number.
+                  </Typography>
+                </li>
+                <li>
+                  <Typography variant="body2">
+                    <strong>Complexity</strong>: Specify the question difficulty
+                    level (easy, medium, hard).
+                  </Typography>
+                </li>
+                <li>
+                  <Typography variant="body2">
+                    <strong>Marks</strong>: Assign marks for the question.
+                  </Typography>
+                </li>
+                <li>
+                  <Typography variant="body2">
+                    <strong>Is_Negative</strong>: Specify 1 for negative
+                    marking, 0 otherwise.
+                  </Typography>
+                </li>
+                <li>
+                  <Typography variant="body2">
+                    <strong>Negative_Marks</strong>: Set the negative marks for
+                    the question (if applicable).
+                  </Typography>
+                </li>
+              </ul>
+
+              <Typography variant="h6" gutterBottom>
+                Do Not Add or Remove Columns:
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                <strong>
+                  Any alteration to the structure of the file, including adding
+                  or removing columns, will cause the upload to fail.
+                </strong>
+              </Typography>
+
+              <Typography variant="h6" gutterBottom>
+                Once Complete:
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                After entering your data, save the file in the same format
+                (Excel .xlsx), and then you can proceed to upload it.
+              </Typography>
+            </Grid>
+          </Box>
+          {/* <Typography variant="body1">Note.</Typography>
+          <Typography variant="subtitle1">Note.</Typography> */}
           <input
             type="file"
             onChange={handleFileChange}
@@ -138,21 +313,20 @@ const UploadQuestionSet = () => {
             style={{ margin: "20px auto", display: "block" }}
           />
           <div className="d-flex items-center justify-content-center gap-2">
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<UploadFileIcon />}
-            onClick={handleUpload}
-            disabled={isUploading}
-            // sx={{ mb: 2 }}
-          >
-            Upload
-          </Button>
-          <Button variant="contained" onClick={handlePreview}>
-            Preview
-          </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<UploadFileIcon />}
+              onClick={handleUpload}
+              disabled={isUploading}
+              // sx={{ mb: 2 }}
+            >
+              Upload
+            </Button>
+            <Button variant="contained" onClick={handlePreview}>
+              Preview
+            </Button>
           </div>
-         
 
           {/* Modal to display the Excel content */}
           <Modal open={open} onClose={handleClose}>
@@ -162,7 +336,7 @@ const UploadQuestionSet = () => {
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
-                width: 600,
+                width: "60vw",
                 bgcolor: "background.paper",
                 boxShadow: 24,
                 p: 4,
@@ -180,7 +354,16 @@ const UploadQuestionSet = () => {
                   <tr>
                     {fileData[2] &&
                       fileData[2].map((header, index) => (
-                        <th key={index} style={{padding:'5px', border:'1px solid black', backgroundColor:'#bfdeee'}}>{header}</th>
+                        <th
+                          key={index}
+                          style={{
+                            padding: "5px",
+                            border: "1px solid black",
+                            backgroundColor: "#bfdeee",
+                          }}
+                        >
+                          {header}
+                        </th>
                       ))}
                   </tr>
                 </thead>
@@ -188,7 +371,12 @@ const UploadQuestionSet = () => {
                   {fileData.slice(3).map((row, rowIndex) => (
                     <tr key={rowIndex}>
                       {row.map((cell, cellIndex) => (
-                        <td key={cellIndex} style={{padding:'5px', border:'1px solid black'}}>{cell}</td>
+                        <td
+                          key={cellIndex}
+                          style={{ padding: "5px", border: "1px solid black" }}
+                        >
+                          {cell}
+                        </td>
                       ))}
                     </tr>
                   ))}
