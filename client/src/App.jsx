@@ -101,6 +101,7 @@ import StudentQuizzes from "./pages/studentpages/StudentQuizzes";
 import StudentDashboard from "./pages/studentpages/StudentDashboard";
 import ViewStudents from "./pages/instructorspages/ViewStudents";
 import UploadQuestionSet from "./components/makeQuestionSet/UploadQuestionSet";
+import UploadedFiles from "./pages/instructorspages/UploadedFiles";
 
 function App() {
   useEffect(() => {
@@ -242,6 +243,12 @@ function App() {
               <Route
                 path="/instructor/dashboard"
                 element={<DashboardPage role="instructor" />}
+                role="instructor"
+              />
+              
+              <Route
+                path="/dshb/uploaded/files"
+                element={<UploadedFiles />}
                 role="instructor"
               />
             </Routes>

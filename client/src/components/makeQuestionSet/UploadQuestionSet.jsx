@@ -14,6 +14,7 @@ import axios from "axios";
 import { API } from "@/utils/AxiosInstance";
 import Header from "../layout/headers/Header";
 import { toast } from "react-toastify";
+import HandleDownload from "../common/HandleDownload";
 
 const UploadQuestionSet = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -125,28 +126,32 @@ const UploadQuestionSet = () => {
       }
     }
   };
-
-  async function handleDownload() {
-    try {
-      const response = await API.get(
-        "/api/question/files/download/samplefile",
-        {
-          responseType: "blob", 
-        }
-      );
-
-      const url = window.URL.createObjectURL(new Blob([response.data])); 
-      const link = document.createElement("a"); 
-      link.href = url;
-      link.setAttribute("download", "SampleQuestionSet.xlsx"); 
-      document.body.appendChild(link);
-      link.click(); 
-      link.remove(); 
-    } catch (error) {
-      console.error("Error downloading the sample file:", error);
-      toast.error("Failed to download sample file.");
-    }
+  async function handleDownload(){
+    await HandleDownload('samplefile','SampleExcelFile.xlsx')
+    // <HandleDownload type ='samplefile' fileName='SampleExcelFile.xlsx'/>
   }
+    
+  // async function handleDownload() {
+  //   try {
+  //     const response = await API.get(
+  //       "/api/question/files/download/samplefile",
+  //       {
+  //         responseType: "blob",
+  //       }
+  //     );
+
+  //     const url = window.URL.createObjectURL(new Blob([response.data]));
+  //     const link = document.createElement("a");
+  //     link.href = url;
+  //     link.setAttribute("download", "SampleExcelFile.xlsx");
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     link.remove();
+  //   } catch (error) {
+  //     console.error("Error downloading the sample file:", error);
+  //     toast.error("Failed to download sample file.");
+  //   }
+  // }
 
   return (
     <>
@@ -370,14 +375,19 @@ const UploadQuestionSet = () => {
                 <tbody>
                   {fileData.slice(3).map((row, rowIndex) => (
                     <tr key={rowIndex}>
-                      {row.map((cell, cellIndex) => (
-                        <td
-                          key={cellIndex}
-                          style={{ padding: "5px", border: "1px solid black" }}
-                        >
-                          {cell}
-                        </td>
-                      ))}
+                      {Array.from({ length: 9 }).map(
+                        (_, cellIndex) => (
+                          <td
+                            key={cellIndex}
+                            style={{
+                              padding: "5px",
+                              border: "1px solid black",
+                            }}
+                          >
+                            {row[cellIndex] !== undefined ? row[cellIndex] : ""}
+                          </td>
+                        )
+                      )}
                     </tr>
                   ))}
                 </tbody>
