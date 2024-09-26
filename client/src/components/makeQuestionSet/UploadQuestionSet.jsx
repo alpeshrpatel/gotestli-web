@@ -15,14 +15,17 @@ import { API } from "@/utils/AxiosInstance";
 import Header from "../layout/headers/Header";
 import { toast } from "react-toastify";
 import HandleDownload from "../common/HandleDownload";
+import { useNavigate } from "react-router-dom";
 
 const UploadQuestionSet = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
-  const [fileData, setFileData] = useState([]); // For holding Excel file data
-  const [open, setOpen] = useState(false); // Modal open state
-  const [fileName, setFileName] = useState(""); // File name for display
+  const [fileData, setFileData] = useState([]);
+  const [open, setOpen] = useState(false); 
+  const [fileName, setFileName] = useState(""); 
+
+  const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userId = user.id;
@@ -83,10 +86,16 @@ const UploadQuestionSet = () => {
       toast.warn("Please select a file first!");
       return;
     }
-
+ console.log(selectedFile)
     const formData = new FormData();
     formData.append("file", selectedFile);
 
+    const res = await API.get(`/api/question/files?filename=${selectedFile.name}`);
+    if(res.data?.length > 0){
+       toast.error("Duplicate file upload not allowed!");
+       return;
+    }
+    console.log("file searcch:",res.data);
     try {
       setIsUploading(true);
       const response = await API.post("/api/file/upload", formData, {
@@ -103,6 +112,7 @@ const UploadQuestionSet = () => {
       console.log(response.data.data);
       let fileName = response.data.data.fileName;
       let filePath = response.data.data.filePath;
+
       const data = await API.post("/api/question/files", {
         file_name: fileName,
         file_path: filePath,
@@ -115,6 +125,7 @@ const UploadQuestionSet = () => {
       setIsUploading(false);
       if (response.status == 200 && data.status == 200) {
         toast.success("File uploaded successfully!!");
+        navigate("/dshb/uploaded/files")
       }
     } catch (error) {
       setIsUploading(false);
@@ -128,7 +139,6 @@ const UploadQuestionSet = () => {
   };
   async function handleDownload(){
     await HandleDownload('samplefile','SampleExcelFile.xlsx')
-    // <HandleDownload type ='samplefile' fileName='SampleExcelFile.xlsx'/>
   }
     
   // async function handleDownload() {

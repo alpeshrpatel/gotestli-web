@@ -4,15 +4,15 @@ import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";
 import { API } from "@/utils/AxiosInstance";
 import { auth } from "@/firebase/Firebase";
-import { useLocation, useParams } from "react-router-dom";
-// import Breadcrumbs from "@mui/material/Breadcrumbs";
-// import Typography from "@mui/material/Typography";
-// import Link from "@mui/material/Link";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { Breadcrumbs } from "@mui/material";
+import Typography from "@mui/material/Typography";
+
 // import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 const ViewStudents = () => {
   const [studentsData, setStudentsData] = useState([]);
-
+  const [isHovered, setIsHovered] = useState(false);
   const location = useLocation();
   console.log(location);
   const { set } = location.state;
@@ -33,44 +33,38 @@ const ViewStudents = () => {
     }
     getstudents();
   }, []);
-
-  // const breadcrumbs = [
-  //   <Link
-  //     underline="hover"
-  //     key="1"
-  //     color="inherit"
-  //     href="/"
-  //     onClick={handleClick}
-  //   >
-  //     MUI
-  //   </Link>,
-  //   <Link
-  //     underline="hover"
-  //     key="2"
-  //     color="inherit"
-  //     href="/material-ui/getting-started/installation/"
-  //     onClick={handleClick}
-  //   >
-  //     Core
-  //   </Link>,
-  //   <Typography key="3" sx={{ color: "text.primary" }}>
-  //     Breadcrumb
-  //   </Typography>,
-  // ];
-
+  console.log(isHovered);
   return (
     <div>
       <Preloader />
       <Header userRole={userRole} />
       <div className="content-wrapper js-content-wrapper overflow-hidden w-100">
-        {/* <Breadcrumbs
-          separator={<NavigateNextIcon fontSize="small" />}
+        <Breadcrumbs
           aria-label="breadcrumb"
+          sx={{ marginTop: "130px", display: "flex", justifyContent: "center" }}
         >
-          {breadcrumbs}
-        </Breadcrumbs> */}
+          <Link
+            to="/instructor/home"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            <Typography
+              variant="h7"
+              style={{
+                color: isHovered ? "blue" : "black",
+                textDecoration: isHovered ? "underline" : "none",
+              }}
+            >
+              Home
+            </Typography>
+          </Link>
+
+          <Typography sx={{ color: "text.primary" }} variant="h6">
+            View Students
+          </Typography>
+        </Breadcrumbs>
         {studentsData.length > 0 ? (
-          <div className="table-responsive">
+          <div className="table-responsive mt-1" style={{ paddingTop: "20px" }}>
             <table className="custom-table student-table">
               <thead>
                 <tr>
