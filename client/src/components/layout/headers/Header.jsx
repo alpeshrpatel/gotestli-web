@@ -187,8 +187,8 @@ export default function Header({userRole}) {
                                                     <li
                                                       key={i}
                                                       className={
-                                                        pathname?.split("/")[1] ==
-                                                        elm.href?.split("/")[1]
+                                                        pathname ==
+                                                        elm.href
                                                           ? "activeMenu"
                                                           : "inActiveMegaMenu"
                                                       }
@@ -211,8 +211,8 @@ export default function Header({userRole}) {
                                                     <li
                                                       key={i}
                                                       className={
-                                                        pathname?.split("/")[1] ==
-                                                        elm.href?.split("/")[1]
+                                                        pathname ==
+                                                        elm.href
                                                           ? "activeMenu"
                                                           : "inActiveMegaMenu"
                                                       }

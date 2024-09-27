@@ -14,13 +14,13 @@ const metadata = {
     "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges.",
 };
 
-export default function DashboardPage() {
+export default function DashboardPage({role}) {
   return (
     <div className="barba-container" data-barba="container">
       <MetaComponent meta={metadata} />
       <main className="main-content">
         <Preloader />
-        <Header/>
+        <Header userRole={role}/>
         <div className="content-wrapper js-content-wrapper overflow-hidden">
           <div
             id="dashboardOpenClose"

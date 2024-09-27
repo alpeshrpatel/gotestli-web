@@ -36,16 +36,17 @@ const ProfilePage = () => {
   const [defaultTags, setDefaultTags] = useState([]);
   const [isSaveVisible, setIsSaveVisible] = useState(false);
 
-  let uid = "";
-  if (auth.currentUser) {
-    uid = auth.currentUser.uid;
-  }
+  // let uid = "";
+  // if (auth.currentUser) {
+  //   uid = auth.currentUser.uid;
+  // }
   const user = JSON.parse( localStorage.getItem('user')) || '';
   const userRole = user.role;
+  let userid = user.id;
 
   useEffect(() => {
     async function getUserProfile() {
-      const { data } = await API.get(`/api/users/${uid}`);
+      const { data } = await API.get(`/api/users/${userid}`);
       console.log(data);
       setUsersData(data);
       setUpdatedData({
@@ -65,7 +66,7 @@ const ProfilePage = () => {
       setDefaultTags(userTags);
     }
 
-    if (uid) {
+    if (userid) {
       getUserProfile();
     }
     async function getCategory() {
@@ -74,6 +75,21 @@ const ProfilePage = () => {
     }
     getCategory();
   }, []);
+
+  useEffect(() => {
+    async function updateUserPreference(){
+      if(tagsId){
+        const data = await API.post("/api/users/preference", {
+          user_id: usersData.id,
+          tagsId,
+        });
+        console.log(data);
+      }else{
+        const data = await API.delete(`/api/users/preference/${userid}`)
+      }
+    };
+    updateUserPreference()
+  },[tagsId])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -86,14 +102,17 @@ const ProfilePage = () => {
 
   const handleUpdateData = async () => {
     try {
-      const res = await API.put(`/api/users/${uid}`, updatedData);
-      const data = await API.post("/api/users/preference", {
-        user_id: usersData.id,
-        tagsId,
-      });
-      console.log(data);
+      const res = await API.put(`/api/users/${userid}`, updatedData);
+      // if(tagsId){
+      //   const data = await API.post("/api/users/preference", {
+      //     user_id: usersData.id,
+      //     tagsId,
+      //   });
+      //   console.log(data);
+      // }
+      
 
-      if (res.status == 200 && data.status == 200) {
+      if (res.status == 200 ) {
         toast.success("User updated Successfully!");
       }
     } catch (error) {

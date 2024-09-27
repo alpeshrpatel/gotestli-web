@@ -49,8 +49,6 @@ const pieDataOnTimeCompletion = [
   { name: "Late", value: 55 },
 ];
 
-
-
 const COLORS = ["#0088FE", "#00C49F"];
 
 export default function StudentDashboardOne() {

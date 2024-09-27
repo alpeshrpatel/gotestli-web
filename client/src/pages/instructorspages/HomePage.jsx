@@ -81,7 +81,6 @@ const HomePage = () => {
 
     setEditOn(null);
     if (res.status == 200) {
-      
       setQuestionSets((prev) => prev.filter((qSet) => qSet.id !== set.id));
     }
   }
@@ -94,7 +93,6 @@ const HomePage = () => {
       });
       setEditOn(null);
       if (res.status == 200) {
-        
         setQuestionSets((prev) =>
           prev.map((qSet) =>
             qSet.id == set.id ? { ...qSet, ...changedQSet } : qSet
@@ -109,7 +107,11 @@ const HomePage = () => {
 
   console.log(changedQSet);
   const handleNavigate = (set) => {
-    navigate(`/quiz/students`,{state:{set:set}});
+    navigate(`/quiz/students`, { state: { set: set } });
+  };
+  const handleViewQuestionsClick = (set) => {
+    console.log("hello");
+    navigate(`/quiz/questions/${set.id}`);
   };
   return (
     <div>
@@ -130,6 +132,7 @@ const HomePage = () => {
                   <th>Duration</th>
                   <th>Total Marks</th>
                   <th>Visible</th>
+                  <th>Questions</th>
                   <th>Total Attempted</th>
                   <th>Actions</th>
                 </tr>
@@ -192,26 +195,32 @@ const HomePage = () => {
                       <td>
                         {editOn === set.id ? (
                           <>
-                          {changedQSet.is_demo ? "Public" : "Private"}
-                          <Switch
-                            checked={changedQSet.is_demo}
-                            onChange={(e) =>
-                              handleQSetChange("is_demo", e.target.checked)
-                            }
-                            inputProps={{ "aria-label": "controlled" }}
-                          />
+                            {changedQSet.is_demo ? "Public" : "Private"}
+                            <Switch
+                              checked={changedQSet.is_demo}
+                              onChange={(e) =>
+                                handleQSetChange("is_demo", e.target.checked)
+                              }
+                              inputProps={{ "aria-label": "controlled" }}
+                            />
                           </>
-                        ) : 
-                        set.is_demo ? (
+                        ) : set.is_demo ? (
                           "Public"
                         ) : (
                           "Private"
                         )}
                       </td>
-                      <td onClick={() => handleNavigate(set)} style={{textDecoration:'underline', color:'blue'}}>
-                       
-                          View Students
-                        
+                      <td
+                        onClick={() => handleViewQuestionsClick(set)}
+                        style={{ textDecoration: "underline", color: "blue" }}
+                      >
+                        View Questions
+                      </td>
+                      <td
+                        onClick={() => handleNavigate(set)}
+                        style={{ textDecoration: "underline", color: "blue" }}
+                      >
+                        View Students
                       </td>
                       <td>
                         <div
