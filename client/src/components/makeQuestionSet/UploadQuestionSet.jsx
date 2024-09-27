@@ -95,7 +95,7 @@ const UploadQuestionSet = () => {
        toast.error("Duplicate file upload not allowed!");
        return;
     }
-    console.log("file searcch:",res.data);
+    
     try {
       setIsUploading(true);
       const response = await API.post("/api/file/upload", formData, {

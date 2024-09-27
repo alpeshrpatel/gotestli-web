@@ -24,6 +24,7 @@ const MakeQuestionSet = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [questionSetId,setQuestionSetId] = useState();
   const [open, setOpen] = useState(false);
+  const [pageCapicity,setPageCapicity] = useState(10);
 
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
@@ -31,9 +32,9 @@ const MakeQuestionSet = () => {
   const user = JSON.parse( localStorage.getItem('user')) || '';
   const userId = user.id;
   const userRole = user.role;
-  const indexOfLastRecord = currentPage * 10;
-  const indexOfFirstRecord = indexOfLastRecord - 10;
-  let shouldRenderPagination = questions.length > 10;
+  const indexOfLastRecord = currentPage * pageCapicity;
+  const indexOfFirstRecord = indexOfLastRecord - pageCapicity;
+  let shouldRenderPagination = questions.length > pageCapicity;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -71,6 +72,7 @@ const MakeQuestionSet = () => {
       console.error("Error fetching question set:", error);
     }
   };
+  console.log(questionSets);
 
   const handleFilter = (event) => {
     const selectedFilter = event.target.value;
@@ -154,6 +156,11 @@ const MakeQuestionSet = () => {
     }
   };
 
+  const handlePageChange = (event) =>{
+    const value = event.target.value;
+    setPageCapicity(parseInt(value))
+  }
+console.log(pageCapicity)
   return (
     <>
       <Header userRole={userRole}/>
@@ -195,8 +202,14 @@ const MakeQuestionSet = () => {
                 pageNumber={currentPage}
                 setPageNumber={setCurrentPage}
                 data={questions}
-                pageCapacity={10}
+                pageCapacity={pageCapicity}
               />
+              <select className="filterDropdown" value={pageCapicity} onChange={handlePageChange} style={{margin:'auto 30px'}}>
+                <option value='10'>10</option>
+                <option value='25'>25</option>
+                <option value='50'>50</option>
+                <option value="100">100</option>
+              </select>
             </div>
           )}
 

@@ -88,6 +88,8 @@ const SignInWithFacebook = () => {
         if (docSnap.exists()) {
           userRole = docSnap.data().role;
           // setUserRole(docSnap.data().role);
+          const { data }=  await API.get(`/api/users/uid/${userId}`)
+          localStorage.setItem("user",JSON.stringify({id:data.id,role:userRole,email:data.email}))
           console.log(docSnap.data().role);
         } else {
           console.log("No role found for this user");

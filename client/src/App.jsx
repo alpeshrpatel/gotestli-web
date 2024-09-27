@@ -102,6 +102,7 @@ import StudentDashboard from "./pages/studentpages/StudentDashboard";
 import ViewStudents from "./pages/instructorspages/ViewStudents";
 import UploadQuestionSet from "./components/makeQuestionSet/UploadQuestionSet";
 import UploadedFiles from "./pages/instructorspages/UploadedFiles";
+import ViewQuestions from "./pages/instructorspages/ViewQuestions";
 
 function App() {
   useEffect(() => {
@@ -194,12 +195,23 @@ function App() {
               <Route
                 path="/student/dashboard"
                 element={
-                  <ProtectedRoute element={<StudentDashboard />} role="student" />
+                  <ProtectedRoute
+                    element={<StudentDashboard />}
+                    role="student"
+                  />
                 }
               />
 
               <Route path="/search/result" element={<SearchResult />} />
-              <Route path="/dshb/profilepage" element={<ProfilePage />} />
+              <Route
+                path="/dshb/profilepage"
+                element={
+                  <ProtectedRoute
+                    element={<ProfilePage />}
+                    role={`student` || `instructor`}
+                  />
+                }
+              />
 
               {/* Admin Routes */}
               <Route
@@ -219,7 +231,7 @@ function App() {
                   />
                 }
               />
-               <Route
+              <Route
                 path="/upload/questionset"
                 element={
                   <ProtectedRoute
@@ -234,10 +246,23 @@ function App() {
                   <ProtectedRoute element={<HomePage />} role="instructor" />
                 }
               />
-               <Route
+
+              <Route
                 path="/quiz/students"
                 element={
-                  <ProtectedRoute element={<ViewStudents />} role="instructor" />
+                  <ProtectedRoute
+                    element={<ViewStudents />}
+                    role="instructor"
+                  />
+                }
+              />
+              <Route
+                path="/quiz/questions/:id"
+                element={
+                  <ProtectedRoute
+                    element={<ViewQuestions />}
+                    role="instructor"
+                  />
                 }
               />
               <Route
@@ -245,7 +270,7 @@ function App() {
                 element={<DashboardPage role="instructor" />}
                 role="instructor"
               />
-              
+
               <Route
                 path="/dshb/uploaded/files"
                 element={<UploadedFiles />}

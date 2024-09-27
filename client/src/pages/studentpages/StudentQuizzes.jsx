@@ -25,7 +25,7 @@ const StudentQuizzes = () => {
   
   useEffect(() => {
     let userId = user.id;
-    const author = auth.currentUser.displayName;
+    // const author = auth.currentUser.displayName;
     async function getQuestionSets() {
       const { data } = await API.get(`/api/userresult/user/${userId}`);
       console.log(data);

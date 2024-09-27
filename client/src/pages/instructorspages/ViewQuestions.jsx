@@ -10,27 +10,27 @@ import Typography from "@mui/material/Typography";
 
 // import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
-const ViewStudents = () => {
-  const [studentsData, setStudentsData] = useState([]);
+const ViewQuestions = () => {
+  const [questions, setQuestions] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
-  const location = useLocation();
-  console.log(location);
-  const { set } = location.state;
+
+  const { id } = useParams();
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
   useEffect(() => {
-    async function getstudents() {
+    // const author = auth.currentUser.displayName;
+    async function getQuestions() {
       try {
         const { data } = await API.get(
-          `/api/userresult/students/list/${set.id}`
+          `/api/questionset/questions/${id}`
         );
         console.log(data);
-        setStudentsData(data);
+        setQuestions(data);
       } catch (error) {
-        console.error("Failed to fetch student data:", error);
+        console.error("Failed to fetch Questions data:", error);
       }
     }
-    getstudents();
+    getQuestions();
   }, []);
   console.log(isHovered);
   return (
@@ -59,37 +59,23 @@ const ViewStudents = () => {
           </Link>
 
           <Typography sx={{ color: "text.primary" }} variant="h6">
-            View Students
+            View Questions
           </Typography>
         </Breadcrumbs>
-        {studentsData.length > 0 ? (
+        {questions.length > 0 ? (
           <div className="table-responsive mt-1" style={{ paddingTop: "20px" }}>
-            <table className="custom-table student-table">
+            <table className="custom-table Question-table">
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Student ID</th>
-                  <th>Date</th>
-
-                  <th>Score</th>
-                  <th>%</th>
-                  <th>Status</th>
+                  <th>Question</th>
                 </tr>
               </thead>
               <tbody>
-                {studentsData.map((student, i) => (
-                  <tr key={student.id}>
+                {questions.map((Question, i) => (
+                  <tr key={Question.id}>
                     <td>{i + 1}</td>
-                    <td>{student.user_id}</td>
-                    <td>
-                      {student.modified_date.slice(0, 19).replace("T", " ")}
-                    </td>
-
-                    <td>{student.marks_obtained}</td>
-                    <td>{student.percentage}</td>
-                    <td>
-                      {student.status === 2 ? "In Progress" : "Completed"}
-                    </td>
+                    <td>{Question.question}</td>
                   </tr>
                 ))}
               </tbody>
@@ -97,7 +83,7 @@ const ViewStudents = () => {
           </div>
         ) : (
           <h4 className="no-content text-center">
-            It looks a bit empty here! 🌟 No students attended quiz yet!
+            This Questionsets not have any questions! 🌟 
           </h4>
         )}
       </div>
@@ -106,4 +92,4 @@ const ViewStudents = () => {
   );
 };
 
-export default ViewStudents;
+export default ViewQuestions;

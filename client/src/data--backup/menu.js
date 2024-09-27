@@ -160,8 +160,8 @@ export const menuList = [
       {
         title: "Dashboard Pages",
         links: [
-          { href: "/dashboard", label: "Dashboard" },
-          { href: "/dshb/questionsets", label: "My Questionsets" },           
+          { href: "/instructor/dashboard", label: "Dashboard" },
+          { href: "/instructor/home", label: "My Questionsets" },           
           { href: "/dshb/uploaded/files", label: "My Uploads" },          
           { href: "/dshb/profilepage", label: "Profile Page" },
           { href: "/dshb-administration", label: "Administration" },          
