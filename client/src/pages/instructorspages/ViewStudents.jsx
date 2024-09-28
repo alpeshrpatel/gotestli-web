@@ -5,8 +5,11 @@ import Header from "@/components/layout/headers/Header";
 import { API } from "@/utils/AxiosInstance";
 import { auth } from "@/firebase/Firebase";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { Breadcrumbs } from "@mui/material";
+import { Breadcrumbs, Button } from "@mui/material";
 import Typography from "@mui/material/Typography";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
 
 // import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
@@ -18,6 +21,7 @@ const ViewStudents = () => {
   const { set } = location.state;
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
+  const userId = user.id;
   useEffect(() => {
     async function getstudents() {
       try {
@@ -33,6 +37,25 @@ const ViewStudents = () => {
     getstudents();
   }, []);
   console.log(isHovered);
+
+  const handleReminderClick = async (studentData) => {
+    try {
+      const {data} = await API.get(`api/users/${studentData.user_id}`);
+      console.log(data)
+      const response = await API.get(`api/users/${userId}`);
+      if(data.email && response.data){
+        const res = await API.post(`api/sendemail/`,{studentData:data, quizData:set,instructor:response?.data?.first_name});
+        console.log(res)
+        if(res.status == 200){
+          toast.success('Reminder Email sent!')
+        }else{
+          toast.error('Error in sending reminder!')
+        }
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  };
   return (
     <div>
       <Preloader />
@@ -74,6 +97,7 @@ const ViewStudents = () => {
                   <th>Score</th>
                   <th>%</th>
                   <th>Status</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -89,6 +113,22 @@ const ViewStudents = () => {
                     <td>{student.percentage}</td>
                     <td>
                       {student.status === 2 ? "In Progress" : "Completed"}
+                    </td>
+                    <td>
+                      {student.status === 2 ? (
+                        <button
+                          className={`button -sm px-20 py-20 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm mx-auto`}
+                          onClick={() => handleReminderClick(student)}
+                        >
+                          Send Reminder{" "}
+                          <span style={{ marginLeft: "5px" }}>
+                            {" "}
+                            <FontAwesomeIcon icon={faBell} />
+                          </span>
+                        </button>
+                      ) : (
+                        ""
+                      )}
                     </td>
                   </tr>
                 ))}
