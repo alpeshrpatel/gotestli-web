@@ -212,15 +212,15 @@ const HomePage = () => {
                       </td>
                       <td
                         onClick={() => handleViewQuestionsClick(set)}
-                        style={{ textDecoration: "underline", color: "blue" }}
+                        style={{ textDecoration: "underline", color: "blue",textAlign:'center' }}
                       >
-                        View Questions
+                        View
                       </td>
                       <td
                         onClick={() => handleNavigate(set)}
-                        style={{ textDecoration: "underline", color: "blue" }}
+                        style={{ textDecoration: "underline", color: "blue",textAlign:'center' }}
                       >
-                        View Students
+                        View
                       </td>
                       <td>
                         <div

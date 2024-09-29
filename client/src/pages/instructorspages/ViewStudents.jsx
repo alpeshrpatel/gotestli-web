@@ -10,11 +10,13 @@ import Typography from "@mui/material/Typography";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
+import { students } from "@/data--backup/students";
 
 // import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 const ViewStudents = () => {
   const [studentsData, setStudentsData] = useState([]);
+  const [isDisabled, setIsDisabled] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
   const location = useLocation();
   console.log(location);
@@ -36,15 +38,47 @@ const ViewStudents = () => {
     }
     getstudents();
   }, []);
-  console.log(isHovered);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const now = Date.now();
+        let lastTimeStamp = studentsData.map((student)=> {
+          return {
+            id: student.id,
+            hours: (now - new Date(student.last_click_timestamp).getTime()) / (1000 * 60 * 60 )
+          }
+            });
+
+        lastTimeStamp.forEach(async (student)=> {
+          if(student.hours >= 24 ){
+            const response = await API.put('/api/sendemail/check/status',{studentId:student.id});
+            console.log(response)
+          }else if(student.hours){
+            setIsDisabled((prev)=> [...prev,{id:student.id}]);
+          }
+        })
+       
+        
+      } catch (error) {
+        console.error('Error checking status:', error);
+      }
+    };
+
+    if (studentsData.length > 0) {
+      checkStatus();
+    }
+  }, [studentsData]);
+  console.log(isDisabled);
 
   const handleReminderClick = async (studentData) => {
+    setIsDisabled((prev)=> [...prev,{id:studentData.id}]);
     try {
       const {data} = await API.get(`api/users/${studentData.user_id}`);
       console.log(data)
       const response = await API.get(`api/users/${userId}`);
       if(data.email && response.data){
-        const res = await API.post(`api/sendemail/`,{studentData:data, quizData:set,instructor:response?.data?.first_name});
+        const res = await API.post(`/api/sendemail/`,{userResultId:studentData.id,studentData:data, quizData:set,instructor:response?.data?.first_name});
         console.log(res)
         if(res.status == 200){
           toast.success('Reminder Email sent!')
@@ -117,8 +151,14 @@ const ViewStudents = () => {
                     <td>
                       {student.status === 2 ? (
                         <button
-                          className={`button -sm px-20 py-20 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm mx-auto`}
+                          className={`button -sm px-20 py-20 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm mx-auto ${isDisabled.some((element) => element.id === student.id) ? 'disabled' : ''}`}
                           onClick={() => handleReminderClick(student)}
+                          disabled={isDisabled.some((element)=> element.id == student.id)}
+                          style={{
+                            cursor: isDisabled.some((element) => element.id === student.id) ? 'not-allowed' : 'pointer',
+                            color: isDisabled.some((element) => element.id === student.id) ? 'red' : 'inherit',
+                            opacity: isDisabled.some((element) => element.id === student.id) ? 0.5 : 1,
+                          }}
                         >
                           Send Reminder{" "}
                           <span style={{ marginLeft: "5px" }}>
@@ -134,6 +174,9 @@ const ViewStudents = () => {
                 ))}
               </tbody>
             </table>
+            <h5 className=" text-center mt-4">
+            Note. <span className="text-18 " style={{color:'black',fontWeight:'480'}}>You can send reminder again after 24 hours.</span>
+          </h5>
           </div>
         ) : (
           <h4 className="no-content text-center">
