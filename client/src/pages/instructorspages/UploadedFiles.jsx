@@ -59,29 +59,29 @@ const UploadedFiles = () => {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>File Name</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                  <th>Correct Rows</th>
-                  <th>Error Rows</th>
-                  <th>Action</th>
+                  <th style={{ textAlign: "center" }}>File Name</th>
+                  <th style={{ textAlign: "center" }}>Date</th>
+                  <th style={{ textAlign: "center" }}>Status</th>
+                  <th style={{ textAlign: "center" }}>Correct Rows</th>
+                  <th style={{ textAlign: "center" }}>Error Rows</th>
+                  <th style={{ textAlign: "center" }}>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {uploadedData.map((file, i) => (
                   <tr key={file.id}>
                     <td>{i + 1}</td>
-                    <td>{file.file_name}</td>
-                    <td>{file.created_date.slice(0, 19).replace("T", " ")}</td>
-                    <td>
+                    <td style={{ textAlign: "center" }}>{file.file_name}</td>
+                    <td style={{ textAlign: "center" }}>{file.created_date.slice(0, 19).replace("T", " ")}</td>
+                    <td style={{ textAlign: "center" }}>
                       {file.status == 0
                         ? "Not Started"
                         : file.status == 1
                         ? "Completed"
                         : "In Progress"}
                     </td>
-                    <td>{file.correct_rows}</td>
-                    <td>{file.error_rows}</td>
+                    <td style={{ textAlign: "center" }}>{file.correct_rows && file.correct_rows?.split(',')?.length || 0}</td>
+                    <td style={{ textAlign: "center" }}>{file.error_rows && file.error_rows?.split(',')?.length || 0}</td>
                     <td style={{ textAlign: "center" }}>
                       <FontAwesomeIcon
                         icon={faFileArrowDown}
