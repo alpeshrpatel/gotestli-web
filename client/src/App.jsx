@@ -2,7 +2,7 @@ import "./styles/index.scss";
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import "react-calendar/dist/Calendar.css";
-import { BrowserRouter, Routes, Route, RouterProvider } from "react-router-dom";
+import { BrowserRouter, Routes, Route, RouterProvider, json } from "react-router-dom";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -114,6 +114,9 @@ function App() {
     });
   }, []);
 
+  const user = JSON.parse(localStorage.getItem('user')) || "";
+  const userRole = user.role;
+
   return (
     <>
       <Suspense fallback={<Loader />}>
@@ -208,7 +211,7 @@ function App() {
                 element={
                   <ProtectedRoute
                     element={<ProfilePage />}
-                    role={`student` || `instructor`}
+                    role={ userRole == `student` ? `student` : ( userRole == 'instructor' ? 'instructor' : '') }
                   />
                 }
               />

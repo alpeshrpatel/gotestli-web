@@ -89,6 +89,8 @@ const SignInWithFacebook = () => {
           userRole = docSnap.data().role;
           // setUserRole(docSnap.data().role);
           const { data }=  await API.get(`/api/users/uid/${userId}`)
+          const resData = await API.get(`/api/users/generate/token/${data.id}`);
+          localStorage.setItem('token', resData.data?.token);
           localStorage.setItem("user",JSON.stringify({id:data.id,role:userRole,email:data.email}))
           console.log(docSnap.data().role);
         } else {
