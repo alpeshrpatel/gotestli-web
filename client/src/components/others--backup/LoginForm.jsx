@@ -44,7 +44,10 @@ export default function LoginForm() {
           userRole = docSnap.data().role;
           // setUserRole(docSnap.data().role);
           console.log(docSnap.data().role);
-         const { data }=  await API.get(`/api/users/uid/${userId}`)
+         const { data }=  await API.get(`/api/users/uid/${userId}`);
+         const resData = await API.get(`/api/users/generate/token/${data.id}`);
+         console.log(resData.data?.token)
+          localStorage.setItem('token', resData.data?.token);
           localStorage.setItem("user",JSON.stringify({id:data.id,role:userRole,email:data.email}))
         } else {
           console.log("No role found for this user");

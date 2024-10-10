@@ -44,6 +44,7 @@ export default function Header({userRole}) {
     try {
       await signOut(auth);
       localStorage.removeItem('user');
+      localStorage.removeItem('token');
       console.log("Logout Successfully");
       window.location.reload();
     } catch (error) {
@@ -106,10 +107,10 @@ export default function Header({userRole}) {
                   {/* search toggle end */}
 
                   {/* cart toggle start */}
-                  <CartToggle
+                  {/* <CartToggle
                     parentClassess={"relative ml-30 mr-30 xl:ml-20"}
                     allClasses={"d-flex items-center text-white"}
-                  />
+                  /> */}
                   {/* cart toggle end */}
 
                   <div

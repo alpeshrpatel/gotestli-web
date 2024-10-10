@@ -470,7 +470,7 @@ export default function Menu({ allClasses, headerPosition }) {
               </ul>
             </li> */}
 
-            <li>
+            {/* <li>
               <Link
                 data-barba
                 to="/contact-1"
@@ -481,7 +481,7 @@ export default function Menu({ allClasses, headerPosition }) {
               >
                 Contact
               </Link>
-            </li>
+            </li> */}
           </ul>
         </div>
 
