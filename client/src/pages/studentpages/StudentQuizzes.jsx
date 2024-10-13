@@ -6,6 +6,8 @@ import React, { useEffect, useState } from "react";
 
 import { API } from "@/utils/AxiosInstance";
 import { auth } from "@/firebase/Firebase";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const metadata = {
   title:
@@ -18,29 +20,43 @@ const StudentQuizzes = () => {
   const [questionSets, setQuestionSets] = useState([]);
   const [studentsData, setStudentsData] = useState([]);
   const [expandedRow, setExpandedRow] = useState(null);
-
-  const user = JSON.parse( localStorage.getItem('user')) || '';
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
 
-  
   useEffect(() => {
     let userId = user.id;
     // const author = auth.currentUser.displayName;
     async function getQuestionSets() {
-      const { data } = await API.get(`/api/userresult/user/${userId}`);
-      console.log(data);
-      setQuestionSets(data);
+      try {
+        if (token) {
+          const { data } = await API.get(`/api/userresult/user/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          console.log(data);
+          setQuestionSets(data);
+        }
+      } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          toast.error("Your Session timedout!");
+          navigate("/login");
+          return;
+        }
+      }
     }
     getQuestionSets();
   }, []);
 
-  
- 
   return (
     <div>
       <Preloader />
       <MetaComponent meta={metadata} />
-      <Header userRole ={userRole}/>
+      <Header userRole={userRole} />
 
       <div className="content-wrapper js-content-wrapper overflow-hidden w-100">
         {questionSets.length > 0 ? (

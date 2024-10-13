@@ -103,6 +103,11 @@ import ViewStudents from "./pages/instructorspages/ViewStudents";
 import UploadQuestionSet from "./components/makeQuestionSet/UploadQuestionSet";
 import UploadedFiles from "./pages/instructorspages/UploadedFiles";
 import ViewQuestions from "./pages/instructorspages/ViewQuestions";
+import AboutPage from "./components/layout/footers/footerpages/AboutPage";
+import ContactPage from "./components/layout/footers/footerpages/ContactPage";
+import BecomeInstructorPage from "./components/layout/footers/footerpages/BecomeInstructorPage";
+import Faq from "./components/common/Faq";
+import Faqs from "./components/layout/footers/footerpages/Faqs";
 
 function App() {
   useEffect(() => {
@@ -157,6 +162,13 @@ function App() {
               <Route path="/" element={<HomePage1 />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/helpcenter" element={<Faqs />} />
+              <Route
+                path="/become/instructor"
+                element={<BecomeInstructorPage />}
+              />
 
               {/* Student Routes */}
               {/* <Route path="/" element={

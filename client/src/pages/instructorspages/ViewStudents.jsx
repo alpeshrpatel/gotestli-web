@@ -25,10 +25,10 @@ const ViewStudents = () => {
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
   const userId = user.id;
+  const token = localStorage.getItem("token");
   useEffect(() => {
     async function getstudents() {
       try {
-        const token = localStorage.getItem("token");
         if (token) {
           const { data } = await API.get(
             `/api/userresult/students/list/${set.id}`,
@@ -70,10 +70,27 @@ const ViewStudents = () => {
 
         lastTimeStamp.forEach(async (student) => {
           if (student.hours >= 24) {
-            const response = await API.put("/api/sendemail/check/status", {
-              studentId: student.id,
-            });
-            console.log(response);
+            try {
+              if(token){
+                const response = await API.put("/api/sendemail/check/status", {
+                  studentId: student.id,
+                }, {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                });
+                console.log(response);
+              }
+            } catch (error) {
+              if (error.status == 403) {
+                localStorage.removeItem("user");
+                localStorage.removeItem("token");
+                // toast.error("Invaild token!");
+                navigate("/login");
+                return;
+              }
+            }
+           
           } else if (student.hours) {
             setIsDisabled((prev) => [...prev, { id: student.id }]);
           }
@@ -92,15 +109,28 @@ const ViewStudents = () => {
   const handleReminderClick = async (studentData) => {
     setIsDisabled((prev) => [...prev, { id: studentData.id }]);
     try {
-      const { data } = await API.get(`api/users/${studentData.user_id}`);
+      if(token){
+      const { data } = await API.get(`api/users/${studentData.user_id}`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       console.log(data);
-      const response = await API.get(`api/users/${userId}`);
+      const response = await API.get(`api/users/${userId}`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (data.email && response.data) {
         const res = await API.post(`/api/sendemail/`, {
           userResultId: studentData.id,
           studentData: data,
           quizData: set,
           instructor: response?.data?.first_name,
+        },{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         console.log(res);
         if (res.status == 200) {
@@ -109,7 +139,15 @@ const ViewStudents = () => {
           toast.error("Error in sending reminder!");
         }
       }
+    }
     } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
       console.error(error);
     }
   };

@@ -29,12 +29,18 @@ const SubmitQuizModal = ({
   const userRole = userdata.role;
   const userId = userdata.id;
   const user = auth.currentUser;
+  const token = localStorage.getItem("token");
 
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const SubmitUserResult = async () => {
     try {
-      const { data } = await API.put("/api/userresult/calculate/finalresult", {userResultId, questionSetId, totalQuestions, totalAnswered, skippedQuestion, totalReviewed, userId});
+      if(token){
+      const { data } = await API.put("/api/userresult/calculate/finalresult", {userResultId, questionSetId, totalQuestions, totalAnswered, skippedQuestion, totalReviewed, userId}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       console.log(data);
       const correct = data.correct;
@@ -60,7 +66,15 @@ const SubmitQuizModal = ({
           passPercentage: passPercentage,
         },
       });
+    }
     } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
       console.log(error);
       console.log("Error posting test result:", error);
     }

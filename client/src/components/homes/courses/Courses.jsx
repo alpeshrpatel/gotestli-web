@@ -15,6 +15,7 @@ import {
 } from "firebase/firestore";
 
 import { Tabs, Tab, Box, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export default function Courses({userRole}) {
   const [filtered, setFiltered] = useState();
@@ -22,8 +23,9 @@ export default function Courses({userRole}) {
   const [value, setValue] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isLoading,setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  
+  const token = localStorage.getItem("token");
   useEffect(() => {
     async function getCategory() {
       const { data } = await API.get("/api/category/parent/categories");
@@ -53,14 +55,53 @@ export default function Courses({userRole}) {
       setSelectedCategory(filtered);
     } else {
       try {
-        const res = await API.get(
-          `/api/category/selected/questionsets/${title}`
-        );
-        console.log(res);
-        if (res.data) {
-          setSelectedCategory(res.data);
+       
+        if (token) {
+          const { data } = await API.get(
+            `/api/userresult/students/list/${set.id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log(data);
+          setStudentsData(data);
         }
       } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // toast.error("Invaild token!");
+          navigate('/login')
+          return;
+        }
+        console.error("Failed to fetch student data:", error);
+      }
+      try {
+       
+        if(token){
+          const res = await API.get(
+            `/api/category/selected/questionsets/${title}`,{
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log(res);
+          if (res.data) {
+            setSelectedCategory(res.data);
+          }
+        }
+       
+      } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // toast.error("Invaild token!");
+          navigate('/login')
+          return;
+        }
         throw error;
       }
     }

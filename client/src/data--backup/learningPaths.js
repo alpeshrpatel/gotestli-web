@@ -59,27 +59,27 @@ export const learningPathTwo = [
 export const learningPathFive = [
   {
     id: 1,
-    title: "Learn with Experts",
-    image: "/assets/img/home-5/learning/1.svg",
-    description: "Grursus mal suada faci lisis that ipsum ameti consecte.",
+    title: "Create Quizzes",
+    image: "/assets/img/home-5/learning/2.svg",
+    description: "Easily craft quizzes using predefined or custom question sets via Excel.",
   },
   {
     id: 2,
-    title: "Learn Anything",
-    image: "/assets/img/home-5/learning/2.svg",
-    description: "Grursus mal suada faci lisis that ipsum ameti consecte.",
+    title: "Manage Visibility",
+    image: "/assets/img/home-5/learning/3.svg",
+    description: "Control access to your question sets, making them private or public.",
   },
   {
     id: 3,
-    title: "Flexible Learning",
-    image: "/assets/img/home-5/learning/3.svg",
-    description: "Grursus mal suada faci lisis that ipsum ameti consecte.",
+    title: "Track Progress",
+    image: "/assets/img/home-3/achieve/2.svg",
+    description: "Monitor student performance and gain insights from detailed analytics.",
   },
   {
     id: 4,
-    title: "Industrial Standart",
-    image: "/assets/img/home-5/learning/4.svg",
-    description: "Grursus mal suada faci lisis that ipsum ameti consecte.",
+    title: "Engage Students",
+    image: "/assets/img/home-5/learning/1.svg",
+    description: "Notify your followers and engage them by sharing new quizzes.",
   },
 ];
 

@@ -33,7 +33,7 @@ import {
   TablePagination,
 } from "@mui/material";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { API } from "@/utils/AxiosInstance";
 
 const completedAssignmentData = [
@@ -41,7 +41,6 @@ const completedAssignmentData = [
   { name: "22", assignmentsCompleted: 1.5 },
   { name: "23", assignmentsCompleted: 0.5 },
   { name: "24", assignmentsCompleted: 2 },
-  
 ];
 
 const pieDataOnTimeCompletion = [
@@ -57,18 +56,43 @@ export default function StudentDashboardOne() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const user = JSON.parse( localStorage.getItem('user')) || '';
+  const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const userId = user.id;
     async function getDataAnalysis() {
-      const { data } = await API.get(`/api/userresult/student/dashboard/analysis/${userId}`);
-      const res = await API.get(`/api/userresult/user/${userId}`);
-      console.log(res.data);
-      setResults(res.data);
-      setDshbData(data);
-      console.log(data);
+      try {
+        if (token) {
+          const { data } = await API.get(
+            `/api/userresult/student/dashboard/analysis/${userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const res = await API.get(`/api/userresult/user/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          console.log(res.data);
+          setResults(res.data);
+          setDshbData(data);
+          console.log(data);
+        }
+      } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // toast.error("Invaild token!");
+          navigate("/login");
+          return;
+        }
+      }
     }
     getDataAnalysis();
   }, []);
@@ -102,7 +126,7 @@ export default function StudentDashboardOne() {
             <div className="mt-10">Welcome to Student Dashboard.</div>
           </div>
         </div>
-        <Grid container spacing={1}>         
+        <Grid container spacing={1}>
           <Grid className="row" item xs={12} md={6}>
             <Grid item xs={12} md={6} sx={{ marginBottom: "10px" }}>
               <Card sx={{ height: "220px" }}>
@@ -118,7 +142,6 @@ export default function StudentDashboardOne() {
               </Card>
             </Grid>
 
-           
             <Grid item xs={12} md={6}>
               <Card sx={{ height: "220px" }}>
                 <CardContent>
@@ -133,7 +156,6 @@ export default function StudentDashboardOne() {
               </Card>
             </Grid>
 
-            
             <Grid item xs={12} md={6}>
               <Card sx={{ height: "220px" }}>
                 <CardContent>
@@ -175,13 +197,10 @@ export default function StudentDashboardOne() {
               </Card>
             </Grid>
 
-           
             <Grid item xs={12} md={6}>
               <Card sx={{ height: "220px" }}>
                 <CardContent>
-                  <Typography variant="h6">
-                    Quiz Completion (%)
-                  </Typography>
+                  <Typography variant="h6">Quiz Completion (%)</Typography>
                   <PieChart width={150} height={150}>
                     <Pie
                       data={pieDataOnTimeCompletion}
@@ -207,9 +226,7 @@ export default function StudentDashboardOne() {
           <Grid item xs={6}>
             <Card sx={{ height: "450px", overflow: "scroll" }}>
               <CardContent>
-                <Typography variant="h5">
-                  Completed Quiz Trends
-                </Typography>
+                <Typography variant="h5">Completed Quiz Trends</Typography>
                 <BarChart
                   width={500}
                   height={300}
@@ -224,70 +241,87 @@ export default function StudentDashboardOne() {
                 </BarChart>
               </CardContent>
             </Card>
-          </Grid> 
-          
-          <Grid className="row" item xs={12}>
-            <Grid item xs={12}  sx={{ marginBottom: "10px" }}>
-            <Card sx={{ height: "480px", overflow: "scroll" }}>
-              <CardContent>
-                <Typography variant="h6" sx={{position:'sticky',top:'5px',backgroundColor:'white'}}>Quiz Results</Typography>
-                <Paper>
-                  <Table sx={{padding:'5px'}}>
-                    <TableHead sx={{position:'sticky',top:'30px',backgroundColor:'white'}}>
-                      <TableRow>
-                        <TableCell>Quiz Title</TableCell>
-                        <TableCell>Started Date</TableCell>
-                        <TableCell>Complete Date</TableCell>
-                        <TableCell>Passing %</TableCell>
-                        <TableCell>Percentage</TableCell>
-                        <TableCell>Result</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {results
-                        .slice(
-                          page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage
-                        )
-                        .map((row, index) => (
-                          <TableRow key={index}>
-                            <TableCell>{row.title}</TableCell>
-                            <TableCell>
-                              {row.created_date.slice(0, 19).replace("T", " ")}
-                            </TableCell>
-                            <TableCell>
-                              {row.modified_date.slice(0, 19).replace("T", " ")}
-                            </TableCell>
-                            <TableCell>{row.pass_percentage}</TableCell>
-                            <TableCell>{row.percentage}</TableCell>
-                            <TableCell>
-                              {row.percentage >= row?.pass_percentage
-                                ? "Pass"
-                                : "Fail"}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </Paper>
-              </CardContent>
-            </Card>
-            <TablePagination
-              component="div"
-              count={results.length}
-              page={page}
-              onPageChange={handleChangePage}
-              rowsPerPage={rowsPerPage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              rowsPerPageOptions={[5, 10, 25]}
-              sx={{
-                marginTop: "6px",
-              }}
-            />
           </Grid>
-        </Grid>
-         
-         
+
+          <Grid className="row" item xs={12}>
+            <Grid item xs={12} sx={{ marginBottom: "10px" }}>
+              <Card sx={{ height: "480px", overflow: "scroll" }}>
+                <CardContent>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      position: "sticky",
+                      top: "5px",
+                      backgroundColor: "white",
+                    }}
+                  >
+                    Quiz Results
+                  </Typography>
+                  <Paper>
+                    <Table sx={{ padding: "5px" }}>
+                      <TableHead
+                        sx={{
+                          position: "sticky",
+                          top: "30px",
+                          backgroundColor: "white",
+                        }}
+                      >
+                        <TableRow>
+                          <TableCell>Quiz Title</TableCell>
+                          <TableCell>Started Date</TableCell>
+                          <TableCell>Complete Date</TableCell>
+                          <TableCell>Passing %</TableCell>
+                          <TableCell>Percentage</TableCell>
+                          <TableCell>Result</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {results
+                          .slice(
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage
+                          )
+                          .map((row, index) => (
+                            <TableRow key={index}>
+                              <TableCell>{row.title}</TableCell>
+                              <TableCell>
+                                {row.created_date
+                                  .slice(0, 19)
+                                  .replace("T", " ")}
+                              </TableCell>
+                              <TableCell>
+                                {row.modified_date
+                                  .slice(0, 19)
+                                  .replace("T", " ")}
+                              </TableCell>
+                              <TableCell>{row.pass_percentage}</TableCell>
+                              <TableCell>{row.percentage}</TableCell>
+                              <TableCell>
+                                {row.percentage >= row?.pass_percentage
+                                  ? "Pass"
+                                  : "Fail"}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </Paper>
+                </CardContent>
+              </Card>
+              <TablePagination
+                component="div"
+                count={results.length}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                rowsPerPageOptions={[5, 10, 25]}
+                sx={{
+                  marginTop: "6px",
+                }}
+              />
+            </Grid>
+          </Grid>
         </Grid>
       </div>
 

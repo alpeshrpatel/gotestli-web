@@ -1,11 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
- import Socials from "@/components/common/Socials";
+import Socials from "@/components/common/Socials";
 import FooterLinks from "../component/FooterLinks";
 import Links from "../component/Links";
+import { API } from "@/utils/AxiosInstance";
+import { toast } from "react-toastify";
 export default function FooterOne() {
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const [email, setEmail] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  const handleSubmitClick = async () => {
+    try {
+      setIsDisabled(true);
+      const data = await API.post("/api/waitinglist", { email: email });
+      if (data.status == 200) {
+        const res = await API.post("/api/sendemail/getintouch/subscribed", {
+          email: email,
+        });
+        if (res.status == 200) {
+          toast.success("Subscribed!");
+        }
+      }
+      setIsDisabled(false);
+    } catch (error) {
+      if (error.status == 500) {
+        toast.error("Already Subscribed!");
+      }
+      console.error(error);
+      setIsDisabled(false);
+    }
   };
   return (
     <footer className="footer -type-1 bg-dark-1 -green-links">
@@ -14,7 +37,11 @@ export default function FooterOne() {
           <div className="row y-gap-20 justify-between items-center">
             <div className="col-auto">
               <div className="footer-header__logo">
-              <img src="/assets/img/header-logo.png" alt="logo" style={{height:'30px', width:'180px'}}/>
+                <img
+                  src="/assets/img/header-logo.png"
+                  alt="logo"
+                  style={{ height: "30px", width: "180px" }}
+                />
               </div>
             </div>
             <div className="col-auto">
@@ -31,7 +58,7 @@ export default function FooterOne() {
         </div>
 
         <div className="footer-columns">
-          <div className="row y-gap-30">
+          <div className="row y-gap-30 d-flex justify-content-evenly">
             <FooterLinks
               allClasses={"text-17 fw-500 text-white uppercase mb-25"}
             />
@@ -42,12 +69,25 @@ export default function FooterOne() {
               </div>
               <div className="footer-columns-form">
                 <div>We don’t send spam so don’t worry.</div>
-                <form onSubmit={handleSubmit}>
+                <div>
                   <div className="form-group">
-                    <input required type="text" placeholder="Email..." />
-                    <button type="submit">Submit</button>
+                    <input
+                      required
+                      type="text"
+                      placeholder="Email..."
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <button
+                      type="submit"
+                      onClick={handleSubmitClick}
+                      disabled={isDisabled}
+                      style={{ cursor: isDisabled ? "not-allowed" : "pointer" }}
+                    >
+                      Submit
+                    </button>
                   </div>
-                </form>
+                </div>
               </div>
             </div>
           </div>

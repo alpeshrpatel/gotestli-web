@@ -33,13 +33,33 @@ const HomePage = () => {
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
   const userId = user.id;
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     // const author = auth.currentUser.displayName;
     async function getQuestionSets() {
-      const { data } = await API.get(`/api/questionset/instructor/${userId}`);
-      console.log(data);
-      setQuestionSets(data);
+      try {
+        if (token) {
+          const { data } = await API.get(
+            `/api/questionset/instructor/${userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log(data);
+          setQuestionSets(data);
+        }
+      } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // toast.error("Invaild token!");
+          navigate("/login");
+          return;
+        }
+      }
     }
     getQuestionSets();
   }, []);
@@ -74,22 +94,51 @@ const HomePage = () => {
     });
   }
   async function handleDelete(set) {
-    setEditOn(set.id);
-    const res = await API.delete(`/api/questionset/${set.id}`);
-    await API.delete(`/api/questionset/question/${set.id}`);
-    await API.delete(`/api/questionset/category/${set.id}`);
+    try {
+      if (token) {
+        setEditOn(set.id);
+        const res = await API.delete(`/api/questionset/${set.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        await API.delete(`/api/questionset/question/${set.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        await API.delete(`/api/questionset/category/${set.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-    setEditOn(null);
-    if (res.status == 200) {
-      setQuestionSets((prev) => prev.filter((qSet) => qSet.id !== set.id));
+        setEditOn(null);
+        if (res.status == 200) {
+          setQuestionSets((prev) => prev.filter((qSet) => qSet.id !== set.id));
+        }
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
     }
   }
 
   async function handleSave(set) {
     try {
+      if(token){
       const res = await API.put(`/api/questionset/${set.id}`, {
         changedQSet,
         userId,
+      },{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       setEditOn(null);
       if (res.status == 200) {
@@ -99,8 +148,16 @@ const HomePage = () => {
           )
         );
       }
+    }
       // Refresh question sets or update the current state
     } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
       console.error("Failed to save changes:", error);
     }
   }
@@ -212,13 +269,21 @@ const HomePage = () => {
                       </td>
                       <td
                         onClick={() => handleViewQuestionsClick(set)}
-                        style={{ textDecoration: "underline", color: "blue",textAlign:'center' }}
+                        style={{
+                          textDecoration: "underline",
+                          color: "blue",
+                          textAlign: "center",
+                        }}
                       >
                         View
                       </td>
                       <td
                         onClick={() => handleNavigate(set)}
-                        style={{ textDecoration: "underline", color: "blue",textAlign:'center' }}
+                        style={{
+                          textDecoration: "underline",
+                          color: "blue",
+                          textAlign: "center",
+                        }}
                       >
                         View
                       </td>

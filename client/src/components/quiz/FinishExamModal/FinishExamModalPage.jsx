@@ -17,75 +17,72 @@ const FinishExamModalPage = ({
   const [viewReviewQuestions, setViewReviewQuestions] = useState(false);
   const [reviewData, setReviewData] = useState([]);
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   async function getOptions() {
-  //     try {
-  //       const reviewQuestionsData = await Promise.all(
-  //         selectedOption.map(async (q) => {
-  //           const response = await API.get(`/api/options/${q.id}`);
-  //           const { data } = await API.get(`/api/questionmaster/${q.id}`);
-  //           console.log(data)
-  //           console.log(response)
-  //           return {
-  //             id: q.id,
-  //             question: data.question,
-  //             options: response.data,
-  //             status: q.status,
-  //             selectedOption: q.selectedOption,
-  //           };
-  //         })
-  //       );
-  //       setReviewData(reviewQuestionsData);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  //   getOptions();
-  // }, [selectedOption]);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     async function getOptions() {
       const reviewQuestionsData = [];
-      console.log(selectedOption)
+      console.log(selectedOption);
       for (const q of selectedOption) {
         try {
-          console.log(`Fetching options for id: ${q.id}`);
-          
-          const response = await API.get(`/api/options/${q.id}`);
-          const { data } = await API.get(`/api/questionmaster/${q.id}`);
-          
-          console.log('Question Data:', data);
-          console.log('Options Response:', response);
-          
-          reviewQuestionsData.push({
-            id: q.id,
-            question: data.question,
-            options: response.data,
-            status: q.status,
-            selectedOption: q.selectedOption,
-          });
+          if (token) {
+            console.log(`Fetching options for id: ${q.id}`);
+
+            const response = await API.get(`/api/options/${q.id}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            const { data } = await API.get(`/api/questionmaster/${q.id}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+
+            console.log("Question Data:", data);
+            console.log("Options Response:", response);
+
+            reviewQuestionsData.push({
+              id: q.id,
+              question: data.question,
+              options: response.data,
+              status: q.status,
+              selectedOption: q.selectedOption,
+            });
+          }
         } catch (error) {
-          console.error('Error fetching options:', error.response?.data || error.message || error);
+          if (error.status == 403) {
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+            // toast.error("Invaild token!");
+            navigate("/login");
+            return;
+          }
+          console.error(
+            "Error fetching options:",
+            error.response?.data || error.message || error
+          );
           break; // Optionally, stop further execution on error
         }
       }
       console.log(reviewQuestionsData);
       setReviewData(reviewQuestionsData);
     }
-  
+
     getOptions();
   }, [selectedOption]);
-  
+
   // console.log(reviewQuestionsData);
   const onOpenModal = () => setOpen(true);
   const onCloseSubmitModal = () => setOpen(false);
 
-  const user = JSON.parse( localStorage.getItem('user')) || '';
-  
+  const user = JSON.parse(localStorage.getItem("user")) || "";
+
   const userRole = user.role;
   const userId = user.id;
- console.log(selectedOption)
+  console.log(selectedOption);
   const attempted = selectedOption.filter((q) => q.selectedOption !== null);
   const reviewed = selectedOption.filter((q) => q.status == 2 || q.status == 3);
   console.log(reviewed);
@@ -111,18 +108,35 @@ const FinishExamModalPage = ({
     newstatus
   ) {
     try {
-      const status = newstatus;
+      if (token) {
+        const status = newstatus;
 
-      const res = await API.put("/api/userresultdetails", {
-        user_test_result_id:userResultId,
-        question_set_question_id:questionId ,
-        answer:findSelectedOption,
-        modified_by:userId,
-        status:status,
-      });
+        const res = await API.put(
+          "/api/userresultdetails",
+          {
+            user_test_result_id: userResultId,
+            question_set_question_id: questionId,
+            answer: findSelectedOption,
+            modified_by: userId,
+            status: status,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      return res;
+        return res;
+      }
     } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
       console.log(error);
       throw error;
     }

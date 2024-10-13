@@ -3,17 +3,18 @@ import React from "react";
 export default function PageHeading() {
   return (
     <section className="page-header -type-1">
-      <div className="container">
+      <div className="container-fluid">
         <div className="page-header__content">
           <div className="row">
-            <div className="col-auto">
+            <div className="col-12 " style={{textAlign:'center'}}>
               <div>
-                <h1 className="page-header__title">User Interface Courses</h1>
+                <h1 className="page-header__title">Become an Instructor</h1>
               </div>
 
               <div>
                 <p className="page-header__text">
-                  Write an introductory description of the category.
+                We’re on a mission to deliver engaging, curated courses at a
+                reasonable price.
                 </p>
               </div>
             </div>

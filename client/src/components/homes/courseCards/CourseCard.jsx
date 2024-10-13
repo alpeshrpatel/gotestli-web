@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 // import axios from "axios";
 import "react-responsive-modal/styles.css";
@@ -24,18 +24,36 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faFileLines } from "@fortawesome/free-solid-svg-icons";
 
-export default function CourceCard({search = null, role, data, index }) {
+export default function CourceCard({ search = null, role, data, index }) {
   // const [rating, setRating] = useState([]);
   const [questionSet, setQuestionsSet] = useState([]);
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
+  const token = localStorage.getItem("token");
   const onOpenModal = () => {
     async function getQuestions() {
       try {
-        const response = await API.get(`/api/questionset/questions/${data.id}`);
+        if (token) {
+          const response = await API.get(
+            `/api/questionset/questions/${data.id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
-        setQuestionsSet(response.data);
+          setQuestionsSet(response.data);
+        }
       } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // toast.error("Invaild token!");
+          navigate("/login");
+          return;
+        }
         console.log(error);
       }
     }
@@ -66,7 +84,12 @@ export default function CourceCard({search = null, role, data, index }) {
           onCloseModal={onCloseModal}
         />
       </Modal>
-      <div className={`col-lg-3 col-md-6 pointer ${search ? `col-lg-4 col-md-6 ` : `col-lg-3 col-md-6` } `} onClick={onOpenModal}>
+      <div
+        className={`col-lg-3 col-md-6 pointer ${
+          search ? `col-lg-4 col-md-6 ` : `col-lg-3 col-md-6`
+        } `}
+        onClick={onOpenModal}
+      >
         <div className="coursesCard -type-1">
           <Card
             sx={{ maxWidth: 345, height: "100%" }}
@@ -97,9 +120,8 @@ export default function CourceCard({search = null, role, data, index }) {
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
                 {data.short_desc}
               </Typography>
-              {
-                !(role == 'instructor') && (
-                  <div className="d-flex items-center gap-2 mt-2 ">
+              {!(role == "instructor") && (
+                <div className="d-flex items-center gap-2 mt-2 ">
                   <Typography
                     variant="caption"
                     gutterBottom
@@ -107,14 +129,17 @@ export default function CourceCard({search = null, role, data, index }) {
                   >
                     Creator:
                   </Typography>
-                  <Typography variant="body1" gutterBottom >
+                  <Typography variant="body1" gutterBottom>
                     {data.author}
                   </Typography>
                 </div>
-                ) 
-              }
-              
-              <div className= {`d-flex items-center gap-2 ${(role == 'instructor') ? `mt-2` : `mt-0`} `}>
+              )}
+
+              <div
+                className={`d-flex items-center gap-2 ${
+                  role == "instructor" ? `mt-2` : `mt-0`
+                } `}
+              >
                 <Typography
                   variant="caption"
                   gutterBottom
@@ -122,7 +147,7 @@ export default function CourceCard({search = null, role, data, index }) {
                 >
                   Published on:
                 </Typography>
-                <Typography variant="body1" gutterBottom >
+                <Typography variant="body1" gutterBottom>
                   {formattedDate}
                 </Typography>
               </div>
@@ -130,7 +155,7 @@ export default function CourceCard({search = null, role, data, index }) {
             <CardActions disableSpacing>
               <div className="d-flex items-center gap-2 mr-20">
                 <div className="">
-                <FontAwesomeIcon icon={faFileLines} />
+                  <FontAwesomeIcon icon={faFileLines} />
                 </div>
                 <div className="text-14 lh-1">
                   {data.no_of_question} Questions
@@ -138,7 +163,7 @@ export default function CourceCard({search = null, role, data, index }) {
               </div>
               <div className="d-flex items-center gap-2">
                 <div className="">
-                <FontAwesomeIcon icon={faClock} />
+                  <FontAwesomeIcon icon={faClock} />
                 </div>
                 <div className="text-14 lh-1">{`${data.time_duration}m`}</div>
               </div>

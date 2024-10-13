@@ -10,8 +10,8 @@ import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import QuestionSetDetailForm from "./QuestionSetDetailForm";
 import Header from "../layout/headers/Header";
+import { useNavigate } from "react-router-dom";
 // import axios from "axios";
-
 
 const MakeQuestionSet = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,14 +22,16 @@ const MakeQuestionSet = () => {
   const [questionSetsQuestions, setQuestionSetsQuestions] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [questionSetId,setQuestionSetId] = useState();
+  const [questionSetId, setQuestionSetId] = useState();
   const [open, setOpen] = useState(false);
-  const [pageCapicity,setPageCapicity] = useState(10);
+  const [pageCapicity, setPageCapicity] = useState(10);
+  const navigate = useNavigate();
 
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
 
-  const user = JSON.parse( localStorage.getItem('user')) || '';
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user")) || "";
   const userId = user.id;
   const userRole = user.role;
   const indexOfLastRecord = currentPage * pageCapicity;
@@ -39,13 +41,30 @@ const MakeQuestionSet = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [categoriesResponse, questionsResponse] = await Promise.all([
-          API.get("/api/category"),
-          API.get("/api/questionmaster"),
-        ]);
-        setCategories(categoriesResponse.data);
-        setQuestions(questionsResponse.data);
+        if (token) {
+          const [categoriesResponse, questionsResponse] = await Promise.all([
+            API.get("/api/category", {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }),
+            API.get("/api/questionmaster", {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }),
+          ]);
+          setCategories(categoriesResponse.data);
+          setQuestions(questionsResponse.data);
+        }
       } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // toast.error("Invaild token!");
+          navigate("/login");
+          return;
+        }
         console.error("Error fetching data:", error);
       }
     };
@@ -65,10 +84,26 @@ const MakeQuestionSet = () => {
 
   const getQuestionSetId = async (categoryId) => {
     try {
-      const { data } = await API.get(`/api/questionset/category/${categoryId}`);
+      if (token) {
+        const { data } = await API.get(
+          `/api/questionset/category/${categoryId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      setQuestionSets(data);
+        setQuestionSets(data);
+      }
     } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
       console.error("Error fetching question set:", error);
     }
   };
@@ -87,18 +122,36 @@ const MakeQuestionSet = () => {
       getQuestionSetId(filteredCategory.id);
     }
   };
-  console.log("filtered: " + questionSets)
+  console.log("filtered: " + questionSets);
 
   const getQuestionsFromQSetId = async (questionId) => {
     try {
-      const { data } = await API.get(`/api/questionset/questions/${questionId}`);
+      if (token) {
+        const { data } = await API.get(
+          `/api/questionset/questions/${questionId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      setQuestionSetsQuestions((prevQuestions) => [...prevQuestions, ...data]);
+        setQuestionSetsQuestions((prevQuestions) => [
+          ...prevQuestions,
+          ...data,
+        ]);
+      }
     } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
       console.error("Error fetching question set:", error);
     }
   };
-
 
   const handleCheckboxChange = (question) => {
     setSelectedQuestions((prevSelectedQuestions) =>
@@ -120,54 +173,105 @@ const MakeQuestionSet = () => {
   console.log(selectedQuestions);
   const questionSetStore = async (jsonData) => {
     try {
-      const res = await API.post("/api/questionset/question",
-       jsonData
-      );
-     
-      console.log(res);
+      if (token) {
+        const res = await API.post("/api/questionset/question", jsonData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        console.log(res);
+      }
     } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
       console.log(error);
     }
   };
 
   const handleSubmit = async () => {
     try {
-      async function getId() {
-        const { data } = await API.get("/api/questionset/question/questionsetid");
-       
-        console.log(data)
-        const questionsetid = data?.id + 1 || 1;
-       setQuestionSetId(questionsetid)
-        return {  questionsetid };
+      if (token) {
+        async function getId() {
+          const { data } = await API.get(
+            "/api/questionset/question/questionsetid",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          console.log(data);
+          const questionsetid = data?.id + 1 || 1;
+          setQuestionSetId(questionsetid);
+          return { questionsetid };
+        }
+        let { questionsetid } = await getId();
+
+        let jsonData = [];
+        selectedQuestions.forEach((question) => {
+          jsonData.push({
+            question_set_id: questionsetid,
+            question_id: question.id,
+            userId: userId,
+          });
+        });
+        questionSetStore(jsonData);
+
+        onOpenModal();
       }
-      let {  questionsetid } = await getId();
-      
-      let jsonData = [];
-      selectedQuestions.forEach((question) => {
-        jsonData.push({question_set_id:questionsetid, question_id:question.id, userId:userId})
-        
-      });
-      questionSetStore(jsonData);
-      
-     
-      onOpenModal();
     } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
       console.log(error);
     }
   };
 
-  const handlePageChange = (event) =>{
+  const handlePageChange = (event) => {
     const value = event.target.value;
-    setPageCapicity(parseInt(value))
-  }
-console.log(pageCapicity)
+    setPageCapicity(parseInt(value));
+  };
+  console.log(pageCapicity);
   return (
     <>
-      <Header userRole={userRole}/>
-      <div className="mx-auto" style={{ marginTop: "100px",width:'60vw', padding:'30px',backgroundColor:'#bfdeee',borderRadius:'10px',boxShadow:'0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);'}}>
-       <Typography variant="h4" sx={{textAlign:'center',marginBottom:'10px'}}>Make Question Set</Typography>
-       
-        <TextField id="outlined-search" label="Search Questions" type="search" className="searchInput mb-2" onChange={handleSearch}/>
+      <Header userRole={userRole} />
+      <div
+        className="mx-auto"
+        style={{
+          marginTop: "100px",
+          width: "60vw",
+          padding: "30px",
+          backgroundColor: "#bfdeee",
+          borderRadius: "10px",
+          boxShadow:
+            "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);",
+        }}
+      >
+        <Typography
+          variant="h4"
+          sx={{ textAlign: "center", marginBottom: "10px" }}
+        >
+          Make Question Set
+        </Typography>
+
+        <TextField
+          id="outlined-search"
+          label="Search Questions"
+          type="search"
+          className="searchInput mb-2"
+          onChange={handleSearch}
+        />
         <select
           value={filter}
           onChange={handleFilter}
@@ -204,10 +308,15 @@ console.log(pageCapicity)
                 data={questions}
                 pageCapacity={pageCapicity}
               />
-              <select className="filterDropdown" value={pageCapicity} onChange={handlePageChange} style={{margin:'auto 30px'}}>
-                <option value='10'>10</option>
-                <option value='25'>25</option>
-                <option value='50'>50</option>
+              <select
+                className="filterDropdown"
+                value={pageCapicity}
+                onChange={handlePageChange}
+                style={{ margin: "auto 30px" }}
+              >
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
                 <option value="100">100</option>
               </select>
             </div>
@@ -233,7 +342,11 @@ console.log(pageCapicity)
           },
         }}
       >
-        <QuestionSetDetailForm selectedQuestions={selectedQuestions} categories = {categories} questionSetId = {questionSetId}/>
+        <QuestionSetDetailForm
+          selectedQuestions={selectedQuestions}
+          categories={categories}
+          questionSetId={questionSetId}
+        />
       </Modal>
     </>
   );

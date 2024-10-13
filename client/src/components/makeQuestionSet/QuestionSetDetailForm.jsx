@@ -7,7 +7,11 @@ import { toast } from "react-toastify";
 import { Checkbox, FormControlLabel, TextField } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 
-const QuestionSetDetailForm = ({ selectedQuestions, categories, questionSetId }) => {
+const QuestionSetDetailForm = ({
+  selectedQuestions,
+  categories,
+  questionSetId,
+}) => {
   const user = auth.currentUser.displayName;
   const [formData, setFormData] = useState({
     title: "",
@@ -15,30 +19,27 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories, questionSetId })
     author: user,
     short_desc: "",
     description: "",
-    start_time:"",
-    end_time:"",
-    status_id:"",
+    start_time: "",
+    end_time: "",
+    status_id: "",
     start_date: "",
     end_date: "",
     time_duration: "",
     no_of_question: selectedQuestions.length,
-    tags:"",
+    tags: "",
     is_demo: true,
     totalmarks: "",
     pass_percentage: "",
-
   });
-  const [tagsId, setTagsId] = useState('');
+  const [tagsId, setTagsId] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  
 
   useEffect(() => {
     const updateStatusId = () => {
       const currentDate = new Date();
       const endDate = new Date(`${formData.end_date}T00:00:00`);
 
-   
       const newStatusId = currentDate > endDate ? 0 : 1;
       setFormData((prevData) => ({
         ...prevData,
@@ -47,40 +48,39 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories, questionSetId })
     };
 
     if (formData.end_date) {
-      updateStatusId(); 
-      const intervalId = setInterval(updateStatusId, 100000); 
+      updateStatusId();
+      const intervalId = setInterval(updateStatusId, 100000);
       return () => clearInterval(intervalId);
     }
   }, [formData.end_date]);
 
   useEffect(() => {
-    
     if (formData.time_duration) {
-      const startTime = '12:00:00'; 
+      const startTime = "12:00:00";
       const minutesToAdd = parseInt(formData.time_duration, 10);
 
       function addMinutesToTime(startTime, minutesToAdd) {
-        const [hours, minutes] = startTime.split(':').map(Number);
+        const [hours, minutes] = startTime.split(":").map(Number);
         const totalMinutes = hours * 60 + minutes;
         const newTotalMinutes = totalMinutes + minutesToAdd;
         const newHours = Math.floor(newTotalMinutes / 60);
         const newMinutes = newTotalMinutes % 60;
-        return `${String(newHours % 24).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}:00`;
+        return `${String(newHours % 24).padStart(2, "0")}:${String(
+          newMinutes
+        ).padStart(2, "0")}:00`;
       }
 
       const endTime = addMinutesToTime(startTime, minutesToAdd);
-      console.log('Calculated Start Time:', startTime);
-    console.log('Calculated End Time:', endTime);
-    setStartTime(startTime);
-    setEndTime(endTime);
+      console.log("Calculated Start Time:", startTime);
+      console.log("Calculated End Time:", endTime);
+      setStartTime(startTime);
+      setEndTime(endTime);
     }
   }, [formData.time_duration]);
 
- 
-
   const navigate = useNavigate();
-  const userdata = JSON.parse( localStorage.getItem('user')) || '';
-  
+  const userdata = JSON.parse(localStorage.getItem("user")) || "";
+  const token = localStorage.getItem("token");
   const userRole = userdata.role;
   const userId = userdata.id;
 
@@ -92,27 +92,50 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories, questionSetId })
     });
   };
 
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formDataWithTime = {
       ...formData,
       start_time: startTime,
       end_time: endTime,
-      created_by:userId,
-      modified_by:userId
+      created_by: userId,
+      modified_by: userId,
     };
 
     console.log(formDataWithTime);
     console.log(formData);
-    console.log(questionSetId,tagsId);
-    const response = await API.post("/api/questionset", formDataWithTime);
-    const res = await API.post("/api/questionset/category",{tagsId, questionSetId, userId});
-    console.log("tags res:" , res);
-    // if (response) {
-    toast.success("QuestionSet Created Successfully!");
-    navigate("/instructor/home");
+    console.log(questionSetId, tagsId);
+    try {
+      if (token) {
+        const response = await API.post("/api/questionset", formDataWithTime, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const res = await API.post(
+          "/api/questionset/category",
+          { tagsId, questionSetId, userId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("tags res:", res);
+        // if (response) {
+        toast.success("QuestionSet Created Successfully!");
+        navigate("/instructor/home");
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
+    }
+
     // }
   };
   console.log(categories);
@@ -236,7 +259,7 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories, questionSetId })
               placeholder: "Start Date",
             }}
             type="date"
-            name="start_date"            
+            name="start_date"
             value={formData.start_date}
             onChange={handleChange}
             className="custom-height-questionsetform bg-white rounded w-100"
@@ -372,19 +395,18 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories, questionSetId })
           />
         </div>
       </div>
-      <div className="form-group" >
+      <div className="form-group">
         <Autocomplete
           multiple
           id="tags-outlined"
-          options={categories} 
-          getOptionLabel={(option) => option.title || ""} 
+          options={categories}
+          getOptionLabel={(option) => option.title || ""}
           filterSelectedOptions
           sx={{
-            '& .MuiInputBase-input': {
-              height: '35px',
-              border: 'none',             
+            "& .MuiInputBase-input": {
+              height: "35px",
+              border: "none",
             },
-            
           }}
           renderInput={(params) => (
             <TextField
@@ -393,20 +415,19 @@ const QuestionSetDetailForm = ({ selectedQuestions, categories, questionSetId })
               placeholder="Select categories"
             />
           )}
-         
           className="custom-height-questionsetform bg-white rounded w-100"
           onChange={(event, newValue) => {
-            let tags = '';
-            let tagsId = '';
-            console.log(newValue)
-            newValue.forEach((tag)=> {
-              tags = tags + ',' + tag.title ;
-              tagsId = tagsId + ',' + tag.id;
-            })
+            let tags = "";
+            let tagsId = "";
+            console.log(newValue);
+            newValue.forEach((tag) => {
+              tags = tags + "," + tag.title;
+              tagsId = tagsId + "," + tag.id;
+            });
             setTagsId(tagsId.slice(1));
             setFormData({
               ...formData,
-              tags:tags.slice(1),
+              tags: tags.slice(1),
             });
           }}
         />
