@@ -18,58 +18,73 @@ export default function SearchResult() {
   const [pageData, setpageData] = useState();
   const [questionSets, setQuestionSets] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchedTerm,setSearchedTerm] = useState('');
-
+  const [searchedTerm, setSearchedTerm] = useState("");
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
   const [pageItems, setPageItems] = useState(productData);
   const location = useLocation();
   const indexOfLastRecord = currentPage * 6;
   const indexOfFirstRecord = indexOfLastRecord - 6;
-  
+
   const { keyword } = location.state;
   // let keyword = "game";
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
   };
-  
+
   useEffect(() => {
     if (keyword) {
       async function getSearchedQuestionsets() {
         try {
-          const res = await API.get(
-            `/api/questionset/search/result/${keyword}`
-          );
-          console.log(res.data);
-          setQuestionSets(res.data);
+          if (token) {
+            const res = await API.get(
+              `/api/questionset/search/result/${keyword}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            console.log(res.data);
+            setQuestionSets(res.data);
+          }
         } catch (error) {
+          if (error.status == 403) {
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+            // toast.error("Invaild token!");
+            navigate("/login");
+            return;
+          }
           throw error;
         }
       }
       getSearchedQuestionsets();
     }
-    
   }, [keyword]);
-  
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  
+
   const handleSearch = (e) => {
     setSearchedTerm(e.target.value.trim());
-  }
-  
-  
-  
-  const filteredQuestions =  questionSets.filter((set)=>{
-    if(set?.title?.toLowerCase()?.includes(searchedTerm.toLowerCase()) || set?.short_desc?.toLowerCase()?.includes(searchedTerm.toLowerCase()) || set.tags?.toLowerCase()?.includes(searchedTerm.toLowerCase()) ){
+  };
+
+  const filteredQuestions = questionSets.filter((set) => {
+    if (
+      set?.title?.toLowerCase()?.includes(searchedTerm.toLowerCase()) ||
+      set?.short_desc?.toLowerCase()?.includes(searchedTerm.toLowerCase()) ||
+      set.tags?.toLowerCase()?.includes(searchedTerm.toLowerCase())
+    ) {
       return true;
-    }else{
+    } else {
       return false;
     }
-  })
-  
-  let shouldRenderPagination = filteredQuestions.length > 6;
+  });
 
+  let shouldRenderPagination = filteredQuestions.length > 6;
 
   return (
     <>
@@ -324,19 +339,17 @@ export default function SearchResult() {
                 ))} */}
               </div>
               <div className="row justify-center pt-60 lg:pt-40">
-              {shouldRenderPagination && (
-            <div className="w-75 m-auto d-flex align-items-center justify-content-center">
-              <PaginationTwo
-                pageNumber={currentPage}
-                setPageNumber={setCurrentPage}
-                data={questionSets}
-                pageCapacity={6}
-              />
-            </div>
-          )}
-                <div className="col-auto">
-
-                </div>
+                {shouldRenderPagination && (
+                  <div className="w-75 m-auto d-flex align-items-center justify-content-center">
+                    <PaginationTwo
+                      pageNumber={currentPage}
+                      setPageNumber={setCurrentPage}
+                      data={questionSets}
+                      pageCapacity={6}
+                    />
+                  </div>
+                )}
+                <div className="col-auto"></div>
               </div>
             </div>
           </div>

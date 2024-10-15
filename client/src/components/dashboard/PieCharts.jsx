@@ -1,5 +1,6 @@
 import { API } from "@/utils/AxiosInstance";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Pie,
   Tooltip,
@@ -32,11 +33,30 @@ const COLORS = ["#f44336", "#e91e63", "#9c27b0", "#673ab7","#3f51b5","#2196f3", 
 
 const PieChartComponent = () => {
   const [questionsetCount, setQuestionsetCount] = useState([]);
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
   useEffect(() => { 
     async function getQuestionsetCount() {
-      const {data} = await API.get("api/questionset/count/used");
-      console.log(data);
-      setQuestionsetCount(data);
+      try {
+        if(token){
+          const {data} = await API.get("api/questionset/count/used", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          console.log(data);
+          setQuestionsetCount(data);
+        }
+      } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // toast.error("Invaild token!");
+          navigate("/login");
+          return;
+        }
+      }
+     
     }
     getQuestionsetCount();
   }, [])

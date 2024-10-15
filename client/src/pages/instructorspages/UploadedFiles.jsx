@@ -4,7 +4,7 @@ import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";
 import { API } from "@/utils/AxiosInstance";
 import { auth } from "@/firebase/Firebase";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Downloading } from "@mui/icons-material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
@@ -19,7 +19,8 @@ const UploadedFiles = () => {
 
   const location = useLocation();
   console.log(location);
-
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
   const userId = user.id;
@@ -27,10 +28,23 @@ const UploadedFiles = () => {
     // const author = auth.currentUser.displayName;
     async function getUploads() {
       try {
-        const { data } = await API.get(`/api/question/files/${userId}`);
-        console.log(data);
-        setUploadedData(data);
+        if (token) {
+          const { data } = await API.get(`/api/question/files/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          console.log(data);
+          setUploadedData(data);
+        }
       } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // toast.error("Invaild token!");
+          navigate("/login");
+          return;
+        }
         console.error("Failed to fetch uploaded files data:", error);
       }
     }
@@ -72,7 +86,9 @@ const UploadedFiles = () => {
                   <tr key={file.id}>
                     <td>{i + 1}</td>
                     <td style={{ textAlign: "center" }}>{file.file_name}</td>
-                    <td style={{ textAlign: "center" }}>{file.created_date.slice(0, 19).replace("T", " ")}</td>
+                    <td style={{ textAlign: "center" }}>
+                      {file.created_date.slice(0, 19).replace("T", " ")}
+                    </td>
                     <td style={{ textAlign: "center" }}>
                       {file.status == 0
                         ? "Not Started"
@@ -80,8 +96,16 @@ const UploadedFiles = () => {
                         ? "Completed"
                         : "In Progress"}
                     </td>
-                    <td style={{ textAlign: "center" }}>{file.correct_rows && file.correct_rows?.split(',')?.length || 0}</td>
-                    <td style={{ textAlign: "center" }}>{file.error_rows && file.error_rows?.split(',')?.length || 0}</td>
+                    <td style={{ textAlign: "center" }}>
+                      {(file.correct_rows &&
+                        file.correct_rows?.split(",")?.length) ||
+                        0}
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      {(file.error_rows &&
+                        file.error_rows?.split(",")?.length) ||
+                        0}
+                    </td>
                     <td style={{ textAlign: "center" }}>
                       <FontAwesomeIcon
                         icon={faFileArrowDown}

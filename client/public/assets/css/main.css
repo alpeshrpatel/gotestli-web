@@ -1963,7 +1963,7 @@ button:focus {
 .button.-outline-green-4:hover {
   background-color: var(--color-green-4);
   border-color: transparent;
-  color: white !important;
+  color: var(--color-green-) !important;
 }
 
 .button.-green-5 {

@@ -4,7 +4,7 @@ import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";
 import { API } from "@/utils/AxiosInstance";
 import { auth } from "@/firebase/Firebase";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Breadcrumbs } from "@mui/material";
 import Typography from "@mui/material/Typography";
 
@@ -13,6 +13,8 @@ import Typography from "@mui/material/Typography";
 const ViewQuestions = () => {
   const [questions, setQuestions] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   const { id } = useParams();
   const user = JSON.parse(localStorage.getItem("user")) || "";
@@ -21,12 +23,23 @@ const ViewQuestions = () => {
     // const author = auth.currentUser.displayName;
     async function getQuestions() {
       try {
-        const { data } = await API.get(
-          `/api/questionset/questions/${id}`
-        );
-        console.log(data);
-        setQuestions(data);
+        if (token) {
+          const { data } = await API.get(`/api/questionset/questions/${id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          console.log(data);
+          setQuestions(data);
+        }
       } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // toast.error("Invaild token!");
+          navigate("/login");
+          return;
+        }
         console.error("Failed to fetch Questions data:", error);
       }
     }
@@ -83,7 +96,7 @@ const ViewQuestions = () => {
           </div>
         ) : (
           <h4 className="no-content text-center">
-            This Questionsets not have any questions! 🌟 
+            This Questionsets not have any questions! 🌟
           </h4>
         )}
       </div>

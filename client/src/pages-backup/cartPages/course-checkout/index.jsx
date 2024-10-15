@@ -10,9 +10,9 @@ import MetaComponent from "@/components/common/MetaComponent";
 
 const metadata = {
   title:
-    "Course-checkout || Educrat - Professional LMS Online Education Course ReactJS Template",
+    "Course-checkout || GoTestli - Ultimate School & General Purpose Quiz Platform",
   description:
-    "Elevate your e-learning content with Educrat, the most impressive LMS template for online courses, education and LMS platforms.",
+    "Elevate your e-learning content with GoTestli, the most impressive LMS template for online courses, education and LMS platforms.",
 };
 export default function CourseCheckoutPage() {
   return (

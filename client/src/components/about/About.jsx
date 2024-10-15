@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 export default function About() {
   return (
     <>
-      <section className="page-header -type-1">
-        <div className="container">
+      <section className="page-header -type-1 mt-20">
+        <div className="container-fluid">
           <div className="page-header__content">
             <div className="row justify-center text-center">
               <div className="col-auto">
@@ -15,8 +15,7 @@ export default function About() {
 
                 <div>
                   <p className="page-header__text">
-                    We’re on a mission to deliver engaging, curated courses at a
-                    reasonable price.
+                  We’re dedicated to providing engaging and expertly crafted quizzes that make learning accessible and enjoyable for everyone.
                   </p>
                 </div>
               </div>
@@ -25,7 +24,7 @@ export default function About() {
         </div>
       </section>
       <section className="layout-pt-md layout-pb-lg">
-        <div className="container">
+        <div className="container-fluid" style={{padding:'0px 5vw'}}>
           <div className="row y-gap-50 justify-between items-center">
             <div className="col-lg-6 pr-50 sm:pr-15">
               <div className="composition -type-8">
@@ -43,18 +42,13 @@ export default function About() {
 
             <div className="col-lg-5">
               <h2 className="text-30 lh-16">
-                Welcome to Educrat Enhance your skills with best Online courses
+                Welcome to GoTestli!
               </h2>
               <p className="text-dark-1 mt-30">
-                You can start and finish one of these popular courses in under a
-                day – for free! Check out the list below.. Take the course for
-                free
+              Boost your knowledge with expertly designed quizzes across various subjects. Whether you're preparing for exams or simply looking to challenge yourself, our platform offers question sets created by top instructors to help you grow.
               </p>
               <p className="pr-50 lg:pr-0 mt-25">
-                Neque convallis a cras semper auctor. Libero id faucibus nisl
-                tincidunt egetnvallis a cras semper auctonvallis a cras semper
-                aucto. Neque convallis a cras semper auctor. Liberoe convallis a
-                cras semper atincidunt egetnval
+              Start your quiz today, track your progress, and get instant feedback—all for free! Explore our collection of quizzes and test your skills at your own pace.
               </p>
               <div className="d-inline-block">
                 <Link

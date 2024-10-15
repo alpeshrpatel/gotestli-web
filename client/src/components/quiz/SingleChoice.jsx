@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
@@ -36,41 +35,66 @@ const SingleChoice = ({
 
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
-  
-  const user = JSON.parse( localStorage.getItem('user')) || '';
-  
+
+  const user = JSON.parse(localStorage.getItem("user")) || "";
+
   //const userRole = user.role;
   const userId = user.id;
   const questionSetLength = totalQuestions;
 
- 
-
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     async function getOptions() {
       try {
-        const response = await API.get(`/api/options/${questionId}`);
-        setOptions(response.data);
+        if (token) {
+          const response = await API.get(`/api/options/${questionId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setOptions(response.data);
+        }
       } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // toast.error("Invaild token!");
+          navigate("/login");
+          return;
+        }
         console.log(error);
       }
     }
     getOptions();
     async function getUserResultId() {
-      if(resumeQuizUserResultId){
-        setUserResultId(resumeQuizUserResultId)
-      }else{
+      if (resumeQuizUserResultId) {
+        setUserResultId(resumeQuizUserResultId);
+      } else {
         try {
-          const { data } = await API.get(
-            `/api/userresult/user/${userId}/questionset/${questionSetId}`
-          );
-          console.log(data[0]?.id)
-          setUserResultId(data[0]?.id);
+          if (token) {
+            const { data } = await API.get(
+              `/api/userresult/user/${userId}/questionset/${questionSetId}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            console.log(data[0]?.id);
+            setUserResultId(data[0]?.id);
+          }
         } catch (error) {
+          if (error.status == 403) {
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+            // toast.error("Invaild token!");
+            navigate("/login");
+            return;
+          }
           console.log(error);
         }
-
       }
     }
     getUserResultId();
@@ -78,56 +102,85 @@ const SingleChoice = ({
 
   useEffect(() => {
     async function getAnswers() {
-      if(userResultId){
+      if (userResultId) {
         try {
-          console.log(userResultId)
-          const { data } = await API.get(
-            `/api/userresultdetails/get/answers/userresult/${userResultId}/length/${questionSetLength}`
-          );
-          
-          const persistedAnswers = data.map((q) => {
-            return {
-              id: q.question_set_question_id,
-              selectedOption: q.answer,
-              status: q.status,
-            };
-          });
-          
-          setSelectedOption(persistedAnswers);
-          setReviewQuestion(persistedAnswers);
-          setAnswerPersist(persistedAnswers);
-  
-          await getStatus();
+          if (token) {
+            console.log(userResultId);
+            const { data } = await API.get(
+              `/api/userresultdetails/get/answers/userresult/${userResultId}/length/${questionSetLength}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+
+            const persistedAnswers = data.map((q) => {
+              return {
+                id: q.question_set_question_id,
+                selectedOption: q.answer,
+                status: q.status,
+              };
+            });
+
+            setSelectedOption(persistedAnswers);
+            setReviewQuestion(persistedAnswers);
+            setAnswerPersist(persistedAnswers);
+
+            await getStatus();
+          }
         } catch (error) {
+          if (error.status == 403) {
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+            // toast.error("Invaild token!");
+            navigate("/login");
+            return;
+          }
           console.log(error);
         }
-
       }
-
     }
     getAnswers();
-  }, [userResultId, questionId,updatedStatus]);
+  }, [userResultId, questionId, updatedStatus]);
 
- console.log(selectedOption)
+  console.log(selectedOption);
   const findSelectedOption =
     selectedOption?.find((question) => question.id === questionId)
       ?.selectedOption || null;
 
   async function getStatus() {
-      const { data } = await API.get(
-        `/api/userresultdetails/status/userresult/${userResultId}/questionid/${questionId}`
-      );
-      const reviewStatus = data[0]?.status;
-      setStatus(reviewStatus);
+    try {
+      if (token) {
+        const { data } = await API.get(
+          `/api/userresultdetails/status/userresult/${userResultId}/questionid/${questionId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const reviewStatus = data[0]?.status;
+        setStatus(reviewStatus);
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
+      console.log(error);
+    }
   }
 
-  async function getUpdatedStatus(isReviewed,newstatus = 0) {
-   
-    if(newstatus == 3){
-      setUpdatedStatus(3)
+  async function getUpdatedStatus(isReviewed, newstatus = 0) {
+    if (newstatus == 3) {
+      setUpdatedStatus(3);
       return 3;
-    }else if(newstatus == 1){
-      setUpdatedStatus(1)
+    } else if (newstatus == 1) {
+      setUpdatedStatus(1);
       return 1;
     }
     let newStatus;
@@ -140,9 +193,8 @@ const SingleChoice = ({
     } else {
       newStatus = isReviewed ? 2 : 0;
     }
-    setUpdatedStatus(newStatus)
+    setUpdatedStatus(newStatus);
     return newStatus;
-     
   }
 
   const handleOptionClick = async (option) => {
@@ -154,7 +206,7 @@ const SingleChoice = ({
       setSelectedOption(
         selectedOption.map((question) =>
           question.id === questionId
-            ? { ...question, selectedOption: option, status:1 }
+            ? { ...question, selectedOption: option, status: 1 }
             : question
         )
       );
@@ -169,39 +221,57 @@ const SingleChoice = ({
     }
     let isReviewed;
     let newStatus;
-    if(status == 2 || status == 3){
-      isReviewed = 1
-      newStatus= 3
-    }else{
-      isReviewed = 0
-      newStatus = 1
+    if (status == 2 || status == 3) {
+      isReviewed = 1;
+      newStatus = 3;
+    } else {
+      isReviewed = 0;
+      newStatus = 1;
     }
-   
-   await testResultDtlSetData(option,isReviewed ,newStatus );
-   console.log(selectedOption)
-   
+
+    await testResultDtlSetData(option, isReviewed, newStatus);
+    console.log(selectedOption);
   };
- 
-  async function testResultDtlSetData(findSelectedOption,isReviewed = 0,newstatus = 0) {
+
+  async function testResultDtlSetData(
+    findSelectedOption,
+    isReviewed = 0,
+    newstatus = 0
+  ) {
     try {
-      const status = await getUpdatedStatus(isReviewed,newstatus);
-      console.log(status);
-      const res = await API.put("/api/userresultdetails", {
-        user_test_result_id:userResultId,
-        question_set_question_id:questionId ,
-        answer:findSelectedOption,
-        modified_by:userId,
-        status:status,
-      });
-      
-      return res;
+      if (token) {
+        const status = await getUpdatedStatus(isReviewed, newstatus);
+        console.log(status);
+        const res = await API.put(
+          "/api/userresultdetails",
+          {
+            user_test_result_id: userResultId,
+            question_set_question_id: questionId,
+            answer: findSelectedOption,
+            modified_by: userId,
+            status: status,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        return res;
+      }
     } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
       console.log(error);
       throw error;
     }
   }
-
-
 
   const handleReviewClick = async () => {
     const findQuestion = reviewQuestions.find(
@@ -232,14 +302,18 @@ const SingleChoice = ({
         },
       ]);
     }
-     const isReviewed = 1
-     console.log("status"+status);
-    console.log("findselectedoption"+ findSelectedOption)
+    const isReviewed = 1;
+    console.log("status" + status);
+    console.log("findselectedoption" + findSelectedOption);
     let newstatus;
-    findSelectedOption && ( newstatus = 3)
-    console.log("newstatus"+newstatus)
-    const response = await testResultDtlSetData(findSelectedOption,isReviewed,newstatus);
-    console.log(" updatedstatus :"+updatedStatus)
+    findSelectedOption && (newstatus = 3);
+    console.log("newstatus" + newstatus);
+    const response = await testResultDtlSetData(
+      findSelectedOption,
+      isReviewed,
+      newstatus
+    );
+    console.log(" updatedstatus :" + updatedStatus);
     if (response?.status == 200) {
       console.log("review");
       onNext();
@@ -251,7 +325,7 @@ const SingleChoice = ({
     // if (response?.status == 200) {
     //   onNext();
     // }
-   onNext();
+    onNext();
   };
 
   const handlePreviousClick = async () => {
@@ -262,18 +336,17 @@ const SingleChoice = ({
     onPrevious();
   };
 
-  const handleCancel = async() =>{
+  const handleCancel = async () => {
     navigate("/");
-  }
+  };
 
   const onFinishQuiz = async () => {
-   
     const response = await testResultDtlSetData(findSelectedOption);
     if (response?.status == 200) {
       onOpenModal();
     }
   };
-  console.log(selectedOption)
+  console.log(selectedOption);
   return (
     // linear-gradient(to bottom right, #a18cd1, #fbc2eb)
     <>
@@ -291,7 +364,12 @@ const SingleChoice = ({
                 Question {index} of {totalQuestions}{" "}
               </h4>
               <div className="card-title gap-2">
-                <button className="btn btn-success px-3 py-2 w-auto text-18" onClick={handleCancel} >Cancel</button>
+                <button
+                  className="btn btn-success px-3 py-2 w-auto text-18"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </button>
                 &nbsp;
                 <button
                   className="btn btn-success px-3 py-2 w-auto text-18"
@@ -308,7 +386,6 @@ const SingleChoice = ({
                     reviewQuestions={reviewQuestions}
                     onCloseModal={onCloseModal}
                     userResultId={userResultId}
-                    
                   />
                 </Modal>
               </div>

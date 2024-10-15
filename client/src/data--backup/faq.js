@@ -1,32 +1,32 @@
 export const faq = [
   {
     id: 1,
-    question: "Do you offer discounts for students?",
+    question: "How do I create a question set as an instructor?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+      "As an instructor, you can easily create question sets by navigating to your dashboard, selecting 'Create Question Set,' and following the prompts to add questions, assign categories, and manage settings.",
   },
   {
     id: 2,
-    question: "Do you offer special pricing for big teams?",
+    question: "Can students retake quizzes?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+      "Yes, students can retake quizzes and able to attend same quiz multiple times.",
   },
   {
     id: 3,
-    question: "What is the past experience of your teachers?",
+    question: "What happens if I don't complete a quiz?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+      "If you don't finish a quiz, it will be marked as 'In Progress,' and you can return to complete it later. The progress will be saved, and you can resume where you left off.",
   },
   {
     id: 4,
-    question: "What is the course refund policy?",
+    question: "How are quiz results calculated?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+      "Quiz results are calculated based on the total number of correct answers. Instructors can also assign different weightages to each question to create custom scoring systems.",
   },
   {
     id: 5,
-    question: "Do you offer discounts for non-profits?",
+    question: "Can students view their scores and feedback after the quiz?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+      "Yes, instructors can enable the option for students to view their scores and feedback after the quiz is submitted. you can see your results and any feedback on the dashboard.",
   },
 ];

@@ -20,6 +20,7 @@ import { API } from "@/utils/AxiosInstance";
 import { toast } from "react-toastify";
 import { Delete, Edit } from "@mui/icons-material";
 import Header from "@/components/layout/headers/Header";
+import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {
   const [usersData, setUsersData] = useState({});
@@ -40,7 +41,9 @@ const ProfilePage = () => {
   // if (auth.currentUser) {
   //   uid = auth.currentUser.uid;
   // }
-  const user = JSON.parse( localStorage.getItem('user')) || '';
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
   let userid = user.id;
 
@@ -69,27 +72,70 @@ const ProfilePage = () => {
     if (userid) {
       getUserProfile();
     }
-    async function getCategory() {
-      const { data } = await API.get("/api/category");
-      setCategories(data);
+
+    try {
+      if (token) {
+        async function getCategory() {
+          const { data } = await API.get("/api/category", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setCategories(data);
+        }
+        getCategory();
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
+      console.error("Error fetching data:", error);
     }
-    getCategory();
   }, []);
 
   useEffect(() => {
-    async function updateUserPreference(){
-      if(tagsId){
-        const data = await API.post("/api/users/preference", {
-          user_id: usersData.id,
-          tagsId,
-        });
-        console.log(data);
-      }else{
-        const data = await API.delete(`/api/users/preference/${userid}`)
+    try {
+      if (token) {
+        async function updateUserPreference() {
+          if (tagsId) {
+            const data = await API.post(
+              "/api/users/preference",
+              {
+                user_id: usersData.id,
+                tagsId,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            console.log(data);
+          } else {
+            // const data = await API.delete(`/api/users/preference/${userid}`, {
+            //   headers: {
+            //     Authorization: `Bearer ${token}`,
+            //   },
+            // });
+          }
+        }
+        updateUserPreference();
       }
-    };
-    updateUserPreference()
-  },[tagsId])
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
+      console.error("Error fetching data:", error);
+    }
+  }, [tagsId]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -110,9 +156,8 @@ const ProfilePage = () => {
       //   });
       //   console.log(data);
       // }
-      
 
-      if (res.status == 200 ) {
+      if (res.status == 200) {
         toast.success("User updated Successfully!");
       }
     } catch (error) {
@@ -122,7 +167,7 @@ const ProfilePage = () => {
 
   return (
     <>
-      <Header userRole={userRole}/>
+      <Header userRole={userRole} />
       <Box
         sx={{
           display: "flex",
@@ -308,7 +353,6 @@ const ProfilePage = () => {
             onClick={isSaveVisible ? handleUpdateData : null}
             style={{
               cursor: isSaveVisible ? "pointer" : "not-allowed",
-              
             }}
             disabled={!isSaveVisible}
           >

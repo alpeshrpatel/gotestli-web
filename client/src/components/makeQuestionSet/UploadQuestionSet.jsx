@@ -22,11 +22,11 @@ const UploadQuestionSet = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [fileData, setFileData] = useState([]);
-  const [open, setOpen] = useState(false); 
-  const [fileName, setFileName] = useState(""); 
+  const [open, setOpen] = useState(false);
+  const [fileName, setFileName] = useState("");
 
   const navigate = useNavigate();
-
+  const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userId = user.id;
   const userRole = user.role;
@@ -86,21 +86,40 @@ const UploadQuestionSet = () => {
       toast.warn("Please select a file first!");
       return;
     }
- console.log(selectedFile)
+    console.log(selectedFile);
     const formData = new FormData();
     formData.append("file", selectedFile);
-
-    const res = await API.get(`/api/question/files?filename=${selectedFile.name}`);
-    if(res.data?.length > 0){
-       toast.error("Duplicate file upload not allowed!");
-       return;
-    }
-    
     try {
+      if (token) {
+        const res = await API.get(
+          `/api/question/files?filename=${selectedFile.name}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (res.data?.length > 0) {
+          toast.error("Duplicate file upload not allowed!");
+          return;
+        }
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
+    }
+
+    try {
+      if(token){
       setIsUploading(true);
       const response = await API.post("/api/file/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`
         },
         onUploadProgress: (progressEvent) => {
           const progress = Math.round(
@@ -118,6 +137,10 @@ const UploadQuestionSet = () => {
         file_path: filePath,
         user_id: userId,
         status: 0,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       // if(response.status == 500){
       //     toast.error(response.message)
@@ -125,11 +148,18 @@ const UploadQuestionSet = () => {
       setIsUploading(false);
       if (response.status == 200 && data.status == 200) {
         toast.success("File uploaded successfully!!");
-        navigate("/dshb/uploaded/files")
+        navigate("/dshb/uploaded/files");
       }
+    }
     } catch (error) {
       setIsUploading(false);
-
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
       if (error.status == 400) {
         toast.error("Invalid data format in Excel sheet!");
       } else {
@@ -137,10 +167,10 @@ const UploadQuestionSet = () => {
       }
     }
   };
-  async function handleDownload(){
-    await HandleDownload('samplefile','SampleExcelFile.xlsx')
+  async function handleDownload() {
+    await HandleDownload("samplefile", "SampleExcelFile.xlsx");
   }
-    
+
   // async function handleDownload() {
   //   try {
   //     const response = await API.get(
@@ -385,19 +415,17 @@ const UploadQuestionSet = () => {
                 <tbody>
                   {fileData.slice(3).map((row, rowIndex) => (
                     <tr key={rowIndex}>
-                      {Array.from({ length: 9 }).map(
-                        (_, cellIndex) => (
-                          <td
-                            key={cellIndex}
-                            style={{
-                              padding: "5px",
-                              border: "1px solid black",
-                            }}
-                          >
-                            {row[cellIndex] !== undefined ? row[cellIndex] : ""}
-                          </td>
-                        )
-                      )}
+                      {Array.from({ length: 9 }).map((_, cellIndex) => (
+                        <td
+                          key={cellIndex}
+                          style={{
+                            padding: "5px",
+                            border: "1px solid black",
+                          }}
+                        >
+                          {row[cellIndex] !== undefined ? row[cellIndex] : ""}
+                        </td>
+                      ))}
                     </tr>
                   ))}
                 </tbody>

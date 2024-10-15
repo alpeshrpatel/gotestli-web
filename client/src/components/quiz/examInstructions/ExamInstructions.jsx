@@ -45,6 +45,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
   const [followersData, setFollowersData] = useState([]);
   // const [userRole, setUserRole] = useState("");
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user")) || "";
 
   const userRole = user.role;
@@ -66,62 +67,104 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
     //   setInProgressQuizId(data[0]?.id);
     // }
     // getPendingQuiz();
-    async function getHistory() {
-      try {
-        const { data } = await API.get(
-          `/api/userresult/history/user/${userId}/questionset/${questionSetId}`
-        );
-        console.log(data);
-        if (
-          data.message != "Some error occurred while retrieving userresults."
-        ) {
-          if (data.length > 4) {
-            const historyData = data.slice(0, 4);
-            setHistory(historyData);
-          } else {
-            setHistory(data);
-          }
-          console.log(data);
-          data.forEach((element) => {
-            if (element.status == 2) {
-              setInProgressQuizId(data[0]?.id);
+    if (token) {
+      async function getHistory() {
+        try {
+          const { data } = await API.get(
+            `/api/userresult/history/user/${userId}/questionset/${questionSetId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             }
-          });
+          );
+          console.log(data);
+          if (
+            data.message != "Some error occurred while retrieving userresults."
+          ) {
+            if (data.length > 4) {
+              const historyData = data.slice(0, 4);
+              setHistory(historyData);
+            } else {
+              setHistory(data);
+            }
+            console.log(data);
+            data.forEach((element) => {
+              if (element.status == 2) {
+                setInProgressQuizId(data[0]?.id);
+              }
+            });
+          }
+        } catch (error) {
+          if (error.status == 403) {
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+            // toast.error("Invaild token!");
+            navigate("/login");
+            return;
+          }
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
       }
-    }
-    getHistory();
+      getHistory();
 
-    async function getFollowersData() {
-     
-        const { data } = await API.get(
-          `/api/followers/list/${userId}`
-        );
-        console.log(data);
-        if(data.length > 0 ){
-          setFollowersData(data);
+      async function getFollowersData() {
+        try {
+          const { data } = await API.get(`/api/followers/list/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          console.log(data);
+          if (data.length > 0) {
+            setFollowersData(data);
+          }
+        } catch (error) {
+          if (error.status == 403) {
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+            // toast.error("Invaild token!");
+            navigate("/login");
+            return;
+          }
+          console.log(error);
         }
-      
+      }
+      getFollowersData();
     }
-    getFollowersData();
   }, []);
 
   async function testResultDtlSetData(userId, questionSetId, userResultId) {
     try {
-      const res = await API.post("/api/userresultdetails/add/user/questions", {
-        userId,
-        questionSetId,
-        userResultId,
-      });
-      if (res.status == 200) {
-        navigate("/quiz/questions", {
-          state: { questionSetId: id, questionSet: questionSet, time: time },
-        });
+      if (token) {
+        const res = await API.post(
+          "/api/userresultdetails/add/user/questions",
+          {
+            userId,
+            questionSetId,
+            userResultId,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (res.status == 200) {
+          navigate("/quiz/questions", {
+            state: { questionSetId: id, questionSet: questionSet, time: time },
+          });
+        }
+        console.log("Result Detail Submit Response:", res);
       }
-      console.log("Result Detail Submit Response:", res);
     } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
       console.error("Error in testResultDtlSetData:", error);
     }
   }
@@ -132,25 +175,42 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
       return;
     }
     try {
-      const res = await API.post("/api/userresult", {
-        user_id: userId,
-        question_set_id: questionSetId,
-        total_question: totalQuestions,
-        total_answered: totalAnswered,
-        total_not_answered: notAnswered,
-        total_reviewed: totalReviewed,
-        total_not_visited: notVisited,
-        percentage: 0,
-        marks_obtained: 0,
-        status: 2,
-        created_by: userId,
-        modified_by: userId,
-      });
-      console.log("Start Quiz Response:", res);
-      userResultId = res.data.userResultId;
+      if (token) {
+        const res = await API.post(
+          "/api/userresult",
+          {
+            user_id: userId,
+            question_set_id: questionSetId,
+            total_question: totalQuestions,
+            total_answered: totalAnswered,
+            total_not_answered: notAnswered,
+            total_reviewed: totalReviewed,
+            total_not_visited: notVisited,
+            percentage: 0,
+            marks_obtained: 0,
+            status: 2,
+            created_by: userId,
+            modified_by: userId,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("Start Quiz Response:", res);
+        userResultId = res.data.userResultId;
 
-      await testResultDtlSetData(userId, questionSetId, userResultId);
+        await testResultDtlSetData(userId, questionSetId, userResultId);
+      }
     } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
       console.error("Error in handleStartQuiz:", error);
     }
   };
@@ -183,27 +243,56 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
 
   const handleFollowClick = async (instructor_id) => {
     const followed = followersData?.some(
-      (entry) => entry.follower_id == userId && entry.instructor_id == instructor_id
+      (entry) =>
+        entry.follower_id == userId && entry.instructor_id == instructor_id
     );
-    if (followed) {
-      const res = await API.delete(`/api/followers/list/instructor/${instructor_id}/follower/${userId}`);
-      setFollowersData((prev) =>
-        prev.filter(
-          (entry) =>
-            entry.follower_id !== userId &&
-            entry.instructor_id !== instructor_id
-        )
-      );
-      // setFollow(true)
-    } else {
-      const res = await API.post("/api/followers/list", {
-        instructor_id,
-        follower_id: userId,
-      });
-      setFollowersData((prev) => [
-        ...prev,
-        { instructor_id: instructor_id, follower_id: userId },
-      ]);
+    try {
+      if (token) {
+        if (followed) {
+          const res = await API.delete(
+            `/api/followers/list/instructor/${instructor_id}/follower/${userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setFollowersData((prev) =>
+            prev.filter(
+              (entry) =>
+                entry.follower_id !== userId &&
+                entry.instructor_id !== instructor_id
+            )
+          );
+          // setFollow(true)
+        } else {
+          const res = await API.post(
+            "/api/followers/list",
+            {
+              instructor_id,
+              follower_id: userId,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setFollowersData((prev) => [
+            ...prev,
+            { instructor_id: instructor_id, follower_id: userId },
+          ]);
+        }
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
+      console.error(error);
     }
   };
   console.log(followersData);
