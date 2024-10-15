@@ -4,6 +4,7 @@ import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import SubmitQuizModal from "../SubmitQuizModal/SubmitQuizModal";
 import { API } from "@/utils/AxiosInstance";
+import { useNavigate } from "react-router-dom";
 
 const FinishExamModalPage = ({
   questionSetId,

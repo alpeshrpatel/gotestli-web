@@ -38,9 +38,9 @@ export default function FooterOne() {
             <div className="col-auto">
               <div className="footer-header__logo">
                 <img
-                  src="/assets/img/header-logo.png"
+                  src="/assets/img/header-logo3.png"
                   alt="logo"
-                  style={{ height: "30px", width: "180px" }}
+                  style={{ height: "55px", width: "185px" }}
                 />
               </div>
             </div>
@@ -97,7 +97,7 @@ export default function FooterOne() {
           <div className="row justify-between items-center y-gap-20">
             <div className="col-auto">
               <div className="d-flex items-center h-100 text-white">
-                © {new Date().getFullYear()} Educrat. All Right Reserved.
+                © {new Date().getFullYear()} GoTestli. All Right Reserved.
               </div>
             </div>
 

@@ -66,9 +66,9 @@ export default function Header({userRole}) {
                 <div className="header__logo ">
                   <Link to="/">
                     <img
-                      src="/assets/img/header-logo.png"
+                      src="/assets/img/header-logo3.png"
                       alt="logo"
-                      style={{ height: "30px", width: "180px" }}
+                      style={{ height: "55px", width: "185px" }}
                     />
                   </Link>
                 </div>
