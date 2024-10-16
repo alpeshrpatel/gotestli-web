@@ -29,22 +29,22 @@ export const downloadCertificate = async (
     
     doc.setFontSize(36);
     doc.setTextColor(0, 51, 102); 
-    doc.text("CERTIFICATE", 421, 120, "center");
-    doc.text("of Completion", 421, 160, "center");
+    doc.text("Certificate of Completion", 421, 120, "center");
+    // doc.text("of Completion", 421, 160, "center");
 
    
     doc.setFontSize(18);
-    doc.text("This certificate is proudly presented to:", 421, 210, "center");
+    doc.text("This certificate is proudly presented to:", 421, 180, "center");
 
     
     doc.setFont("Georgia", "bold");
     doc.setFontSize(28);
-    doc.text(studentName, 421, 270, "center"); 
+    doc.text(studentName, 421, 250, "center"); 
 
     
     const startX = 150;
     const endX = 700;
-    const y = 275; 
+    const y = 256; 
     const segmentLength = 5;
     for (let x = startX; x < endX; x += segmentLength * 2) {
       doc.line(x, y, x + segmentLength, y); 
@@ -52,42 +52,42 @@ export const downloadCertificate = async (
     
     doc.setFont("Georgia", "normal");
     doc.setFontSize(16);
-    doc.text(`For successfully completing the`, 421, 320, "center");
+    doc.text(`For successfully completing the`, 421, 300, "center");
 
     doc.setFont("Georgia", "bold");
-    doc.text(`${quizTitle} quiz`, 421, 350, "center"); 
+    doc.text(`${quizTitle} quiz`, 421, 330, "center"); 
 
     doc.setFont("Georgia", "normal");
     doc.text(
       "With an exceptional performance, achieving a score of",
       421,
-      380,
+      360,
       "center"
     );
 
     doc.setFont("Georgia", "bold");
-    doc.text(`${score}%`, 421, 410, "center"); 
+    doc.text(`${score}%`, 421, 390, "center"); 
 
     doc.setFont("Georgia", "normal");
     doc.text(
       `in the ${category} quiz at the ${level} level.`,
       421,
-      435,
+      425,
       "center"
     );
 
    
     doc.setFontSize(14);
     doc.setTextColor(50, 50, 50); 
-    doc.text("Awarded on:", 150, 490);
+    doc.text("Awarded on:", 150, 470);
     doc.setFont("Georgia", "bold");
-    doc.text(currentDate, 250, 490);
+    doc.text(currentDate, 250, 470);
 
     doc.setFontSize(14);
     doc.setTextColor(50, 50, 50); 
-    doc.text("Instructor:", 150, 510);
+    doc.text("Instructor:", 150, 500);
     doc.setFont("Georgia", "bold");
-    doc.text(studentName, 250, 510);
+    doc.text(studentName, 250, 500);
 
     
     doc.setFontSize(16);

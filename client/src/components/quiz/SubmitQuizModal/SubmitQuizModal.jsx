@@ -51,10 +51,10 @@ const SubmitQuizModal = ({
       console.log(wrong);
 
       setIsSubmitted(true);
-      await delay(3000);
+      await delay(1000);
       setTimeout(() => {
         setIsSubmitted(false);
-      }, 3000);
+      }, 1000);
 
       navigate("/quiz/result", {
         state: {
