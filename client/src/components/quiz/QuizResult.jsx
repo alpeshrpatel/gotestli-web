@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -12,8 +12,14 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import { downloadCertificate } from "./downloadCertificate";
 import { API } from "@/utils/AxiosInstance";
+import Confetti from "react-confetti";
+import { delay, motion } from "framer-motion";
+import badgeImage from "/assets/img/badges/legend-vs.jpg";
+import "./quiz.css";
 
 const QuizResult = ({}) => {
+  const [isCelebOn, setIsCelebOn] = useState(false);
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const navigate = useNavigate();
   const location = useLocation();
   const {
@@ -28,17 +34,25 @@ const QuizResult = ({}) => {
 
   if (!location.state) {
     console.log("No state available, redirecting...");
-    navigate('/')
+    navigate("/");
     return <div>No data available</div>;
   }
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
   let userId = user.id;
-  let quizTitle = '';
-  let studentName = '';
-  let category = '';
+  let quizTitle = "";
+  let studentName = "";
+  let category = "";
+
   useEffect(() => {
+    setIsCelebOn(true);
+    setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+
+    const timer = setTimeout(() => {
+      setIsCelebOn(false);
+    }, 4000);
+
     async function getQuizTitle() {
       try {
         if (token) {
@@ -48,10 +62,10 @@ const QuizResult = ({}) => {
             },
           });
           console.log(res.data);
-          let tags = res.data?.tags?.split(',');
+          let tags = res.data?.tags?.split(",");
           category = tags[0];
           quizTitle = res.data.title;
-          const {data} = await API.get(`/api/users/${userId}`, {
+          const { data } = await API.get(`/api/users/${userId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -71,17 +85,27 @@ const QuizResult = ({}) => {
       }
     }
     getQuizTitle();
+    return () => clearTimeout(timer);
   }, []);
   const isPassed = percentage >= passPercentage;
 
-  window.onload = function() {
+  window.onload = function () {
     history.pushState(null, null, window.location.href);
 
-    window.onpopstate = function(event) {
-       
-       navigate('/')
+    window.onpopstate = function (event) {
+      navigate("/");
     };
-};
+  };
+
+  const badgeVariants = {
+    hidden: { opacity: 0, scale: 0.5 },
+    visible: {
+      opacity: 1,
+      scale: [1, 1.2, 1], // Bounces slightly and then back to original size
+      transition: { duration: 1.5, ease: "easeInOut" },
+    },
+    exit: { opacity: 0, scale: 0.5, transition: { duration: 1 } },
+  };
 
   return (
     <>
@@ -101,7 +125,15 @@ const QuizResult = ({}) => {
           // isPassed && (
           <button
             className="button -sm px-24 py-25 -outline-green-4 text-green-4  text-18 fw-700 lh-sm "
-            onClick={() => downloadCertificate(studentName,percentage,'Apprentice',quizTitle,category)}
+            onClick={() =>
+              downloadCertificate(
+                studentName,
+                percentage,
+                "Apprentice",
+                quizTitle,
+                category
+              )
+            }
           >
             {/* <i className="fa-solid fa-circle-down text-24 me-2" aria-hidden="true"></i> */}
             Download Certificate
@@ -116,7 +148,7 @@ const QuizResult = ({}) => {
             className="card shadow w-60 text-center p-4 "
             style={{ maxWidth: "400px", width: "100%" }}
           >
-            <div className="mb-4 w-50  mx-auto">
+            <div className="mb-4 w-50 mx-auto">
               <CircularProgressbar
                 value={percentage}
                 text={`${Math.round(percentage)}%`}
@@ -168,6 +200,29 @@ const QuizResult = ({}) => {
         ) : (
           <h3>No data available</h3>
         )}
+
+        {isCelebOn && (
+          <div className="modal-overlay">
+           {/* <div className="badge-container"> */}
+            <img
+              src={badgeImage}
+              alt="Completed Badge"
+              className="badge"
+            />
+            {/* </div> */}
+          </div>
+        )}
+
+        {/* Confetti animation */}
+        {/* {isCelebOn && (
+          <div className="modal-overlay">
+            <Confetti
+              width={windowSize.width}
+              height={windowSize.height}
+              recycle={true} 
+            />
+          </div>
+        )} */}
       </div>
     </>
   );
