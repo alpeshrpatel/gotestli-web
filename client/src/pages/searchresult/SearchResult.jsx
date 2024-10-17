@@ -5,7 +5,7 @@ import { faEye, faHeart } from "@fortawesome/free-regular-svg-icons";
 import Slider from "@mui/material/Slider";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { useContextElement } from "@/context/Context";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import PaginationTwo from "@/components/common/PaginationTwo";
 import { API } from "@/utils/AxiosInstance";
 import CourceCard from "@/components/homes/courseCards/CourseCard";

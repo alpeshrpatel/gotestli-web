@@ -108,6 +108,7 @@ import ContactPage from "./components/layout/footers/footerpages/ContactPage";
 import BecomeInstructorPage from "./components/layout/footers/footerpages/BecomeInstructorPage";
 import Faq from "./components/common/Faq";
 import Faqs from "./components/layout/footers/footerpages/Faqs";
+import Leadership from "./components/layout/footers/footerpages/Leadership";
 
 function App() {
   useEffect(() => {
@@ -165,6 +166,7 @@ function App() {
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/helpcenter" element={<Faqs />} />
+              <Route path="/leadership" element={<Leadership />} />
               <Route
                 path="/become/instructor"
                 element={<BecomeInstructorPage />}
