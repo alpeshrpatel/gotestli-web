@@ -6,7 +6,7 @@ export const footerLinks = [
       // { href: "/blog-list-1", label: "Learner Stories" },
       { href: "/become/instructor", label: "Careers" },
       // { href: "/blog-list-1", label: "Press" },
-      { href: "#", label: "Leadership" },
+      { href: "/leadership", label: "Leadership" },
       { href: "/contact", label: "Contact Us" },
     ],
   },

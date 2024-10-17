@@ -16,6 +16,7 @@ import Confetti from "react-confetti";
 import { delay, motion } from "framer-motion";
 import badgeImage from "/assets/img/badges/legend-vs.jpg";
 import "./quiz.css";
+import { toast } from "react-toastify";
 
 const QuizResult = ({}) => {
   const [isCelebOn, setIsCelebOn] = useState(false);
@@ -87,6 +88,31 @@ const QuizResult = ({}) => {
     getQuizTitle();
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    async function createBadgeData() {
+      try {
+        if (token) {
+          if (percentage >= 80) {
+            const { data } = await API.put(
+              `/api/badge/qsetid/${questionSetId}/userid/${userId}`, {}, { headers:{Authorization: `Bearer ${token}`}});
+            toast.success("Achievement saved!");
+          }
+        }
+      } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // toast.error("Invaild token!");
+          navigate("/login");
+          return;
+        }
+        throw error;
+      }
+    }
+    createBadgeData();
+  },[]);
+
   const isPassed = percentage >= passPercentage;
 
   window.onload = function () {
@@ -203,18 +229,14 @@ const QuizResult = ({}) => {
 
         {isCelebOn && (
           <div className="modal-overlay">
-           {/* <div className="badge-container"> */}
-            <img
-              src={badgeImage}
-              alt="Completed Badge"
-              className="badge"
-            />
+            {/* <div className="badge-container"> */}
+            <img src={badgeImage} alt="Completed Badge" className="badge" />
             {/* </div> */}
           </div>
         )}
 
         {/* Confetti animation */}
-        {/* {isCelebOn && (
+        {isCelebOn && (
           <div className="modal-overlay">
             <Confetti
               width={windowSize.width}
@@ -222,7 +244,7 @@ const QuizResult = ({}) => {
               recycle={true} 
             />
           </div>
-        )} */}
+        )} 
       </div>
     </>
   );
