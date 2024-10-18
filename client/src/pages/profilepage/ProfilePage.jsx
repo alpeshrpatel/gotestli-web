@@ -36,6 +36,7 @@ const ProfilePage = () => {
   const [tagsId, setTagsId] = useState("");
   const [defaultTags, setDefaultTags] = useState([]);
   const [isSaveVisible, setIsSaveVisible] = useState(false);
+  const [badgesData, setBadgesData] = useState([]);
 
   // let uid = "";
   // if (auth.currentUser) {
@@ -84,6 +85,17 @@ const ProfilePage = () => {
           setCategories(data);
         }
         getCategory();
+
+        async function getBadgesData() {
+          const { data } = await API.get(`api/badge/${userid}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          console.log(data);
+          setBadgesData(data);
+        }
+        getBadgesData();
       }
     } catch (error) {
       if (error.status == 403) {
@@ -164,6 +176,49 @@ const ProfilePage = () => {
       throw error;
     }
   };
+
+  let level1 = badgesData
+    .map((badge) => {
+      if (badge.badge_name == "Apprentice") {
+        return {
+          category: badge.title,
+        };
+      }
+    })
+    .filter(Boolean);
+  let level2 = badgesData
+    .map((badge) => {
+      if (badge.badge_name == "Trailblazer") {
+        return {
+          category: badge.title,
+        };
+      }
+    })
+    .filter(Boolean);
+  let level3 = badgesData
+    .map((badge) => {
+      if (badge.badge_name == "Virtuoso") {
+        return {
+          category: badge.title,
+        };
+      }
+    })
+    .filter(Boolean);
+  let level4 = badgesData
+    .map((badge) => {
+      if (badge.badge_name == "Legend") {
+        return {
+          category: badge.title,
+        };
+      }
+    })
+    .filter(Boolean);
+
+  console.log(level1);
+  console.log(level2);
+  console.log(level3);
+  console.log(level4);
+  console.log(badgesData);
 
   return (
     <>
@@ -360,6 +415,77 @@ const ProfilePage = () => {
           </button>
         </Box>
       </Box>
+
+      <div className="container my-5 p-4 bg-light rounded">
+        <h2>Achievements</h2>
+        <div className="my-3">
+          <h5>Badges</h5>
+          <div>
+            <div className="mb-4">
+              {level4?.length > 0 && (
+                <>
+                  <h6>{level4.length} Legend</h6>
+                  {level4.map((category) => (
+                    <div className="d-flex flex-wrap" key={category.id}>
+                      {" "}
+                      {/* Added key prop */}
+                      <img src="assets/img/badges/legend-vs.jpeg" alt="" />
+                      <span className="bg-secondary me-2 mb-2">
+                        {category?.category}
+                      </span>
+                    </div>
+                  ))}
+                </>
+              )}
+              {level3?.length > 0 && (
+                <>
+                  <h6>{level3.length} Virtuoso</h6>
+                  {level3.map((category) => (
+                    <div className="d-flex flex-wrap" key={category.id}>
+                      {" "}
+                      {/* Added key prop */}
+                      <img src="assets/img/badges/virtuoso-vs.jpeg" alt="" />
+                      <span className="bg-secondary me-2 mb-2">
+                        {category?.category}
+                      </span>
+                    </div>
+                  ))}
+                </>
+              )}
+
+              {level2?.length > 0 && (
+                <>
+                  <h6>{level2.length} Trailblazer</h6>
+                  {level2.map((category) => (
+                    <div className="d-flex flex-wrap" key={category.id}>
+                      {" "}
+                      {/* Added key prop */}
+                      <img src="assets/img/badges/Trailblazer-vs.jpeg" alt="" />
+                      <span className="bg-secondary me-2 mb-2">
+                        {category?.category}
+                      </span>
+                    </div>
+                  ))}
+                </>
+              )}
+              {level1?.length > 0 && (
+                <>
+                  <h6>{level1.length} Apprentice</h6>
+                  <img src="/assets/img/badges/apprentice-vs.jpeg" alt="" />
+                  {level1.map((category) => (
+                    <div className="d-flex flex-wrap" key={category.id}>
+                      {" "}
+                      <span className="bg-secondary me-2 mb-2">
+                        {category?.category}
+                      </span>
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
