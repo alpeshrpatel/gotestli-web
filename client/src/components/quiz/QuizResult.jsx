@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 
 const QuizResult = ({}) => {
   const [isCelebOn, setIsCelebOn] = useState(false);
+  const hasFetchedBadgeData = useRef(false);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const navigate = useNavigate();
   const location = useLocation();
@@ -52,7 +53,7 @@ const QuizResult = ({}) => {
 
     const timer = setTimeout(() => {
       setIsCelebOn(false);
-    }, 4000);
+    }, 3000);
 
     async function getQuizTitle() {
       try {
@@ -90,6 +91,7 @@ const QuizResult = ({}) => {
   }, []);
 
   useEffect(() => {
+    if (hasFetchedBadgeData.current) return;
     async function createBadgeData() {
       try {
         if (token) {
@@ -111,6 +113,7 @@ const QuizResult = ({}) => {
       }
     }
     createBadgeData();
+    hasFetchedBadgeData.current = true;
   },[]);
 
   const isPassed = percentage >= passPercentage;
