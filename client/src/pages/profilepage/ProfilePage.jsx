@@ -228,7 +228,7 @@ const ProfilePage = () => {
           display: "flex",
           justifyContent: "center",
           p: 3,
-          marginTop: "5vw",
+          marginTop: "10vw",
         }}
       >
         <Box sx={{ width: 300, mr: 5 }}>
@@ -416,70 +416,171 @@ const ProfilePage = () => {
         </Box>
       </Box>
 
-      <div className="container my-5 p-4 bg-light rounded">
-        <h2>Achievements</h2>
+      <div
+        className="container-fluid w-50 card my-5  bg-light rounded place-content-center"
+        style={{ padding: "25px 4vw" }}
+      >
+         <Typography variant="h4" sx={{ mb: 2,fontWeight:'500'}}>
+            Achievements
+          </Typography>
         <div className="my-3">
-          <h5>Badges</h5>
+        <Typography variant="h5" sx={{ mb: 2,fontWeight:'400'}}>
+            Badges
+          </Typography>
+        
           <div>
             <div className="mb-4">
-              {level4?.length > 0 && (
+            {level4?.length > 0 && (
                 <>
                   <h6>{level4.length} Legend</h6>
-                  {level4.map((category) => (
-                    <div className="d-flex flex-wrap" key={category.id}>
-                      {" "}
-                      {/* Added key prop */}
-                      <img src="assets/img/badges/legend-vs.jpeg" alt="" />
-                      <span className="bg-secondary me-2 mb-2">
-                        {category?.category}
-                      </span>
+                  <div style={{ display: "flex", gap: "20px",flexWrap:'wrap',marginBottom:'40px' }}>
+                    <img
+                      src="/assets/img/badges/legend-vs.jpg"
+                      alt=""
+                      style={{ height: "90px", width: "90px" }}
+                    />
+                    <div style={{ display: "flex", overflowX:'auto',"&::-webkit-scrollbar": {
+                width: "6px", 
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#ccc", 
+                borderRadius: "10px", 
+              },
+              "&::-webkit-scrollbar-track": {
+                backgroundColor: "#f5f5f5", 
+              }, }}>
+                      {level4.map((category) => (
+                        <div
+                          className="d-flex flex-wrap align-items-center"
+                          key={category.id}
+                        >
+                          {" "}
+                          <span className="bg-light-12 me-2 mb-2 rounded px-2 py-1">
+                            {category?.category}
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
                 </>
               )}
-              {level3?.length > 0 && (
+               {level3?.length > 0 && (
                 <>
                   <h6>{level3.length} Virtuoso</h6>
-                  {level3.map((category) => (
-                    <div className="d-flex flex-wrap" key={category.id}>
-                      {" "}
-                      {/* Added key prop */}
-                      <img src="assets/img/badges/virtuoso-vs.jpeg" alt="" />
-                      <span className="bg-secondary me-2 mb-2">
-                        {category?.category}
-                      </span>
+                  <div style={{ display: "flex", gap: "20px",flexWrap:'wrap',marginBottom:'40px' }}>
+                    <img
+                      src="/assets/img/badges/virtuoso-vs.jpg"
+                      alt=""
+                      style={{ height: "80px", width: "80px" }}
+                    />
+                    <div style={{ display: "flex", overflowX:'auto',"&::-webkit-scrollbar": {
+                width: "6px", 
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#ccc", 
+                borderRadius: "10px", 
+              },
+              "&::-webkit-scrollbar-track": {
+                backgroundColor: "#f5f5f5", 
+              }, }}>
+                      {level3.map((category) => (
+                        <div
+                          className="d-flex flex-wrap align-items-center"
+                          key={category.id}
+                        >
+                          {" "}
+                          <span className="bg-light-12 me-2 mb-2 rounded px-2 py-1">
+                            {category?.category}
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
                 </>
               )}
 
               {level2?.length > 0 && (
                 <>
                   <h6>{level2.length} Trailblazer</h6>
-                  {level2.map((category) => (
-                    <div className="d-flex flex-wrap" key={category.id}>
-                      {" "}
-                      {/* Added key prop */}
-                      <img src="assets/img/badges/Trailblazer-vs.jpeg" alt="" />
-                      <span className="bg-secondary me-2 mb-2">
-                        {category?.category}
-                      </span>
+                  <div
+                    style={{ display: "flex", gap: "20px", flexWrap: "wrap",marginBottom:'40px' }}
+                  >
+                    <img
+                      src="/assets/img/badges/Trailblazer-vs.jpg"
+                      alt=""
+                      style={{ height: "75px", width: "75px" }}
+                    />
+                    <div
+                      style={{
+                        display: "flex",
+                        overflowX: "auto",
+                        "&::-webkit-scrollbar": {
+                          width: "6px",
+                        },
+                        "&::-webkit-scrollbar-thumb": {
+                          backgroundColor: "#ccc",
+                          borderRadius: "10px",
+                        },
+                        "&::-webkit-scrollbar-track": {
+                          backgroundColor: "#f5f5f5",
+                        },
+                      }}
+                    >
+                      {level2.map((category) => (
+                        <div
+                          className="d-flex flex-wrap align-items-center"
+                          key={category.id}
+                        >
+                          {" "}
+                          <span className="bg-light-12 me-2 mb-2 rounded px-2 py-1">
+                            {category?.category}
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
                 </>
               )}
               {level1?.length > 0 && (
                 <>
                   <h6>{level1.length} Apprentice</h6>
-                  <img src="/assets/img/badges/apprentice-vs.jpeg" alt="" />
-                  {level1.map((category) => (
-                    <div className="d-flex flex-wrap" key={category.id}>
-                      {" "}
-                      <span className="bg-secondary me-2 mb-2">
-                        {category?.category}
-                      </span>
+                  <div
+                    style={{ display: "flex", gap: "20px", flexWrap: "wrap",marginBottom:'40px' }}
+                  >
+                    <img
+                      src="/assets/img/badges/apprentice-vs.jpg"
+                      alt=""
+                      style={{ height: "70px", width: "70px" }}
+                    />
+                    <div
+                      style={{
+                        display: "flex",
+                        overflowX: "auto",
+                        "&::-webkit-scrollbar": {
+                          width: "6px",
+                        },
+                        "&::-webkit-scrollbar-thumb": {
+                          backgroundColor: "#ccc",
+                          borderRadius: "10px",
+                        },
+                        "&::-webkit-scrollbar-track": {
+                          backgroundColor: "#f5f5f5",
+                        },
+                      }}
+                    >
+                      {level1.map((category) => (
+                        <div
+                          className="d-flex flex-wrap align-items-center"
+                          key={category.id}
+                        >
+                          {" "}
+                          <span className="bg-light-12 me-2 mb-2 rounded px-2 py-1">
+                            {category?.category}
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
                 </>
               )}
             </div>

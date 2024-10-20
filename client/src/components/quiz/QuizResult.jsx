@@ -14,15 +14,54 @@ import { downloadCertificate } from "./downloadCertificate";
 import { API } from "@/utils/AxiosInstance";
 import Confetti from "react-confetti";
 import { delay, motion } from "framer-motion";
-import badgeImage from "/assets/img/badges/legend-vs.jpg";
 import "./quiz.css";
 import { toast } from "react-toastify";
+import Modal from "react-responsive-modal";
+import "react-responsive-modal/styles.css";
+import { Rating } from "react-simple-star-rating";
+
+const satisfactionTooltips = [
+  "Very Unsatisfied",
+  "Unsatisfied",
+  "Neutral",
+  "Satisfied",
+  "Very Satisfied",
+];
+const difficultyTooltips = ["Very Easy", "Easy", "Medium", "Hard", "Very Hard"];
+const contentQualityTooltips = [
+  "Poor",
+  "Fair",
+  "Good",
+  "Very Good",
+  "Excellent",
+];
 
 const QuizResult = ({}) => {
   const [isCelebOn, setIsCelebOn] = useState(false);
   const hasFetchedBadgeData = useRef(false);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+  const [open, setOpen] = useState(false);
+  const [rating, setRating] = useState({
+    satisfaction: 0,
+    difficulty: 0,
+    contentQuality: 0,
+  });
+  const [review, setReview] = useState("");
+  const maxCharacters = 500;
+  const handleRating = (name, newRating) => {
+    setRating((prev) => ({ ...prev, [name]: newRating }));
+  };
+  const handleReviewChange = (e) => {
+    if (e.target.value.length <= maxCharacters) {
+      setReview(e.target.value);
+    }
+  };
   const navigate = useNavigate();
+  const onOpenModal = () => {
+    setOpen(true);
+  };
+
+  const onCloseModal = () => setOpen(false);
   const location = useLocation();
   const {
     totalQuestions = 0,
@@ -97,7 +136,10 @@ const QuizResult = ({}) => {
         if (token) {
           if (percentage >= 80) {
             const { data } = await API.put(
-              `/api/badge/qsetid/${questionSetId}/userid/${userId}`, {}, { headers:{Authorization: `Bearer ${token}`}});
+              `/api/badge/qsetid/${questionSetId}/userid/${userId}`,
+              {},
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
             toast.success("Achievement saved!");
           }
         }
@@ -114,7 +156,7 @@ const QuizResult = ({}) => {
     }
     createBadgeData();
     hasFetchedBadgeData.current = true;
-  },[]);
+  }, []);
 
   const isPassed = percentage >= passPercentage;
 
@@ -136,6 +178,42 @@ const QuizResult = ({}) => {
     exit: { opacity: 0, scale: 0.5, transition: { duration: 1 } },
   };
 
+  const submitSurvey = async () => {
+    try {
+      if (token) {
+        const res = await API.post(
+          "/api/surveys",
+          {
+            questionset_id: questionSetId,
+            satisfaction: rating.satisfaction,
+            difficulty: rating.difficulty,
+            content_quality: rating.contentQuality,
+            review: review,
+            created_by:userId,
+            modified_by:userId,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (res.status == 200) {
+          toast.success("Thank you for taking survey!");
+          navigate("/");
+        }
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
+      throw error;
+    }
+  };
   return (
     <>
       <div
@@ -175,7 +253,7 @@ const QuizResult = ({}) => {
         {location.state ? (
           <div
             className="card shadow w-60 text-center p-4 "
-            style={{ maxWidth: "400px", width: "100%" }}
+            style={{ maxWidth: "500px", width: "100%" }}
           >
             <div className="mb-4 w-50 mx-auto">
               <CircularProgressbar
@@ -230,24 +308,90 @@ const QuizResult = ({}) => {
           <h3>No data available</h3>
         )}
 
-        {isCelebOn && (
-          <div className="modal-overlay">
-            {/* <div className="badge-container"> */}
-            <img src={badgeImage} alt="Completed Badge" className="badge" />
-            {/* </div> */}
-          </div>
-        )}
-
         {/* Confetti animation */}
         {isCelebOn && (
           <div className="modal-overlay">
             <Confetti
               width={windowSize.width}
               height={windowSize.height}
-              recycle={true} 
+              recycle={true}
             />
           </div>
-        )} 
+        )}
+        <div
+          className="card shadow w-60 text-center p-4 "
+          style={{ maxWidth: "400px", width: "100%" }}
+        >
+          <h5 className="text-center my-2">
+            Take a moment to answer the survey questions
+          </h5>
+          <button
+            className="button -sm px-24 py-25 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm "
+            onClick={onOpenModal}
+          >
+            {/* <i className="fa fa-facebook text-24 me-2" aria-hidden="true"></i> */}
+            Start Survey
+          </button>
+          <Modal open={open} onClose={onCloseModal} center>
+            <div className="col-12 rounded p-5 border-1">
+              <h5 className="mb-2">
+                How satisfied are you with the quiz you just completed?
+              </h5>
+              <Rating
+                onClick={(newRating) => handleRating("satisfaction", newRating)}
+                ratingValue={rating.satisfaction}
+                size={50}
+                tooltipArray={satisfactionTooltips}
+                showTooltip
+                activeColor="#ffd700"
+                emptyColor="#d3d3d3"
+              />
+              <h5 className="mb-2">How difficult did you find the quiz?</h5>
+              <Rating
+                onClick={(newRating) => handleRating("difficulty", newRating)}
+                ratingValue={rating.difficulty}
+                size={50}
+                tooltipArray={difficultyTooltips}
+                showTooltip
+                activeColor="#ffd700"
+                emptyColor="#d3d3d3"
+              />
+              <h5 className="mb-2">
+                How would you rate the quality of the content?
+              </h5>
+              <Rating
+                onClick={(newRating) =>
+                  handleRating("contentQuality", newRating)
+                }
+                ratingValue={rating.contentQuality}
+                size={50}
+                tooltipArray={contentQualityTooltips}
+                showTooltip
+                activeColor="#ffd700"
+                emptyColor="#d3d3d3"
+              />
+              <div className="mt-4">
+                <h5 className="mb-2">Write a review (Optional)</h5>
+                <textarea
+                  className="form-control"
+                  rows="5"
+                  placeholder="Share your feedback here..."
+                  value={review}
+                  onChange={handleReviewChange}
+                ></textarea>
+                <div className="text-muted">
+                  {maxCharacters - review.length} characters remaining
+                </div>
+              </div>
+              <button
+                className="button -sm px-20 py-20 -outline-green-5 text-green-5 text-16 fw-bolder lh-sm mx-auto"
+                onClick={submitSurvey}
+              >
+                Submit
+              </button>
+            </div>
+          </Modal>
+        </div>
       </div>
     </>
   );
