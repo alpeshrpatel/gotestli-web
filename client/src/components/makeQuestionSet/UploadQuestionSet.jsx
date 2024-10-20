@@ -220,14 +220,14 @@ const UploadQuestionSet = () => {
               maxHeight: "50vh",
               overflowY: "auto",
               "&::-webkit-scrollbar": {
-                width: "6px", // Width of the scrollbar
+                width: "6px", 
               },
               "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#ccc", // Color of the scrollbar thumb
-                borderRadius: "10px", // Round edges of the scrollbar thumb
+                backgroundColor: "#ccc", 
+                borderRadius: "10px", 
               },
               "&::-webkit-scrollbar-track": {
-                backgroundColor: "#f5f5f5", // Background of the scrollbar track
+                backgroundColor: "#f5f5f5", 
               },
             }}
           >
