@@ -42,6 +42,7 @@ console.log(questionSet)
       {questions.length > 0 && (
         
         <SingleChoice
+          time={time}
           resumeQuizUserResultId = {userResultId}
           questionSetId = {questionSetId}
           questionId = {questionSet[questionNumber-1].question_id}
