@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-// import axios from "axios";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import ExamInstructions from "@/components/quiz/examInstructions/ExamInstructions";
@@ -23,14 +22,44 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faFileLines } from "@fortawesome/free-solid-svg-icons";
+import { Rating } from "react-simple-star-rating";
 
 export default function CourceCard({ search = null, role, data, index }) {
-  // const [rating, setRating] = useState([]);
+  const [rating, setRating] = useState(0);
   const [questionSet, setQuestionsSet] = useState([]);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    async function getRating() {
+      try {
+        if (token && data) {
+          console.log('rating hello')
+          const response = await API.get(
+            `/api/surveys/rating/qset/${data.id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log(response.data.rating);
+           setRating(response.data?.rating);
+        }
+      } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // toast.error("Invaild token!");
+          navigate("/login");
+          return;
+        }
+      }
+    }
+    getRating();
+  }, []);
   const onOpenModal = () => {
     async function getQuestions() {
       try {
@@ -73,6 +102,7 @@ export default function CourceCard({ search = null, role, data, index }) {
     year: "numeric",
   }).format(date);
   console.log(data);
+  console.log(rating);
   return (
     <>
       <Modal open={open} onClose={onCloseModal} center>
@@ -115,7 +145,16 @@ export default function CourceCard({ search = null, role, data, index }) {
                 <div className="coursesCard__image_overlay rounded-8"></div>
               </div>
             </div>
-
+            <div className="mt-2 ms-2">
+            <Rating
+              readonly={true}
+              initialValue={parseFloat(rating)}
+              allowFraction={true}
+              size={20}
+              activeColor="#ffd700"
+              emptyColor="#d3d3d3"
+            />
+            </div>
             <CardContent>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
                 {data.short_desc}

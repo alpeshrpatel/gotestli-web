@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   faAngleDoubleLeft,
@@ -13,8 +13,12 @@ import { API } from "@/utils/AxiosInstance";
 import { NULL } from "sass";
 import QuestionSet from "./QuestionSet";
 import { useNavigate } from "react-router-dom";
+import { CountdownCircleTimer } from "react-countdown-circle-timer";
+import SubmitQuizModal from "./SubmitQuizModal/SubmitQuizModal";
 
 const SingleChoice = ({
+  time,
+  timerOn,
   resumeQuizUserResultId,
   questionSetId,
   questionId,
@@ -32,6 +36,7 @@ const SingleChoice = ({
   const [answerPersist, setAnswerPersist] = useState([]);
   const [status, setStatus] = useState(0);
   const [updatedStatus, setUpdatedStatus] = useState(0);
+  const remainingTimeRef = useRef();
 
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
@@ -340,13 +345,42 @@ const SingleChoice = ({
     navigate("/");
   };
 
+  console.log(selectedOption);
+  console.log(reviewQuestions);
+
+  const attempted = selectedOption.filter((q) => q.selectedOption !== null);
+  const reviewed = selectedOption.filter((q) => q.status == 2 || q.status == 3);
+  console.log(reviewed);
+  const skipped = selectedOption.filter((q) => q.status === 0);
+  console.log(skipped);
+
+  let totalAnswered = attempted.length;
+  let totalReviewed = reviewed.length;
+  let skippedQuestion = skipped.length;
+
   const onFinishQuiz = async () => {
+    console.log('remaining:'+remainingTimeRef.current)
+    
     const response = await testResultDtlSetData(findSelectedOption);
     if (response?.status == 200) {
       onOpenModal();
     }
   };
-  console.log(selectedOption);
+
+  const renderTime = ({ remainingTime }) => {
+    remainingTimeRef.current = remainingTime;
+    if (remainingTime === 0) {
+      return <div className="timer text-20 fw-500 text-center">Time Up...</div>;
+    }
+  
+    return (
+      <div className="timer">
+        <div className="text text-20 fw-500">Remaining</div>
+        <div className="value text-24 fw-600 text-center">{remainingTime}</div>
+        <div className="text text-20 fw-500 text-center">seconds</div>
+      </div>
+    );
+  };
   return (
     // linear-gradient(to bottom right, #a18cd1, #fbc2eb)
     <>
@@ -363,6 +397,25 @@ const SingleChoice = ({
               <h4 className="card-title text-center">
                 Question {index} of {totalQuestions}{" "}
               </h4>
+              {
+                timerOn == 'yes' ? (
+                  <CountdownCircleTimer
+                  isPlaying
+                  duration={7}
+                  colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
+                  colorsTime={[7, 6, 3, 0]} 
+                  onComplete={() => {
+                    onOpenModal()
+                    return { shouldRepeat: false }; 
+                  }}
+                >
+                  {renderTime}
+                </CountdownCircleTimer>
+                ) : (
+                  null
+                )
+              }
+             
               <div className="card-title gap-2">
                 <button
                   className="btn btn-success px-3 py-2 w-auto text-18"
@@ -377,17 +430,33 @@ const SingleChoice = ({
                 >
                   Finish
                 </button>
-                <Modal open={open} onClose={onCloseModal} center>
-                  <FinishExamModalPage
-                    questionSetId={questionSetId}
-                    totalQuestions={totalQuestions}
-                    selectedOption={selectedOption}
-                    setSelectedOption={setSelectedOption}
-                    reviewQuestions={reviewQuestions}
-                    onCloseModal={onCloseModal}
-                    userResultId={userResultId}
-                  />
-                </Modal>
+                {((totalReviewed > 0 || skippedQuestion > 0) && remainingTimeRef.current !== 0 ) ? (
+                  <Modal open={open} onClose={onCloseModal} center>
+                    <FinishExamModalPage
+                      questionSetId={questionSetId}
+                      totalQuestions={totalQuestions}
+                      selectedOption={selectedOption}
+                      setSelectedOption={setSelectedOption}
+                      reviewQuestions={reviewQuestions}
+                      onCloseModal={onCloseModal}
+                      userResultId={userResultId}
+                    />
+                  </Modal>
+                ) : (
+                  <Modal open={open} center>
+                    <SubmitQuizModal
+                      questionSetId={questionSetId}
+                      totalQuestions={totalQuestions}
+                      selectedOption={selectedOption}
+                      setSelectedOption={setSelectedOption}
+                      totalAnswered={totalAnswered}
+                      totalReviewed={totalReviewed}
+                      skippedQuestion={skippedQuestion}
+                      reviewQuestions={reviewQuestions}
+                      userResultId={userResultId}
+                    />
+                  </Modal>
+                )}
               </div>
             </div>
             <hr />
