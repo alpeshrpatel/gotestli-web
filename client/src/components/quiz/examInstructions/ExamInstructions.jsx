@@ -26,6 +26,10 @@ import {
   Paper,
   Box,
   IconButton,
+  FormControl,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
 } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -43,6 +47,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
   const [setQuestionsSet] = useState([]);
   const [history, setHistory] = useState([]);
   const [followersData, setFollowersData] = useState([]);
+  const[timerOnValue,setTimerOnValue] = useState("yes");
   // const [userRole, setUserRole] = useState("");
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -231,12 +236,14 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
     //   }
     // }
     //  getQuestionsSet();
+    
     navigate("/quiz/questions", {
       state: {
         userResultId: inProgressQuizId,
         questionSetId: id,
         questionSet: questionSet,
         time: time,
+        timerOn:timerOnValue,
       },
     });
   };
@@ -296,6 +303,8 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
     }
   };
   console.log(followersData);
+
+  console.log('timer:'+timerOnValue)
 
   return (
     <div className="exam-instructions-container">
@@ -474,6 +483,37 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
                       </div>
                     </div>
                   </Grid>
+                  <Typography variant="h7" className="w-100 text-center mt-4">
+                    Do you want timer in Quiz?
+                  </Typography>
+                  <FormControl
+                    sx={{ width: "100", textAlign: "center", display: "flex" }}
+                  >
+                    <RadioGroup
+                      aria-labelledby="demo-radio-buttons-group-label"
+                      defaultValue="yes"
+                      name="radio-buttons-group"
+                      // value={timerOnValue}
+                      onChange={(e) => setTimerOnValue(e.target.value)}
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        textAlign: "center",
+                        paddingLeft: "100px",
+                      }}
+                    >
+                      <FormControlLabel
+                        value="yes"
+                        control={<Radio />}
+                        label="Yes"
+                      />
+                      <FormControlLabel
+                        value="no"
+                        control={<Radio />}
+                        label="No"
+                      />
+                    </RadioGroup>
+                  </FormControl>
                   {userRole == "student" && (
                     <Grid item xs={12}>
                       {!inProgressQuizId ? (

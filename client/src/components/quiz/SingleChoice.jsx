@@ -18,6 +18,7 @@ import SubmitQuizModal from "./SubmitQuizModal/SubmitQuizModal";
 
 const SingleChoice = ({
   time,
+  timerOn,
   resumeQuizUserResultId,
   questionSetId,
   questionId,
@@ -358,10 +359,8 @@ const SingleChoice = ({
   let skippedQuestion = skipped.length;
 
   const onFinishQuiz = async () => {
-    if(remainingTimeRef.current = 0){
-      totalReviewed = 0;
-      skippedQuestion = 0;
-    }
+    console.log('remaining:'+remainingTimeRef.current)
+    
     const response = await testResultDtlSetData(findSelectedOption);
     if (response?.status == 200) {
       onOpenModal();
@@ -371,7 +370,7 @@ const SingleChoice = ({
   const renderTime = ({ remainingTime }) => {
     remainingTimeRef.current = remainingTime;
     if (remainingTime === 0) {
-      return <div className="timer">Time Up...</div>;
+      return <div className="timer text-20 fw-500 text-center">Time Up...</div>;
     }
   
     return (
@@ -398,19 +397,25 @@ const SingleChoice = ({
               <h4 className="card-title text-center">
                 Question {index} of {totalQuestions}{" "}
               </h4>
-              <CountdownCircleTimer
-                isPlaying
-                duration={time * 60}
-                colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
-                colorsTime={[time * 60, time * 40, time * 20, 0]} // Color transition points
-                onComplete={() => {
-                  // handleNextClick()
-                  // submitQuiz();
-                  return { shouldRepeat: false }; // Do not restart the timer
-                }}
-              >
-                {renderTime}
-              </CountdownCircleTimer>
+              {
+                timerOn == 'yes' ? (
+                  <CountdownCircleTimer
+                  isPlaying
+                  duration={7}
+                  colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
+                  colorsTime={[7, 6, 3, 0]} 
+                  onComplete={() => {
+                    onOpenModal()
+                    return { shouldRepeat: false }; 
+                  }}
+                >
+                  {renderTime}
+                </CountdownCircleTimer>
+                ) : (
+                  null
+                )
+              }
+             
               <div className="card-title gap-2">
                 <button
                   className="btn btn-success px-3 py-2 w-auto text-18"
@@ -425,7 +430,7 @@ const SingleChoice = ({
                 >
                   Finish
                 </button>
-                {(totalReviewed > 0 || skippedQuestion > 0) ? (
+                {((totalReviewed > 0 || skippedQuestion > 0) && remainingTimeRef.current !== 0 ) ? (
                   <Modal open={open} onClose={onCloseModal} center>
                     <FinishExamModalPage
                       questionSetId={questionSetId}

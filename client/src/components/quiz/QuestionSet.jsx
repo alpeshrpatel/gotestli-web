@@ -8,7 +8,7 @@ const QuestionSet = () => {
   const [questionNumber, setQuestionNumber] = useState(1);
 
   const location = useLocation();
-  const {userResultId = 0, questionSetId,questionSet,time} = location.state;
+  const {userResultId = 0, questionSetId,questionSet,time,timerOn} = location.state;
 
   useEffect(() => {
     setQuestions(questionSet)
@@ -42,7 +42,9 @@ console.log(questionSet)
       {questions.length > 0 && (
         
         <SingleChoice
+        
           time={time}
+          timerOn={timerOn}
           resumeQuizUserResultId = {userResultId}
           questionSetId = {questionSetId}
           questionId = {questionSet[questionNumber-1].question_id}
