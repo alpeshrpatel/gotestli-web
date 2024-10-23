@@ -189,8 +189,8 @@ const QuizResult = ({}) => {
             difficulty: rating.difficulty,
             content_quality: rating.contentQuality,
             review: review,
-            created_by:userId,
-            modified_by:userId,
+            created_by: userId,
+            modified_by: userId,
           },
           {
             headers: {
@@ -232,15 +232,16 @@ const QuizResult = ({}) => {
           // isPassed && (
           <button
             className="button -sm px-24 py-25 -outline-green-4 text-green-4  text-18 fw-700 lh-sm "
-            onClick={() =>
-              downloadCertificate(
-                studentName,
-                percentage,
-                "Apprentice",
-                quizTitle,
-                category
-              )
-            }
+            onClick={() => {
+              if (studentName && quizTitle && category && percentage) {
+                downloadCertificate(
+                  studentName,
+                  percentage,
+                  quizTitle,
+                  category
+                );
+              }
+            }}
           >
             {/* <i className="fa-solid fa-circle-down text-24 me-2" aria-hidden="true"></i> */}
             Download Certificate

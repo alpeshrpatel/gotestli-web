@@ -1,9 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function NotFound() {
+  const navigate = useNavigate();
   return (
     <section className="no-page layout-pt-lg layout-pb-lg bg-beige-1">
-      <div className="container">
+      <div className="container-fluid w-75">
         <div className="row y-gap-50 justify-between items-center">
           <div className="col-lg-6">
             <div className="no-page__img">
@@ -23,7 +25,7 @@ export default function NotFound() {
                 The page you're looking for isn't available. Try to search again
                 <br /> or use the go to.
               </div>
-              <button className="button -md -purple-1 text-white mt-20">
+              <button className="button -md -purple-1 text-white mt-20" onClick={()=> navigate('/')}>
                 Go Back To Homepage
               </button>
             </div>

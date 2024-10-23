@@ -11,7 +11,7 @@ const metadata = {
   title:
     "Page not found || GoTestli - Ultimate School & General Purpose Quiz Platform",
   description:
-    "Elevate your e-learning content with GoTestli, the most impressive LMS template for online courses, education and LMS platforms.",
+  "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges.",
 };
 export default function NotFoundPage() {
   return (
@@ -22,7 +22,7 @@ export default function NotFoundPage() {
 
       <Header />
       <div className="content-wrapper js-content-wrapper overflow-hidden">
-        <PageLinks />
+        {/* <PageLinks /> */}
         <NotFound />
         <FooterOne />
       </div>
