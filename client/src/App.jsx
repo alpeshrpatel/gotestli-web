@@ -1,9 +1,7 @@
 import "./styles/index.scss";
-
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import "react-calendar/dist/Calendar.css";
 import { BrowserRouter, Routes, Route, RouterProvider, json } from "react-router-dom";
-
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Suspense, useEffect } from "react";
@@ -109,6 +107,7 @@ import BecomeInstructorPage from "./components/layout/footers/footerpages/Become
 import Faq from "./components/common/Faq";
 import Faqs from "./components/layout/footers/footerpages/Faqs";
 import Leadership from "./components/layout/footers/footerpages/Leadership";
+import NotFoundPage from "./pages/not-found";
 
 function App() {
   useEffect(() => {
@@ -293,6 +292,7 @@ function App() {
                 element={<UploadedFiles />}
                 role="instructor"
               />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
             <ScrollTopBehaviour />
           </BrowserRouter>

@@ -225,10 +225,12 @@ const ProfilePage = () => {
       <Header userRole={userRole} />
       <Box
         sx={{
-          display: "flex",
+          display:'flex',
+          flexWrap:'wrap',
           justifyContent: "center",
           p: 3,
           marginTop: "10vw",
+          gap:'20px'
         }}
       >
         <Box sx={{ width: 300, mr: 5 }}>
@@ -281,7 +283,7 @@ const ProfilePage = () => {
           </Paper>
         </Box>
 
-        <Box sx={{ flex: 1 }}>
+        <Box className="" sx={{ flex: 1,minWidth:'350px' }}>
           <Typography variant="h5" sx={{ mb: 2, textAlign: "center" }}>
             Public Profile
           </Typography>
@@ -414,179 +416,214 @@ const ProfilePage = () => {
             Save
           </button>
         </Box>
-      </Box>
-
-      <div
-        className="container-fluid w-50 card my-5  bg-light rounded place-content-center"
-        style={{ padding: "25px 4vw" }}
-      >
-         <Typography variant="h4" sx={{ mb: 2,fontWeight:'500'}}>
+        <div
+          className="container-fluid  card  bg-light rounded place-content-center"
+          style={{ padding: "25px 4vw", width: "40vw", minWidth:'500px' }}
+        >
+          <Typography variant="h4" sx={{ mb: 2, fontWeight: "500" }}>
             Achievements
           </Typography>
-        <div className="my-3">
-        <Typography variant="h5" sx={{ mb: 2,fontWeight:'400'}}>
-            Badges
-          </Typography>
-        
-          <div>
-            <div className="mb-4">
-            {level4?.length > 0 && (
-                <>
-                  <h6>{level4.length} Legend</h6>
-                  <div style={{ display: "flex", gap: "20px",flexWrap:'wrap',marginBottom:'40px' }}>
-                    <img
-                      src="/assets/img/badges/legend-vs.jpg"
-                      alt=""
-                      style={{ height: "90px", width: "90px" }}
-                    />
-                    <div style={{ display: "flex", overflowX:'auto',"&::-webkit-scrollbar": {
-                width: "6px", 
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#ccc", 
-                borderRadius: "10px", 
-              },
-              "&::-webkit-scrollbar-track": {
-                backgroundColor: "#f5f5f5", 
-              }, }}>
-                      {level4.map((category) => (
-                        <div
-                          className="d-flex flex-wrap align-items-center"
-                          key={category.id}
-                        >
-                          {" "}
-                          <span className="bg-light-12 me-2 mb-2 rounded px-2 py-1">
-                            {category?.category}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
-               {level3?.length > 0 && (
-                <>
-                  <h6>{level3.length} Virtuoso</h6>
-                  <div style={{ display: "flex", gap: "20px",flexWrap:'wrap',marginBottom:'40px' }}>
-                    <img
-                      src="/assets/img/badges/virtuoso-vs.jpg"
-                      alt=""
-                      style={{ height: "80px", width: "80px" }}
-                    />
-                    <div style={{ display: "flex", overflowX:'auto',"&::-webkit-scrollbar": {
-                width: "6px", 
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#ccc", 
-                borderRadius: "10px", 
-              },
-              "&::-webkit-scrollbar-track": {
-                backgroundColor: "#f5f5f5", 
-              }, }}>
-                      {level3.map((category) => (
-                        <div
-                          className="d-flex flex-wrap align-items-center"
-                          key={category.id}
-                        >
-                          {" "}
-                          <span className="bg-light-12 me-2 mb-2 rounded px-2 py-1">
-                            {category?.category}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
+          <div className="my-3">
+            <Typography variant="h5" sx={{ mb: 2, fontWeight: "400" }}>
+              Badges
+            </Typography>
 
-              {level2?.length > 0 && (
-                <>
-                  <h6>{level2.length} Trailblazer</h6>
-                  <div
-                    style={{ display: "flex", gap: "20px", flexWrap: "wrap",marginBottom:'40px' }}
-                  >
-                    <img
-                      src="/assets/img/badges/Trailblazer-vs.jpg"
-                      alt=""
-                      style={{ height: "75px", width: "75px" }}
-                    />
+            <div>
+              <div className="mb-4">
+                {level4?.length > 0 && (
+                  <>
+                    <h6>{level4.length} Legend</h6>
                     <div
                       style={{
                         display: "flex",
-                        overflowX: "auto",
-                        "&::-webkit-scrollbar": {
-                          width: "6px",
-                        },
-                        "&::-webkit-scrollbar-thumb": {
-                          backgroundColor: "#ccc",
-                          borderRadius: "10px",
-                        },
-                        "&::-webkit-scrollbar-track": {
-                          backgroundColor: "#f5f5f5",
-                        },
+                        gap: "20px",
+                        flexWrap: "wrap",
+                        marginBottom: "40px",
                       }}
                     >
-                      {level2.map((category) => (
-                        <div
-                          className="d-flex flex-wrap align-items-center"
-                          key={category.id}
-                        >
-                          {" "}
-                          <span className="bg-light-12 me-2 mb-2 rounded px-2 py-1">
-                            {category?.category}
-                          </span>
-                        </div>
-                      ))}
+                      <img
+                        src="/assets/img/badges/legend-vs.jpg"
+                        alt=""
+                        style={{ height: "90px", width: "90px" }}
+                      />
+                      <div
+                        style={{
+                          display: "flex",
+                          overflowX: "auto",
+                          "&::-webkit-scrollbar": {
+                            width: "6px",
+                          },
+                          "&::-webkit-scrollbar-thumb": {
+                            backgroundColor: "#ccc",
+                            borderRadius: "10px",
+                          },
+                          "&::-webkit-scrollbar-track": {
+                            backgroundColor: "#f5f5f5",
+                          },
+                        }}
+                      >
+                        {level4.map((category) => (
+                          <div
+                            className="d-flex flex-wrap align-items-center"
+                            key={category.id}
+                          >
+                            {" "}
+                            <span className="bg-light-12 me-2 mb-2 rounded px-2 py-1">
+                              {category?.category}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                </>
-              )}
-              {level1?.length > 0 && (
-                <>
-                  <h6>{level1.length} Apprentice</h6>
-                  <div
-                    style={{ display: "flex", gap: "20px", flexWrap: "wrap",marginBottom:'40px' }}
-                  >
-                    <img
-                      src="/assets/img/badges/apprentice-vs.jpg"
-                      alt=""
-                      style={{ height: "70px", width: "70px" }}
-                    />
+                  </>
+                )}
+                {level3?.length > 0 && (
+                  <>
+                    <h6>{level3.length} Virtuoso</h6>
                     <div
                       style={{
                         display: "flex",
-                        overflowX: "auto",
-                        "&::-webkit-scrollbar": {
-                          width: "6px",
-                        },
-                        "&::-webkit-scrollbar-thumb": {
-                          backgroundColor: "#ccc",
-                          borderRadius: "10px",
-                        },
-                        "&::-webkit-scrollbar-track": {
-                          backgroundColor: "#f5f5f5",
-                        },
+                        gap: "20px",
+                        flexWrap: "wrap",
+                        marginBottom: "40px",
                       }}
                     >
-                      {level1.map((category) => (
-                        <div
-                          className="d-flex flex-wrap align-items-center"
-                          key={category.id}
-                        >
-                          {" "}
-                          <span className="bg-light-12 me-2 mb-2 rounded px-2 py-1">
-                            {category?.category}
-                          </span>
-                        </div>
-                      ))}
+                      <img
+                        src="/assets/img/badges/virtuoso-vs.jpg"
+                        alt=""
+                        style={{ height: "80px", width: "80px" }}
+                      />
+                      <div
+                        style={{
+                          display: "flex",
+                          overflowX: "auto",
+                          "&::-webkit-scrollbar": {
+                            width: "6px",
+                          },
+                          "&::-webkit-scrollbar-thumb": {
+                            backgroundColor: "#ccc",
+                            borderRadius: "10px",
+                          },
+                          "&::-webkit-scrollbar-track": {
+                            backgroundColor: "#f5f5f5",
+                          },
+                        }}
+                      >
+                        {level3.map((category) => (
+                          <div
+                            className="d-flex flex-wrap align-items-center"
+                            key={category.id}
+                          >
+                            {" "}
+                            <span className="bg-light-12 me-2 mb-2 rounded px-2 py-1">
+                              {category?.category}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                </>
-              )}
+                  </>
+                )}
+
+                {level2?.length > 0 && (
+                  <>
+                    <h6>{level2.length} Trailblazer</h6>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "20px",
+                        flexWrap: "wrap",
+                        marginBottom: "40px",
+                      }}
+                    >
+                      <img
+                        src="/assets/img/badges/Trailblazer-vs.jpg"
+                        alt=""
+                        style={{ height: "75px", width: "75px" }}
+                      />
+                      <div
+                        style={{
+                          display: "flex",
+                          overflowX: "auto",
+                          "&::-webkit-scrollbar": {
+                            width: "6px",
+                          },
+                          "&::-webkit-scrollbar-thumb": {
+                            backgroundColor: "#ccc",
+                            borderRadius: "10px",
+                          },
+                          "&::-webkit-scrollbar-track": {
+                            backgroundColor: "#f5f5f5",
+                          },
+                        }}
+                      >
+                        {level2.map((category) => (
+                          <div
+                            className="d-flex flex-wrap align-items-center"
+                            key={category.id}
+                          >
+                            {" "}
+                            <span className="bg-light-12 me-2 mb-2 rounded px-2 py-1">
+                              {category?.category}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+                {level1?.length > 0 && (
+                  <>
+                    <h6>{level1.length} Apprentice</h6>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "20px",
+                        flexWrap: "wrap",
+                        marginBottom: "40px",
+                      }}
+                    >
+                      <img
+                        src="/assets/img/badges/apprentice-vs.jpg"
+                        alt=""
+                        style={{ height: "70px", width: "70px" }}
+                      />
+                      <div
+                        style={{
+                          display: "flex",
+                          overflowX: "auto",
+                          "&::-webkit-scrollbar": {
+                            width: "6px",
+                          },
+                          "&::-webkit-scrollbar-thumb": {
+                            backgroundColor: "#ccc",
+                            borderRadius: "10px",
+                          },
+                          "&::-webkit-scrollbar-track": {
+                            backgroundColor: "#f5f5f5",
+                          },
+                        }}
+                      >
+                        {level1.map((category) => (
+                          <div
+                            className="d-flex flex-wrap align-items-center"
+                            key={category.id}
+                          >
+                            {" "}
+                            <span className="bg-light-12 me-2 mb-2 rounded px-2 py-1">
+                              {category?.category}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </Box>
     </>
   );
 };

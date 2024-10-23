@@ -4,7 +4,6 @@ import html2canvas from "html2canvas";
 export const downloadCertificate = async (
   studentName,
   score,
-  level,
   quizTitle,category
 ) => {
   const dateOptions = {
@@ -16,7 +15,9 @@ export const downloadCertificate = async (
   const currentDate = new Date().toLocaleDateString("en-US", dateOptions);
   const doc = new jsPDF("landscape", "pt", "a4");
 
-  
+  console.log('student name:',studentName)
+  console.log('quiz name:',quizTitle)
+  console.log('category', category)
   const image = new Image();
   image.src = "/assets/img/certificate/certificate.png";
   image.onload = () => {
@@ -70,7 +71,7 @@ export const downloadCertificate = async (
 
     doc.setFont("Georgia", "normal");
     doc.text(
-      `in the ${category} quiz at the ${level} level.`,
+      `in the ${category} quiz.`,
       421,
       425,
       "center"
