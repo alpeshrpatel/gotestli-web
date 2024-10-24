@@ -4,7 +4,7 @@ import html2canvas from "html2canvas";
 export const downloadCertificate = async (
   studentName,
   score,
-  quizTitle,category
+  quizTitle,category,instructor
 ) => {
   const dateOptions = {
     year: "numeric",
@@ -88,7 +88,7 @@ export const downloadCertificate = async (
     doc.setTextColor(50, 50, 50); 
     doc.text("Instructor:", 150, 500);
     doc.setFont("Georgia", "bold");
-    doc.text(studentName, 250, 500);
+    doc.text(instructor, 250, 500);
 
     
     doc.setFontSize(16);
