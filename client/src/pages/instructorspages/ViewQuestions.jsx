@@ -5,16 +5,10 @@ import Header from "@/components/layout/headers/Header";
 import { API } from "@/utils/AxiosInstance";
 import { auth } from "@/firebase/Firebase";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { Breadcrumbs, TableCell } from "@mui/material";
+import { Breadcrumbs } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import CommonTable from "@/components/common/CommonTable";
 
 // import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-
-const columns = [
-  { id: "index", label: "#", sortable: false },
-  { id: "question", label: "Question", sortable: false },
-];
 
 const ViewQuestions = () => {
   const [questions, setQuestions] = useState([]);
@@ -52,16 +46,6 @@ const ViewQuestions = () => {
     getQuestions();
   }, []);
   console.log(isHovered);
-
-  const getRowId = (row) => row.id;
-
-  const renderRowCells = (question, index) => (
-    <>
-      <TableCell>{index + 1}</TableCell>
-      <TableCell>{question.question}</TableCell>
-    </>
-  );
-
   return (
     <div>
       <Preloader />
@@ -93,12 +77,22 @@ const ViewQuestions = () => {
         </Breadcrumbs>
         {questions.length > 0 ? (
           <div className="table-responsive mt-1" style={{ paddingTop: "20px" }}>
-            <CommonTable
-              columns={columns}
-              data={questions}
-              getRowId={getRowId}
-              renderRowCells={renderRowCells}
-            />
+            <table className="custom-table Question-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Question</th>
+                </tr>
+              </thead>
+              <tbody>
+                {questions.map((Question, i) => (
+                  <tr key={Question.id}>
+                    <td>{i + 1}</td>
+                    <td>{Question.question}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : (
           <h4 className="no-content text-center">

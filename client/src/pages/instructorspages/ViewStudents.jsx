@@ -4,31 +4,15 @@ import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";
 import { API } from "@/utils/AxiosInstance";
 import { auth } from "@/firebase/Firebase";
-import {
-  Link,
-  Navigate,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
-import { Breadcrumbs, Button, TableCell } from "@mui/material";
+import { Link, Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Breadcrumbs, Button } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { students } from "@/data--backup/students";
-import CommonTable from "@/components/common/CommonTable";
 
 // import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-const columns = [
-  { id: "index", label: "#", sortable: false },
-  { id: "user_id", label: "Student ID", sortable: true },
-  { id: "modified_date", label: "Date", sortable: true },
-  { id: "marks_obtained", label: "Score", sortable: false },
-  { id: "percentage", label: "%", sortable: true },
-  { id: "status", label: "Status", sortable: false },
-  { id: "actions", label: "", sortable: false },
-];
 
 const ViewStudents = () => {
   const [studentsData, setStudentsData] = useState([]);
@@ -62,7 +46,7 @@ const ViewStudents = () => {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
           // toast.error("Invaild token!");
-          navigate("/login");
+          navigate('/login')
           return;
         }
         console.error("Failed to fetch student data:", error);
@@ -87,18 +71,14 @@ const ViewStudents = () => {
         lastTimeStamp.forEach(async (student) => {
           if (student.hours >= 24) {
             try {
-              if (token) {
-                const response = await API.put(
-                  "/api/sendemail/check/status",
-                  {
-                    studentId: student.id,
+              if(token){
+                const response = await API.put("/api/sendemail/check/status", {
+                  studentId: student.id,
+                }, {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
                   },
-                  {
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                    },
-                  }
-                );
+                });
                 console.log(response);
               }
             } catch (error) {
@@ -110,6 +90,7 @@ const ViewStudents = () => {
                 return;
               }
             }
+           
           } else if (student.hours) {
             setIsDisabled((prev) => [...prev, { id: student.id }]);
           }
@@ -128,41 +109,37 @@ const ViewStudents = () => {
   const handleReminderClick = async (studentData) => {
     setIsDisabled((prev) => [...prev, { id: studentData.id }]);
     try {
-      if (token) {
-        const { data } = await API.get(`api/users/${studentData.user_id}`, {
+      if(token){
+      const { data } = await API.get(`api/users/${studentData.user_id}`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(data);
+      const response = await API.get(`api/users/${userId}`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (data.email && response.data) {
+        const res = await API.post(`/api/sendemail/`, {
+          userResultId: studentData.id,
+          studentData: data,
+          quizData: set,
+          instructor: response?.data?.first_name,
+        },{
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(data);
-        const response = await API.get(`api/users/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (data.email && response.data) {
-          const res = await API.post(
-            `/api/sendemail/`,
-            {
-              userResultId: studentData.id,
-              studentData: data,
-              quizData: set,
-              instructor: response?.data?.first_name,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          console.log(res);
-          if (res.status == 200) {
-            toast.success("Reminder Email sent!");
-          } else {
-            toast.error("Error in sending reminder!");
-          }
+        console.log(res);
+        if (res.status == 200) {
+          toast.success("Reminder Email sent!");
+        } else {
+          toast.error("Error in sending reminder!");
         }
       }
+    }
     } catch (error) {
       if (error.status == 403) {
         localStorage.removeItem("user");
@@ -174,53 +151,6 @@ const ViewStudents = () => {
       console.error(error);
     }
   };
-  const getRowId = (row) => row.id;
-
-  const renderRowCells = (student, index) => (
-    <>
-      <TableCell>{index + 1}</TableCell>
-      <TableCell>{student.user_id}</TableCell>
-      <TableCell>
-        {student.modified_date.slice(0, 19).replace("T", " ")}
-      </TableCell>
-      <TableCell>{student.marks_obtained}</TableCell>
-      <TableCell>{student.percentage}</TableCell>
-      <TableCell>
-        {student.status === 2 ? "In Progress" : "Completed"}
-      </TableCell>
-      <TableCell>
-        {student.status === 2 ? (
-          <button
-            className={`button -sm px-15 py-15 -outline-blue-3 text-blue-3 text-12 fw-bolder lh-sm mx-auto ${
-              isDisabled.some((element) => element.id === student.id)
-                ? "disabled"
-                : ""
-            }`}
-            onClick={() => handleReminderClick(student)}
-            disabled={isDisabled.some((element) => element.id === student.id)}
-            style={{
-              cursor: isDisabled.some((element) => element.id === student.id)
-                ? "not-allowed"
-                : "pointer",
-              color: isDisabled.some((element) => element.id === student.id)
-                ? "red"
-                : "inherit",
-              opacity: isDisabled.some((element) => element.id === student.id)
-                ? 0.5
-                : 1,
-            }}
-          >
-            Send Reminder{" "}
-            <span style={{ marginLeft: "5px" }}>
-              <FontAwesomeIcon icon={faBell} />
-            </span>
-          </button>
-        ) : (
-          ""
-        )}
-      </TableCell>
-    </>
-  );
   return (
     <div>
       <Preloader />
@@ -252,7 +182,7 @@ const ViewStudents = () => {
         </Breadcrumbs>
         {studentsData.length > 0 ? (
           <div className="table-responsive mt-1" style={{ paddingTop: "20px" }}>
-            {/* <table className="custom-table student-table">
+            <table className="custom-table student-table">
               <thead>
                 <tr>
                   <th>#</th>
@@ -324,13 +254,7 @@ const ViewStudents = () => {
                   </tr>
                 ))}
               </tbody>
-            </table> */}
-            <CommonTable
-              columns={columns}
-              data={studentsData}
-              getRowId={getRowId}
-              renderRowCells={renderRowCells}
-            />
+            </table>
             <h5 className=" text-center mt-4" style={{ color: "red" }}>
               Note.{" "}
               <span
