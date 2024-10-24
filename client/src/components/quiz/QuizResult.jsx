@@ -47,6 +47,13 @@ const QuizResult = ({}) => {
     contentQuality: 0,
   });
   const [review, setReview] = useState("");
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [downloadData, setDownloadData] = useState({
+    quizTitle: "",
+    studentName: "",
+    category: "",
+    instructor:""
+  });
   const maxCharacters = 500;
   const handleRating = (name, newRating) => {
     setRating((prev) => ({ ...prev, [name]: newRating }));
@@ -82,51 +89,56 @@ const QuizResult = ({}) => {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
   let userId = user.id;
-  let quizTitle = "";
-  let studentName = "";
-  let category = "";
 
   useEffect(() => {
-    setIsCelebOn(true);
-    setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    if (percentage >= passPercentage) {
+      setIsCelebOn(true);
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
 
-    const timer = setTimeout(() => {
-      setIsCelebOn(false);
-    }, 3000);
+      const timer = setTimeout(() => {
+        setIsCelebOn(false);
+      }, 3000);
 
-    async function getQuizTitle() {
-      try {
-        if (token) {
-          const res = await API.get(`/api/questionset/${questionSetId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          console.log(res.data);
-          let tags = res.data?.tags?.split(",");
-          category = tags[0];
-          quizTitle = res.data.title;
-          const { data } = await API.get(`/api/users/${userId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          console.log(data.first_name + " " + data.last_name);
-          studentName = data.first_name + " " + data.last_name;
+      async function getQuizTitle() {
+        try {
+          if (token) {
+            const res = await API.get(`/api/questionset/${questionSetId}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            console.log(res.data);
+            let tags = res.data?.tags?.split(",");
+            setDownloadData((prev) => ({
+              ...prev,
+              category: tags[0],
+              quizTitle: res.data.title,
+              instructor: res.data.author
+            }));
+
+            const { data } = await API.get(`/api/users/${userId}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            console.log(data.first_name + " " + data.last_name);
+            setDownloadData((prev) => ({ ...prev, studentName: data.first_name + " " + data.last_name }));
+            setIsDataLoaded(true);
+          }
+        } catch (error) {
+          if (error.status == 403) {
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+            // toast.error("Invaild token!");
+            navigate("/login");
+            return;
+          }
+          throw error;
         }
-      } catch (error) {
-        if (error.status == 403) {
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
-          // toast.error("Invaild token!");
-          navigate("/login");
-          return;
-        }
-        throw error;
       }
+      getQuizTitle();
+      return () => clearTimeout(timer);
     }
-    getQuizTitle();
-    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -228,28 +240,18 @@ const QuizResult = ({}) => {
           {/* <FontAwesomeIcon icon={faAngleDoubleRight} className="fa-lg ml-5" /> */}{" "}
           Back to Home Page
         </div>
-        {
-          // isPassed && (
+        {isPassed && isDataLoaded && (
           <button
             className="button -sm px-24 py-25 -outline-green-4 text-green-4  text-18 fw-700 lh-sm "
-            onClick={() => {
-              if (studentName && quizTitle && category && percentage) {
-                downloadCertificate(
-                  studentName,
-                  percentage,
-                  quizTitle,
-                  category
-                );
-              }
-            }}
+            onClick={() =>
+              downloadCertificate(downloadData.studentName, percentage, downloadData.quizTitle, downloadData.category,downloadData.instructor)
+            }
           >
             {/* <i className="fa-solid fa-circle-down text-24 me-2" aria-hidden="true"></i> */}
             Download Certificate
             <FontAwesomeIcon icon={faCircleDown} className="text-30 ms-2" />
           </button>
-
-          // )
-        }
+        )}
 
         {location.state ? (
           <div

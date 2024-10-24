@@ -9,10 +9,27 @@ import { Downloading } from "@mui/icons-material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
 import HandleDownload from "@/components/common/HandleDownload.js";
+import { TableCell } from "@mui/material";
+import CommonTable from "@/components/common/CommonTable";
 // import Breadcrumbs from "@mui/material/Breadcrumbs";
 // import Typography from "@mui/material/Typography";
 // import Link from "@mui/material/Link";
 // import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+
+const columns = [
+  { id: "index", label: "#", sortable: false },
+  { id: "file_name", label: "File Name", sortable: true, align: "center" },
+  { id: "created_date", label: "Date", sortable: true, align: "center" },
+  { id: "status", label: "Status", sortable: true, align: "center" },
+  {
+    id: "correct_rows",
+    label: "Correct Rows",
+    sortable: false,
+    align: "center",
+  },
+  { id: "error_rows", label: "Error Rows", sortable: false, align: "center" },
+  { id: "actions", label: "Action", sortable: false, align: "center" },
+];
 
 const UploadedFiles = () => {
   const [uploadedData, setUploadedData] = useState([]);
@@ -55,6 +72,37 @@ const UploadedFiles = () => {
     await HandleDownload("uploadedfile", fileName);
     // <HandleDownload type="uploadedfile" fileName={fileName} />;
   }
+  const getRowId = (row) => row.id;
+
+  const renderRowCells = (file, index) => (
+    <>
+      <TableCell>{index + 1}</TableCell>
+      <TableCell align="center">{file.file_name}</TableCell>
+      <TableCell align="center">
+        {file.created_date.slice(0, 19).replace("T", " ")}
+      </TableCell>
+      <TableCell align="center">
+        {file.status == 0
+          ? "Not Started"
+          : file.status == 1
+          ? "Completed"
+          : "In Progress"}
+      </TableCell>
+      <TableCell align="center">
+        {(file.correct_rows && file.correct_rows?.split(",")?.length) || 0}
+      </TableCell>
+      <TableCell align="center">
+        {(file.error_rows && file.error_rows?.split(",")?.length) || 0}
+      </TableCell>
+      <TableCell align="center">
+        <FontAwesomeIcon
+          icon={faFileArrowDown}
+          style={{ fontSize: "30px", color: "#4CAF50" }}
+          onClick={() => handleDownload(file.file_name)}
+        />
+      </TableCell>
+    </>
+  );
 
   return (
     <div>
@@ -69,7 +117,7 @@ const UploadedFiles = () => {
         </Breadcrumbs> */}
         {uploadedData.length > 0 ? (
           <div className="table-responsive">
-            <table className="custom-table file-table">
+            {/* <table className="custom-table file-table">
               <thead>
                 <tr>
                   <th>#</th>
@@ -116,7 +164,13 @@ const UploadedFiles = () => {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table> */}
+            <CommonTable
+              columns={columns}
+              data={uploadedData}
+              getRowId={getRowId}
+              renderRowCells={renderRowCells}
+            />
           </div>
         ) : (
           <h4 className="no-content text-center">
