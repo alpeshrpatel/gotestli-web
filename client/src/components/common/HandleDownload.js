@@ -9,12 +9,11 @@ const HandleDownload = async (type, fileName) => {
         `/api/question/files/download/?type=${type}&fileName=${fileName}`,
         {
           responseType: "blob",
-         
-        },{
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+         
+        },
       );
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
