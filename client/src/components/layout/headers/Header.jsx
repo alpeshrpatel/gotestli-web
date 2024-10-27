@@ -8,14 +8,25 @@ import MobileMenu from "../component/MobileMenu";
 import { auth } from "@/firebase/Firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { menuList } from "@/data--backup/menu";
-import { TextField } from "@mui/material";
+import { Button, IconButton, TextField } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function Header({userRole}) {
+export default function Header({ userRole }) {
   const [activeMobileMenu, setActiveMobileMenu] = useState(false);
   const [user, setUser] = useState(null);
   const [menuItem, setMenuItem] = useState("");
   const [submenu, setSubmenu] = useState("");
-  const [expand,setExpand] = useState(false);
+  const [expand, setExpand] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(
+    localStorage.getItem("theme") === "dark"
+  );
+  const [wishlistCount,setWishlistCount] = useState(localStorage.getItem('wishlist') || 0)
+  // Function to toggle theme and persist to localStorage
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    localStorage.setItem("theme", newTheme ? "dark" : "light");
+  };
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -33,18 +44,27 @@ export default function Header({userRole}) {
         }
       });
     });
-  }, []);
+  }, [wishlistCount]);
 
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
   }, []);
+    // Update wishlist count in real-time from other components or actions
+    useEffect(() => {
+      const handleStorageChange = () => {
+        setWishlistCount(parseInt(localStorage.getItem('wishlist')) || 0);
+      };
+      
+      window.addEventListener('storage', handleStorageChange);
+      return () => window.removeEventListener('storage', handleStorageChange);
+    }, []);
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
       console.log("Logout Successfully");
       window.location.reload();
     } catch (error) {
@@ -52,9 +72,7 @@ export default function Header({userRole}) {
     }
   };
 
-  const handleSearch = () => {
-    
-  }
+  const handleSearch = () => {};
 
   return (
     <>
@@ -63,7 +81,7 @@ export default function Header({userRole}) {
           <div className="row justify-between items-center">
             <div className="col-auto">
               <div className="header-left">
-                <div className="header__logo ">
+                <div className="header__logo " style={{}}>
                   <Link to="/">
                     <img
                       src="/assets/img/header-logo3.png"
@@ -93,7 +111,7 @@ export default function Header({userRole}) {
 
             <div className="col-auto">
               <div className="header-right d-flex items-center">
-                <div className="header-right__icons text-white d-flex items-center mt-2">
+                <div className="header-right__icons text-white d-flex items-center mt-2 gap-4">
                   {/* search toggle start */}
                   {/* <button onClick={()=> setExpand(true)}>Search</button>
                   {
@@ -107,11 +125,18 @@ export default function Header({userRole}) {
                   {/* search toggle end */}
 
                   {/* cart toggle start */}
-                  {/* <CartToggle
+                  <CartToggle
                     parentClassess={"relative ml-30 mr-30 xl:ml-20"}
                     allClasses={"d-flex items-center text-white"}
-                  /> */}
+                    wishlistCount ={wishlistCount}
+                  />
+                  
+
+                  {/* <FontAwesomeIcon icon={faCardHeart} /> */}
                   {/* cart toggle end */}
+                  {/* <Button variant="contained" color="primary" onClick={toggleTheme}>
+          Toggle to {isDarkMode ? 'Light' : 'Dark'} Mode
+        </Button> */}
 
                   <div
                     className="d-block d-xl-none ml-20"
@@ -167,7 +192,6 @@ export default function Header({userRole}) {
                                       fontSize: "18px",
                                       width: "20vw",
                                       overflow: "auto",
-                                      
                                     }}
                                   >
                                     <div className="mega__menu">
@@ -181,54 +205,46 @@ export default function Header({userRole}) {
                                           </h4>
 
                                           <ul className="mega__list ">
-                                            {
-                                              userRole == 'student' &&  (
-                                                menuList[2].links[0].links.map(
-                                                  (elm, i) => (
-                                                    <li
-                                                      key={i}
-                                                      className={
-                                                        pathname ==
-                                                        elm.href
-                                                          ? "activeMenu"
-                                                          : "inActiveMegaMenu"
-                                                      }
+                                            {userRole == "student" &&
+                                              menuList[2].links[0].links.map(
+                                                (elm, i) => (
+                                                  <li
+                                                    key={i}
+                                                    className={
+                                                      pathname == elm.href
+                                                        ? "activeMenu"
+                                                        : "inActiveMegaMenu"
+                                                    }
+                                                  >
+                                                    <Link
+                                                      data-barba
+                                                      to={elm.href}
                                                     >
-                                                      <Link
-                                                        data-barba
-                                                        to={elm.href}
-                                                      >
-                                                        {elm.label}
-                                                      </Link>
-                                                    </li>
-                                                  )
+                                                      {elm.label}
+                                                    </Link>
+                                                  </li>
                                                 )
-                                               ) 
-                                            }
-                                            {
-                                               userRole == 'instructor' &&  (
-                                                menuList[6].links[0].links.map(
-                                                  (elm, i) => (
-                                                    <li
-                                                      key={i}
-                                                      className={
-                                                        pathname ==
-                                                        elm.href
-                                                          ? "activeMenu"
-                                                          : "inActiveMegaMenu"
-                                                      }
+                                              )}
+                                            {userRole == "instructor" &&
+                                              menuList[6].links[0].links.map(
+                                                (elm, i) => (
+                                                  <li
+                                                    key={i}
+                                                    className={
+                                                      pathname == elm.href
+                                                        ? "activeMenu"
+                                                        : "inActiveMegaMenu"
+                                                    }
+                                                  >
+                                                    <Link
+                                                      data-barba
+                                                      to={elm.href}
                                                     >
-                                                      <Link
-                                                        data-barba
-                                                        to={elm.href}
-                                                      >
-                                                        {elm.label}
-                                                      </Link>
-                                                    </li>
-                                                  )
+                                                      {elm.label}
+                                                    </Link>
+                                                  </li>
                                                 )
-                                               ) 
-                                            }
+                                              )}
                                             <button
                                               className="button -sm -purple-1 text-white fw-500 w-10 text-dark-1 mt-8"
                                               onClick={handleSignOut}
@@ -283,3 +299,6 @@ export default function Header({userRole}) {
     </>
   );
 }
+
+
+

@@ -21,32 +21,41 @@ import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faFileLines } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClock,
+  faFileLines,
+  faHeart,
+} from "@fortawesome/free-solid-svg-icons";
 import { Rating } from "react-simple-star-rating";
 
 export default function CourceCard({ search = null, role, data, index }) {
   const [rating, setRating] = useState(0);
   const [questionSet, setQuestionsSet] = useState([]);
   const [open, setOpen] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [wishlistedSet, setWishlistedSet] = useState();
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user?.id;
+  const userRole = user?.role;
 
   useEffect(() => {
     async function getRating() {
       try {
-        if (token && data) {
-          console.log('rating hello')
+        if (data) {
+          console.log("rating hello");
           const response = await API.get(
-            `/api/surveys/rating/qset/${data.id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
+            `/api/reviews/rating/qset/${data.id}`
+            // {
+            //   headers: {
+            //     Authorization: `Bearer ${token}`,
+            //   },
+            // }
           );
           console.log(response.data.rating);
-           setRating(response.data?.rating);
+          setRating(response.data?.rating);
         }
       } catch (error) {
         if (error.status == 403) {
@@ -59,7 +68,37 @@ export default function CourceCard({ search = null, role, data, index }) {
       }
     }
     getRating();
-  }, []);
+    async function getWishlist() {
+      try {
+        if (token) {
+          const res = await API.get(`/api/wishlist/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          console.log(res.data);
+          const wishlistedSet = res.data || [];
+          
+          localStorage.setItem('wishlist',wishlistedSet?.length || 0)
+          const isInWishlist = wishlistedSet?.some(
+            (set) => set.questionset_id === data.id
+          );
+          console.log("isinwishlist: ", isInWishlist);
+          setIsWishlisted(isInWishlist);
+        }
+      } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // toast.error("Invaild token!");
+          navigate("/login");
+          return;
+        }
+        console.log(error);
+      }
+    }
+    getWishlist();
+  }, [isWishlisted]);
   const onOpenModal = () => {
     async function getQuestions() {
       try {
@@ -95,6 +134,45 @@ export default function CourceCard({ search = null, role, data, index }) {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+  const handleWishlistToggle = async (e) => {
+    e.stopPropagation();
+    setIsWishlisted(!isWishlisted);
+    try {
+      if (token) {
+        if (isWishlisted) {
+          const res = await API.delete(
+            `/api/wishlist/qset/${data.id}/user/${userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          // localStorage.setItem('wishlist',wishlistedSet?.length - 1)
+        } else {
+          const res = await API.post(
+            `/api/wishlist`,
+            { questionSetId: data.id, userId: userId },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          // localStorage.setItem('wishlist',wishlistedSet?.length + 1)
+        }
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
+      console.log(error);
+    }
+  };
   const date = new Date(data.modified_date);
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     month: "long",
@@ -103,6 +181,7 @@ export default function CourceCard({ search = null, role, data, index }) {
   }).format(date);
   console.log(data);
   console.log(rating);
+
   return (
     <>
       <Modal open={open} onClose={onCloseModal} center>
@@ -127,8 +206,18 @@ export default function CourceCard({ search = null, role, data, index }) {
           >
             <CardHeader
               subheader={
-                <div className="text-17 lh-15 fw-500 text-dark-1">
-                  {data.title}
+                <div className="d-flex justify-content-between">
+                  <div className="text-17 lh-15 fw-500 text-dark-1">
+                    {data.title}
+                  </div>
+                  {userRole == "student" ? (
+                    <IconButton
+                      onClick={handleWishlistToggle}
+                      sx={{ color: isWishlisted ? red[500] : "gray" }}
+                    >
+                      <FontAwesomeIcon icon={faHeart} />
+                    </IconButton>
+                  ) : null}
                 </div>
               }
             />
@@ -146,14 +235,14 @@ export default function CourceCard({ search = null, role, data, index }) {
               </div>
             </div>
             <div className="mt-2 ms-2">
-            <Rating
-              readonly={true}
-              initialValue={parseFloat(rating)}
-              allowFraction={true}
-              size={20}
-              activeColor="#ffd700"
-              emptyColor="#d3d3d3"
-            />
+              <Rating
+                readonly={true}
+                initialValue={parseFloat(rating)}
+                allowFraction={true}
+                size={20}
+                activeColor="#ffd700"
+                emptyColor="#d3d3d3"
+              />
             </div>
             <CardContent>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>

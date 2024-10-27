@@ -33,8 +33,8 @@ export default function FooterOne() {
   return (
     <footer className="footer -type-1 bg-dark-1 -green-links">
       <div className="container-fluid w-75">
-        <div className="footer-header">
-          <div className="row y-gap-20 justify-between items-center">
+        <div className="footer-header py-4">
+          <div className="row y-gap-2 justify-between items-center">
             <div className="col-auto">
               <div className="footer-header__logo">
                 <img
@@ -57,14 +57,14 @@ export default function FooterOne() {
           </div>
         </div>
 
-        <div className="footer-columns">
+        <div className="footer-columns py-4">
           <div className="row y-gap-30 d-flex justify-content-evenly">
             <FooterLinks
-              allClasses={"text-17 fw-500 text-white uppercase mb-25"}
+              allClasses={"text-17 fw-500 text-white uppercase mb-2"}
             />
 
             <div className="col-xl-4 col-lg-4 col-md-6">
-              <div className="text-17 fw-500 text-white uppercase mb-25">
+              <div className="text-17 fw-500 text-white uppercase mb-2">
                 GET IN TOUCH
               </div>
               <div className="footer-columns-form">
@@ -92,16 +92,21 @@ export default function FooterOne() {
             </div>
           </div>
         </div>
+        <div className="py-3 border-top-light-15">
+          <div className="d-flex items-center h-100 text-white justify-content-center mr-4">
+            © {new Date().getFullYear()} GoTestli. All Right Reserved.
+          </div>
+        </div>
 
-        <div className="py-30 border-top-light-15">
+        {/* <div className="py-3 border-top-light-15">
           <div className="row justify-between items-center y-gap-20">
             <div className="col-auto">
-              <div className="d-flex items-center h-100 text-white">
+              <div className="d-flex items-center h-100 text-white justify-content-center mr-4">
                 © {new Date().getFullYear()} GoTestli. All Right Reserved.
               </div>
             </div>
 
-            <div className="col-auto">
+            {/* <div className="col-auto">
               <div className="d-flex x-gap-20 y-gap-20 items-center flex-wrap">
                 <div>
                   <div className="d-flex x-gap-15 text-white">
@@ -119,9 +124,9 @@ export default function FooterOne() {
                   </Link>
                 </div>
               </div>
-            </div>
+            </div> 
           </div>
-        </div>
+        </div> */}
       </div>
     </footer>
   );

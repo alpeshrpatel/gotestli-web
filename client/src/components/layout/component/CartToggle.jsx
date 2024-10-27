@@ -7,7 +7,7 @@ import ShopCart from "./ShopCart";
 import CourseCart from "./CourseCart";
 import EventCart from "./EventCart";
 
-const CartToggle = ({ allClasses, parentClassess }) => {
+const CartToggle = ({ allClasses, parentClassess, wishlistCount }) => {
   const { cartProducts, cartCourses, cartEvents } = useContextElement();
   const [activeCart, setActiveCart] = useState(false);
   const [menuItem, setMenuItem] = useState("");
@@ -30,7 +30,7 @@ const CartToggle = ({ allClasses, parentClassess }) => {
         }
       });
     });
-  }, []);
+  }, [wishlistCount]);
 
   return (
     <>
@@ -41,17 +41,14 @@ const CartToggle = ({ allClasses, parentClassess }) => {
           className={`${allClasses ? allClasses : ""}`}
           data-el-toggle=".js-cart-toggle"
         >
-          <i className="text-20 icon icon-basket"></i>
+          <button>
+            <img
+              src="/assets/img/shopping-bag.png"
+              style={{ height: "25px", width: "25px" }}
+            />
+          </button>
           <div className="cartProductCount">
-            {submenu == "Shop" && (
-              <>{cartProducts.length > 9 ? "9+" : cartProducts.length} </>
-            )}
-            {menuItem == "Events" && (
-              <>{cartEvents.length > 9 ? "9+" : cartEvents.length} </>
-            )}
-            {!(submenu == "Shop" || menuItem == "Events") && (
-              <>{cartCourses.length > 9 ? "9+" : cartCourses.length} </>
-            )}
+            {wishlistCount}
           </div>
         </button>
 

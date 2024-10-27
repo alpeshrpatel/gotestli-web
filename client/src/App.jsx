@@ -4,7 +4,7 @@ import "react-calendar/dist/Calendar.css";
 import { BrowserRouter, Routes, Route, RouterProvider, json } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Context from "@/context/Context";
 import HomePage1 from "./pages";
 // import HomePage2 from "./pages/homes/home-2";
@@ -108,6 +108,8 @@ import Faq from "./components/common/Faq";
 import Faqs from "./components/layout/footers/footerpages/Faqs";
 import Leadership from "./components/layout/footers/footerpages/Leadership";
 import NotFoundPage from "./pages/not-found";
+import { ThemeProvider } from "@mui/material";
+import { darkTheme, lightTheme } from "./components/common/MaterialTheme";
 
 function App() {
   useEffect(() => {
@@ -119,11 +121,31 @@ function App() {
     });
   }, []);
 
+  const [isDarkMode, setIsDarkMode] = useState(
+    localStorage.getItem('theme') === 'dark'
+  );
+
+  // Function to toggle theme and persist to localStorage
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+  };
+
+  // On initial load, check localStorage for saved theme
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === 'dark');
+    }
+  }, []);
+
   const user = JSON.parse(localStorage.getItem('user')) || "";
   const userRole = user.role;
 
   return (
     <>
+     {/* <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}> */}
       <Suspense fallback={<Loader />}>
         <Context>
           <BrowserRouter>
@@ -312,6 +334,7 @@ function App() {
           />
         </Context>
       </Suspense>
+      {/* </ThemeProvider> */}
     </>
   );
 }
