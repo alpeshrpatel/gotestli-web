@@ -117,7 +117,7 @@ export default function Menu({ allClasses, headerPosition }) {
               </ul> */}
             </li>
 
-            {userRole == "student" && (
+            {/* {userRole == "student" && (
               <li className="menu-item-has-children -has-mega-menu">
                 <Link
                   data-barba
@@ -240,11 +240,11 @@ export default function Menu({ allClasses, headerPosition }) {
                     >
                       Start Learning For Free
                     </Link>
-                  </div> */}
+                  </div> 
                   </div>
                 </div>
               </li>
-            )}
+            )} */}
             {userRole == "instructor" && (
               <>
               <li className="menu-item-has-children">

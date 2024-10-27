@@ -16,12 +16,14 @@ const metadata = {
 };
 
 export default function AboutPage() {
+  const user = JSON.parse(localStorage.getItem("user")) || "";
+  const userRole = user.role;
   return (
     <div className="main-content  ">
       <MetaComponent meta={metadata} />
       <Preloader />
 
-      <Header />
+      <Header userRole={userRole}/>
       <div className="content-wrapper js-content-wrapper overflow-hidden w-100">
         {/* <PageLinks /> */}
         <About />

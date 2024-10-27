@@ -41,12 +41,14 @@ const QuizResult = ({}) => {
   const hasFetchedBadgeData = useRef(false);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [open, setOpen] = useState(false);
+  const [givenReview,setGivenReview] = useState();
   const [rating, setRating] = useState({
     satisfaction: 0,
     difficulty: 0,
     contentQuality: 0,
   });
-  const [review, setReview] = useState("");
+  
+  const [review, setReview] = useState('');
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [downloadData, setDownloadData] = useState({
     quizTitle: "",
@@ -54,6 +56,7 @@ const QuizResult = ({}) => {
     category: "",
     instructor:""
   });
+  
   const maxCharacters = 500;
   const handleRating = (name, newRating) => {
     setRating((prev) => ({ ...prev, [name]: newRating }));
@@ -137,9 +140,46 @@ const QuizResult = ({}) => {
         }
       }
       getQuizTitle();
+
+      async function getReviewIfGiven(){
+        try {
+          if(token){
+            const {data} = await API.get(`/api/reviews/qset/${questionSetId}/user/${userId}`,{
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            if(data){
+              console.log(data)
+              setGivenReview(data);
+            }
+          }
+        } catch (error) {
+          if (error.status == 403) {
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+            // toast.error("Invaild token!");
+            navigate("/login");
+            return;
+          }
+          throw error;
+        }
+      }
+      getReviewIfGiven()
       return () => clearTimeout(timer);
     }
   }, []);
+
+  useEffect(() => {
+    if (givenReview) {
+      setRating({
+        satisfaction: givenReview.satisfaction || 0,
+        difficulty: givenReview.difficulty || 0,
+        contentQuality: parseInt(givenReview.content_quality) || 0,
+      });
+      setReview(givenReview.review || '');
+    }
+  }, [givenReview]);
 
   useEffect(() => {
     if (hasFetchedBadgeData.current) return;
@@ -193,27 +233,51 @@ const QuizResult = ({}) => {
   const submitSurvey = async () => {
     try {
       if (token) {
-        const res = await API.post(
-          "/api/surveys",
-          {
-            questionset_id: questionSetId,
-            satisfaction: rating.satisfaction,
-            difficulty: rating.difficulty,
-            content_quality: rating.contentQuality,
-            review: review,
-            created_by: userId,
-            modified_by: userId,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
+        if(!givenReview){
+          const res = await API.post(
+            "/api/reviews",
+            {
+              questionset_id: questionSetId,
+              satisfaction: rating.satisfaction,
+              difficulty: rating.difficulty,
+              content_quality: rating.contentQuality,
+              review: review,
+              created_by: userId,
+              modified_by: userId,
             },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (res.status == 200) {
+            toast.success("Thank you for giving review!");
+            navigate("/");
           }
-        );
-        if (res.status == 200) {
-          toast.success("Thank you for taking survey!");
-          navigate("/");
+        }else{
+          const res = await API.put(
+            `/api/reviews/update/qset/${questionSetId}/user/${userId}`,
+            {
+             
+              satisfaction: rating.satisfaction,
+              difficulty: rating.difficulty,
+              content_quality: rating.contentQuality,
+              review: review,
+              
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (res.status == 200) {
+            toast.success("Review updated!");
+            navigate("/");
+          }
         }
+        
       }
     } catch (error) {
       if (error.status == 403) {
@@ -326,14 +390,17 @@ const QuizResult = ({}) => {
           style={{ maxWidth: "400px", width: "100%" }}
         >
           <h5 className="text-center my-2">
-            Take a moment to answer the survey questions
+            Take a moment to answer the review questions
           </h5>
           <button
             className="button -sm px-24 py-25 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm "
             onClick={onOpenModal}
           >
             {/* <i className="fa fa-facebook text-24 me-2" aria-hidden="true"></i> */}
-            Start Survey
+            {
+              givenReview ? 'Edit Review' : 'Start Review'
+            }
+            
           </button>
           <Modal open={open} onClose={onCloseModal} center>
             <div className="col-12 rounded p-5 border-1">
@@ -342,6 +409,7 @@ const QuizResult = ({}) => {
               </h5>
               <Rating
                 onClick={(newRating) => handleRating("satisfaction", newRating)}
+                initialValue={rating.satisfaction}
                 ratingValue={rating.satisfaction}
                 size={50}
                 tooltipArray={satisfactionTooltips}
@@ -352,9 +420,10 @@ const QuizResult = ({}) => {
               <h5 className="mb-2">How difficult did you find the quiz?</h5>
               <Rating
                 onClick={(newRating) => handleRating("difficulty", newRating)}
+                initialValue={rating.difficulty}
                 ratingValue={rating.difficulty}
                 size={50}
-                tooltipArray={difficultyTooltips}
+                tooltipArray={ difficultyTooltips}
                 showTooltip
                 activeColor="#ffd700"
                 emptyColor="#d3d3d3"
@@ -366,6 +435,7 @@ const QuizResult = ({}) => {
                 onClick={(newRating) =>
                   handleRating("contentQuality", newRating)
                 }
+                initialValue={rating.contentQuality}
                 ratingValue={rating.contentQuality}
                 size={50}
                 tooltipArray={contentQualityTooltips}

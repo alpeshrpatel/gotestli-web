@@ -13,6 +13,7 @@ import {
   FormControl,
   InputLabel,
   Autocomplete,
+  useTheme,
 } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 import { auth } from "@/firebase/Firebase";
@@ -219,8 +220,9 @@ const ProfilePage = () => {
   console.log(level3);
   console.log(level4);
   console.log(badgesData);
-
+  const theme = useTheme()
   return (
+    
     <>
       <Header userRole={userRole} />
       <Box
@@ -232,6 +234,7 @@ const ProfilePage = () => {
           marginTop: "10vw",
           gap:'20px'
         }}
+        // style={{ backgroundColor: theme.palette.background.default }}
       >
         <Box sx={{ width: 300, mr: 5 }}>
           <Paper elevation={3} sx={{ p: 2, mb: 2 }}>

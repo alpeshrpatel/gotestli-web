@@ -1,6 +1,7 @@
 import React from "react";
 import { steps } from "../../../../data--backup/steps";
 export default function WhyQuiz() {
+  
   return (
     // style={{backgroundColor:'#6440FB'}}
     <section className="layout-pt-lg layout-pb-lg bg-dark-2" style={{marginBottom:'100px'}}>
