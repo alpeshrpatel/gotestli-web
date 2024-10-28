@@ -76,38 +76,41 @@ const HomeHero = () => {
 
   return (
     <>
-      <section className="masthead -type-1 js-mouse-move-container" style={{height:'100%',paddingTop:'140px',paddingBottom:'200px'}}>
-        <div className="masthead__bg " style={{height:'90%'}}>
+      <section className="masthead -type-1 js-mouse-move-container" style={{height:'100%',paddingTop:'110px',paddingBottom:'50px'}}>
+        <div className="masthead__bg " style={{height:'100%'}}>
           <img src={"/assets/img/home-1/hero/bg.png"} alt="image" />
         </div>
 
         <div className="container bg-transparent border-0 ">
-          <div className="row y-gap-30 justify-center items-end mx-auto ">
+          <div className="row y-gap-20 justify-center items-end mx-auto ">
             <div className="col-xl-6 col-lg-6 col-sm-10">
               <div
                 className="masthead__content"
                 data-aos="fade-up"
                 data-aos-delay="500"
               >
-                <h1 className="masthead__title " style={{color:'white'}}>
+                <h1 className="masthead__title text-center" style={{ color: 'white', alignItems: 'center' }}>
+                  
+                  <span className=""  style={{ display: 'inline' }}>
                   {title}{" "}
-                  <span className="text-green-1 underline">
+                  </span>
+                  <span className="text-green-1 underline"  style={{ display: 'inline' }}>
                     {text_underline}
                   </span>
                 </h1>
-                <p
+                {/* <p
                   data-aos="fade-up"
                   data-aos-duration="100"
                   className="masthead__text"
                 >
                   {info_hero}
-                </p>
+                </p> */}
                 <div
                   data-aos="fade-up"
                   data-aos-duration="200"
-                  className="masthead__buttons row x-gap-10 y-gap-10"
+                  className="masthead__buttons row x-gap-10 y-gap-10 d-flex justify-content-evenly"
                 >
-                  <div className="col-12 col-sm-auto">
+                  <div className="col-12 col-sm-auto ">
                     <Link
                       data-barba
                       to="/signup"
@@ -119,7 +122,7 @@ const HomeHero = () => {
                   <div className="col-12 col-sm-auto">
                     <Link
                       data-barba
-                      to="/courses-list-1"
+                      to="/signup"
                       className="button -md -outline-green-1 text-green-1"
                     >
                       Find Quizzes

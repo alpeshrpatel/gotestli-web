@@ -55,6 +55,14 @@ export default function Menu({ allClasses, headerPosition }) {
   const user = JSON.parse( localStorage.getItem('user')) || '';
   const userRole = user.role;
 
+  const responsiveMarginLeft = () => {
+    if (window.innerWidth >= 2500) return "300px";
+    // if (window.innerWidth >= 2000) return "22vw";
+    // if (window.innerWidth >= 1200) return "30vw"; 
+      // sm screen
+    return "0"; // default for smaller screens
+  };
+
   return (
     <div
       className={`header-menu js-mobile-menu-toggle  ${
@@ -63,9 +71,11 @@ export default function Menu({ allClasses, headerPosition }) {
       style={{
         marginTop: "20px",
         display: "flex",
-        justifyContent: "space-between",
+        // justifyContent: "space-between",
         alignItems: "center",
         gap: "5px",
+        marginLeft: '490px',
+        
       }}
     >
       <div className="header-menu__content">
@@ -85,12 +95,12 @@ export default function Menu({ allClasses, headerPosition }) {
             className={`${allClasses ? allClasses : ""}`}
             style={{ paddingLeft: 0, display: "flex", gap: "15px" }}
           >
-            <li className="menu-item-has-children">
+            <li className="menu-item-has-children ">
               <Link
                 data-barba
                 to={`${userRole == 'admin' ? `/admin/dashboard` :( (userRole == 'instructor') ? `/instructor/home` : `/`) }`}
                 className={menuItem == "Home" ? "activeMenu" : ""}
-                style={{ fontSize: "18px" }}
+                style={{ fontSize: "18px",whiteSpace: "nowrap" }}
               >
                 Home <i className="icon-chevron-right text-13 ml-10"></i>
               </Link>
@@ -254,7 +264,7 @@ export default function Menu({ allClasses, headerPosition }) {
                   className={
                     menuItem == "Create QuestionSet" ? "activeMenu" : ""
                   }
-                  style={{ fontSize: "18px" }}
+                  style={{ fontSize: "18px",whiteSpace: "nowrap" }}
                 >
                   Create QuestionSet{" "}
                   <i className="icon-chevron-right text-13 ml-10"></i>
@@ -289,7 +299,7 @@ export default function Menu({ allClasses, headerPosition }) {
                 className={
                   menuItem == "Create QuestionSet" ? "activeMenu" : ""
                 }
-                style={{ fontSize: "18px" }}
+                style={{ fontSize: "18px",whiteSpace: "nowrap" }}
               >
                 Upload QuestionSet{" "}
                 <i className="icon-chevron-right text-13 ml-10"></i>

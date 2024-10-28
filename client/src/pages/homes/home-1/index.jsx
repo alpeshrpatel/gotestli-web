@@ -69,8 +69,8 @@ export default function HomePage1() {
             {!userRole && (
               <>
                 <HomeHero />
-                <Brands />
-                <Categories />
+                {/* <Brands />
+                <Categories /> */}
               </>
             )}
 

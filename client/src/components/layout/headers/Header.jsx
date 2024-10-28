@@ -3,13 +3,14 @@ import { useState } from "react";
 import SearchToggle from "../component/SearchToggle";
 import CartToggle from "../component/CartToggle";
 import Menu from "../component/Menu";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import MobileMenu from "../component/MobileMenu";
 import { auth } from "@/firebase/Firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { menuList } from "@/data--backup/menu";
 import { Button, IconButton, TextField } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 export default function Header({ userRole }) {
   const [activeMobileMenu, setActiveMobileMenu] = useState(false);
@@ -20,7 +21,9 @@ export default function Header({ userRole }) {
   const [isDarkMode, setIsDarkMode] = useState(
     localStorage.getItem("theme") === "dark"
   );
-  const [wishlistCount,setWishlistCount] = useState(localStorage.getItem('wishlist') || 0)
+  const [wishlistCount, setWishlistCount] = useState(
+    localStorage.getItem("wishlist") || 0
+  );
   // Function to toggle theme and persist to localStorage
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
@@ -28,6 +31,7 @@ export default function Header({ userRole }) {
     localStorage.setItem("theme", newTheme ? "dark" : "light");
   };
   const { pathname } = useLocation();
+  const  navigate  = useNavigate();
 
   useEffect(() => {
     menuList.forEach((elm) => {
@@ -51,20 +55,21 @@ export default function Header({ userRole }) {
       setUser(currentUser);
     });
   }, []);
-    // Update wishlist count in real-time from other components or actions
-    useEffect(() => {
-      const handleStorageChange = () => {
-        setWishlistCount(parseInt(localStorage.getItem('wishlist')) || 0);
-      };
-      
-      window.addEventListener('storage', handleStorageChange);
-      return () => window.removeEventListener('storage', handleStorageChange);
-    }, []);
+  // Update wishlist count in real-time from other components or actions
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setWishlistCount(parseInt(localStorage.getItem("wishlist")) || 0);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
   const handleSignOut = async () => {
     try {
       await signOut(auth);
       localStorage.removeItem("user");
       localStorage.removeItem("token");
+      localStorage.removeItem("wishlist");
       console.log("Logout Successfully");
       window.location.reload();
     } catch (error) {
@@ -74,34 +79,87 @@ export default function Header({ userRole }) {
 
   const handleSearch = () => {};
 
+  const handleKeyDown = (e) => {
+    console.log(e.target.value);
+    if (e.key === "Enter") {
+      console.log("enter clicked");
+      navigate("/search/result", { state: { keyword: e.target.value } });
+    }
+  };
+
   return (
     <>
       <header className="header -type-1 ">
         <div className="header__container">
-          <div className="row justify-between items-center">
-            <div className="col-auto">
-              <div className="header-left">
-                <div className="header__logo " style={{}}>
-                  <Link to="/">
-                    <img
-                      src="/assets/img/header-logo3.png"
-                      alt="logo"
-                      style={{ height: "55px", width: "185px" }}
-                    />
-                  </Link>
-                </div>
-
-                {/* header explore start */}
-                {/* <HeaderExplore
-                  allClasses={
-                    "header__explore text-green-1 ml-60 xl:ml-30 xl:d-none"
-                  }
-                /> */}
-                {/* header explore end */}
+          {/* <div className="row justify-between items-center"> */}
+          {/* <div className="d-flex align-items-center w-50 ">
+            <div className="header-left">
+              <div className="header__logo" style={{}}>
+                <Link to="/">
+                  <img
+                    src="/assets/img/header-logo3.png"
+                    alt="logo"
+                    style={{ height: "55px", width: "185px" }}
+                  />
+                </Link>
+              </div>
+            </div>
+            <div>
+              <Menu allClasses={"menu__nav text-white -is-active "} />
+            </div> */}
+          {/* <div className="header-left d-flex align-items-center">
+          <div className="header__logo">
+            <Link to="/">
+              <img
+                src="/assets/img/header-logo3.png"
+                alt="logo"
+                style={{ height: "55px", width: "185px" }}
+              />
+            </Link>
+          </div>
+          <div className="ms-20">
+            <Menu allClasses={"menu__nav text-white -is-active"} />
+          </div>
+        </div>
+            </div> */}
+          <div className="row justify-content-between align-items-center ">
+            <div className="col-auto d-flex align-items-center ">
+              <div className="header__logo">
+                <Link to="/">
+                  <img
+                    src="/assets/img/header-logo3.png"
+                    alt="logo"
+                    style={{ height: "55px", width: "185px" }}
+                  />
+                </Link>
               </div>
             </div>
 
-            <Menu allClasses={"menu__nav text-white -is-active"} />
+            <div className="col-auto d-flex align-items-center  ">
+              <Menu allClasses={"menu__nav text-white -is-active "} />
+            </div>
+            <div className="w-25 d-flex align-ietms-center justify-content-center">
+              <div className="header-search__field d-flex items-center align-items-center rounded-5 " style={{height:'10px'}}>
+                <div className="icon icon-search text-dark-1 ml-8 d-flex items-center"></div>
+                <input
+                  required
+                  type="text"
+                  className="px-5 py-2 text-18 lh-12 text-dark-1 fw-500 "
+                  placeholder="What do you want ?"
+                  onKeyDown={handleKeyDown}
+                />
+                {/* <TextField id="outlined-search" label="Search Questions" type="search" className="searchInput mb-2" /> */}
+
+                <button
+                  // onClick={() => setActiveSearch(false)}
+                  className="d-flex items-center align-items-center justify-center size-20 rounded-full bg-purple-3 mr-8"
+                  data-el-toggle=".js-search-toggle"
+                >
+                  <CancelIcon fontSize="medium" />
+                </button>
+              </div>
+            </div>
+
             <MobileMenu
               setActiveMobileMenu={setActiveMobileMenu}
               activeMobileMenu={activeMobileMenu}
@@ -121,16 +179,15 @@ export default function Header({ userRole }) {
                       </>
                     )
                   } */}
-                  <SearchToggle />
+                  {/* <SearchToggle /> */}
                   {/* search toggle end */}
 
                   {/* cart toggle start */}
                   <CartToggle
-                    parentClassess={"relative ml-30 mr-30 xl:ml-20"}
+                    parentClassess={""} //ml-30 mr-30 xl:ml-20
                     allClasses={"d-flex items-center text-white"}
-                    wishlistCount ={wishlistCount}
+                    wishlistCount={wishlistCount}
                   />
-                  
 
                   {/* <FontAwesomeIcon icon={faCardHeart} /> */}
                   {/* cart toggle end */}
@@ -160,7 +217,8 @@ export default function Header({ userRole }) {
                   {user ? (
                     <div
                       className=" d-flex justify-space-between items-center mt-2"
-                      style={{ margin: "0 8vw" }}
+                      style={{  margin:'0 10vw'}}
+                     
                     >
                       {/* <h5 className="text-white ml-30   ">
                         {user.displayName}
@@ -182,6 +240,7 @@ export default function Header({ userRole }) {
                                         ? "activeMenu"
                                         : ""
                                     }
+                                    // style={{ position:'relative', top:'3px',marginRight:'1px'}}
                                   >
                                     {user.displayName?.split(" ")[0]}
                                     <i className="icon-chevron-right text-13 ml-10"></i>
@@ -299,6 +358,3 @@ export default function Header({ userRole }) {
     </>
   );
 }
-
-
-

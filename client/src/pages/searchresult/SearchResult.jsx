@@ -10,6 +10,7 @@ import PaginationTwo from "@/components/common/PaginationTwo";
 import { API } from "@/utils/AxiosInstance";
 import CourceCard from "@/components/homes/courseCards/CourseCard";
 import Header from "@/components/layout/headers/Header";
+import FooterOne from "@/components/layout/footers/FooterOne";
 
 export default function SearchResult() {
   const { addProductToCart, isAddedToCartProducts } = useContextElement();
@@ -26,7 +27,9 @@ export default function SearchResult() {
   const indexOfLastRecord = currentPage * 6;
   const indexOfFirstRecord = indexOfLastRecord - 6;
 
-  const { keyword } = location.state;
+  const { keyword } = location?.state;
+  const user = JSON.parse(localStorage.getItem("user")) || "";
+  const userRole = user.role;
   // let keyword = "game";
 
   const handleSubmit = (e) => {
@@ -37,18 +40,16 @@ export default function SearchResult() {
     if (keyword) {
       async function getSearchedQuestionsets() {
         try {
-          if (token) {
-            const res = await API.get(
-              `/api/questionset/search/result/${keyword}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
-            console.log(res.data);
-            setQuestionSets(res.data);
-          }
+          const res = await API.get(
+            `/api/questionset/search/result/${keyword}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log(res.data);
+          setQuestionSets(res.data);
         } catch (error) {
           if (error.status == 403) {
             localStorage.removeItem("user");
@@ -108,7 +109,7 @@ export default function SearchResult() {
           </div>
         </div>
       </section> */}
-      <Header />
+      <Header userRole={userRole} />
       <section
         className="layout-pt-md layout-pb-lg container-fluid w-75 "
         style={{ paddingTop: "120px" }}
@@ -136,18 +137,18 @@ export default function SearchResult() {
                     </div>
                   </div>
 
-                  <h5 className="sidebar__title">Categories</h5>
+                  {/* <h5 className="sidebar__title">Categories</h5> */}
 
-                  <div className="sidebar-content -list">
+                  {/* <div className="sidebar-content -list">
                     {categories.map((elm, i) => (
                       <a key={i} className="text-dark-1" href={elm.href}>
                         {elm.name}
                       </a>
                     ))}
-                  </div>
+                  </div> */}
                 </div>
 
-                <div className="sidebar__item">
+                {/* <div className="sidebar__item">
                   <h5 className="sidebar__title">Filter by price</h5>
 
                   <div className="sidebar-content -slider">
@@ -178,9 +179,9 @@ export default function SearchResult() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
-                <div className="sidebar__item">
+                {/* <div className="sidebar__item">
                   <h5 className="sidebar__title">Tags</h5>
 
                   <div className="sidebar-content -tags">
@@ -195,7 +196,7 @@ export default function SearchResult() {
                       </div>
                     ))}
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
 
@@ -354,6 +355,9 @@ export default function SearchResult() {
             </div>
           </div>
         </div>
+        {/* <div style={{ position: 'sticky', top:'100vh' }}>
+          <FooterOne />
+        </div> */}
       </section>
     </>
   );
