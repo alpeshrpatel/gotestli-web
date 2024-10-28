@@ -34,7 +34,7 @@ const CartToggle = ({ allClasses, parentClassess, wishlistCount }) => {
 
   return (
     <>
-      <div className={parentClassess ? parentClassess : ""}>
+      <div className={parentClassess ? parentClassess : ""} style={{marginRight:'0px'}}>
         <button
           style={{ position: "relative" }}
           onClick={() => setActiveCart((pre) => !pre)}

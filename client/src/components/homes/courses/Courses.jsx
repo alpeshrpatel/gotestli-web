@@ -130,7 +130,7 @@ export default function Courses({userRole}) {
   return (
     <section
       className="layout-pt-lg layout-pb-lg"
-      style={{ paddingTop: "10px" }}
+      style={{ paddingTop: "10px",paddingBottom:'40px' }}
     >
       <div className="row justify-center text-center">
         <div className="col-auto">
@@ -154,7 +154,7 @@ export default function Courses({userRole}) {
           </div>
         </div>
       </div>
-      <div className="tabs__controls flex-wrap  pt-50 d-flex justify-center x-gap-10 js-tabs-controls ">
+      <div className="tabs__controls flex-wrap  pt-20 d-flex justify-center x-gap-10 js-tabs-controls ">
         <Box sx={{ width: "100%" }} className="d-flex justify-center">
           <Tabs
             value={value}
@@ -179,7 +179,7 @@ export default function Courses({userRole}) {
       </div>
 
       <div
-        className="pt-60 m-auto row y-gap-30 w-75 pl-0 pr-0"
+        className="pt-40 m-auto row y-gap-30 w-75 pl-0 pr-0"
         data-aos="fade-right"
         data-aos-offset="80"
         data-aos-duration={800}
