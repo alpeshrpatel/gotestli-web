@@ -328,10 +328,11 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
 
                 {/* Middle - Course Title */}
                 <Grid item xs={12} sm={8} sx={{ paddingLeft: 2 }}>
-                  <div className="d-flex gap-4 items-center mb-2">
+                  <div className="d-flex gap-4 items-center mb-2 ">
                     <Typography
                       variant="h5"
-                      sx={{ color: "#ffffff", fontWeight: "bold" }}
+                      className='text-truncate'
+                      sx={{ color: "#ffffff", fontWeight: "bold",maxWidth:'70px' }}
                     >
                       {data.title}
                     </Typography>

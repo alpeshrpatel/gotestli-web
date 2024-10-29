@@ -78,8 +78,8 @@ export default function CourceCard({ search = null, role, data, index }) {
           });
           console.log(res.data);
           const wishlistedSet = res.data || [];
-          
-          localStorage.setItem('wishlist',wishlistedSet?.length || 0)
+
+          localStorage.setItem("wishlist", wishlistedSet?.length || 0);
           const isInWishlist = wishlistedSet?.some(
             (set) => set.questionset_id === data.id
           );
@@ -207,7 +207,10 @@ export default function CourceCard({ search = null, role, data, index }) {
             <CardHeader
               subheader={
                 <div className="d-flex justify-content-between">
-                  <div className="text-17 lh-15 fw-500 text-dark-1">
+                  <div
+                    className="text-17 lh-15 fw-500 text-dark-1 text-truncate"
+                    style={{ maxWidth: "200px" }}
+                  >
                     {data.title}
                   </div>
                   {userRole == "student" ? (
@@ -280,7 +283,7 @@ export default function CourceCard({ search = null, role, data, index }) {
                 </Typography>
               </div>
             </CardContent>
-            <CardActions disableSpacing>
+            <CardActions disableSpacing className="d-flex justify-content-between">
               <div className="d-flex items-center gap-2 mr-20">
                 <div className="">
                   <FontAwesomeIcon icon={faFileLines} />
@@ -289,7 +292,7 @@ export default function CourceCard({ search = null, role, data, index }) {
                   {data.no_of_question} Questions
                 </div>
               </div>
-              <div className="d-flex items-center gap-2">
+              <div className="d-flex  items-center gap-2">
                 <div className="">
                   <FontAwesomeIcon icon={faClock} />
                 </div>

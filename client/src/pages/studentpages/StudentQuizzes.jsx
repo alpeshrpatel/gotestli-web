@@ -14,6 +14,10 @@ import { faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
 import Table from "@/components/common/CommonTable";
 import { IconButton, TableCell } from "@mui/material";
 import CommonTable from "@/components/common/CommonTable";
+import { Rating } from "react-simple-star-rating";
+import Modal from "react-responsive-modal";
+import "react-responsive-modal/styles.css";
+import { contentQualityTooltips, difficultyTooltips, satisfactionTooltips } from "@/components/quiz/QuizResult";
 
 const metadata = {
   title:
@@ -31,21 +35,37 @@ const columns = [
   { id: "marks_obtained", label: "Marks", sortable: true },
   { id: "percentage", label: "Percentage", sortable: true },
   { id: "mode", label: "Mode", sortable: false },
-  { id: "result", label: "Result", sortable: false },
+  { id: "result", label: "Result", sortable: true },
+  { id: "review", label: "Review", sortable: true },
   { id: "download", label: "Download", sortable: false },
 ];
 
 const StudentQuizzes = () => {
   const [questionSets, setQuestionSets] = useState([]);
+  const [givenReview, setGivenReview] = useState();
+  const [rating, setRating] = useState({
+    satisfaction: 0,
+    difficulty: 0,
+    contentQuality: 0,
+  });
+
+  const [review, setReview] = useState("");
+  const [questionSetId,setQuestionSetId] = useState();
+  const [open, setOpen] = useState(false);
   // const [studentsData, setStudentsData] = useState([]);
   // const [expandedRow, setExpandedRow] = useState(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
+  let userId = user.id;
+  const maxCharacters = 500;
+  const onOpenModal = () => {
+    setOpen(true);
+  };
 
+  const onCloseModal = () => setOpen(false);
   useEffect(() => {
-    let userId = user.id;
     // const author = auth.currentUser.displayName;
     async function getQuestionSets() {
       try {
@@ -70,7 +90,122 @@ const StudentQuizzes = () => {
     }
     getQuestionSets();
   }, []);
+
+  const handleFetchedReview = async (qSetId) => {
+    try {
+      if (token) {
+        onOpenModal()
+        setQuestionSetId(qSetId)
+        const { data } = await API.get(
+          `/api/reviews/qset/${qSetId}/user/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (data.review_id) {
+          console.log(data);
+          setGivenReview(data);
+          setRating({
+            satisfaction: data.satisfaction || 0,
+            difficulty: data.difficulty || 0,
+            contentQuality: parseInt(data.content_quality) || 0,
+          });
+          setReview(data.review || '');
+           onOpenModal()
+        }else{
+          setRating({
+            satisfaction:  0,
+            difficulty: 0,
+            contentQuality:  0,
+          });
+          setReview('');
+          onOpenModal()
+        }
+        // onOpenModal()
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        toast.error("Your Session timedout!");
+        navigate("/login");
+        return;
+      }
+      throw error;
+    }
+  };
+  const submitSurvey = async () => {
+    try {
+      if (token) {
+        if(!givenReview?.review_id){
+          const res = await API.post(
+            "/api/reviews",
+            {
+              questionset_id: questionSetId,
+              satisfaction: rating.satisfaction,
+              difficulty: rating.difficulty,
+              content_quality: rating.contentQuality,
+              review: review,
+              created_by: userId,
+              modified_by: userId,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (res.status == 200) {
+            toast.success("Thank you for giving review!");
+            navigate("/");
+          }
+        }else{
+          const res = await API.put(
+            `/api/reviews/update/qset/${questionSetId}/user/${userId}`,
+            {
+             
+              satisfaction: rating.satisfaction,
+              difficulty: rating.difficulty,
+              content_quality: rating.contentQuality,
+              review: review,
+              
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (res.status == 200) {
+            toast.success("Review updated!");
+            navigate("/");
+          }
+        }
+        
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
+      throw error;
+    }
+  };
   console.log(questionSets);
+
+  const handleRating = (name, newRating) => {
+    setRating((prev) => ({ ...prev, [name]: newRating }));
+  };
+  const handleReviewChange = (e) => {
+    if (e.target.value.length <= maxCharacters) {
+      setReview(e.target.value);
+    }
+  };
 
   const getRowId = (row, index) => row.id;
 
@@ -97,7 +232,17 @@ const StudentQuizzes = () => {
       <TableCell>
         {quiz.percentage >= quiz?.pass_percentage ? "Pass" : "Fail"}
       </TableCell>
-      <TableCell style={{ textAlign: "center" }}>
+      <TableCell
+        onClick={() => handleFetchedReview(quiz.question_set_id)}
+        style={{
+          textDecoration: "underline",
+          color: "blue",
+          // textAlign: "center",
+        }}
+      >
+        Review
+      </TableCell>
+      <TableCell style={{}}>
         {quiz.percentage >= quiz?.pass_percentage ? (
           <IconButton
             onClick={() =>
@@ -217,6 +362,66 @@ const StudentQuizzes = () => {
 
         <FooterOne />
       </div>
+      <Modal open={open} onClose={onCloseModal} center>
+        <div className="col-12 rounded p-5 border-1">
+          <h5 className="mb-2">
+            How satisfied are you with the quiz you just completed?
+          </h5>
+          <Rating
+            onClick={(newRating) => handleRating("satisfaction", newRating)}
+            initialValue={rating.satisfaction}
+            ratingValue={rating.satisfaction}
+            size={50}
+            tooltipArray={satisfactionTooltips}
+            showTooltip
+            activeColor="#ffd700"
+            emptyColor="#d3d3d3"
+          />
+          <h5 className="mb-2">How difficult did you find the quiz?</h5>
+          <Rating
+            onClick={(newRating) => handleRating("difficulty", newRating)}
+            initialValue={rating.difficulty}
+            ratingValue={rating.difficulty}
+            size={50}
+            tooltipArray={difficultyTooltips}
+            showTooltip
+            activeColor="#ffd700"
+            emptyColor="#d3d3d3"
+          />
+          <h5 className="mb-2">
+            How would you rate the quality of the content?
+          </h5>
+          <Rating
+            onClick={(newRating) => handleRating("contentQuality", newRating)}
+            initialValue={rating.contentQuality}
+            ratingValue={rating.contentQuality}
+            size={50}
+            tooltipArray={contentQualityTooltips}
+            showTooltip
+            activeColor="#ffd700"
+            emptyColor="#d3d3d3"
+          />
+          <div className="mt-4">
+            <h5 className="mb-2">Write a review (Optional)</h5>
+            <textarea
+              className="form-control"
+              rows="5"
+              placeholder="Share your feedback here..."
+              value={review}
+              onChange={handleReviewChange}
+            ></textarea>
+            <div className="text-muted">
+              {maxCharacters - review.length} characters remaining
+            </div>
+          </div>
+          <button
+            className="button -sm px-20 py-20 -outline-green-5 text-green-5 text-16 fw-bolder lh-sm mx-auto"
+            onClick={submitSurvey}
+          >
+            Submit
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
