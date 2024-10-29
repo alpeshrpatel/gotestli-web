@@ -20,15 +20,15 @@ import Modal from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import { Rating } from "react-simple-star-rating";
 
-const satisfactionTooltips = [
+export const satisfactionTooltips = [
   "Very Unsatisfied",
   "Unsatisfied",
   "Neutral",
   "Satisfied",
   "Very Satisfied",
 ];
-const difficultyTooltips = ["Very Easy", "Easy", "Medium", "Hard", "Very Hard"];
-const contentQualityTooltips = [
+export const difficultyTooltips = ["Very Easy", "Easy", "Medium", "Hard", "Very Hard"];
+export const contentQualityTooltips = [
   "Poor",
   "Fair",
   "Good",

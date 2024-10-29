@@ -82,14 +82,14 @@ const HomeHero = () => {
         </div>
 
         <div className="container bg-transparent border-0 ">
-          <div className="row y-gap-20 justify-center items-end mx-auto ">
+          <div className="row y-gap-20  items-end  ">
             <div className="col-xl-6 col-lg-6 col-sm-10">
               <div
                 className="masthead__content"
                 data-aos="fade-up"
                 data-aos-delay="500"
               >
-                <h1 className="masthead__title text-center" style={{ color: 'white', alignItems: 'center' }}>
+                <h1 className="masthead__title text-center" style={{ color: 'white',textAlign:'start', whiteSpace: 'nowrap',  }}>
                   
                   <span className=""  style={{ display: 'inline' }}>
                   {title}{" "}
@@ -108,7 +108,7 @@ const HomeHero = () => {
                 <div
                   data-aos="fade-up"
                   data-aos-duration="200"
-                  className="masthead__buttons row x-gap-10 y-gap-10 d-flex justify-content-evenly"
+                  className="masthead__buttons row x-gap-10 y-gap-10 d-flex justify-content-evenly mx-auto"
                 >
                   <div className="col-12 col-sm-auto ">
                     <Link

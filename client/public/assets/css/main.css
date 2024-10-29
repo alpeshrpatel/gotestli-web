@@ -15775,45 +15775,48 @@ header-right__buttons .signUpButton :hover{
 } */
 
 .left-alignment{
-  /* margin-right:'100px !important' */
+  /* right:'200px !important' */
   @media (min-width: 1200px) {
-    left: 82.5vw !important;
+    left: 78vw !important;
   }
   @media (min-width: 1600px) {
-    left: 79vw !important;
+    left: 80vw !important;
   }
   @media (min-width: 1650px) {
-    left: 76vw !important;
+    left: 80vw !important;
   }
   @media (min-width: 1730px) {
-    left: 73vw !important;
+    left: 80vw !important;
   }
   @media (min-width: 1800px) {
-    left: 1280px !important;
+    left: 1500px !important;
+  }
+  @media (min-width: 1900px) {
+    left: 1600px !important;
   }
   @media (min-width: 2000px) {
-    left: 1420px !important;
+    left: 84vw !important;
   }
   @media (min-width: 2500px) {
-    left: 72vw !important;
+    left: 88vw !important;
   }
   @media (min-width: 3000px) {
-    left: 68vw !important;
+    left: 90vw !important;
   }
   @media (min-width: 4000px) {
-    left: 65vw !important;
+    left: 93vw !important;
   }
   @media (min-width: 5000px) {
-    left: 62vw !important;
+    left: 95vw !important;
   }
   @media (min-width: 6000px) {
-    left: 59vw !important;
+    left: 97vw !important;
   }
   @media (min-width: 7000px) {
-    left: 57vw !important;
+    left: 98vw !important;
   }
   @media (min-width: 8000px) {
-    left: 55vw !important;
+    left: 99vw !important;
   }
 }
 
