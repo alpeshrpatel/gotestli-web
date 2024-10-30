@@ -370,14 +370,14 @@ const SingleChoice = ({
   const renderTime = ({ remainingTime }) => {
     remainingTimeRef.current = remainingTime;
     if (remainingTime === 0) {
-      return <div className="timer text-20 fw-500 text-center">Time Up...</div>;
+      return <div className="timer text-14 fw-500 text-center">Time Up...</div>;
     }
   
     return (
       <div className="timer">
-        <div className="text text-20 fw-500">Remaining</div>
-        <div className="value text-24 fw-600 text-center">{remainingTime}</div>
-        <div className="text text-20 fw-500 text-center">seconds</div>
+        <div className="text text-10 fw-500">Remaining</div>
+        <div className="value text-14 fw-600 text-center">{remainingTime}</div>
+        <div className="text text-10 fw-500 text-center">seconds</div>
       </div>
     );
   };
@@ -400,10 +400,12 @@ const SingleChoice = ({
               {
                 timerOn == 'yes' ? (
                   <CountdownCircleTimer
+                  // style={{height:'70px',width:'70px'}}
+                  size={130}
                   isPlaying
-                  duration={7}
+                  duration={time*60}
                   colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
-                  colorsTime={[7, 6, 3, 0]} 
+                  colorsTime={[time*60, time*40, time*20, 0]} 
                   onComplete={() => {
                     onOpenModal()
                     return { shouldRepeat: false }; 

@@ -11,6 +11,8 @@ import { Delete, Edit, SaveAsRounded } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import CommonTable from "@/components/common/CommonTable";
+import CancelIcon from "@mui/icons-material/Cancel";
+import SearchIcon from "@mui/icons-material/Search";
 
 const metadata = {
   title:
@@ -23,10 +25,10 @@ const columns = [
   { id: "index", label: "#", sortable: false },
   { id: "title", label: "Question Set Title", sortable: true },
   { id: "short_desc", label: "Description", sortable: true },
-  { id: "no_of_question", label: "Total Questions", sortable: false },
+  { id: "no_of_question", label: "Total Questions", sortable: true },
   { id: "time_duration", label: "Duration", sortable: true },
-  { id: "totalmarks", label: "Total Marks", sortable: false },
-  { id: "is_demo", label: "Visible", sortable: false },
+  { id: "totalmarks", label: "Total Marks", sortable: true },
+  { id: "is_demo", label: "Visible", sortable: true },
   { id: "questions", label: "Questions", sortable: false },
   { id: "attempted", label: "Total Attempted", sortable: false },
   { id: "actions", label: "Actions", sortable: false },
@@ -43,6 +45,7 @@ const HomePage = () => {
     time_duration: 0,
     is_demo: "",
   });
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
@@ -187,6 +190,22 @@ const HomePage = () => {
   const handleViewQuestionsClick = (set) => {
     navigate(`/quiz/questions/${set.id}`);
   };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value.toLowerCase());
+  };
+
+  const filteredData = questionSets.filter((quiz) =>
+    // Object.values(quiz).some((value) =>
+    //   value ? value.toString().toLowerCase().includes(searchQuery) : false
+    // )
+    quiz.title.toLowerCase().includes(searchQuery) ||
+    quiz?.short_desc.toLowerCase().includes(searchQuery) ||
+    quiz?.tags?.toLowerCase().includes(searchQuery) ||
+    quiz?.author?.toLowerCase().includes(searchQuery)
+      ? true
+      : false
+  );
 
   const getRowId = (row) => row.id;
 
@@ -441,12 +460,49 @@ const HomePage = () => {
           //   </table>
           // </div>
           <div className="table-responsive">
-            <CommonTable
+            {/* <CommonTable
               columns={columns}
               data={questionSets}
               getRowId={getRowId}
               renderRowCells={renderRowCells}
-            />
+            /> */}
+            <div
+                className="header-search__field position-relative d-flex align-items-center rounded-5 mt-10"
+                style={{ height: "40px", width: "300px" }}
+              >
+                <SearchIcon
+                  className="position-absolute ms-3 text-muted"
+                  style={{ fontSize: "20px" }}
+                />
+                <input
+                  required
+                  type="text"
+                  className="form-control ps-5 pe-5 text-18 lh-12 text-dark-1 fw-500 w-100"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                />
+                {searchQuery && (
+                  <CancelIcon
+                    className="position-absolute end-0 me-3 text-muted"
+                    fontSize="medium"
+                     onClick={()=> setSearchQuery('')} 
+                    style={{ cursor: "pointer" }}
+                  />
+                )}
+              </div>
+              {searchQuery && filteredData.length <= 0 ? (
+                <h4 className="no-content text-center">
+                  It looks a bit empty here! 🌟 No fields matched!
+                </h4>
+              ) : (
+                <CommonTable
+                  columns={columns}
+                  data={filteredData.length > 0 ? filteredData : questionSets}
+                  getRowId={getRowId}
+                  renderRowCells={renderRowCells}
+                />
+              )}
           </div>
         ) : (
           <h4 className="no-content text-center">

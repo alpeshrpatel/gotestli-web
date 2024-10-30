@@ -54,8 +54,17 @@ const CommonTable = ({
 
   const getComparator = (order, orderBy) => {
     return order === "desc"
-      ? (a, b) => descendingComparator(a, b, orderBy)
-      : (a, b) => -descendingComparator(a, b, orderBy);
+      ? (a, b) => orderBy == 'result' ? passFailComparator(a,b) : descendingComparator(a, b, orderBy)
+      : (a, b) => orderBy == 'result' ? -passFailComparator(a,b) : -descendingComparator(a, b, orderBy);
+  };
+
+  const passFailComparator = (a, b) => {
+    const aPass = a.percentage >= a.pass_percentage;
+    const bPass = b.percentage >= b.pass_percentage;
+
+    if (aPass && !bPass) return -1;
+    if (!aPass && bPass) return 1;
+    return 0;
   };
 
   const descendingComparator = (a, b, orderBy) => {
