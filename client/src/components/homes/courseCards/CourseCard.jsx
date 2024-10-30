@@ -27,6 +27,7 @@ import {
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
 import { Rating } from "react-simple-star-rating";
+import { BootstrapTooltip } from "@/components/common/Tooltip";
 
 export default function CourceCard({ search = null, role, data, index }) {
   const [rating, setRating] = useState(0);
@@ -99,6 +100,7 @@ export default function CourceCard({ search = null, role, data, index }) {
     }
     getWishlist();
   }, [isWishlisted]);
+  
   const onOpenModal = () => {
     async function getQuestions() {
       try {
@@ -210,8 +212,12 @@ export default function CourceCard({ search = null, role, data, index }) {
                   <div
                     className="text-17 lh-15 fw-500 text-dark-1 text-truncate"
                     style={{ maxWidth: "200px" }}
+                    // data-toggle="tooltip" data-placement="top" title={data.title}
                   >
+                    <BootstrapTooltip title={data.title} >
                     {data.title}
+                    </BootstrapTooltip>
+                   
                   </div>
                   {userRole == "student" ? (
                     <IconButton

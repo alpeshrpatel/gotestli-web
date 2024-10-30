@@ -6,18 +6,26 @@ import React, { useEffect, useState } from "react";
 
 import { API } from "@/utils/AxiosInstance";
 import { auth } from "@/firebase/Firebase";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { downloadCertificate } from "@/components/quiz/downloadCertificate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
 import Table from "@/components/common/CommonTable";
-import { IconButton, TableCell } from "@mui/material";
+import { IconButton, TableCell, TextField } from "@mui/material";
 import CommonTable from "@/components/common/CommonTable";
 import { Rating } from "react-simple-star-rating";
 import Modal from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
-import { contentQualityTooltips, difficultyTooltips, satisfactionTooltips } from "@/components/quiz/QuizResult";
+import {
+  contentQualityTooltips,
+  difficultyTooltips,
+  satisfactionTooltips,
+} from "@/components/quiz/QuizResult";
+import { BootstrapTooltip } from "@/components/common/Tooltip";
+import ExamInstructions from "@/components/quiz/examInstructions/ExamInstructions";
+import CancelIcon from "@mui/icons-material/Cancel";
+import SearchIcon from "@mui/icons-material/Search";
 
 const metadata = {
   title:
@@ -31,7 +39,7 @@ const columns = [
   { id: "title", label: "Quiz Title", sortable: true },
   { id: "created_date", label: "Start Date", sortable: true },
   { id: "modified_date", label: "Complete Date", sortable: true },
-  { id: "status", label: "Status", sortable: false },
+  { id: "status", label: "Status", sortable: true },
   { id: "marks_obtained", label: "Marks", sortable: true },
   { id: "percentage", label: "Percentage", sortable: true },
   { id: "mode", label: "Mode", sortable: false },
@@ -50,8 +58,12 @@ const StudentQuizzes = () => {
   });
 
   const [review, setReview] = useState("");
-  const [questionSetId,setQuestionSetId] = useState();
+  const [questionSetId, setQuestionSetId] = useState();
   const [open, setOpen] = useState(false);
+  const [openExamIns, setOpenExamIns] = useState(false);
+  const [questionSet, setQuestionsSet] = useState([]);
+  const [quiz, setQuiz] = useState();
+  const [searchQuery, setSearchQuery] = useState("");
   // const [studentsData, setStudentsData] = useState([]);
   // const [expandedRow, setExpandedRow] = useState(null);
   const navigate = useNavigate();
@@ -94,8 +106,8 @@ const StudentQuizzes = () => {
   const handleFetchedReview = async (qSetId) => {
     try {
       if (token) {
-        onOpenModal()
-        setQuestionSetId(qSetId)
+        onOpenModal();
+        setQuestionSetId(qSetId);
         const { data } = await API.get(
           `/api/reviews/qset/${qSetId}/user/${userId}`,
           {
@@ -112,16 +124,18 @@ const StudentQuizzes = () => {
             difficulty: data.difficulty || 0,
             contentQuality: parseInt(data.content_quality) || 0,
           });
-          setReview(data.review || '');
-           onOpenModal()
-        }else{
+          setReview(data.review || "");
+          onOpenModal();
+        } else {
+          console.log("null loaded!");
+          setGivenReview({});
           setRating({
-            satisfaction:  0,
+            satisfaction: 0,
             difficulty: 0,
-            contentQuality:  0,
+            contentQuality: 0,
           });
-          setReview('');
-          onOpenModal()
+          setReview("");
+          onOpenModal();
         }
         // onOpenModal()
       }
@@ -139,7 +153,26 @@ const StudentQuizzes = () => {
   const submitSurvey = async () => {
     try {
       if (token) {
-        if(!givenReview?.review_id){
+        if (givenReview?.review_id) {
+          const res = await API.put(
+            `/api/reviews/update/qset/${questionSetId}/user/${userId}`,
+            {
+              satisfaction: rating.satisfaction,
+              difficulty: rating.difficulty,
+              content_quality: rating.contentQuality,
+              review: review,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (res.status == 200) {
+            toast.success("Review updated!");
+            navigate("/");
+          }
+        } else {
           const res = await API.post(
             "/api/reviews",
             {
@@ -161,29 +194,7 @@ const StudentQuizzes = () => {
             toast.success("Thank you for giving review!");
             navigate("/");
           }
-        }else{
-          const res = await API.put(
-            `/api/reviews/update/qset/${questionSetId}/user/${userId}`,
-            {
-             
-              satisfaction: rating.satisfaction,
-              difficulty: rating.difficulty,
-              content_quality: rating.contentQuality,
-              review: review,
-              
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          if (res.status == 200) {
-            toast.success("Review updated!");
-            navigate("/");
-          }
         }
-        
       }
     } catch (error) {
       if (error.status == 403) {
@@ -207,7 +218,58 @@ const StudentQuizzes = () => {
     }
   };
 
-  const getRowId = (row, index) => row.id;
+  const onOpenExamInsModal = (id) => {
+    async function getQuestions() {
+      try {
+        if (token) {
+          const response = await API.get(`/api/questionset/questions/${id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          setQuestionsSet(response.data);
+        }
+      } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // toast.error("Invaild token!");
+          navigate("/login");
+          return;
+        }
+        console.log(error);
+      }
+    }
+    getQuestions();
+    setOpenExamIns(true);
+  };
+
+  const onCloseExamInsModal = () => setOpenExamIns(false);
+
+  const handleInProgressClick = (quiz) => {
+    setQuiz(quiz);
+    onOpenExamInsModal(quiz.question_set_id);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value.toLowerCase());
+  };
+
+  const filteredData = questionSets.filter((quiz) =>
+    // Object.values(quiz).some((value) =>
+    //   value ? value.toString().toLowerCase().includes(searchQuery) : false
+    // )
+    quiz.title.toLowerCase().includes(searchQuery) ||
+    quiz?.short_desc.toLowerCase().includes(searchQuery) ||
+    quiz?.tags.toLowerCase().includes(searchQuery) ||
+    quiz.author.toLowerCase().includes(searchQuery) 
+    // quiz.status == 1 || quiz.status == 0
+      ? true
+      : false
+  );
+
+  const getRowId = (row, index) => index;
 
   const renderRowCells = (quiz, index) => (
     <>
@@ -224,7 +286,15 @@ const StudentQuizzes = () => {
           : "---"}
       </TableCell>
       <TableCell>
-        {quiz.status == 1 || quiz.status == 0 ? "Completed" : "In Progress"}
+        {quiz.status == 1 || quiz.status == 0 ? (
+          "Completed"
+        ) : (
+          <BootstrapTooltip title="Click to Attempt it">
+            <button onClick={() => handleInProgressClick(quiz)}>
+              In Progress
+            </button>
+          </BootstrapTooltip>
+        )}
       </TableCell>
       <TableCell>{quiz.marks_obtained}</TableCell>
       <TableCell>{quiz.percentage}</TableCell>
@@ -345,14 +415,47 @@ const StudentQuizzes = () => {
           //     </tbody>
           //   </table>
           // </div>
-          <div className="table-responsive">
-            <CommonTable
-              columns={columns}
-              data={questionSets}
-              getRowId={getRowId}
-              renderRowCells={renderRowCells}
-            />
-          </div>
+          <>
+            <div className="table-responsive">
+              <div
+                className="header-search__field position-relative d-flex align-items-center rounded-5 mt-10"
+                style={{ height: "40px", width: "300px" }}
+              >
+                <SearchIcon
+                  className="position-absolute ms-3 text-muted"
+                  style={{ fontSize: "20px" }}
+                />
+                <input
+                  required
+                  type="text"
+                  className="form-control ps-5 pe-5 text-18 lh-12 text-dark-1 fw-500 w-100"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                />
+                {searchQuery && (
+                  <CancelIcon
+                    className="position-absolute end-0 me-3 text-muted"
+                    fontSize="medium"
+                     onClick={()=> setSearchQuery('')} 
+                    style={{ cursor: "pointer" }}
+                  />
+                )}
+              </div>
+              {searchQuery && filteredData.length <= 0 ? (
+                <h4 className="no-content text-center">
+                  It looks a bit empty here! 🌟 No fields matched!
+                </h4>
+              ) : (
+                <CommonTable
+                  columns={columns}
+                  data={filteredData.length > 0 ? filteredData : questionSets}
+                  getRowId={getRowId}
+                  renderRowCells={renderRowCells}
+                />
+              )}
+            </div>
+          </>
         ) : (
           <h4 className="no-content text-center">
             It looks a bit empty here! 🌟 Please attend amazing Quizzes and
@@ -362,6 +465,15 @@ const StudentQuizzes = () => {
 
         <FooterOne />
       </div>
+      <Modal open={openExamIns} onClose={onCloseExamInsModal} center>
+        <ExamInstructions
+          id={quiz?.question_set_id}
+          time={quiz?.time_duration}
+          questionSet={questionSet}
+          data={quiz}
+          onCloseModal={onCloseExamInsModal}
+        />
+      </Modal>
       <Modal open={open} onClose={onCloseModal} center>
         <div className="col-12 rounded p-5 border-1">
           <h5 className="mb-2">

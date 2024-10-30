@@ -35,13 +35,21 @@ export default function FooterOne() {
       <div className="container-fluid w-100">
         <div className="footer-header py-4">
           <div className="row y-gap-2 justify-between items-center mx-2">
-            <div className="col-xl-4">
+            <div className="col-xl-4 d-flex flex-column">
               <div className="footer-header__logo">
                 <img
                   src="/assets/img/header-logo3.png"
                   alt="logo"
                   style={{ height: "55px", width: "185px" }}
                 />
+              </div>
+              <div className='d-flex gap-4 mt-4 align-items-center'>
+                <div className="footer-header-socials__title text-white ">
+                  Follow us on social media
+                </div>
+                <div className="footer-header-socials__list">
+                  <Socials />
+                </div>
               </div>
             </div>
             <div className="col-xl-8">
@@ -85,16 +93,16 @@ export default function FooterOne() {
                 </div>
               </div>
             </div>
-            <div className="col-xl-4">
+            {/* <div className="col-xl-4">
               <div className="footer-header-socials">
-                <div className="footer-header-socials__title text-white">
+                <div className="footer-header-socials__title text-white mt-0">
                   Follow us on social media
                 </div>
                 <div className="footer-header-socials__list">
                   <Socials />
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 

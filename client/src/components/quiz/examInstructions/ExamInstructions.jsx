@@ -47,7 +47,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
   const [setQuestionsSet] = useState([]);
   const [history, setHistory] = useState([]);
   const [followersData, setFollowersData] = useState([]);
-  const[timerOnValue,setTimerOnValue] = useState("yes");
+  const[timerOnValue,setTimerOnValue] = useState();
   // const [userRole, setUserRole] = useState("");
   const navigate = useNavigate();
   const token = localStorage.getItem("token");

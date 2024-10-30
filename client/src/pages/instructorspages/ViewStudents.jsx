@@ -18,15 +18,17 @@ import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { students } from "@/data--backup/students";
 import CommonTable from "@/components/common/CommonTable";
+import CancelIcon from "@mui/icons-material/Cancel";
+import SearchIcon from "@mui/icons-material/Search";
 
 // import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 const columns = [
   { id: "index", label: "#", sortable: false },
   { id: "user_id", label: "Student ID", sortable: true },
   { id: "modified_date", label: "Date", sortable: true },
-  { id: "marks_obtained", label: "Score", sortable: false },
+  { id: "marks_obtained", label: "Score", sortable: true },
   { id: "percentage", label: "%", sortable: true },
-  { id: "status", label: "Status", sortable: false },
+  { id: "status", label: "Status", sortable: true },
   { id: "actions", label: "", sortable: false },
 ];
 
@@ -34,6 +36,7 @@ const ViewStudents = () => {
   const [studentsData, setStudentsData] = useState([]);
   const [isDisabled, setIsDisabled] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   console.log(location);
@@ -174,6 +177,20 @@ const ViewStudents = () => {
       console.error(error);
     }
   };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value.toLowerCase());
+  };
+console.log(studentsData)
+  const filteredData = studentsData.filter((quiz) =>
+    // Object.values(quiz).some((value) =>
+    //   value ? value.toString().toLowerCase().includes(searchQuery) : false
+    // )
+    quiz?.created_by.toString().toLowerCase().includes(searchQuery)
+      ? true
+      : false
+  );
+
   const getRowId = (row) => row.id;
 
   const renderRowCells = (student, index) => (
@@ -325,12 +342,49 @@ const ViewStudents = () => {
                 ))}
               </tbody>
             </table> */}
-            <CommonTable
+            {/* <CommonTable
               columns={columns}
               data={studentsData}
               getRowId={getRowId}
               renderRowCells={renderRowCells}
-            />
+            /> */}
+             <div
+                className="header-search__field position-relative d-flex align-items-center rounded-5 mt-10"
+                style={{ height: "40px", width: "300px" }}
+              >
+                <SearchIcon
+                  className="position-absolute ms-3 text-muted"
+                  style={{ fontSize: "20px" }}
+                />
+                <input
+                  required
+                  type="text"
+                  className="form-control ps-5 pe-5 text-18 lh-12 text-dark-1 fw-500 w-100"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                />
+                {searchQuery && (
+                  <CancelIcon
+                    className="position-absolute end-0 me-3 text-muted"
+                    fontSize="medium"
+                     onClick={()=> setSearchQuery('')} 
+                    style={{ cursor: "pointer" }}
+                  />
+                )}
+              </div>
+              {searchQuery && filteredData.length <= 0 ? (
+                <h4 className="no-content text-center">
+                  It looks a bit empty here! 🌟 No fields matched!
+                </h4>
+              ) : (
+                <CommonTable
+                  columns={columns}
+                  data={filteredData.length > 0 ? filteredData : studentsData}
+                  getRowId={getRowId}
+                  renderRowCells={renderRowCells}
+                />
+              )}
             <h5 className=" text-center mt-4" style={{ color: "red" }}>
               Note.{" "}
               <span

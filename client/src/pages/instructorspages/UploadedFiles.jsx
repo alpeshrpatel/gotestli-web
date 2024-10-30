@@ -11,6 +11,8 @@ import { faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
 import HandleDownload from "@/components/common/HandleDownload.js";
 import { TableCell } from "@mui/material";
 import CommonTable from "@/components/common/CommonTable";
+import CancelIcon from "@mui/icons-material/Cancel";
+import SearchIcon from "@mui/icons-material/Search";
 // import Breadcrumbs from "@mui/material/Breadcrumbs";
 // import Typography from "@mui/material/Typography";
 // import Link from "@mui/material/Link";
@@ -24,16 +26,16 @@ const columns = [
   {
     id: "correct_rows",
     label: "Correct Rows",
-    sortable: false,
+    sortable: true,
     align: "center",
   },
-  { id: "error_rows", label: "Error Rows", sortable: false, align: "center" },
+  { id: "error_rows", label: "Error Rows", sortable: true, align: "center" },
   { id: "actions", label: "Action", sortable: false, align: "center" },
 ];
 
 const UploadedFiles = () => {
   const [uploadedData, setUploadedData] = useState([]);
-
+  const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
   console.log(location);
   const navigate = useNavigate();
@@ -72,6 +74,20 @@ const UploadedFiles = () => {
     await HandleDownload("uploadedfile", fileName);
     // <HandleDownload type="uploadedfile" fileName={fileName} />;
   }
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value.toLowerCase());
+  };
+
+  const filteredData = uploadedData.filter((quiz) =>
+    // Object.values(quiz).some((value) =>
+    //   value ? value.toString().toLowerCase().includes(searchQuery) : false
+    // )
+    quiz.file_name.toLowerCase().includes(searchQuery) ||
+    quiz?.file_path.toLowerCase().includes(searchQuery)
+      ? true
+      : false
+  );
   const getRowId = (row) => row.id;
 
   const renderRowCells = (file, index) => (
@@ -165,12 +181,49 @@ const UploadedFiles = () => {
                 ))}
               </tbody>
             </table> */}
-            <CommonTable
+            {/* <CommonTable
               columns={columns}
               data={uploadedData}
               getRowId={getRowId}
               renderRowCells={renderRowCells}
-            />
+            /> */}
+            <div
+              className="header-search__field position-relative d-flex align-items-center rounded-5 mt-10"
+              style={{ height: "40px", width: "300px" }}
+            >
+              <SearchIcon
+                className="position-absolute ms-3 text-muted"
+                style={{ fontSize: "20px" }}
+              />
+              <input
+                required
+                type="text"
+                className="form-control ps-5 pe-5 text-18 lh-12 text-dark-1 fw-500 w-100"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+              {searchQuery && (
+                <CancelIcon
+                  className="position-absolute end-0 me-3 text-muted"
+                  fontSize="medium"
+                  onClick={() => setSearchQuery("")}
+                  style={{ cursor: "pointer" }}
+                />
+              )}
+            </div>
+            {searchQuery && filteredData.length <= 0 ? (
+              <h4 className="no-content text-center">
+                It looks a bit empty here! 🌟 No fields matched!
+              </h4>
+            ) : (
+              <CommonTable
+                columns={columns}
+                data={filteredData.length > 0 ? filteredData : uploadedData}
+                getRowId={getRowId}
+                renderRowCells={renderRowCells}
+              />
+            )}
           </div>
         ) : (
           <h4 className="no-content text-center">
