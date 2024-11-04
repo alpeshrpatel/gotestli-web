@@ -159,7 +159,7 @@ const QuizResult = ({}) => {
             localStorage.removeItem("user");
             localStorage.removeItem("token");
             // toast.error("Invaild token!");
-            navigate("/login");
+            navigate("/login"); 
             return;
           }
           throw error;
@@ -224,7 +224,7 @@ const QuizResult = ({}) => {
     hidden: { opacity: 0, scale: 0.5 },
     visible: {
       opacity: 1,
-      scale: [1, 1.2, 1], // Bounces slightly and then back to original size
+      scale: [1, 1.2, 1], 
       transition: { duration: 1.5, ease: "easeInOut" },
     },
     exit: { opacity: 0, scale: 0.5, transition: { duration: 1 } },
