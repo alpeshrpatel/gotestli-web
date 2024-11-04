@@ -13,8 +13,9 @@ import QuestionSet from "./QuestionSet";
 import { useNavigate } from "react-router-dom";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import SubmitQuizModal from "./SubmitQuizModal/SubmitQuizModal";
+import { Typography } from "@mui/material";
 
-const SingleChoice = ({
+const ComprehensiveType = ({
   time,
   timerOn,
   resumeQuizUserResultId,
@@ -22,6 +23,7 @@ const SingleChoice = ({
   questionId,
   totalQuestions,
   question,
+  paragraph,
   index,
   onNext,
   onPrevious,
@@ -395,7 +397,7 @@ const SingleChoice = ({
               <h4 className="card-title text-center">
                 Question {index} of {totalQuestions}{" "}
               </h4>
-              <h5>Single Choice</h5>
+              <h5>Comprehensive</h5>
               {
                 timerOn == 'yes' ? (
                   <CountdownCircleTimer
@@ -460,6 +462,12 @@ const SingleChoice = ({
                 )}
               </div>
             </div>
+            <hr />
+            <h6> <strong>Note.</strong> Read this paragraph carefully and attempt below questions.</h6>
+            <Typography className="card-text text-center mt-2 mb-2 " color='InfoText' variant='h8'>
+            {paragraph}
+            </Typography>
+            {/* <h6 className="card-text  mt-2 mb-2 ">{paragraph}</h6> */}
             <hr />
             <h5 className="card-text text-center">{question}</h5>
             <ul className="list-group list-group-flush mt-3 mb-4">
@@ -538,4 +546,4 @@ const SingleChoice = ({
     </>
   );
 };
-export default SingleChoice;
+export default ComprehensiveType;

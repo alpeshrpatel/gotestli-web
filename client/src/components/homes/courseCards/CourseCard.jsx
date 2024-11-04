@@ -28,8 +28,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Rating } from "react-simple-star-rating";
 import { BootstrapTooltip } from "@/components/common/Tooltip";
+import CourseList from "./CourseList";
+import { Box, List, ListItem, ListItemText } from "@mui/material";
 
-export default function CourceCard({ search = null, role, data, index }) {
+export default function CourceCard({ view, search = null, role, data, index }) {
   const [rating, setRating] = useState(0);
   const [questionSet, setQuestionsSet] = useState([]);
   const [open, setOpen] = useState(false);
@@ -100,7 +102,7 @@ export default function CourceCard({ search = null, role, data, index }) {
     }
     getWishlist();
   }, [isWishlisted]);
-  
+
   const onOpenModal = () => {
     async function getQuestions() {
       try {
@@ -195,160 +197,239 @@ export default function CourceCard({ search = null, role, data, index }) {
           onCloseModal={onCloseModal}
         />
       </Modal>
+
       <div
         className={`col-lg-3 col-md-6 pointer ${
           search ? `col-lg-4 col-md-6 ` : `col-lg-3 col-md-6`
-        } `}
+        } ${view == `list` && `col-lg-12`}`}
         onClick={onOpenModal}
       >
-        <div className="coursesCard -type-1">
-          <Card
-            sx={{ maxWidth: 345, height: "100%" }}
-            className="coursesCard -type-1"
-          >
-            <CardHeader
-              subheader={
-                <div className="d-flex justify-content-between">
-                  <div
-                    className="text-17 lh-15 fw-500 text-dark-1 text-truncate"
-                    style={{ maxWidth: "200px" }}
-                    // data-toggle="tooltip" data-placement="top" title={data.title}
-                  >
-                    <BootstrapTooltip title={data.title} >
-                    {data.title}
-                    </BootstrapTooltip>
-                   
+        {view == "card" ? (
+          <div className="coursesCard -type-1">
+            <Card
+              sx={{ maxWidth: 345, height: "100%" }}
+              className="coursesCard -type-1"
+            >
+              <CardHeader
+                subheader={
+                  <div className="d-flex justify-content-between">
+                    <div
+                      className="text-17 lh-15 fw-500 text-dark-1 text-truncate"
+                      style={{ maxWidth: "200px" }}
+                      // data-toggle="tooltip" data-placement="top" title={data.title}
+                    >
+                      <BootstrapTooltip title={data.title}>
+                        {data.title}
+                      </BootstrapTooltip>
+                    </div>
+                    {userRole == "student" ? (
+                      <IconButton
+                        onClick={handleWishlistToggle}
+                        sx={{ color: isWishlisted ? red[500] : "gray" }}
+                      >
+                        <FontAwesomeIcon icon={faHeart} />
+                      </IconButton>
+                    ) : null}
                   </div>
-                  {userRole == "student" ? (
+                }
+              />
+              <div className="relative">
+                <div className="coursesCard__image cardImage overflow-hidden rounded-8  ">
+                  <CardMedia
+                    component="img"
+                    // height="194"
+                    sx={{ height: "170px", width: "400px" }}
+                    image={data.image}
+                    alt="Paella dish"
+                  />
+
+                  <div className="coursesCard__image_overlay rounded-8"></div>
+                </div>
+              </div>
+              <div className="mt-2 ms-2">
+                <Rating
+                  readonly={true}
+                  initialValue={parseFloat(rating)}
+                  allowFraction={true}
+                  size={20}
+                  activeColor="#ffd700"
+                  emptyColor="#d3d3d3"
+                />
+              </div>
+              <CardContent>
+                <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                  {data.short_desc}
+                </Typography>
+                {!(role == "instructor") && (
+                  <div className="d-flex items-center gap-2 mt-2 ">
+                    <Typography
+                      variant="caption"
+                      gutterBottom
+                      sx={{ display: "flex" }}
+                    >
+                      Creator:
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      {data.author}
+                    </Typography>
+                  </div>
+                )}
+
+                <div
+                  className={`d-flex items-center gap-2 ${
+                    role == "instructor" ? `mt-2` : `mt-0`
+                  } `}
+                >
+                  <Typography
+                    variant="caption"
+                    gutterBottom
+                    sx={{ display: "flex" }}
+                  >
+                    Published on:
+                  </Typography>
+                  <Typography variant="body1" gutterBottom>
+                    {formattedDate}
+                  </Typography>
+                </div>
+              </CardContent>
+              <CardActions
+                disableSpacing
+                className="d-flex justify-content-between"
+              >
+                <div className="d-flex items-center gap-2 mr-20">
+                  <div className="">
+                    <FontAwesomeIcon icon={faFileLines} />
+                  </div>
+                  <div className="text-14 lh-1">
+                    {data.no_of_question} Questions
+                  </div>
+                </div>
+                <div className="d-flex items-center gap-2">
+                  <div className="">
+                    <FontAwesomeIcon icon={faClock} />
+                  </div>
+                  <div className="text-14 lh-1">{`${data.time_duration}m`}</div>
+                </div>
+
+                {/* <ExpandMore
+                  expand={expanded}
+                  onClick={handleExpandClick}
+                  aria-expanded={expanded}
+                  aria-label="show more"
+                >
+                  <ExpandMoreIcon />
+                </ExpandMore> */}
+              </CardActions>
+              {/* <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Typography sx={{ marginBottom: 2 }}>Method:</Typography>
+                  <Typography sx={{ marginBottom: 2 }}>
+                    Heat 1/2 cup of the broth in a pot until simmering, add
+                    saffron and set aside for 10 minutes.
+                  </Typography>
+                  <Typography sx={{ marginBottom: 2 }}>
+                    Heat oil in a (14- to 16-inch) paella pan or a large, deep
+                    skillet over medium-high heat. Add chicken, shrimp and
+                    chorizo, and cook, stirring occasionally until lightly
+                    browned, 6 to 8 minutes. Transfer shrimp to a large plate and
+                    set aside, leaving chicken and chorizo in the pan. Add
+                    pimentón, bay leaves, garlic, tomatoes, onion, salt and
+                    pepper, and cook, stirring often until thickened and fragrant,
+                    about 10 minutes. Add saffron broth and remaining 4 1/2 cups
+                    chicken broth; bring to a boil.
+                  </Typography>
+                  <Typography sx={{ marginBottom: 2 }}>
+                    Add rice and stir very gently to distribute. Top with
+                    artichokes and peppers, and cook without stirring, until most
+                    of the liquid is absorbed, 15 to 18 minutes. Reduce heat to
+                    medium-low, add reserved shrimp and mussels, tucking them down
+                    into the rice, and cook again without stirring, until mussels
+                    have opened and rice is just tender, 5 to 7 minutes more.
+                    (Discard any mussels that don&apos;t open.)
+                  </Typography>
+                  <Typography>
+                    Set aside off of the heat to let rest for 10 minutes, and then
+                    serve.
+                  </Typography>
+                </CardContent>
+              </Collapse> */}
+            </Card>
+          </div>
+        ) : (
+          <CourseList>
+            <Box className="shadow-2">
+              <List>
+                <ListItem>
+                  <img
+                    src={data.image}
+                    alt="Course Image"
+                    style={{
+                      width: "130px",
+                      height: "100px",
+                      marginRight: "10px",
+                      borderRadius: "10px",
+                    }}
+                  />
+                  <div className="d-flex flex-column w-100">
+                    <ListItemText
+                      primary={
+                        <BootstrapTooltip title={data.title}>
+                          <Typography
+                            className="text-truncate"
+                            style={{ maxWidth: "250px" }}
+                          >
+                            {data.title}
+                          </Typography>
+                        </BootstrapTooltip>
+                      }
+                      secondary={
+                        <>
+                          <Typography
+                            className="text-truncate"
+                            style={{ maxWidth: "700px" }}
+                            // component="span"
+                            variant="body2"
+                            color="text.primary"
+                          >
+                            {data.short_desc}
+                          </Typography>
+                          {" — "} {data.no_of_question} questions,{" "}
+                          {data.time_duration} mins
+                        </>
+                      }
+                    />
+                    <div className="d-flex gap-lg-5">
+                      <Typography variant="body2">
+                        Author: {data.author}
+                      </Typography>
+                      <Typography variant="body2" color='#212121'>{formattedDate}</Typography>
+                    </div>
+
+                    <div className=" ms-2">
+                      <Rating
+                        readonly={true}
+                        initialValue={parseFloat(rating)}
+                        allowFraction={true}
+                        size={20}
+                        activeColor="#ffd700"
+                        emptyColor="#d3d3d3"
+                      />
+                    </div>
+                  </div>
+                  {role === "student" && (
                     <IconButton
                       onClick={handleWishlistToggle}
                       sx={{ color: isWishlisted ? red[500] : "gray" }}
                     >
                       <FontAwesomeIcon icon={faHeart} />
                     </IconButton>
-                  ) : null}
-                </div>
-              }
-            />
-            <div className="relative">
-              <div className="coursesCard__image cardImage overflow-hidden rounded-8  ">
-                <CardMedia
-                  component="img"
-                  // height="194"
-                  sx={{ height: "170px", width: "400px" }}
-                  image={data.image}
-                  alt="Paella dish"
-                />
+                  )}
+                </ListItem>
+              </List>
+            </Box>
+          </CourseList>
+        )}
 
-                <div className="coursesCard__image_overlay rounded-8"></div>
-              </div>
-            </div>
-            <div className="mt-2 ms-2">
-              <Rating
-                readonly={true}
-                initialValue={parseFloat(rating)}
-                allowFraction={true}
-                size={20}
-                activeColor="#ffd700"
-                emptyColor="#d3d3d3"
-              />
-            </div>
-            <CardContent>
-              <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                {data.short_desc}
-              </Typography>
-              {!(role == "instructor") && (
-                <div className="d-flex items-center gap-2 mt-2 ">
-                  <Typography
-                    variant="caption"
-                    gutterBottom
-                    sx={{ display: "flex" }}
-                  >
-                    Creator:
-                  </Typography>
-                  <Typography variant="body1" gutterBottom>
-                    {data.author}
-                  </Typography>
-                </div>
-              )}
-
-              <div
-                className={`d-flex items-center gap-2 ${
-                  role == "instructor" ? `mt-2` : `mt-0`
-                } `}
-              >
-                <Typography
-                  variant="caption"
-                  gutterBottom
-                  sx={{ display: "flex" }}
-                >
-                  Published on:
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                  {formattedDate}
-                </Typography>
-              </div>
-            </CardContent>
-            <CardActions disableSpacing className="d-flex justify-content-between">
-              <div className="d-flex items-center gap-2 mr-20">
-                <div className="">
-                  <FontAwesomeIcon icon={faFileLines} />
-                </div>
-                <div className="text-14 lh-1">
-                  {data.no_of_question} Questions
-                </div>
-              </div>
-              <div className="d-flex  items-center gap-2">
-                <div className="">
-                  <FontAwesomeIcon icon={faClock} />
-                </div>
-                <div className="text-14 lh-1">{`${data.time_duration}m`}</div>
-              </div>
-
-              {/* <ExpandMore
-                expand={expanded}
-                onClick={handleExpandClick}
-                aria-expanded={expanded}
-                aria-label="show more"
-              >
-                <ExpandMoreIcon />
-              </ExpandMore> */}
-            </CardActions>
-            {/* <Collapse in={expanded} timeout="auto" unmountOnExit>
-              <CardContent>
-                <Typography sx={{ marginBottom: 2 }}>Method:</Typography>
-                <Typography sx={{ marginBottom: 2 }}>
-                  Heat 1/2 cup of the broth in a pot until simmering, add
-                  saffron and set aside for 10 minutes.
-                </Typography>
-                <Typography sx={{ marginBottom: 2 }}>
-                  Heat oil in a (14- to 16-inch) paella pan or a large, deep
-                  skillet over medium-high heat. Add chicken, shrimp and
-                  chorizo, and cook, stirring occasionally until lightly
-                  browned, 6 to 8 minutes. Transfer shrimp to a large plate and
-                  set aside, leaving chicken and chorizo in the pan. Add
-                  pimentón, bay leaves, garlic, tomatoes, onion, salt and
-                  pepper, and cook, stirring often until thickened and fragrant,
-                  about 10 minutes. Add saffron broth and remaining 4 1/2 cups
-                  chicken broth; bring to a boil.
-                </Typography>
-                <Typography sx={{ marginBottom: 2 }}>
-                  Add rice and stir very gently to distribute. Top with
-                  artichokes and peppers, and cook without stirring, until most
-                  of the liquid is absorbed, 15 to 18 minutes. Reduce heat to
-                  medium-low, add reserved shrimp and mussels, tucking them down
-                  into the rice, and cook again without stirring, until mussels
-                  have opened and rice is just tender, 5 to 7 minutes more.
-                  (Discard any mussels that don&apos;t open.)
-                </Typography>
-                <Typography>
-                  Set aside off of the heat to let rest for 10 minutes, and then
-                  serve.
-                </Typography>
-              </CardContent>
-            </Collapse> */}
-          </Card>
-        </div>
         {/* <div>
           <div className="coursesCard -type-1">
             <div className="relative">

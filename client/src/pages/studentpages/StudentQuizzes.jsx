@@ -263,8 +263,10 @@ const StudentQuizzes = () => {
     quiz.title.toLowerCase().includes(searchQuery) ||
     quiz?.short_desc.toLowerCase().includes(searchQuery) ||
     quiz?.tags.toLowerCase().includes(searchQuery) ||
-    quiz.author.toLowerCase().includes(searchQuery) 
-    // quiz.status == 1 || quiz.status == 0
+    quiz.author.toLowerCase().includes(searchQuery) ||
+    (quiz.status == 1 || quiz.status == 0
+      ? "completed".includes(searchQuery)
+      : "in progress".includes(searchQuery))
       ? true
       : false
   );
@@ -273,8 +275,157 @@ const StudentQuizzes = () => {
 
   const renderRowCells = (quiz, index) => (
     <>
+      {/* {quiz.status == 2 ? (
+        <BootstrapTooltip title="Click to Attempt it">
+          
+            <TableCell>{index + 1}</TableCell>
+            <TableCell className="text-truncate" sx={{ maxWidth: "100px" }}>
+              <BootstrapTooltip title={quiz.title}>
+                {quiz.title}
+              </BootstrapTooltip>
+            </TableCell>
+            <TableCell>
+              {quiz.created_date
+                ? quiz.created_date.slice(0, 19).replace("T", " ")
+                : "---"}
+            </TableCell>
+            <TableCell>
+              {quiz.modified_date && quiz.status == 1
+                ? quiz.modified_date.slice(0, 19).replace("T", " ")
+                : "---"}
+            </TableCell>
+            <TableCell>
+              {quiz.status == 1 || quiz.status == 0 ? (
+                "Completed"
+              ) : (
+                <BootstrapTooltip title="Click to Attempt it">
+                  <button
+                    onClick={() => handleInProgressClick(quiz)}
+                    style={{
+                      textDecoration: "underline",
+                      color: "blue",
+                      // textAlign: "center",
+                    }}
+                  >
+                    In Progress
+                  </button>
+                </BootstrapTooltip>
+              )}
+            </TableCell>
+            <TableCell>{quiz.marks_obtained}</TableCell>
+            <TableCell>{quiz.percentage}</TableCell>
+            <TableCell>Exam</TableCell>
+            <TableCell>
+              {quiz.percentage >= quiz?.pass_percentage ? "Pass" : "Fail"}
+            </TableCell>
+            <TableCell
+              onClick={() => handleFetchedReview(quiz.question_set_id)}
+              style={{
+                textDecoration: "underline",
+                color: "blue",
+                // textAlign: "center",
+              }}
+            >
+              Review
+            </TableCell>
+            <TableCell style={{}}>
+              {quiz.percentage >= quiz?.pass_percentage ? (
+                <IconButton
+                  onClick={() =>
+                    downloadCertificate(
+                      quiz.first_name + " " + quiz?.last_name,
+                      quiz.percentage,
+                      quiz.title,
+                      quiz?.tags?.split(",")[0],
+                      quiz.author
+                    )
+                  }
+                >
+                  <FontAwesomeIcon
+                    icon={faFileArrowDown}
+                    style={{ fontSize: "30px", color: "#4CAF50" }}
+                  />
+                </IconButton>
+              ) : null}
+            </TableCell>
+          
+        </BootstrapTooltip>
+      ) : (
+        <>
+          <TableCell>{index + 1}</TableCell>
+          <TableCell className="text-truncate" sx={{ maxWidth: "100px" }}>
+            <BootstrapTooltip title={quiz.title}>{quiz.title}</BootstrapTooltip>
+          </TableCell>
+          <TableCell>
+            {quiz.created_date
+              ? quiz.created_date.slice(0, 19).replace("T", " ")
+              : "---"}
+          </TableCell>
+          <TableCell>
+            {quiz.modified_date && quiz.status == 1
+              ? quiz.modified_date.slice(0, 19).replace("T", " ")
+              : "---"}
+          </TableCell>
+          <TableCell>
+            {quiz.status == 1 || quiz.status == 0 ? (
+              "Completed"
+            ) : (
+              <BootstrapTooltip title="Click to Attempt it">
+                <button
+                  onClick={() => handleInProgressClick(quiz)}
+                  style={{
+                    textDecoration: "underline",
+                    color: "blue",
+                    // textAlign: "center",
+                  }}
+                >
+                  In Progress
+                </button>
+              </BootstrapTooltip>
+            )}
+          </TableCell>
+          <TableCell>{quiz.marks_obtained}</TableCell>
+          <TableCell>{quiz.percentage}</TableCell>
+          <TableCell>Exam</TableCell>
+          <TableCell>
+            {quiz.percentage >= quiz?.pass_percentage ? "Pass" : "Fail"}
+          </TableCell>
+          <TableCell
+            onClick={() => handleFetchedReview(quiz.question_set_id)}
+            style={{
+              textDecoration: "underline",
+              color: "blue",
+              // textAlign: "center",
+            }}
+          >
+            Review
+          </TableCell>
+          <TableCell style={{}}>
+            {quiz.percentage >= quiz?.pass_percentage ? (
+              <IconButton
+                onClick={() =>
+                  downloadCertificate(
+                    quiz.first_name + " " + quiz?.last_name,
+                    quiz.percentage,
+                    quiz.title,
+                    quiz?.tags?.split(",")[0],
+                    quiz.author
+                  )
+                }
+              >
+                <FontAwesomeIcon
+                  icon={faFileArrowDown}
+                  style={{ fontSize: "30px", color: "#4CAF50" }}
+                />
+              </IconButton>
+            ) : null}
+          </TableCell>
+        </>
+      )} */}
       <TableCell>{index + 1}</TableCell>
-      <TableCell>{quiz.title}</TableCell>
+      <TableCell className="text-truncate" sx={{ maxWidth: "100px" }}>
+        <BootstrapTooltip title={quiz.title}>{quiz.title}</BootstrapTooltip>
+      </TableCell>
       <TableCell>
         {quiz.created_date
           ? quiz.created_date.slice(0, 19).replace("T", " ")
@@ -290,7 +441,14 @@ const StudentQuizzes = () => {
           "Completed"
         ) : (
           <BootstrapTooltip title="Click to Attempt it">
-            <button onClick={() => handleInProgressClick(quiz)}>
+            <button
+              onClick={() => handleInProgressClick(quiz)}
+              style={{
+                textDecoration: "underline",
+                color: "blue",
+                // textAlign: "center",
+              }}
+            >
               In Progress
             </button>
           </BootstrapTooltip>
@@ -437,7 +595,7 @@ const StudentQuizzes = () => {
                   <CancelIcon
                     className="position-absolute end-0 me-3 text-muted"
                     fontSize="medium"
-                     onClick={()=> setSearchQuery('')} 
+                    onClick={() => setSearchQuery("")}
                     style={{ cursor: "pointer" }}
                   />
                 )}

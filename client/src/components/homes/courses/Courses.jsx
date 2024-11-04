@@ -16,13 +16,21 @@ import {
 
 import { Tabs, Tab, Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { BootstrapTooltip } from "@/components/common/Tooltip";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import CourseList from "../courseCards/CourseList";
+import WidgetsIcon from "@mui/icons-material/Widgets";
+import ListIcon from "@mui/icons-material/List";
 
-export default function Courses({userRole}) {
+export default function Courses({ userRole }) {
   const [filtered, setFiltered] = useState();
   const [categories, setCategories] = useState([]);
   const [value, setValue] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [isLoading,setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [view, setView] = useState("card");
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
@@ -55,7 +63,6 @@ export default function Courses({userRole}) {
       setSelectedCategory(filtered);
     } else {
       try {
-       
         if (token) {
           const { data } = await API.get(
             `/api/userresult/students/list/${set.id}`,
@@ -73,16 +80,16 @@ export default function Courses({userRole}) {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
           // toast.error("Invaild token!");
-          navigate('/login')
+          navigate("/login");
           return;
         }
         console.error("Failed to fetch student data:", error);
       }
       try {
-       
-        if(token){
+        if (token) {
           const res = await API.get(
-            `/api/category/selected/questionsets/${title}`,{
+            `/api/category/selected/questionsets/${title}`,
+            {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
@@ -93,13 +100,12 @@ export default function Courses({userRole}) {
             setSelectedCategory(res.data);
           }
         }
-       
       } catch (error) {
         if (error.status == 403) {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
           // toast.error("Invaild token!");
-          navigate('/login')
+          navigate("/login");
           return;
         }
         throw error;
@@ -109,7 +115,7 @@ export default function Courses({userRole}) {
     setValue(newValue);
   };
   const user = auth?.currentUser?.displayName;
-  const userData = JSON.parse( localStorage.getItem('user')) || '';
+  const userData = JSON.parse(localStorage.getItem("user")) || "";
   // const userRole = userData.role;
   const userId = userData.id;
   console.log(filtered);
@@ -127,16 +133,18 @@ export default function Courses({userRole}) {
 
   console.log(questionSetByInstructor);
   console.log(value);
+
+  const handleViewChange = (viewType) => setView(viewType);
+
   return (
     <section
       className="layout-pt-lg layout-pb-lg"
-      style={{ paddingTop: "10px",paddingBottom:'40px' }}
+      style={{ paddingTop: "10px", paddingBottom: "40px" }}
     >
       <div className="row justify-center text-center">
         <div className="col-auto">
           <div className="sectionTitle mt-4 ">
             {userRole == "instructor" ? (
-              
               <h4 className="sectionTitle__title text-30 sm:text-24 ">
                 Preview How Your Quizzes Appear To Users In The Public View
               </h4>
@@ -184,10 +192,21 @@ export default function Courses({userRole}) {
         data-aos-offset="80"
         data-aos-duration={800}
       >
+        <div className="view-toggle text-center d-flex gap-2 justify-content-center">
+          <Button onClick={() => handleViewChange("card")} className={`d-flex gap-2 `} style={{ backgroundColor: view === 'card' ? '#E4E7EA' : 'transparent' }}>
+            <WidgetsIcon />
+            Card View
+          </Button>
+          <Button onClick={() => handleViewChange("list")} className="d-flex gap-2" style={{ backgroundColor: view === 'list' ? '#E4E7EA' : 'transparent' }}>
+            {" "}
+            <ListIcon /> List View
+          </Button>
+        </div>
         {userRole && userRole === "instructor" ? (
           questionSetByInstructor?.length > 0 ? (
             questionSetByInstructor.map((elm, index) => (
               <CourceCard
+                view={view}
                 role={userRole}
                 key={index}
                 data={elm}
@@ -205,6 +224,7 @@ export default function Courses({userRole}) {
           filtered &&
           filtered.map((elm, index) => (
             <CourceCard
+              view={view}
               role={userRole}
               key={index}
               data={elm}
@@ -216,6 +236,7 @@ export default function Courses({userRole}) {
         ) : selectedCategory.length > 0 ? (
           selectedCategory.map((elm, index) => (
             <CourceCard
+              view={view}
               role={userRole}
               key={index}
               data={elm}
