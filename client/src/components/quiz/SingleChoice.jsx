@@ -13,6 +13,7 @@ import QuestionSet from "./QuestionSet";
 import { useNavigate } from "react-router-dom";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import SubmitQuizModal from "./SubmitQuizModal/SubmitQuizModal";
+import { Radio } from "@mui/material";
 
 const SingleChoice = ({
   time,
@@ -357,8 +358,8 @@ const SingleChoice = ({
   let skippedQuestion = skipped.length;
 
   const onFinishQuiz = async () => {
-    console.log('remaining:'+remainingTimeRef.current)
-    
+    console.log("remaining:" + remainingTimeRef.current);
+
     const response = await testResultDtlSetData(findSelectedOption);
     if (response?.status == 200) {
       onOpenModal();
@@ -370,7 +371,7 @@ const SingleChoice = ({
     if (remainingTime === 0) {
       return <div className="timer text-14 fw-500 text-center">Time Up...</div>;
     }
-  
+
     return (
       <div className="timer">
         <div className="text text-10 fw-500">Remaining</div>
@@ -396,27 +397,23 @@ const SingleChoice = ({
                 Question {index} of {totalQuestions}{" "}
               </h4>
               <h5>Single Choice</h5>
-              {
-                timerOn == 'yes' ? (
-                  <CountdownCircleTimer
+              {timerOn == "yes" ? (
+                <CountdownCircleTimer
                   // style={{height:'70px',width:'70px'}}
                   size={130}
                   isPlaying
-                  duration={time*60}
+                  duration={time * 60}
                   colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
-                  colorsTime={[time*60, time*40, time*20, 0]} 
+                  colorsTime={[time * 60, time * 40, time * 20, 0]}
                   onComplete={() => {
-                    onOpenModal()
-                    return { shouldRepeat: false }; 
+                    onOpenModal();
+                    return { shouldRepeat: false };
                   }}
                 >
                   {renderTime}
                 </CountdownCircleTimer>
-                ) : (
-                  null
-                )
-              }
-             
+              ) : null}
+
               <div className="card-title gap-2">
                 <button
                   className="btn btn-success px-3 py-2 w-auto text-18"
@@ -431,7 +428,8 @@ const SingleChoice = ({
                 >
                   Finish
                 </button>
-                {((totalReviewed > 0 || skippedQuestion > 0) && remainingTimeRef.current !== 0 ) ? (
+                {(totalReviewed > 0 || skippedQuestion > 0) &&
+                remainingTimeRef.current !== 0 ? (
                   <Modal open={open} onClose={onCloseModal} center>
                     <FinishExamModalPage
                       questionSetId={questionSetId}
@@ -462,7 +460,7 @@ const SingleChoice = ({
             </div>
             <hr />
             <h5 className="card-text text-center">{question}</h5>
-            <ul className="list-group list-group-flush mt-3 mb-4">
+            {/* <ul className="list-group list-group-flush mt-3 mb-4 ">
               {options?.map((option, id) => (
                 <li
                   key={id}
@@ -477,11 +475,59 @@ const SingleChoice = ({
                       ? "rgb(247, 191, 234)"
                       : "",
                     cursor: "pointer",
+                    // display: "flex",
+                    // alignItems: "center",
+                    width: option.options.length > 20 ? "100%" : "48%", // Full width if text is long, otherwise half width
+                    marginRight: "4%",
                   }}
                 >
+                  <Radio
+                    checked={selectedOption.some(
+                      (selected) =>
+                        selected.id === questionId &&
+                        selected.selectedOption === option.options
+                    )}
+                    value={option.options}
+                    color="primary"
+                    style={{ marginRight: "8px" }}
+                  />
                   {option.options}
                 </li>
               ))}
+            </ul> */}
+            <ul className="list-group list-group-flush mt-3 mb-4">
+              <div className="row">
+                {options?.map((option, id) => (
+                  <div className={`col-12 col-md-6 mb-2 `} key={id}>
+                    <li
+                      className={`list-group-item border border-secondary rounded d-flex align-items-center `}
+                      onClick={() => handleOptionClick(option.options)}
+                      style={{
+                        backgroundColor: selectedOption.some(
+                          (selected) =>
+                            selected.id === questionId &&
+                            selected.selectedOption === option.options
+                        )
+                          ? "rgb(247, 191, 234)"
+                          : "",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <Radio
+                        checked={selectedOption.some(
+                          (selected) =>
+                            selected.id === questionId &&
+                            selected.selectedOption === option.options
+                        )}
+                        value={option.options}
+                        color="primary"
+                        style={{ marginRight: "8px" }}
+                      />
+                      {option.options}
+                    </li>
+                  </div>
+                ))}
+              </div>
             </ul>
             <div className="d-flex justify-content-around">
               <div className="d-flex justify-content-center align-align-items-center gap-5">

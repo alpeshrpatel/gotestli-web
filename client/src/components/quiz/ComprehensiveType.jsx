@@ -13,7 +13,7 @@ import QuestionSet from "./QuestionSet";
 import { useNavigate } from "react-router-dom";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import SubmitQuizModal from "./SubmitQuizModal/SubmitQuizModal";
-import { Typography } from "@mui/material";
+import { Radio, Typography } from "@mui/material";
 
 const ComprehensiveType = ({
   time,
@@ -470,7 +470,7 @@ const ComprehensiveType = ({
             {/* <h6 className="card-text  mt-2 mb-2 ">{paragraph}</h6> */}
             <hr />
             <h5 className="card-text text-center">{question}</h5>
-            <ul className="list-group list-group-flush mt-3 mb-4">
+            {/* <ul className="list-group list-group-flush mt-3 mb-4">
               {options?.map((option, id) => (
                 <li
                   key={id}
@@ -490,6 +490,40 @@ const ComprehensiveType = ({
                   {option.options}
                 </li>
               ))}
+            </ul> */}
+             <ul className="list-group list-group-flush mt-3 mb-4">
+              <div className="row">
+                {options?.map((option, id) => (
+                  <div className={`col-12 col-md-6 mb-2`} key={id}>
+                    <li
+                      className={`list-group-item border border-secondary rounded d-flex align-items-center `}
+                      onClick={() => handleOptionClick(option.options)}
+                      style={{
+                        backgroundColor: selectedOption.some(
+                          (selected) =>
+                            selected.id === questionId &&
+                            selected.selectedOption === option.options
+                        )
+                          ? "rgb(247, 191, 234)"
+                          : "",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <Radio
+                        checked={selectedOption.some(
+                          (selected) =>
+                            selected.id === questionId &&
+                            selected.selectedOption === option.options
+                        )}
+                        value={option.options}
+                        color="primary"
+                        style={{ marginRight: "8px" }}
+                      />
+                      {option.options}
+                    </li>
+                  </div>
+                ))}
+              </div>
             </ul>
             <div className="d-flex justify-content-around">
               <div className="d-flex justify-content-center align-align-items-center gap-5">
