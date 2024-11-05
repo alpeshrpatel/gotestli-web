@@ -257,9 +257,11 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                 />
               </div>
               <CardContent>
-                <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                  {data.short_desc}
-                </Typography>
+                <BootstrapTooltip title={data.short_desc}>
+                  <Typography variant="body2" className="text-truncate" sx={{ color: "text.secondary",maxWidth:'400px' }}>
+                    {data.short_desc}
+                  </Typography>
+                </BootstrapTooltip>
                 {!(role == "instructor") && (
                   <div className="d-flex items-center gap-2 mt-2 ">
                     <Typography
@@ -384,26 +386,33 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                       }
                       secondary={
                         <>
-                          <Typography
-                            className="text-truncate"
-                            style={{ maxWidth: "700px" }}
-                            // component="span"
-                            variant="body2"
-                            color="text.primary"
-                          >
-                            {data.short_desc}
-                          </Typography>
+                          <div className="d-flex gap-lg-5">
+                            <BootstrapTooltip title={data.short_desc}>
+                              <Typography
+                                className="text-truncate"
+                                style={{ maxWidth: "700px" }}
+                                // component="span"
+                                variant="body2"
+                                color="text.primary"
+                              >
+                                {data.short_desc}
+                              </Typography>
+                            </BootstrapTooltip>
+
+                            <div className="d-flex gap-lg-5">
+                              <Typography variant="body2">
+                                Author: {data.author}
+                              </Typography>
+                              <Typography variant="body2" color="#212121">
+                                {formattedDate}
+                              </Typography>
+                            </div>
+                          </div>
                           {" — "} {data.no_of_question} questions,{" "}
                           {data.time_duration} mins
                         </>
                       }
                     />
-                    <div className="d-flex gap-lg-5">
-                      <Typography variant="body2">
-                        Author: {data.author}
-                      </Typography>
-                      <Typography variant="body2" color='#212121'>{formattedDate}</Typography>
-                    </div>
 
                     <div className=" ms-2">
                       <Rating

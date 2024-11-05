@@ -12,7 +12,7 @@ import { downloadCertificate } from "@/components/quiz/downloadCertificate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
 import Table from "@/components/common/CommonTable";
-import { IconButton, TableCell, TextField } from "@mui/material";
+import { IconButton, MenuItem, Select, TableCell, TextField } from "@mui/material";
 import CommonTable from "@/components/common/CommonTable";
 import { Rating } from "react-simple-star-rating";
 import Modal from "react-responsive-modal";
@@ -64,8 +64,10 @@ const StudentQuizzes = () => {
   const [questionSet, setQuestionsSet] = useState([]);
   const [quiz, setQuiz] = useState();
   const [searchQuery, setSearchQuery] = useState("");
-  // const [studentsData, setStudentsData] = useState([]);
-  // const [expandedRow, setExpandedRow] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("");
+  const [authorFilter, setAuthorFilter] = useState("");
+  const [dateRange, setDateRange] = useState({ start: "", end: "" });
+  const [percentageFilter, setPercentageFilter] = useState("");
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user")) || "";
@@ -271,157 +273,47 @@ const StudentQuizzes = () => {
       : false
   );
 
+  const handleFilterChange = (filter, value) => {
+    switch (filter) {
+      case "status":
+        setStatusFilter(value);
+        break;
+      case "author":
+        setAuthorFilter(value);
+        break;
+      case "percentage":
+        setPercentageFilter(value);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const filteredDataByFilter = questionSets
+    .filter(
+      (quiz) =>
+        quiz.title.toLowerCase().includes(searchQuery) ||
+        quiz.author.toLowerCase().includes(authorFilter.toLowerCase())
+    )
+    .filter((quiz) => (statusFilter ? quiz.status === statusFilter : true))
+    .filter((quiz) =>
+      percentageFilter ? quiz.percentage >= percentageFilter : true
+    )
+    .filter((quiz) => {
+      if (dateRange.start && dateRange.end) {
+        const quizDate = new Date(quiz.created_date);
+        return (
+          quizDate >= new Date(dateRange.start) &&
+          quizDate <= new Date(dateRange.end)
+        );
+      }
+      return true;
+    });
+
   const getRowId = (row, index) => index;
 
   const renderRowCells = (quiz, index) => (
     <>
-      {/* {quiz.status == 2 ? (
-        <BootstrapTooltip title="Click to Attempt it">
-          
-            <TableCell>{index + 1}</TableCell>
-            <TableCell className="text-truncate" sx={{ maxWidth: "100px" }}>
-              <BootstrapTooltip title={quiz.title}>
-                {quiz.title}
-              </BootstrapTooltip>
-            </TableCell>
-            <TableCell>
-              {quiz.created_date
-                ? quiz.created_date.slice(0, 19).replace("T", " ")
-                : "---"}
-            </TableCell>
-            <TableCell>
-              {quiz.modified_date && quiz.status == 1
-                ? quiz.modified_date.slice(0, 19).replace("T", " ")
-                : "---"}
-            </TableCell>
-            <TableCell>
-              {quiz.status == 1 || quiz.status == 0 ? (
-                "Completed"
-              ) : (
-                <BootstrapTooltip title="Click to Attempt it">
-                  <button
-                    onClick={() => handleInProgressClick(quiz)}
-                    style={{
-                      textDecoration: "underline",
-                      color: "blue",
-                      // textAlign: "center",
-                    }}
-                  >
-                    In Progress
-                  </button>
-                </BootstrapTooltip>
-              )}
-            </TableCell>
-            <TableCell>{quiz.marks_obtained}</TableCell>
-            <TableCell>{quiz.percentage}</TableCell>
-            <TableCell>Exam</TableCell>
-            <TableCell>
-              {quiz.percentage >= quiz?.pass_percentage ? "Pass" : "Fail"}
-            </TableCell>
-            <TableCell
-              onClick={() => handleFetchedReview(quiz.question_set_id)}
-              style={{
-                textDecoration: "underline",
-                color: "blue",
-                // textAlign: "center",
-              }}
-            >
-              Review
-            </TableCell>
-            <TableCell style={{}}>
-              {quiz.percentage >= quiz?.pass_percentage ? (
-                <IconButton
-                  onClick={() =>
-                    downloadCertificate(
-                      quiz.first_name + " " + quiz?.last_name,
-                      quiz.percentage,
-                      quiz.title,
-                      quiz?.tags?.split(",")[0],
-                      quiz.author
-                    )
-                  }
-                >
-                  <FontAwesomeIcon
-                    icon={faFileArrowDown}
-                    style={{ fontSize: "30px", color: "#4CAF50" }}
-                  />
-                </IconButton>
-              ) : null}
-            </TableCell>
-          
-        </BootstrapTooltip>
-      ) : (
-        <>
-          <TableCell>{index + 1}</TableCell>
-          <TableCell className="text-truncate" sx={{ maxWidth: "100px" }}>
-            <BootstrapTooltip title={quiz.title}>{quiz.title}</BootstrapTooltip>
-          </TableCell>
-          <TableCell>
-            {quiz.created_date
-              ? quiz.created_date.slice(0, 19).replace("T", " ")
-              : "---"}
-          </TableCell>
-          <TableCell>
-            {quiz.modified_date && quiz.status == 1
-              ? quiz.modified_date.slice(0, 19).replace("T", " ")
-              : "---"}
-          </TableCell>
-          <TableCell>
-            {quiz.status == 1 || quiz.status == 0 ? (
-              "Completed"
-            ) : (
-              <BootstrapTooltip title="Click to Attempt it">
-                <button
-                  onClick={() => handleInProgressClick(quiz)}
-                  style={{
-                    textDecoration: "underline",
-                    color: "blue",
-                    // textAlign: "center",
-                  }}
-                >
-                  In Progress
-                </button>
-              </BootstrapTooltip>
-            )}
-          </TableCell>
-          <TableCell>{quiz.marks_obtained}</TableCell>
-          <TableCell>{quiz.percentage}</TableCell>
-          <TableCell>Exam</TableCell>
-          <TableCell>
-            {quiz.percentage >= quiz?.pass_percentage ? "Pass" : "Fail"}
-          </TableCell>
-          <TableCell
-            onClick={() => handleFetchedReview(quiz.question_set_id)}
-            style={{
-              textDecoration: "underline",
-              color: "blue",
-              // textAlign: "center",
-            }}
-          >
-            Review
-          </TableCell>
-          <TableCell style={{}}>
-            {quiz.percentage >= quiz?.pass_percentage ? (
-              <IconButton
-                onClick={() =>
-                  downloadCertificate(
-                    quiz.first_name + " " + quiz?.last_name,
-                    quiz.percentage,
-                    quiz.title,
-                    quiz?.tags?.split(",")[0],
-                    quiz.author
-                  )
-                }
-              >
-                <FontAwesomeIcon
-                  icon={faFileArrowDown}
-                  style={{ fontSize: "30px", color: "#4CAF50" }}
-                />
-              </IconButton>
-            ) : null}
-          </TableCell>
-        </>
-      )} */}
       <TableCell>{index + 1}</TableCell>
       <TableCell className="text-truncate" sx={{ maxWidth: "100px" }}>
         <BootstrapTooltip title={quiz.title}>{quiz.title}</BootstrapTooltip>
@@ -500,79 +392,6 @@ const StudentQuizzes = () => {
 
       <div className="content-wrapper js-content-wrapper overflow-hidden w-100">
         {questionSets.length > 0 ? (
-          // <div className="table-responsive">
-          //   <table className="custom-table">
-          //     <thead>
-          //       <tr>
-          //         <th>#</th>
-          //         <th>Quiz Title</th>
-          //         <th>Start Date</th>
-          //         <th>Complete Date</th>
-          //         <th>Status</th>
-          //         <th>Marks</th>
-          //         <th>Percentage</th>
-
-          //         <th>Mode</th>
-          //         <th>Result</th>
-          //         <th>Download</th>
-          //       </tr>
-          //     </thead>
-          //     <tbody>
-          //       {questionSets.map((quiz, index) => (
-          //         <React.Fragment key={quiz.id}>
-          //           <tr>
-          //             <td>{index + 1}</td>
-          //             <td>{quiz.title}</td>
-          //             {quiz.created_date ? (
-          //               <td>
-          //                 {quiz.created_date.slice(0, 19).replace("T", " ")}
-          //               </td>
-          //             ) : (
-          //               <td> --- </td>
-          //             )}
-          //             {quiz.modified_date && quiz.status == 1 ? (
-          //               <td>
-          //                 {quiz.modified_date.slice(0, 19).replace("T", " ")}
-          //               </td>
-          //             ) : (
-          //               <td> --- </td>
-          //             )}
-          //             <td>
-          //               {quiz.status == 1 || quiz.status == 0
-          //                 ? "Completed"
-          //                 : "In Progress"}
-          //             </td>
-          //             <td>{quiz.marks_obtained}</td>
-          //             <td>{quiz.percentage}</td>
-          //             <td>Exam</td>
-          //             <td>
-          //               {quiz.percentage >= quiz?.pass_percentage
-          //                 ? "Pass"
-          //                 : "Fail"}
-          //             </td>
-          //             <td style={{textAlign:'center'}}>
-          //               {quiz.percentage >= quiz?.pass_percentage ? (
-          //                 <FontAwesomeIcon
-          //                   icon={faFileArrowDown}
-          //                   style={{ fontSize: "30px", color: "#4CAF50" }}
-          //                   onClick={() =>
-          //                     downloadCertificate(
-          //                       quiz.first_name + " " + quiz?.last_name,
-          //                       quiz.percentage,
-          //                       quiz.title,
-          //                       quiz?.tags?.split(',')[0],
-          //                       quiz.author
-          //                     )
-          //                   }
-          //                 />
-          //               ) : null}
-          //             </td>
-          //           </tr>
-          //         </React.Fragment>
-          //       ))}
-          //     </tbody>
-          //   </table>
-          // </div>
           <>
             <div className="table-responsive">
               <div
@@ -600,6 +419,50 @@ const StudentQuizzes = () => {
                   />
                 )}
               </div>
+              {/* <div className="filter-bar">
+                <TextField
+                  label="Search Title"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                />
+                <TextField
+                  label="Author"
+                  value={authorFilter}
+                  onChange={(e) => handleFilterChange("author", e.target.value)}
+                />
+                <Select
+                  value={statusFilter}
+                  onChange={(e) => handleFilterChange("status", e.target.value)}
+                >
+                  <MenuItem value="">All Statuses</MenuItem>
+                  <MenuItem value={1}>Completed</MenuItem>
+                  <MenuItem value={0}>In Progress</MenuItem>
+                </Select>
+                <TextField
+                  type="number"
+                  label="Minimum Percentage"
+                  value={percentageFilter}
+                  onChange={(e) =>
+                    handleFilterChange("percentage", e.target.value)
+                  }
+                />
+                <TextField
+                  type="date"
+                  label="Start Date"
+                  value={dateRange.start}
+                  onChange={(e) =>
+                    setDateRange({ ...dateRange, start: e.target.value })
+                  }
+                />
+                <TextField
+                  type="date"
+                  label="End Date"
+                  value={dateRange.end}
+                  onChange={(e) =>
+                    setDateRange({ ...dateRange, end: e.target.value })
+                  }
+                />
+              </div> */}
               {searchQuery && filteredData.length <= 0 ? (
                 <h4 className="no-content text-center">
                   It looks a bit empty here! 🌟 No fields matched!
