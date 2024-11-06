@@ -128,6 +128,7 @@ import SingleChoice from "./SingleChoice";
 import { useLocation, useNavigate } from "react-router-dom";
 import ComprehensiveType from "./ComprehensiveType";
 import { API } from "@/utils/AxiosInstance";
+import MultipleChoice from "./MultipleChoice";
 
 const QuestionSet = () => {
   const [questions, setQuestions] = useState([]);
@@ -220,7 +221,21 @@ const QuestionSet = () => {
             onPrevious={handlePreviousClick}
           />
         ) : (
-          <SingleChoice
+          questions[questionNumber - 1].question_type_id == "7" ? (
+            <MultipleChoice
+            time={time}
+            timerOn={timerOn}
+            resumeQuizUserResultId={userResultId}
+            questionSetId={questionSetId}
+            questionId={questions[questionNumber - 1].question_id}
+            totalQuestions={questions.length}
+            question={questions[questionNumber - 1].question}
+            index={questionNumber}
+            onNext={handleNextClick}
+            onPrevious={handlePreviousClick}
+            />
+          ): (
+            <SingleChoice
             time={time}
             timerOn={timerOn}
             resumeQuizUserResultId={userResultId}
@@ -232,6 +247,8 @@ const QuestionSet = () => {
             onNext={handleNextClick}
             onPrevious={handlePreviousClick}
           />
+          )
+          
         )
       )}
     </div>
