@@ -64,7 +64,9 @@ const SubmitQuizModal = ({
           skippedQuestion: skippedQuestion,
           percentage: percentage,
           passPercentage: passPercentage,
-          questionSetId:questionSetId
+          questionSetId:questionSetId,
+          userResultId:userResultId
+
         },
       });
     }

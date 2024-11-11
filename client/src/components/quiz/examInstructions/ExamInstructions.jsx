@@ -40,6 +40,9 @@ import {
   faThumbsUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import QuizReport from "../QuizReport";
+import "react-responsive-modal/styles.css";
+import { Modal } from "react-responsive-modal";
 
 const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
   const [startTestResultData, setStartTestResultData] = useState([]);
@@ -48,6 +51,9 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
   const [history, setHistory] = useState([]);
   const [followersData, setFollowersData] = useState([]);
   const[timerOnValue,setTimerOnValue] = useState();
+  const [open, setOpen] = useState(false);
+  const [selectedAttemptId, setSelectedAttemptId] = useState(null);
+
   // const [userRole, setUserRole] = useState("");
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -138,6 +144,13 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
       getFollowersData();
     }
   }, []);
+
+  const onCloseReportModal = () => setOpen(false);
+  const onOpenModal = (attemptId) => {
+    setSelectedAttemptId(attemptId);
+    setOpen(true);
+  };
+  
 
   async function testResultDtlSetData(userId, questionSetId, userResultId) {
     try {
@@ -302,7 +315,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
       console.error(error);
     }
   };
-  console.log(followersData);
+  console.log('history:',history);
 
   console.log('timer:'+timerOnValue)
 
@@ -627,13 +640,19 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
                                 </TableCell>
                                 <TableCell>
                                   {/* {row.report === 'Report' ? ( */}
-                                  <Button
-                                    variant="contained"
-                                    color="primary"
-                                    size="small"
-                                  >
-                                    Report
-                                  </Button>
+                                  {attempt.status == 1 || attempt.status == 0
+                                    ? (
+                                      <Button
+                                      variant="contained"
+                                      color="primary"
+                                      size="small"
+                                      onClick={() => onOpenModal(attempt.id)}
+                                    >
+                                      Report
+                                    </Button>
+                                    )
+                                    : "-"}
+                                 
                                   {/* ) : row.report} */}
                                 </TableCell>
                               </TableRow>
@@ -652,6 +671,9 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
           )}
         </div>
       )}
+      <Modal open={open} onClose={onCloseReportModal} center>
+        <QuizReport attemptId={selectedAttemptId}/>
+      </Modal>
     </div>
   );
 };

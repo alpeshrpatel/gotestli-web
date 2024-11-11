@@ -110,6 +110,7 @@ import Leadership from "./components/layout/footers/footerpages/Leadership";
 import NotFoundPage from "./pages/not-found";
 import { ThemeProvider } from "@mui/material";
 import { darkTheme, lightTheme } from "./components/common/MaterialTheme";
+import QuizReport from "./components/quiz/QuizReport";
 
 function App() {
   useEffect(() => {
@@ -201,6 +202,12 @@ function App() {
                 path="quiz/singlechoice"
                 element={
                   <ProtectedRoute element={<SingleChoice />} role="student" />
+                }
+              />
+               <Route
+                path="quiz/report"
+                element={
+                  <ProtectedRoute element={<QuizReport />} role="student" />
                 }
               />
               <Route
