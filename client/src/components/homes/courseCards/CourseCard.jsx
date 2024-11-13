@@ -74,7 +74,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
     async function getWishlist() {
       try {
         if (token) {
-          const res = await API.get(`/api/wishlist/${userId}`, {
+          const res = await API.get(`/api/wishlist/getqsetid/${userId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

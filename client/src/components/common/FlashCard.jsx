@@ -101,11 +101,10 @@
 
 // export default Flashcard;
 
-
-import React, { useEffect, useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { API } from '@/utils/AxiosInstance';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { API } from "@/utils/AxiosInstance";
+import { useNavigate } from "react-router-dom";
 
 const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
   const [question, setQuestion] = useState();
@@ -123,7 +122,7 @@ const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
           });
           console.log(data);
           setQuestion(data.question);
-          setExplanation(data.explanation)
+          setExplanation(data.explanation);
         }
       } catch (error) {
         if (error.response && error.response.status === 403) {
@@ -159,26 +158,54 @@ const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
     getQuestions();
     getOptions();
   }, [questionId, token, navigate]);
- console.log(userAnswer , correctAnswer)
+  console.log(userAnswer, correctAnswer);
+  const correctAnswerArray = correctAnswer.split("/");
+  const userAnswerArray = userAnswer.split("/");
+
+  function areAnswersEqual(correctAnswer, userAnswer) {
+    if (correctAnswer.includes("/") && userAnswer.includes("/")) {
+      const correctAnswerArray = correctAnswer.split("/");
+      const userAnswerArray = userAnswer.split("/");
+
+      correctAnswerArray.sort();
+      userAnswerArray.sort();
+
+      return (
+        JSON.stringify(correctAnswerArray) === JSON.stringify(userAnswerArray)
+      );
+    } else {
+      return correctAnswer === userAnswer;
+    }
+  }
+
   return (
     <div
       className="card p-3 mb-3"
       style={{
-        borderLeft: `5px solid ${correctAnswer === userAnswer ? '#00c985' : '#e74c3c'}`,
+        borderLeft: `5px solid ${
+          areAnswersEqual(correctAnswer,userAnswer) ? "#00c985" : "#e74c3c"
+        }`,
       }}
     >
       <div className="card-body">
-        <h6 className="card-title"> Q. {question ? question : 'Loading question...'}</h6>
+        <h6 className="card-title">
+          {" "}
+          Q. {question ? question : "Loading question..."}
+        </h6>
         <ul className="list-group list-group-flush">
           {options.map((option, index) => {
-            const isCorrect = option.options === correctAnswer;
-            const isUserAnswer = option.options === userAnswer;
+            const isCorrect =
+              option.options === correctAnswer ||
+              correctAnswerArray.includes(option.options);
+            const isUserAnswer =
+              option.options === userAnswer ||
+              userAnswerArray.includes(option.options);
             return (
               <li
                 key={index}
-                className={`list-group-item ${isCorrect ? 'text-success' : ''} ${
-                  isUserAnswer && !isCorrect ? 'text-danger' : ''
-                }`}
+                className={`list-group-item ${
+                  isCorrect ? "text-success" : ""
+                } ${isUserAnswer && !isCorrect ? "text-danger" : ""}`}
               >
                 <input
                   type="radio"
@@ -188,13 +215,22 @@ const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
                   className="me-2"
                 />
                 {option.options}
-                {isCorrect && <span className="badge bg-success ms-lg-4">Correct Answer</span>}
-                {isUserAnswer && !isCorrect && <span className="badge bg-danger ms-lg-4">Your Answer</span>}
+                {isCorrect && (
+                  <span className="badge bg-success ms-lg-4">
+                    Correct Answer
+                  </span>
+                )}
+                {isUserAnswer && !isCorrect && (
+                  <span className="badge bg-danger ms-lg-4">Your Answer</span>
+                )}
               </li>
             );
           })}
         </ul>
-        <h7 className="card-title mt-4 "> <strong>Explanation:- </strong>  {explanation ? explanation : ''}</h7>
+        <h7 className="card-title mt-4 ">
+          {" "}
+          <strong>Explanation:- </strong> {explanation ? explanation : ""}
+        </h7>
       </div>
     </div>
   );

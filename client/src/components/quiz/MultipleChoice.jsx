@@ -238,81 +238,75 @@ const MultipleChoice = ({
 //   };
 
 const handleOptionClick = async (option) => {
-    // Define the maximum selection limit
-    const MAX_SELECTION_LIMIT = 3;
-  
-    // Find the current question in selectedOption
-    const findQuestion = selectedOption.find((question) => questionId === question.id);
-  
-    // Check if the option is already selected
-    const isOptionSelected = findQuestion?.selectedOption?.includes(option);
-  
+  const MAX_SELECTION_LIMIT = 4;
+
+ 
+  const findQuestion = selectedOption.find((question) => question.id === questionId);
+  let updatedOptions = ''
+  if (findQuestion) {
+    
+    const selectedOptionsArray = findQuestion.selectedOption?.split('/').map(opt => opt.trim());
+
+    
+    const isOptionSelected = selectedOptionsArray?.includes(option);
+    
     if (isOptionSelected) {
-      // Remove the option if it was already selected (deselection)
+      
+       updatedOptions = selectedOptionsArray.filter(opt => opt !== option).join('/');
       setSelectedOption(
-        selectedOption.map((question) =>
+        selectedOption.map(question =>
           question.id === questionId
-            ? {
-                ...question,
-                selectedOption: question.selectedOption
-                  .split(', ')
-                  .filter((opt) => opt !== option)
-                  .join(', '),
-                status: 1,
-              }
+            ? { ...question, selectedOption: updatedOptions, status: 1 }
             : question
         )
       );
     } else {
-      // Check if selection limit is reached
-      if (findQuestion && findQuestion.selectedOption?.split(', ').length >= MAX_SELECTION_LIMIT) {
+    
+      if (selectedOptionsArray?.length >= MAX_SELECTION_LIMIT) {
         alert(`You can only select up to ${MAX_SELECTION_LIMIT} options.`);
         return;
       }
-  
-      // Append the option if it was not selected
+      if(!selectedOptionsArray){
+        updatedOptions = option
+      }else{
+        updatedOptions = [...selectedOptionsArray, option].join('/');
+      }
+       
       setSelectedOption(
-        selectedOption.map((question) =>
+        selectedOption?.map(question =>
           question.id === questionId
-            ? {
-                ...question,
-                selectedOption: findQuestion.selectedOption
-                  ? `${findQuestion.selectedOption}, ${option}`
-                  : option,
-                status: 1,
-              }
+            ? { ...question, selectedOption: updatedOptions, status: 1 }
             : question
         )
       );
     }
+  } else {
+   
+    setSelectedOption([
+      ...selectedOption,
+      {
+        id: questionId,
+        selectedOption: option,
+        status: 1,
+      },
+    ]);
+  }
+
   
-    // If the question wasn't found, add a new one to selectedOption with the selected option
-    if (!findQuestion) {
-      setSelectedOption([
-        ...selectedOption,
-        {
-          id: questionId,
-          selectedOption: option,
-          status: 1,
-        },
-      ]);
-    }
-  
-    // Handle the status and isReviewed logic as per your original code
-    let isReviewed;
-    let newStatus;
-    if (status == 2 || status == 3) {
-      isReviewed = 1;
-      newStatus = 3;
-    } else {
-      isReviewed = 0;
-      newStatus = 1;
-    }
-  
-    await testResultDtlSetData(option, isReviewed, newStatus);
-    console.log(selectedOption);
-  };
-  
+  let isReviewed;
+  let newStatus;
+  if (status == 2 || status == 3) {
+    isReviewed = 1;
+    newStatus = 3;
+  } else {
+    isReviewed = 0;
+    newStatus = 1;
+  }
+
+  await testResultDtlSetData(updatedOptions, isReviewed, newStatus);
+  console.log(selectedOption);
+};
+
   async function testResultDtlSetData(
     findSelectedOption,
     isReviewed = 0,
@@ -467,8 +461,8 @@ const handleOptionClick = async (option) => {
           className="card shadow p-4 "
           style={{ width: "60vw", borderRadius: "15px" }}
         >
-          <div className="card-body ">
-            <div className="d-flex justify-content-between items-center">
+          <div className="card-body " style={{userSelect: "none"}}>
+            <div className="d-flex justify-content-between items-center" >
               <h4 className="card-title text-center">
                 Question {index} of {totalQuestions}{" "}
               </h4>
@@ -587,6 +581,7 @@ const handleOptionClick = async (option) => {
                           ? "rgb(247, 191, 234)"
                           : "",
                         cursor: "pointer",
+                        userSelect: "none",
                       }}
                     >
                       <Checkbox

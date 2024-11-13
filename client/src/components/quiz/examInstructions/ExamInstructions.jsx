@@ -587,7 +587,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableCell>#Attempt(s)</TableCell>
+                          <TableCell>#Attempt</TableCell>
                           <TableCell>Start Date</TableCell>
                           <TableCell>Complete Date</TableCell>
                           <TableCell>Status</TableCell>

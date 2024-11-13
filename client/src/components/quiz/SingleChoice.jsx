@@ -389,7 +389,7 @@ const SingleChoice = ({
       >
         <div
           className="card shadow p-4 "
-          style={{ width: "60vw", borderRadius: "15px" }}
+          style={{ width: "60vw", borderRadius: "15px", userSelect: "none" }}
         >
           <div className="card-body ">
             <div className="d-flex justify-content-between items-center">
@@ -511,6 +511,7 @@ const SingleChoice = ({
                           ? "rgb(247, 191, 234)"
                           : "",
                         cursor: "pointer",
+                        userSelect: "none",
                       }}
                     >
                       <Radio

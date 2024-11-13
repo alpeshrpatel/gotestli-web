@@ -12,7 +12,13 @@ import { downloadCertificate } from "@/components/quiz/downloadCertificate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
 import Table from "@/components/common/CommonTable";
-import { IconButton, MenuItem, Select, TableCell, TextField } from "@mui/material";
+import {
+  IconButton,
+  MenuItem,
+  Select,
+  TableCell,
+  TextField,
+} from "@mui/material";
 import CommonTable from "@/components/common/CommonTable";
 import { Rating } from "react-simple-star-rating";
 import Modal from "react-responsive-modal";

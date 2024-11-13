@@ -4,7 +4,7 @@ import Links from "../component/Links";
 export default function FooterNine() {
   return (
     <footer className="footer">
-      <div className="container">
+      <div className="container-fluid">
         <div className="py-30 border-top-light">
           <div className="row items-center justify-between">
             <div className="col-auto">
