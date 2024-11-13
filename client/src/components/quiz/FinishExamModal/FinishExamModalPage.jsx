@@ -293,12 +293,12 @@ const FinishExamModalPage = ({
             <h4 className="mt-4">No Questions in Review</h4>
           )}
           <div className="d-flex justify-content-evenly gap-4">
-            <button
+            {/* <button
               className="btn btn-secondary mpx-3 py-2 w-auto text-18 mt-4"
               onClick={() => setViewReviewQuestions(false)}
             >
               Back
-            </button>
+            </button> */}
             <button
               className="btn btn-success px-3 py-2 w-auto text-18 mt-4"
               onClick={handleQuizSubmit}

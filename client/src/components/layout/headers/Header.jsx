@@ -11,6 +11,7 @@ import { menuList } from "@/data--backup/menu";
 import { Button, IconButton, TextField } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CancelIcon from "@mui/icons-material/Cancel";
+import CartButton from "@/components/common/CartButton";
 
 export default function Header({ userRole }) {
   const [activeMobileMenu, setActiveMobileMenu] = useState(false);
@@ -188,6 +189,8 @@ export default function Header({ userRole }) {
                     allClasses={"d-flex items-center text-white"}
                     wishlistCount={wishlistCount}
                   />
+
+                  <CartButton/>
 
                   {/* <FontAwesomeIcon icon={faCardHeart} /> */}
                   {/* cart toggle end */}

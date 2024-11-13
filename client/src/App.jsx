@@ -1,7 +1,13 @@
 import "./styles/index.scss";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import "react-calendar/dist/Calendar.css";
-import { BrowserRouter, Routes, Route, RouterProvider, json } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  RouterProvider,
+  json,
+} from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Suspense, useEffect, useState } from "react";
@@ -110,6 +116,8 @@ import Leadership from "./components/layout/footers/footerpages/Leadership";
 import NotFoundPage from "./pages/not-found";
 import { ThemeProvider } from "@mui/material";
 import { darkTheme, lightTheme } from "./components/common/MaterialTheme";
+import QuizReport from "./components/quiz/QuizReport";
+import StudentWishlist from "./pages/studentpages/StudentWishlist";
 
 function App() {
   useEffect(() => {
@@ -122,30 +130,30 @@ function App() {
   }, []);
 
   const [isDarkMode, setIsDarkMode] = useState(
-    localStorage.getItem('theme') === 'dark'
+    localStorage.getItem("theme") === "dark"
   );
 
   // Function to toggle theme and persist to localStorage
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
     setIsDarkMode(newTheme);
-    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+    localStorage.setItem("theme", newTheme ? "dark" : "light");
   };
 
   // On initial load, check localStorage for saved theme
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
+    const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
-      setIsDarkMode(savedTheme === 'dark');
+      setIsDarkMode(savedTheme === "dark");
     }
   }, []);
 
-  const user = JSON.parse(localStorage.getItem('user')) || "";
+  const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
 
   return (
     <>
-     {/* <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}> */}
+      {/* <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}> */}
       <Suspense fallback={<Loader />}>
         <Context>
           <BrowserRouter>
@@ -204,6 +212,12 @@ function App() {
                 }
               />
               <Route
+                path="quiz/report"
+                element={
+                  <ProtectedRoute element={<QuizReport />} role="student" />
+                }
+              />
+              <Route
                 path="quiz/result"
                 element={
                   <ProtectedRoute element={<QuizResult />} role="student" />
@@ -231,6 +245,15 @@ function App() {
                 }
               />
               <Route
+                path="/dshb/wishlist"
+                element={
+                  <ProtectedRoute
+                    element={<StudentWishlist />}
+                    role="student"
+                  />
+                }
+              />
+              <Route
                 path="/student/dashboard"
                 element={
                   <ProtectedRoute
@@ -246,7 +269,13 @@ function App() {
                 element={
                   <ProtectedRoute
                     element={<ProfilePage />}
-                    role={ userRole == `student` ? `student` : ( userRole == 'instructor' ? 'instructor' : '') }
+                    role={
+                      userRole == `student`
+                        ? `student`
+                        : userRole == "instructor"
+                        ? "instructor"
+                        : ""
+                    }
                   />
                 }
               />

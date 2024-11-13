@@ -13,9 +13,9 @@ import QuestionSet from "./QuestionSet";
 import { useNavigate } from "react-router-dom";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import SubmitQuizModal from "./SubmitQuizModal/SubmitQuizModal";
-import { Radio, Typography } from "@mui/material";
+import { Checkbox, Radio } from "@mui/material";
 
-const ComprehensiveType = ({
+const MultipleChoice = ({
   time,
   timerOn,
   resumeQuizUserResultId,
@@ -23,7 +23,6 @@ const ComprehensiveType = ({
   questionId,
   totalQuestions,
   question,
-  paragraph,
   index,
   onNext,
   onPrevious,
@@ -202,41 +201,111 @@ const ComprehensiveType = ({
     return newStatus;
   }
 
-  const handleOptionClick = async (option) => {
-    const findQuestion = selectedOption.find(
-      (question) => questionId === question.id
-    );
+//   const handleOptionClick = async (option) => {
+//     const findQuestion = selectedOption.find(
+//       (question) => questionId === question.id
+//     );
 
-    if (findQuestion) {
+//     if (findQuestion) {
+//       setSelectedOption(
+//         selectedOption.map((question) =>
+//           question.id === questionId
+//             ? { ...question, selectedOption: option, status: 1 }
+//             : question
+//         )
+//       );
+//     } else {
+//       setSelectedOption([
+//         ...selectedOption,
+//         {
+//           id: questionId,
+//           selectedOption: option,
+//         },
+//       ]);
+//     }
+//     let isReviewed;
+//     let newStatus;
+//     if (status == 2 || status == 3) {
+//       isReviewed = 1;
+//       newStatus = 3;
+//     } else {
+//       isReviewed = 0;
+//       newStatus = 1;
+//     }
+
+//     await testResultDtlSetData(option, isReviewed, newStatus);
+//     console.log(selectedOption);
+//   };
+
+const handleOptionClick = async (option) => {
+  const MAX_SELECTION_LIMIT = 4;
+
+ 
+  const findQuestion = selectedOption.find((question) => question.id === questionId);
+  let updatedOptions = ''
+  if (findQuestion) {
+    
+    const selectedOptionsArray = findQuestion.selectedOption?.split('/').map(opt => opt.trim());
+
+    
+    const isOptionSelected = selectedOptionsArray?.includes(option);
+    
+    if (isOptionSelected) {
+      
+       updatedOptions = selectedOptionsArray.filter(opt => opt !== option).join('/');
       setSelectedOption(
-        selectedOption.map((question) =>
+        selectedOption.map(question =>
           question.id === questionId
-            ? { ...question, selectedOption: option, status: 1 }
+            ? { ...question, selectedOption: updatedOptions, status: 1 }
             : question
         )
       );
     } else {
-      setSelectedOption([
-        ...selectedOption,
-        {
-          id: questionId,
-          selectedOption: option,
-        },
-      ]);
+    
+      if (selectedOptionsArray?.length >= MAX_SELECTION_LIMIT) {
+        alert(`You can only select up to ${MAX_SELECTION_LIMIT} options.`);
+        return;
+      }
+      if(!selectedOptionsArray){
+        updatedOptions = option
+      }else{
+        updatedOptions = [...selectedOptionsArray, option].join('/');
+      }
+       
+      setSelectedOption(
+        selectedOption?.map(question =>
+          question.id === questionId
+            ? { ...question, selectedOption: updatedOptions, status: 1 }
+            : question
+        )
+      );
     }
-    let isReviewed;
-    let newStatus;
-    if (status == 2 || status == 3) {
-      isReviewed = 1;
-      newStatus = 3;
-    } else {
-      isReviewed = 0;
-      newStatus = 1;
-    }
+  } else {
+   
+    setSelectedOption([
+      ...selectedOption,
+      {
+        id: questionId,
+        selectedOption: option,
+        status: 1,
+      },
+    ]);
+  }
 
-    await testResultDtlSetData(option, isReviewed, newStatus);
-    console.log(selectedOption);
-  };
+  
+  let isReviewed;
+  let newStatus;
+  if (status == 2 || status == 3) {
+    isReviewed = 1;
+    newStatus = 3;
+  } else {
+    isReviewed = 0;
+    newStatus = 1;
+  }
+
+  await testResultDtlSetData(updatedOptions, isReviewed, newStatus);
+  console.log(selectedOption);
+};
 
   async function testResultDtlSetData(
     findSelectedOption,
@@ -359,8 +428,8 @@ const ComprehensiveType = ({
   let skippedQuestion = skipped.length;
 
   const onFinishQuiz = async () => {
-    console.log('remaining:'+remainingTimeRef.current)
-    
+    console.log("remaining:" + remainingTimeRef.current);
+
     const response = await testResultDtlSetData(findSelectedOption);
     if (response?.status == 200) {
       onOpenModal();
@@ -372,7 +441,7 @@ const ComprehensiveType = ({
     if (remainingTime === 0) {
       return <div className="timer text-14 fw-500 text-center">Time Up...</div>;
     }
-  
+
     return (
       <div className="timer">
         <div className="text text-10 fw-500">Remaining</div>
@@ -390,35 +459,31 @@ const ComprehensiveType = ({
       >
         <div
           className="card shadow p-4 "
-          style={{ width: "60vw", borderRadius: "15px" ,userSelect: "none",}}
+          style={{ width: "60vw", borderRadius: "15px" }}
         >
-          <div className="card-body ">
-            <div className="d-flex justify-content-between items-center">
+          <div className="card-body " style={{userSelect: "none"}}>
+            <div className="d-flex justify-content-between items-center" >
               <h4 className="card-title text-center">
                 Question {index} of {totalQuestions}{" "}
               </h4>
-              <h5>Comprehensive</h5>
-              {
-                timerOn == 'yes' ? (
-                  <CountdownCircleTimer
+              <h5>Multiple Choice</h5>
+              {timerOn == "yes" ? (
+                <CountdownCircleTimer
                   // style={{height:'70px',width:'70px'}}
                   size={130}
                   isPlaying
-                  duration={time*60}
+                  duration={time * 60}
                   colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
-                  colorsTime={[time*60, time*40, time*20, 0]} 
+                  colorsTime={[time * 60, time * 40, time * 20, 0]}
                   onComplete={() => {
-                    onOpenModal()
-                    return { shouldRepeat: false }; 
+                    onOpenModal();
+                    return { shouldRepeat: false };
                   }}
                 >
                   {renderTime}
                 </CountdownCircleTimer>
-                ) : (
-                  null
-                )
-              }
-             
+              ) : null}
+
               <div className="card-title gap-2">
                 <button
                   className="btn btn-success px-3 py-2 w-auto text-18"
@@ -433,7 +498,8 @@ const ComprehensiveType = ({
                 >
                   Finish
                 </button>
-                {((totalReviewed > 0 || skippedQuestion > 0) && remainingTimeRef.current !== 0 ) ? (
+                {(totalReviewed > 0 || skippedQuestion > 0) &&
+                remainingTimeRef.current !== 0 ? (
                   <Modal open={open} onClose={onCloseModal} center>
                     <FinishExamModalPage
                       questionSetId={questionSetId}
@@ -463,14 +529,8 @@ const ComprehensiveType = ({
               </div>
             </div>
             <hr />
-            <h6> <strong>Note.</strong> Read this paragraph carefully and attempt below questions.</h6>
-            <Typography className="card-text text-center mt-2 mb-2 " color='InfoText' variant='h8'>
-            {paragraph}
-            </Typography>
-            {/* <h6 className="card-text  mt-2 mb-2 ">{paragraph}</h6> */}
-            <hr />
             <h5 className="card-text text-center">{question}</h5>
-            {/* <ul className="list-group list-group-flush mt-3 mb-4">
+            {/* <ul className="list-group list-group-flush mt-3 mb-4 ">
               {options?.map((option, id) => (
                 <li
                   key={id}
@@ -485,24 +545,38 @@ const ComprehensiveType = ({
                       ? "rgb(247, 191, 234)"
                       : "",
                     cursor: "pointer",
+                    // display: "flex",
+                    // alignItems: "center",
+                    width: option.options.length > 20 ? "100%" : "48%", // Full width if text is long, otherwise half width
+                    marginRight: "4%",
                   }}
                 >
+                  <Radio
+                    checked={selectedOption.some(
+                      (selected) =>
+                        selected.id === questionId &&
+                        selected.selectedOption === option.options
+                    )}
+                    value={option.options}
+                    color="primary"
+                    style={{ marginRight: "8px" }}
+                  />
                   {option.options}
                 </li>
               ))}
             </ul> */}
-             <ul className="list-group list-group-flush mt-3 mb-4">
+            <ul className="list-group list-group-flush mt-3 mb-4">
               <div className="row">
                 {options?.map((option, id) => (
-                  <div className={`col-12 col-md-6 mb-2`} key={id}>
+                  <div className={`col-12 col-md-6 mb-2 `} key={id}>
                     <li
                       className={`list-group-item border border-secondary rounded d-flex align-items-center `}
-                      onClick={() => handleOptionClick(option.options)}
+                      //   onClick={() => handleOptionClick(option.options)}
                       style={{
                         backgroundColor: selectedOption.some(
                           (selected) =>
                             selected.id === questionId &&
-                            selected.selectedOption === option.options
+                            selected.selectedOption?.includes(option.options)
                         )
                           ? "rgb(247, 191, 234)"
                           : "",
@@ -510,12 +584,19 @@ const ComprehensiveType = ({
                         userSelect: "none",
                       }}
                     >
-                      <Radio
+                      <Checkbox
                         checked={selectedOption.some(
                           (selected) =>
                             selected.id === questionId &&
-                            selected.selectedOption === option.options
+                            selected.selectedOption?.includes(option.options)
                         )}
+                        onChange={(event) =>
+                          handleOptionClick(
+                            // event,
+                            // questionId,
+                            option.options
+                          )
+                        }
                         value={option.options}
                         color="primary"
                         style={{ marginRight: "8px" }}
@@ -581,4 +662,4 @@ const ComprehensiveType = ({
     </>
   );
 };
-export default ComprehensiveType;
+export default MultipleChoice;

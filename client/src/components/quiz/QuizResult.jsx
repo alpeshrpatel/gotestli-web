@@ -19,6 +19,7 @@ import { toast } from "react-toastify";
 import Modal from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import { Rating } from "react-simple-star-rating";
+import QuizReport from "./QuizReport";
 
 export const satisfactionTooltips = [
   "Very Unsatisfied",
@@ -41,6 +42,7 @@ const QuizResult = ({}) => {
   const hasFetchedBadgeData = useRef(false);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [open, setOpen] = useState(false);
+  const [openReport, setOpenReport] = useState(false);
   const [givenReview,setGivenReview] = useState();
   const [rating, setRating] = useState({
     satisfaction: 0,
@@ -71,6 +73,11 @@ const QuizResult = ({}) => {
     setOpen(true);
   };
 
+  const onCloseReportModal = () => setOpenReport(false);
+  const onOpenReportModal = () => {
+    setOpenReport(true);
+  };
+
   const onCloseModal = () => setOpen(false);
   const location = useLocation();
   const {
@@ -81,6 +88,7 @@ const QuizResult = ({}) => {
     percentage = 0,
     passPercentage = 0,
     questionSetId,
+    userResultId
   } = location.state || {};
 
   if (!location.state) {
@@ -385,6 +393,21 @@ const QuizResult = ({}) => {
             />
           </div>
         )}
+        <div
+         className="card shadow w-60 text-center p-4 "
+        
+          style={{ maxWidth: "400px", width: "100%",}}
+        >
+          <button
+            className="button -sm px-24 py-25 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm "
+            onClick={onOpenReportModal}
+          >
+            View Report
+          </button>
+          <Modal open={openReport} onClose={onCloseReportModal} center>
+              <QuizReport attemptId={userResultId} />
+          </Modal>
+        </div>
         <div
           className="card shadow w-60 text-center p-4 "
           style={{ maxWidth: "400px", width: "100%" }}
