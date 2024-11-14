@@ -274,6 +274,7 @@ export default function SearchResult() {
                     .slice(indexOfFirstRecord, indexOfLastRecord)
                     .map((elm, index) => (
                       <CourceCard
+                        view = "card"
                         search="1"
                         role="student"
                         key={index}

@@ -122,8 +122,25 @@ const QuestionSetDetailForm = ({
           }
         );
         console.log("tags res:", res);
-        // if (response) {
+        const {data} = await API.get(`/api/followers/list/follower/detail/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         toast.success("QuestionSet Created Successfully!");
+        // setFollowers(data)
+        data.forEach( async (follower) => {
+          await API.post('/api/sendemail/followers/update',
+            {
+              username : follower.first_name, email: follower.email, instructor : formData.author, title: formData.title
+            }, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          } )
+        });
+        // if (response) {
+        toast.success("Followers Notified!!");
         navigate("/instructor/home");
       }
     } catch (error) {
