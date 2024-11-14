@@ -22,6 +22,7 @@ const UploadQuestionSet = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [fileData, setFileData] = useState([]);
+  const [followers,setFollowers] = useState([])
   const [open, setOpen] = useState(false);
   const [fileName, setFileName] = useState("");
 
@@ -146,8 +147,10 @@ const UploadQuestionSet = () => {
       //     toast.error(response.message)
       // }
       setIsUploading(false);
+
       if (response.status == 200 && data.status == 200) {
         toast.success("File uploaded successfully!!");
+        
         navigate("/dshb/uploaded/files");
       }
     }

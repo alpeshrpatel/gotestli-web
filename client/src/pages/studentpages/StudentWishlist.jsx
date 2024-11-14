@@ -102,15 +102,19 @@ const StudentWishlist = () => {
       : false
   );
 
+  const handleRowClick = (title) => {
+    navigate("/search/result", { state: { keyword: title } });
+  }
+
   const getRowId = (row) => row.id;
 
   const renderRowCells = (question, index) => (
     <>
-      <TableCell>{index + 1}</TableCell>
-      <TableCell>{question.title}</TableCell>
-      <TableCell>{question.short_desc}</TableCell>
-      <TableCell>{question.totalmarks}</TableCell>
-      <TableCell>{question.pass_percentage}</TableCell>
+      <TableCell onClick= {() => handleRowClick(question.title)}>{index + 1}</TableCell>
+      <TableCell onClick= {() => handleRowClick(question.title)}>{question.title}</TableCell>
+      <TableCell onClick= {() => handleRowClick(question.title)}>{question.short_desc}</TableCell>
+      <TableCell onClick= {() => handleRowClick(question.title)}>{question.totalmarks}</TableCell>
+      <TableCell onClick= {() => handleRowClick(question.title)}>{question.pass_percentage}</TableCell>
       <TableCell>
         <Button
           variant="contained"
