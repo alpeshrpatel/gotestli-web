@@ -113,7 +113,7 @@ const HomePage = () => {
   async function handleDelete(set) {
     try {
       if (token) {
-        setEditOn(set.id);
+        // setEditOn(set.id);
         const res = await API.delete(`/api/questionset/${set.id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -130,7 +130,7 @@ const HomePage = () => {
           },
         });
 
-        setEditOn(null);
+        // setEditOn(null);
         if (res.status == 200) {
           setQuestionSets((prev) => prev.filter((qSet) => qSet.id !== set.id));
         }

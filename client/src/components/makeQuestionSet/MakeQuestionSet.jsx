@@ -16,6 +16,8 @@ import { useNavigate } from "react-router-dom";
 const MakeQuestionSet = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("");
+  const [complexityFilter,setComplexityFilter] = useState('');
+  const [filteredFromAll,setFilteredFromAll] = useState([])
   const [categories, setCategories] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [questionSets, setQuestionSets] = useState([]);
@@ -161,7 +163,7 @@ const MakeQuestionSet = () => {
     );
   };
 
-  const filteredQuestions = questions.filter(
+  let filteredQuestions = questions.filter(
     (question) =>
       question.question?.toLowerCase()?.includes(searchTerm?.toLowerCase()) &&
       (filter === "" ||
@@ -243,6 +245,31 @@ const MakeQuestionSet = () => {
     setPageCapicity(parseInt(value));
   };
   console.log(pageCapicity);
+
+  const handleComplexityFilter = (event) => {
+    const selectedFilter = event.target.value;
+    setComplexityFilter(selectedFilter);
+  
+    // Filter questions considering all applied filters
+    const filteredQuestions = questions.filter((question) => {
+      const matchesSearch =
+        question.question?.toLowerCase()?.includes(searchTerm?.toLowerCase());
+      const matchesCategory =
+        filter === "" ||
+        questionSetsQuestions.some(
+          (q) => q.question?.toLowerCase() === question.question?.toLowerCase()
+        );
+      const matchesComplexity =
+        selectedFilter === "" ||
+        question?.complexity?.toLowerCase() === selectedFilter.toLowerCase();
+  
+      return matchesSearch && matchesCategory && matchesComplexity;
+    });
+  
+    setFilteredFromAll(filteredQuestions);
+  };
+  
+   
   return (
     <>
       <Header userRole={userRole} />
@@ -264,14 +291,32 @@ const MakeQuestionSet = () => {
         >
           Make Question Set
         </Typography>
+        <div>
+          <TextField
+            id="outlined-search"
+            label="Search Questions"
+            type="search"
+            className="searchInput mb-2"
+            onChange={handleSearch}
+          />
+          <select
+            value={complexityFilter}
+            onChange={handleComplexityFilter}
+            className="filterDropdown"
+          >
+            <option value="">All</option>
+            <option  value="easy">
+              Easy
+            </option>
+            <option  value="medium">
+              Medium
+            </option>
+            <option  value="hard">
+              Hard
+            </option>
+          </select>
+        </div>
 
-        <TextField
-          id="outlined-search"
-          label="Search Questions"
-          type="search"
-          className="searchInput mb-2"
-          onChange={handleSearch}
-        />
         <select
           value={filter}
           onChange={handleFilter}
@@ -289,14 +334,20 @@ const MakeQuestionSet = () => {
             {filteredQuestions
               .slice(indexOfFirstRecord, indexOfLastRecord)
               .map((question, index) => (
-                <div key={index} className="checkboxItem gap-2 text-black ">
-                  <input
-                    className="p-2 border-0"
-                    type="checkbox"
-                    checked={selectedQuestions.includes(question)}
-                    onChange={() => handleCheckboxChange(question)}
-                  />
-                  <label>{question.question}</label>
+                <div
+                  key={index}
+                  className="checkboxItem gap-2 text-black d-flex justify-content-between"
+                >
+                  <div className="d-flex gap-2 align-content-center">
+                    <input
+                      className="p-2 border-0"
+                      type="checkbox"
+                      checked={selectedQuestions.includes(question)}
+                      onChange={() => handleCheckboxChange(question)}
+                    />
+                    <label>{question.question}</label>
+                  </div>
+                  <h6>{question.complexity}</h6>
                 </div>
               ))}
           </ul>
