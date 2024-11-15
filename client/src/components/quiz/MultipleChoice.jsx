@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import SubmitQuizModal from "./SubmitQuizModal/SubmitQuizModal";
 import { Checkbox, Radio } from "@mui/material";
+import { separator } from "@/constants";
 
 const MultipleChoice = ({
   time,
@@ -238,21 +239,21 @@ const MultipleChoice = ({
 //   };
 
 const handleOptionClick = async (option) => {
-  const MAX_SELECTION_LIMIT = 4;
+  const MAX_SELECTION_LIMIT = 3;
 
  
   const findQuestion = selectedOption.find((question) => question.id === questionId);
   let updatedOptions = ''
   if (findQuestion) {
     
-    const selectedOptionsArray = findQuestion.selectedOption?.split('/').map(opt => opt.trim());
+    const selectedOptionsArray = findQuestion.selectedOption?.split(separator).map(opt => opt.trim());
 
     
     const isOptionSelected = selectedOptionsArray?.includes(option);
     
     if (isOptionSelected) {
       
-       updatedOptions = selectedOptionsArray.filter(opt => opt !== option).join('/');
+       updatedOptions = selectedOptionsArray.filter(opt => opt !== option).join(separator);
       setSelectedOption(
         selectedOption.map(question =>
           question.id === questionId
@@ -269,7 +270,7 @@ const handleOptionClick = async (option) => {
       if(!selectedOptionsArray){
         updatedOptions = option
       }else{
-        updatedOptions = [...selectedOptionsArray, option].join('/');
+        updatedOptions = [...selectedOptionsArray, option].join(separator);
       }
        
       setSelectedOption(

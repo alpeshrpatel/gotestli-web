@@ -105,6 +105,7 @@ import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { API } from "@/utils/AxiosInstance";
 import { useNavigate } from "react-router-dom";
+import { separator } from "@/constants";
 
 const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
   const [question, setQuestion] = useState();
@@ -159,13 +160,13 @@ const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
     getOptions();
   }, [questionId, token, navigate]);
   console.log(userAnswer, correctAnswer);
-  const correctAnswerArray = correctAnswer.split("/");
-  const userAnswerArray = userAnswer.split("/");
+  const correctAnswerArray = correctAnswer.split(separator);
+  const userAnswerArray = userAnswer.split(separator);
 
   function areAnswersEqual(correctAnswer, userAnswer) {
-    if (correctAnswer.includes("/") && userAnswer.includes("/")) {
-      const correctAnswerArray = correctAnswer.split("/");
-      const userAnswerArray = userAnswer.split("/");
+    if (correctAnswer.includes(separator) && userAnswer.includes(separator)) {
+      const correctAnswerArray = correctAnswer.split(separator);
+      const userAnswerArray = userAnswer.split(separator);
 
       correctAnswerArray.sort();
       userAnswerArray.sort();
@@ -203,13 +204,13 @@ const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
             return (
               <li
                 key={index}
-                className={`list-group-item ${
+                className={`list-group-item fw-500 ${
                   isCorrect ? "text-success" : ""
                 } ${isUserAnswer && !isCorrect ? "text-danger" : ""}`}
               >
                 <input
-                  type="radio"
-                  name={`options-${questionId}`} // Unique name for each question
+                  type="checkbox"
+                  name={`options-${questionId}`} 
                   disabled
                   checked={isUserAnswer}
                   className="me-2"

@@ -190,7 +190,7 @@ export default function Header({ userRole }) {
                     wishlistCount={wishlistCount}
                   />
 
-                  <CartButton/>
+                  {/* <CartButton/> */}
 
                   {/* <FontAwesomeIcon icon={faCardHeart} /> */}
                   {/* cart toggle end */}
