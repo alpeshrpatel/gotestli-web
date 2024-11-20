@@ -37,7 +37,7 @@ const UploadedFiles = () => {
   const [uploadedData, setUploadedData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
-  console.log(location);
+   // console.log(location);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user")) || "";
@@ -53,7 +53,7 @@ const UploadedFiles = () => {
               Authorization: `Bearer ${token}`,
             },
           });
-          console.log(data);
+           // console.log(data);
           setUploadedData(data);
         }
       } catch (error) {

@@ -39,29 +39,29 @@ export default function LoginForm() {
         const userId = auth.currentUser.uid;
         const docRef = doc(db, "roles", userId);
         const docSnap = await getDoc(docRef);
-        console.log(docRef);
+         // console.log(docRef);
         if (docSnap.exists()) {
           userRole = docSnap.data().role;
           // setUserRole(docSnap.data().role);
-          console.log(docSnap.data().role);
+           // console.log(docSnap.data().role);
          const { data }=  await API.get(`/api/users/uid/${userId}`);
          const resData = await API.get(`/api/users/generate/token/${data.id}`);
-         console.log(resData.data?.token)
+          // console.log(resData.data?.token)
           localStorage.setItem('token', resData.data?.token);
           localStorage.setItem("user",JSON.stringify({id:data.id,role:userRole,email:data.email}))
         } else {
-          console.log("No role found for this user");
+           // console.log("No role found for this user");
         }
       } else {
-        console.log("No user is logged in ");
+         // console.log("No user is logged in ");
       }
 
-      console.log("Logged in Successfully!!");
+       // console.log("Logged in Successfully!!");
       setIsLoading(false);
     } catch (error) {
-      console.log(error);
+       // console.log(error);
     }
-    console.log(userRole);
+     // console.log(userRole);
     userRole == "instructor"
       ? navigate("/instructor/home")
       : userRole == "student"

@@ -44,7 +44,7 @@ const PieChartComponent = () => {
               Authorization: `Bearer ${token}`,
             },
           });
-          console.log(data);
+           // console.log(data);
           setQuestionsetCount(data);
         }
       } catch (error) {

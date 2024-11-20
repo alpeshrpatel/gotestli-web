@@ -43,7 +43,7 @@ const StudentWishlist = () => {
               Authorization: `Bearer ${token}`,
             },
           });
-          console.log(data);
+           // console.log(data);
           setQuestionSets(data);
         }
       } catch (error) {
@@ -59,7 +59,7 @@ const StudentWishlist = () => {
     }
     getQuestions();
   }, []);
-  console.log(isHovered);
+   // console.log(isHovered);
 
   const handleDeleteFromWishlist = async (qSetId) => {
     try {
@@ -69,7 +69,7 @@ const StudentWishlist = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(data);
+         // console.log(data);
         setQuestionSets(prevQuestionSets => 
           prevQuestionSets.filter(question => question.id !== qSetId) 
         );

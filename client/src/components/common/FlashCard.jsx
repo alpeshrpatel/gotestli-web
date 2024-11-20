@@ -19,7 +19,7 @@
 //               },
 //             }
 //           );
-//           console.log(data);
+//            // console.log(data);
 //           setQuestion(data.question);
 //         }
 //       } catch (error) {
@@ -45,7 +45,7 @@
 //               },
 //             }
 //           );
-//           console.log(data);
+//            // console.log(data);
 //           setOptions(data);
 //         }
 //       } catch (error) {
@@ -61,7 +61,7 @@
 //     }
 //     getOptions();
 //   }, []);
-//   console.log('op',options)
+//    // console.log('op',options)
 //   return (                                                                          //#ef3c69
 //     <div className="card p-3 mb-3" style={{ borderLeft: `5px solid ${correctAnswer === userAnswer ? `#00c985` : `#e74c3c`}` }}>
 //       <div className="card-body">
@@ -122,7 +122,7 @@ const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
           const { data } = await API.get(`/api/questionmaster/${questionId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          console.log(data);
+           // console.log(data);
           setQuestion(data.question);
           setExplanation(data.explanation);
         }
@@ -143,7 +143,7 @@ const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
           const { data } = await API.get(`/api/options/${questionId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          console.log(data);
+           // console.log(data);
           setOptions(data);
         }
       } catch (error) {
@@ -160,12 +160,12 @@ const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
     getQuestions();
     getOptions();
   }, [questionId, token, navigate]);
-  console.log(userAnswer, correctAnswer);
-  const correctAnswerArray = correctAnswer.split(separator);
-  const userAnswerArray = userAnswer.split(separator);
+   // console.log(userAnswer, correctAnswer);
+  const correctAnswerArray = correctAnswer?.split(separator);
+  const userAnswerArray = userAnswer?.split(separator);
 
   function areAnswersEqual(correctAnswer, userAnswer) {
-    if (correctAnswer.includes(separator) && userAnswer.includes(separator)) {
+    if (correctAnswer?.includes(separator) && userAnswer?.includes(separator)) {
       const correctAnswerArray = correctAnswer.split(separator);
       const userAnswerArray = userAnswer.split(separator);
 
@@ -198,10 +198,10 @@ const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
           {options.map((option, index) => {
             const isCorrect =
               option.options === correctAnswer ||
-              correctAnswerArray.includes(option.options);
+              correctAnswerArray?.includes(option.options);
             const isUserAnswer =
               option.options === userAnswer ||
-              userAnswerArray.includes(option.options);
+              userAnswerArray?.includes(option.options);
             return (
               <li
                 key={index}

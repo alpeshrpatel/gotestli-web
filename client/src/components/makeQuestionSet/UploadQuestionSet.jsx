@@ -69,7 +69,7 @@ const UploadQuestionSet = () => {
 
     reader.readAsArrayBuffer(file); // Read the file as an array buffer
   };
-  console.log(fileData);
+   // console.log(fileData);
   const handlePreview = () => {
     if (fileData.length > 0) {
       setOpen(true);
@@ -87,7 +87,7 @@ const UploadQuestionSet = () => {
       toast.warn("Please select a file first!");
       return;
     }
-    console.log(selectedFile);
+     // console.log(selectedFile);
     const formData = new FormData();
     formData.append("file", selectedFile);
     try {
@@ -129,7 +129,7 @@ const UploadQuestionSet = () => {
           setUploadProgress(progress); // Update progress
         },
       });
-      console.log(response.data.data);
+       // console.log(response.data.data);
       let fileName = response.data.data.fileName;
       let filePath = response.data.data.filePath;
 

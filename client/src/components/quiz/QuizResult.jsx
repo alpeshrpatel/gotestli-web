@@ -92,7 +92,7 @@ const QuizResult = ({}) => {
   } = location.state || {};
 
   if (!location.state) {
-    console.log("No state available, redirecting...");
+     // console.log("No state available, redirecting...");
     navigate("/");
     return <div>No data available</div>;
   }
@@ -118,7 +118,7 @@ const QuizResult = ({}) => {
                 Authorization: `Bearer ${token}`,
               },
             });
-            console.log(res.data);
+             // console.log(res.data);
             let tags = res.data?.tags?.split(",");
             setDownloadData((prev) => ({
               ...prev,
@@ -132,7 +132,7 @@ const QuizResult = ({}) => {
                 Authorization: `Bearer ${token}`,
               },
             });
-            console.log(data.first_name + " " + data.last_name);
+             // console.log(data.first_name + " " + data.last_name);
             setDownloadData((prev) => ({ ...prev, studentName: data.first_name + " " + data.last_name }));
             setIsDataLoaded(true);
           }
@@ -158,7 +158,7 @@ const QuizResult = ({}) => {
               },
             })
             if(data){
-              console.log(data)
+               // console.log(data)
               setGivenReview(data);
             }
           }

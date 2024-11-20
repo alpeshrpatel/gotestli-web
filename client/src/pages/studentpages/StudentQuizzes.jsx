@@ -95,7 +95,7 @@ const StudentQuizzes = () => {
               Authorization: `Bearer ${token}`,
             },
           });
-          console.log(data);
+           // console.log(data);
           setQuestionSets(data);
         }
       } catch (error) {
@@ -125,7 +125,7 @@ const StudentQuizzes = () => {
           }
         );
         if (data.review_id) {
-          console.log(data);
+           // console.log(data);
           setGivenReview(data);
           setRating({
             satisfaction: data.satisfaction || 0,
@@ -135,7 +135,7 @@ const StudentQuizzes = () => {
           setReview(data.review || "");
           onOpenModal();
         } else {
-          console.log("null loaded!");
+           // console.log("null loaded!");
           setGivenReview({});
           setRating({
             satisfaction: 0,
@@ -215,7 +215,7 @@ const StudentQuizzes = () => {
       throw error;
     }
   };
-  console.log(questionSets);
+   // console.log(questionSets);
 
   const handleRating = (name, newRating) => {
     setRating((prev) => ({ ...prev, [name]: newRating }));
@@ -246,7 +246,7 @@ const StudentQuizzes = () => {
           navigate("/login");
           return;
         }
-        console.log(error);
+         // console.log(error);
       }
     }
     getQuestions();

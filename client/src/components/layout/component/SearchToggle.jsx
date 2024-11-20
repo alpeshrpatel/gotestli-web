@@ -7,9 +7,9 @@ const SearchToggle = ({ allClasses, color }) => {
   const navigate = useNavigate();
 
   const handleKeyDown = (e) => {
-    console.log(e.target.value);
+     // console.log(e.target.value);
     if (e.key === 'Enter') {
-        console.log('enter clicked')
+         // console.log('enter clicked')
         navigate("/search/result",{state:{keyword:e.target.value}});
     }
 }

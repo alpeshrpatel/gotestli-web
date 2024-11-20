@@ -48,7 +48,7 @@ export default function SearchResult() {
               },
             }
           );
-          console.log(res.data);
+           // console.log(res.data);
           setQuestionSets(res.data);
         } catch (error) {
           if (error.status == 403) {

@@ -48,7 +48,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
     async function getRating() {
       try {
         if (data) {
-          console.log("rating hello");
+           // console.log("rating hello");
           const response = await API.get(
             `/api/reviews/rating/qset/${data.id}`
             // {
@@ -57,7 +57,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
             //   },
             // }
           );
-          console.log(response.data.rating);
+           // console.log(response.data.rating);
           setRating(response.data?.rating);
         }
       } catch (error) {
@@ -79,14 +79,14 @@ export default function CourceCard({ view, search = null, role, data, index }) {
               Authorization: `Bearer ${token}`,
             },
           });
-          console.log(res.data);
+            console.log(res.data);
           const wishlistedSet = res.data || [];
 
           localStorage.setItem("wishlist", wishlistedSet?.length || 0);
           const isInWishlist = wishlistedSet?.some(
             (set) => set.questionset_id === data.id
           );
-          console.log("isinwishlist: ", isInWishlist);
+            console.log("isinwishlist: ", isInWishlist);
           setIsWishlisted(isInWishlist);
         }
       } catch (error) {
@@ -97,7 +97,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
           navigate("/login");
           return;
         }
-        console.log(error);
+         // console.log(error);
       }
     }
     getWishlist();
@@ -126,7 +126,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
           navigate("/login");
           return;
         }
-        console.log(error);
+         // console.log(error);
       }
     }
     getQuestions();
@@ -152,7 +152,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
               },
             }
           );
-          // localStorage.setItem('wishlist',wishlistedSet?.length - 1)
+          //  localStorage.setItem('wishlist',wishlistedSet?.length - 1)
         } else {
           const res = await API.post(
             `/api/wishlist`,
@@ -174,7 +174,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
         navigate("/login");
         return;
       }
-      console.log(error);
+       // console.log(error);
     }
   };
   const date = new Date(data.modified_date);
@@ -183,8 +183,8 @@ export default function CourceCard({ view, search = null, role, data, index }) {
     day: "numeric",
     year: "numeric",
   }).format(date);
-  console.log(data);
-  console.log(rating);
+   // console.log(data);
+   // console.log(rating);
 
   return (
     <>

@@ -5,7 +5,13 @@ import { API } from "@/utils/AxiosInstance";
 import "react-responsive-pagination/themes/classic.css";
 // import Pagination from "../common/Pagination";
 import PaginationTwo from "../common/PaginationTwo";
-import { TextField, Typography } from "@mui/material";
+import {
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  TextField,
+  Typography,
+} from "@mui/material";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import QuestionSetDetailForm from "./QuestionSetDetailForm";
@@ -16,8 +22,13 @@ import { useNavigate } from "react-router-dom";
 const MakeQuestionSet = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("");
-  const [complexityFilter,setComplexityFilter] = useState('');
-  const [filteredFromAll,setFilteredFromAll] = useState([])
+  const [complexityFilter, setComplexityFilter] = useState("");
+  const [filteredFromAll, setFilteredFromAll] = useState([]);
+  const [complexityCounter, setComplexityCounter] = useState({
+    easy: 0,
+    medium: 0,
+    hard: 0,
+  });
   const [categories, setCategories] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [questionSets, setQuestionSets] = useState([]);
@@ -58,6 +69,7 @@ const MakeQuestionSet = () => {
           ]);
           setCategories(categoriesResponse.data);
           setQuestions(questionsResponse.data);
+          setFilteredFromAll(questionsResponse.data);
         }
       } catch (error) {
         if (error.status == 403) {
@@ -109,7 +121,7 @@ const MakeQuestionSet = () => {
       console.error("Error fetching question set:", error);
     }
   };
-  console.log(questionSets);
+   // console.log(questionSets);
 
   const handleFilter = (event) => {
     const selectedFilter = event.target.value;
@@ -124,7 +136,7 @@ const MakeQuestionSet = () => {
       getQuestionSetId(filteredCategory.id);
     }
   };
-  console.log("filtered: " + questionSets);
+   // console.log("filtered: " + questionSets);
 
   const getQuestionsFromQSetId = async (questionId) => {
     try {
@@ -156,6 +168,18 @@ const MakeQuestionSet = () => {
   };
 
   const handleCheckboxChange = (question) => {
+    setComplexityCounter((prevCount) => {
+      const complexityKey = question?.complexity.toLowerCase();
+      return selectedQuestions.includes(question)
+        ? {
+            ...prevCount,
+            [complexityKey]: (prevCount[complexityKey] || 0) - 1,
+          }
+        : {
+            ...prevCount,
+            [complexityKey]: (prevCount[complexityKey] || 0) + 1,
+          };
+    });
     setSelectedQuestions((prevSelectedQuestions) =>
       prevSelectedQuestions.includes(question)
         ? prevSelectedQuestions.filter((q) => q !== question)
@@ -172,7 +196,7 @@ const MakeQuestionSet = () => {
         ))
   );
 
-  console.log(selectedQuestions);
+   // console.log(selectedQuestions);
   const questionSetStore = async (jsonData) => {
     try {
       if (token) {
@@ -182,7 +206,7 @@ const MakeQuestionSet = () => {
           },
         });
 
-        console.log(res);
+         // console.log(res);
       }
     } catch (error) {
       if (error.status == 403) {
@@ -192,7 +216,7 @@ const MakeQuestionSet = () => {
         navigate("/login");
         return;
       }
-      console.log(error);
+       // console.log(error);
     }
   };
 
@@ -209,7 +233,7 @@ const MakeQuestionSet = () => {
             }
           );
 
-          console.log(data);
+           // console.log(data);
           const questionsetid = data?.id + 1 || 1;
           setQuestionSetId(questionsetid);
           return { questionsetid };
@@ -236,7 +260,7 @@ const MakeQuestionSet = () => {
         navigate("/login");
         return;
       }
-      console.log(error);
+       // console.log(error);
     }
   };
 
@@ -244,16 +268,17 @@ const MakeQuestionSet = () => {
     const value = event.target.value;
     setPageCapicity(parseInt(value));
   };
-  console.log(pageCapicity);
+   // console.log(pageCapicity);
 
   const handleComplexityFilter = (event) => {
     const selectedFilter = event.target.value;
     setComplexityFilter(selectedFilter);
-  
+
     // Filter questions considering all applied filters
     const filteredQuestions = questions.filter((question) => {
-      const matchesSearch =
-        question.question?.toLowerCase()?.includes(searchTerm?.toLowerCase());
+      const matchesSearch = question.question
+        ?.toLowerCase()
+        ?.includes(searchTerm?.toLowerCase());
       const matchesCategory =
         filter === "" ||
         questionSetsQuestions.some(
@@ -262,14 +287,14 @@ const MakeQuestionSet = () => {
       const matchesComplexity =
         selectedFilter === "" ||
         question?.complexity?.toLowerCase() === selectedFilter.toLowerCase();
-  
+       // console.log("sf", selectedFilter);
+       // console.log("qc", question?.complexity);
       return matchesSearch && matchesCategory && matchesComplexity;
     });
-  
+
     setFilteredFromAll(filteredQuestions);
   };
-  
-   
+   // console.log(complexityCounter);
   return (
     <>
       <Header userRole={userRole} />
@@ -299,28 +324,12 @@ const MakeQuestionSet = () => {
             className="searchInput mb-2"
             onChange={handleSearch}
           />
-          <select
-            value={complexityFilter}
-            onChange={handleComplexityFilter}
-            className="filterDropdown"
-          >
-            <option value="">All</option>
-            <option  value="easy">
-              Easy
-            </option>
-            <option  value="medium">
-              Medium
-            </option>
-            <option  value="hard">
-              Hard
-            </option>
-          </select>
         </div>
 
         <select
           value={filter}
           onChange={handleFilter}
-          className="filterDropdown"
+          className="filterDropdown mb-2"
         >
           <option value="">All</option>
           {categories.map((category, index) => (
@@ -329,34 +338,207 @@ const MakeQuestionSet = () => {
             </option>
           ))}
         </select>
+        {/* <div style={{display:'flex'}}>
+          <div style={{width:'33vw',display:'flex',gap:4,alignItems:'center'}}>
+            <Typography variant="h6" gutterBottom>Easy</Typography>
+            <div style={{border:'1px solid black', padding:'1px 6px', margin:'10px 0'}}>{complexityCounter.easy}</div>
+          </div>
+          <div style={{width:'33vw',display:'flex',gap:4,alignItems:'center'}}>
+            <Typography variant="h6" gutterBottom>Medium</Typography>
+            <div style={{border:'1px solid black', padding:'1px 6px', margin:'10px 0'}}>{complexityCounter.medium}</div>
+          </div>
+          <div style={{width:'33vw',display:'flex',gap:4,alignItems:'center'}}>
+            <Typography variant="h6" gutterBottom>Hard</Typography>
+            <div style={{border:'1px solid black', padding:'1px 6px', margin:'10px 0'}}>{complexityCounter.hard}</div>
+          </div>
+        </div> */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-evenly",
+            padding: "10px",
+            background: "#f8f9fa",
+            borderRadius: "6px",
+          }}
+        >
+          {/* Easy Section */}
+          <div
+            style={{
+              // width: "20%",
+              display: "flex",
+              gap: "10px",
+              alignItems: "center",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+              <label
+                htmlFor="easy"
+                style={{
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                  color: "#155724",
+                  marginBottom:0
+                }}
+              >
+                Easy
+              </label>
+            </div>
+            <div
+              style={{
+                border: "1px solid #155724",
+                padding: "4px 12px",
+                backgroundColor: "#d4edda",
+                borderRadius: "4px",
+                color: "#155724",
+                fontWeight: "bold",
+              }}
+            >
+              {complexityCounter.easy}
+            </div>
+          </div>
+
+          {/* Medium Section */}
+          <div
+            style={{
+              // width: "20%",
+              display: "flex",
+              gap: "10px",
+              alignItems: "center",
+              
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+              <label
+                htmlFor="medium"
+                style={{
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                  color: "#856404",
+                  marginBottom:0
+                }}
+              >
+                Medium
+              </label>
+            </div>
+            <div
+              style={{
+                border: "1px solid #856404",
+                padding: "4px 12px",
+                backgroundColor: "#fff3cd",
+                borderRadius: "4px",
+                color: "#856404",
+                fontWeight: "bold",
+              }}
+            >
+              {complexityCounter.medium}
+            </div>
+          </div>
+
+          {/* Hard Section */}
+          <div
+            style={{
+              // width: "20%",
+              display: "flex",
+              gap: "10px",
+              alignItems: "center",
+              
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+              <label
+                htmlFor="hard"
+                style={{
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                  color: "#721c24",
+                  marginBottom:0
+                }}
+              >
+                Hard
+              </label>
+            </div>
+            <div
+              style={{
+                border: "1px solid #721c24",
+                padding: "4px 12px",
+                backgroundColor: "#f8d7da",
+                borderRadius: "4px",
+                color: "#721c24",
+                fontWeight: "bold",
+              }}
+            >
+              {complexityCounter.hard}
+            </div>
+          </div>
+        </div>
+
+        <FormGroup
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-end",
+          }}
+        >
+          <FormControlLabel
+            control={
+              <Checkbox
+                value="easy"
+                checked={complexityFilter.includes("easy")}
+                onChange={handleComplexityFilter}
+              />
+            }
+            label="Easy"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                value="medium"
+                checked={complexityFilter.includes("medium")}
+                onChange={handleComplexityFilter}
+              />
+            }
+            label="Medium"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                value="hard"
+                checked={complexityFilter.includes("hard")}
+                onChange={handleComplexityFilter}
+              />
+            }
+            label="Hard"
+          />
+        </FormGroup>
         <div className="checkboxContainer">
           <ul>
-            {filteredQuestions
-              .slice(indexOfFirstRecord, indexOfLastRecord)
-              .map((question, index) => (
-                <div
-                  key={index}
-                  className="checkboxItem gap-2 text-black d-flex justify-content-between"
-                >
-                  <div className="d-flex gap-2 align-content-center">
-                    <input
-                      className="p-2 border-0"
-                      type="checkbox"
-                      checked={selectedQuestions.includes(question)}
-                      onChange={() => handleCheckboxChange(question)}
-                    />
-                    <label>{question.question}</label>
+            {filteredFromAll &&
+              filteredFromAll
+                .slice(indexOfFirstRecord, indexOfLastRecord)
+                .map((question, index) => (
+                  <div
+                    key={index}
+                    className="checkboxItem gap-2 text-black d-flex justify-content-between"
+                  >
+                    <div className="d-flex gap-2 align-content-center">
+                      <input
+                        className="p-2 border-0"
+                        type="checkbox"
+                        checked={selectedQuestions.includes(question)}
+                        onChange={() => handleCheckboxChange(question)}
+                      />
+                      <label>{question.question}</label>
+                    </div>
+                    <h6>{question.complexity}</h6>
                   </div>
-                  <h6>{question.complexity}</h6>
-                </div>
-              ))}
+                ))}
           </ul>
           {shouldRenderPagination && (
             <div className="w-75 m-auto d-flex align-items-center justify-content-center">
               <PaginationTwo
                 pageNumber={currentPage}
                 setPageNumber={setCurrentPage}
-                data={questions}
+                data={filteredFromAll}
                 pageCapacity={pageCapicity}
               />
               <select

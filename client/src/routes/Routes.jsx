@@ -38,18 +38,18 @@ const Routes = () => {
   
         if (docSnap.exists()) {
           setUserRole(docSnap.data().role);
-          console.log(docSnap.data().role); 
+           // console.log(docSnap.data().role); 
         } else {
-          console.log("No role found for this user");
+           // console.log("No role found for this user");
         }
       } else {
-        console.log("No user is logged in");
+         // console.log("No user is logged in");
       }
       setLoading(false);
     }
     checkUserRole();
   }, []); 
-  console.log(userRole);
+   // console.log(userRole);
 
   if (loading) {
     return <div><Loader/></div>; 

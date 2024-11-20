@@ -26,12 +26,12 @@ const ProtectedRoute = ({ element, role }) => {
 
   //       if (docSnap.exists()) {
   //         setUserRole(docSnap.data().role);
-  //         console.log(docSnap.data().role);
+  //          // console.log(docSnap.data().role);
   //       } else {
-  //         console.log("No role found for this user");
+  //          // console.log("No role found for this user");
   //       }
   //     } else {
-  //       console.log("No user is logged in");
+  //        // console.log("No user is logged in");
   //     }
       
   //     setLoading(false);
@@ -40,7 +40,7 @@ const ProtectedRoute = ({ element, role }) => {
   // });
   const user = JSON.parse( localStorage.getItem('user')) || '';
   const userRole = user.role;
-  console.log(userRole);
+   // console.log(userRole);
 
   // if (loading) {
   //   return <Loader/>;

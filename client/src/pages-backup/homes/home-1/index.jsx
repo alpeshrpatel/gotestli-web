@@ -47,12 +47,12 @@ export default function HomePage1() {
 
         if (docSnap.exists()) {
           setUserRole(docSnap.data().role);
-          console.log(docSnap.data().role);
+           // console.log(docSnap.data().role);
         } else {
-          console.log("No role found for this user");
+           // console.log("No role found for this user");
         }
       } else {
-        console.log("No user is logged in");
+         // console.log("No user is logged in");
       }
     }
     checkUserRole();

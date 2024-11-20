@@ -25,11 +25,11 @@ const FinishExamModalPage = ({
   useEffect(() => {
     async function getOptions() {
       const reviewQuestionsData = [];
-      console.log(selectedOption);
+       // console.log(selectedOption);
       for (const q of selectedOption) {
         try {
           if (token) {
-            console.log(`Fetching options for id: ${q.id}`);
+             // console.log(`Fetching options for id: ${q.id}`);
 
             const response = await API.get(`/api/options/${q.id}`, {
               headers: {
@@ -42,8 +42,8 @@ const FinishExamModalPage = ({
               },
             });
 
-            console.log("Question Data:", data);
-            console.log("Options Response:", response);
+             // console.log("Question Data:", data);
+             // console.log("Options Response:", response);
 
             reviewQuestionsData.push({
               id: q.id,
@@ -68,14 +68,14 @@ const FinishExamModalPage = ({
           break; // Optionally, stop further execution on error
         }
       }
-      console.log(reviewQuestionsData);
+       // console.log(reviewQuestionsData);
       setReviewData(reviewQuestionsData);
     }
 
     getOptions();
   }, [selectedOption]);
 
-  // console.log(reviewQuestionsData);
+  //  // console.log(reviewQuestionsData);
   const onOpenModal = () => setOpen(true);
   const onCloseSubmitModal = () => setOpen(false);
 
@@ -83,20 +83,20 @@ const FinishExamModalPage = ({
 
   const userRole = user.role;
   const userId = user.id;
-  console.log(selectedOption);
+   // console.log(selectedOption);
   const attempted = selectedOption.filter((q) => q.selectedOption !== null);
   const reviewed = selectedOption.filter((q) => q.status == 2 || q.status == 3);
-  console.log(reviewed);
+   // console.log(reviewed);
   const skipped = selectedOption.filter((q) => q.status === 0);
-  console.log(skipped);
+   // console.log(skipped);
 
   const totalAnswered = attempted.length;
   const totalReviewed = reviewed.length;
   const skippedQuestion = skipped.length;
 
-  console.log("totalanswered" + totalAnswered);
-  console.log("totalReviewed" + totalReviewed);
-  console.log("skipped" + skippedQuestion);
+   // console.log("totalanswered" + totalAnswered);
+   // console.log("totalReviewed" + totalReviewed);
+   // console.log("skipped" + skippedQuestion);
 
   const handleReviewQuestions = () => {
     setViewReviewQuestions(true);
@@ -138,7 +138,7 @@ const FinishExamModalPage = ({
         navigate("/login");
         return;
       }
-      console.log(error);
+       // console.log(error);
       throw error;
     }
   }
@@ -174,13 +174,13 @@ const FinishExamModalPage = ({
       isReviewed,
       newstatus
     );
-    console.log(response);
+     // console.log(response);
   };
 
   const handleQuizSubmit = () => {
     onOpenModal();
   };
-  console.log(reviewQuestions);
+   // console.log(reviewQuestions);
   return (
     <div className="px-5 ">
       {skippedQuestion > 0 && (

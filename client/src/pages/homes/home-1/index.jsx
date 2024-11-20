@@ -2,22 +2,22 @@
 import Header from "@/components/layout/headers/Header";
 // import MobileMenu from "@/components/layout/component/MobileMenu";
 import HomeHero from "@/components/homes/heros/HomeHero";
-import Brands from "@/components/common/Brands";
-import Categories from "@/components/homes/categories/Categories";
+// import Brands from "@/components/common/Brands";
+// import Categories from "@/components/homes/categories/Categories";
 import Courses from "@/components/homes/courses/Courses";
 import FooterOne from "@/components/layout/footers/FooterOne";
 import Preloader from "@/components/common/Preloader";
 
 import MetaComponent from "@/components/common/MetaComponent";
-import { auth, db } from "@/firebase/Firebase";
-import {
-  addDoc,
-  collection,
-  doc,
-  Firestore,
-  getDoc,
-  setDoc,
-} from "firebase/firestore";
+// import { auth, db } from "@/firebase/Firebase";
+// import {
+//   addDoc,
+//   collection,
+//   doc,
+//   Firestore,
+//   getDoc,
+//   setDoc,
+// } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
 
@@ -41,12 +41,12 @@ export default function HomePage1() {
 
   //       if (docSnap.exists()) {
   //         setUserRole(docSnap.data().role);
-  //         console.log(docSnap.data().role);
+  //          // console.log(docSnap.data().role);
   //       } else {
-  //         console.log("No role found for this user");
+  //          // console.log("No role found for this user");
   //       }
   //     } else {
-  //       console.log("No user is logged in");
+  //        // console.log("No user is logged in");
   //     }
   //     setIsLoading(false);
   //   }
