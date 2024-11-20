@@ -65,7 +65,7 @@ const HomePage = () => {
               },
             }
           );
-          console.log(data);
+           // console.log(data);
           setQuestionSets(data);
         }
       } catch (error) {
@@ -86,7 +86,7 @@ const HomePage = () => {
   //   if (index !== expandedRow) {
   //     try {
   //       const { data } = await API.get(`/api/userresult/students/list/${id}`);
-  //       console.log(data);
+  //        // console.log(data);
   //       setStudentsData(data);
   //     } catch (error) {
   //       console.error("Failed to fetch student data:", error);
@@ -183,7 +183,7 @@ const HomePage = () => {
     }
   }
 
-  console.log(changedQSet);
+   // console.log(changedQSet);
   const handleNavigate = (set) => {
     navigate(`/quiz/students`, { state: { set: set } });
   };

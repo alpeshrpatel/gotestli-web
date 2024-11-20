@@ -50,7 +50,7 @@ export default function SignUpForm() {
         updateProfile(auth.currentUser, {
           displayName: userName,
         });
-        console.log(auth.currentUser);
+         // console.log(auth.currentUser);
         try {
           const res = await API.post("/api/users", {
             username: auth.currentUser.email,
@@ -63,10 +63,10 @@ export default function SignUpForm() {
             role:selectedRole,
             provider:'manual'
           });
-          console.log(res);
+           // console.log(res);
          
         } catch (error) {
-          console.log(error);
+           // console.log(error);
         }
         try {
           const docRef = await setDoc(doc(db, "roles", auth.currentUser.uid), {
@@ -75,24 +75,24 @@ export default function SignUpForm() {
             email: email,
           });
 
-          console.log("Document written ");
+           // console.log("Document written ");
         } catch (e) {
           console.error("Error adding document: ", e);
         }
 
-        console.log("account created successfully!");
+         // console.log("account created successfully!");
         setIsLoading(false);
         navigate("/login");
       } else {
         alert("Password not matched!!");
-        console.log("Password not matched!!");
+         // console.log("Password not matched!!");
       }
     } catch (error) {
-      console.log(error);
+       // console.log(error);
       alert(error.message);
     }
   };
-  console.log(selectedRole);
+   // console.log(selectedRole);
   return (
     <div className="form-page__content lg:py-50">
       <div className="container mt-5" style={{ backgroundColor: "#bfdeee" }}>

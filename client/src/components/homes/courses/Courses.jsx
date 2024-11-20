@@ -38,7 +38,7 @@ export default function Courses({ userRole }) {
     async function getCategory() {
       const { data } = await API.get("/api/category/parent/categories");
       setCategories(data);
-      console.log(data);
+       // console.log(data);
     }
     getCategory();
   }, []);
@@ -47,17 +47,17 @@ export default function Courses({ userRole }) {
     async function getQuestionsSet() {
       try {
         const { data } = await API.get("/api/questionset");
-        console.log(data);
+         // console.log(data);
         setFiltered(data);
       } catch (error) {
-        console.log(error);
+         // console.log(error);
       }
     }
     getQuestionsSet();
   }, []);
 
   const handleChange = async (event, newValue) => {
-    console.log(event);
+     // console.log(event);
     let title = event.target.textContent;
     if (title == "All Categories") {
       setSelectedCategory(filtered);
@@ -72,7 +72,7 @@ export default function Courses({ userRole }) {
               },
             }
           );
-          console.log(data);
+           // console.log(data);
           setStudentsData(data);
         }
       } catch (error) {
@@ -95,7 +95,7 @@ export default function Courses({ userRole }) {
               },
             }
           );
-          console.log(res);
+           // console.log(res);
           if (res.data) {
             setSelectedCategory(res.data);
           }
@@ -118,8 +118,8 @@ export default function Courses({ userRole }) {
   const userData = JSON.parse(localStorage.getItem("user")) || "";
   // const userRole = userData.role;
   const userId = userData.id;
-  console.log(filtered);
-  console.log(userRole);
+   // console.log(filtered);
+   // console.log(userRole);
   let questionSetByInstructor = [];
   if (userRole == "instructor") {
     selectedCategory && selectedCategory?.length > 0
@@ -131,8 +131,8 @@ export default function Courses({ userRole }) {
         ));
   }
 
-  console.log(questionSetByInstructor);
-  console.log(value);
+   // console.log(questionSetByInstructor);
+   // console.log(value);
 
   const handleViewChange = (viewType) => setView(viewType);
 

@@ -18,7 +18,7 @@ const QuizReport = ({ attemptId }) => {
               },
             }
           );
-          console.log(data);
+           // console.log(data);
           setUserResults(data);
         }
       } catch (error) {
@@ -35,7 +35,7 @@ const QuizReport = ({ attemptId }) => {
     getQuestions();
   }, []);
 
-  console.log(userResults);
+   // console.log(userResults);
 
 
   return (

@@ -79,10 +79,10 @@ export default function StudentDashboardOne() {
               Authorization: `Bearer ${token}`,
             },
           });
-          console.log(res.data);
+           // console.log(res.data);
           setResults(res.data);
           setDshbData(data);
-          console.log(data);
+           // console.log(data);
         }
       } catch (error) {
         if (error.status == 403) {

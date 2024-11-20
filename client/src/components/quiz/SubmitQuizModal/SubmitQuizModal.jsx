@@ -42,13 +42,13 @@ const SubmitQuizModal = ({
         },
       });
 
-      console.log(data);
+       // console.log(data);
       const correct = data.correct;
       const wrong = data.wrong;
       const percentage = data.percentage;
       const passPercentage = data.passPercentage;
-      console.log(correct);
-      console.log(wrong);
+       // console.log(correct);
+       // console.log(wrong);
 
       setIsSubmitted(true);
       await delay(1000);
@@ -78,8 +78,8 @@ const SubmitQuizModal = ({
         navigate("/login");
         return;
       }
-      console.log(error);
-      console.log("Error posting test result:", error);
+       // console.log(error);
+       // console.log("Error posting test result:", error);
     }
   };
 

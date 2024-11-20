@@ -41,7 +41,7 @@
 //               },
 //             }
 //           );
-//           console.log(response.data)
+//            // console.log(response.data)
 //           setParagraph(response.data.paragraph);
 //           para = response.data.paragraph
 //         }else{
@@ -56,7 +56,7 @@
 //           navigate("/login");
 //           return;
 //         }
-//         console.log(error);
+//          // console.log(error);
 //       }
 //     }
 //     if (questions.length > 0) {
@@ -78,12 +78,12 @@
 //   //   .filter((option) => option.question_id === questionNumber)
 //   //   .map((option) => option.question_option);
 
-//   // console.log(questionOptions);
+//   //  // console.log(questionOptions);
 
 //   //   const correctAnswer = options.filter((option) => option.question_id === questionNumber).filter((option)=> option.is_correct_answer === 1 ).map((option) => option.question_option);
 
-//   //  console.log(correctAnswer)
-//   console.log(questionSet);
+//   //   // console.log(correctAnswer)
+//    // console.log(questionSet);
 
 //   return (
 //     <div>

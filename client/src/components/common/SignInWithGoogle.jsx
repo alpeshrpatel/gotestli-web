@@ -21,6 +21,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { API } from "@/utils/AxiosInstance";
+import GoogleIcon from '@mui/icons-material/Google';
 
 const SignInWithGoogle = () => {
   const [open, setOpen] = useState(false);
@@ -63,9 +64,9 @@ const SignInWithGoogle = () => {
             role:selectedRole,
             provider:'google'
           });
-          console.log(res);
+           // console.log(res);
         } catch (error) {
-          console.log(error);
+           // console.log(error);
         }
         try {
           await setDoc(doc(db, "roles", auth.currentUser.uid), {
@@ -73,18 +74,18 @@ const SignInWithGoogle = () => {
             role: selectedRole,
             email: email,
           });
-          console.log("Document written ");
+           // console.log("Document written ");
         } catch (e) {
           console.error("Error adding document: ", e);
         }
       } else {
-        console.log("Email already exists in roles collection.");
+         // console.log("Email already exists in roles collection.");
       }
       if (auth.currentUser) {
         const userId = auth.currentUser.uid;
         const docRef = doc(db, "roles", userId);
         const docSnap = await getDoc(docRef);
-        console.log(docRef);
+         // console.log(docRef);
         if (docSnap.exists()) {
           userRole = docSnap.data().role;
           // setUserRole(docSnap.data().role);
@@ -92,12 +93,12 @@ const SignInWithGoogle = () => {
           const resData = await API.get(`/api/users/generate/token/${data.id}`);
           localStorage.setItem('token', resData.data?.token);
           localStorage.setItem("user",JSON.stringify({id:data.id,role:userRole,email:data.email}))
-          console.log(docSnap.data().role);
+           // console.log(docSnap.data().role);
         } else {
-          console.log("No role found for this user");
+           // console.log("No role found for this user");
         }
       } else {
-        console.log("No user is logged in ");
+         // console.log("No user is logged in ");
       }
       userRole == "instructor"
         ? navigate("/instructor/home")
@@ -105,7 +106,7 @@ const SignInWithGoogle = () => {
         ? navigate("/")
         : navigate("/admin/dashboard");
     } catch (error) {
-      console.log(error);
+       // console.log(error);
     }
   };
 
@@ -187,7 +188,9 @@ const SignInWithGoogle = () => {
         onClick={onOpenModal}
         // onClick={googleLogin}
       >
-        <i className="fa fa-google text-24 me-2" aria-hidden="true"></i>
+        <GoogleIcon className="text-24 me-2"/>
+        {/* <i class="icon-google text-24 me-2"></i> */}
+        {/* <i className="fa fa-google text-24 me-2" aria-hidden="true"></i> */}
         Google
       </button>
     </div>

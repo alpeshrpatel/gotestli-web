@@ -71,19 +71,19 @@ export default function Header({ userRole }) {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       localStorage.removeItem("wishlist");
-      console.log("Logout Successfully");
+       // console.log("Logout Successfully");
       window.location.reload();
     } catch (error) {
-      console.log(error);
+       // console.log(error);
     }
   };
 
   const handleSearch = () => {};
 
   const handleKeyDown = (e) => {
-    console.log(e.target.value);
+     // console.log(e.target.value);
     if (e.key === "Enter") {
-      console.log("enter clicked");
+       // console.log("enter clicked");
       navigate("/search/result", { state: { keyword: e.target.value } });
     }
   };

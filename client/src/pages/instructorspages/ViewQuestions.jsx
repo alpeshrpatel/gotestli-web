@@ -35,7 +35,7 @@ const ViewQuestions = () => {
               Authorization: `Bearer ${token}`,
             },
           });
-          console.log(data);
+           // console.log(data);
           setQuestions(data);
         }
       } catch (error) {
@@ -51,7 +51,7 @@ const ViewQuestions = () => {
     }
     getQuestions();
   }, []);
-  console.log(isHovered);
+   // console.log(isHovered);
 
   const getRowId = (row) => row.id;
 

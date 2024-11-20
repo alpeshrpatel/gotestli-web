@@ -69,7 +69,7 @@ const MultipleChoice = ({
           navigate("/login");
           return;
         }
-        console.log(error);
+         // console.log(error);
       }
     }
     getOptions();
@@ -87,7 +87,7 @@ const MultipleChoice = ({
                 },
               }
             );
-            console.log(data[0]?.id);
+             // console.log(data[0]?.id);
             setUserResultId(data[0]?.id);
           }
         } catch (error) {
@@ -98,7 +98,7 @@ const MultipleChoice = ({
             navigate("/login");
             return;
           }
-          console.log(error);
+           // console.log(error);
         }
       }
     }
@@ -110,7 +110,7 @@ const MultipleChoice = ({
       if (userResultId) {
         try {
           if (token) {
-            console.log(userResultId);
+             // console.log(userResultId);
             const { data } = await API.get(
               `/api/userresultdetails/get/answers/userresult/${userResultId}/length/${questionSetLength}`,
               {
@@ -142,14 +142,14 @@ const MultipleChoice = ({
             navigate("/login");
             return;
           }
-          console.log(error);
+           // console.log(error);
         }
       }
     }
     getAnswers();
   }, [userResultId, questionId, updatedStatus]);
 
-  console.log(selectedOption);
+   // console.log(selectedOption);
   const findSelectedOption =
     selectedOption?.find((question) => question.id === questionId)
       ?.selectedOption || null;
@@ -176,7 +176,7 @@ const MultipleChoice = ({
         navigate("/login");
         return;
       }
-      console.log(error);
+       // console.log(error);
     }
   }
 
@@ -235,7 +235,7 @@ const MultipleChoice = ({
 //     }
 
 //     await testResultDtlSetData(option, isReviewed, newStatus);
-//     console.log(selectedOption);
+//      // console.log(selectedOption);
 //   };
 
 const handleOptionClick = async (option) => {
@@ -305,7 +305,7 @@ const handleOptionClick = async (option) => {
   }
 
   await testResultDtlSetData(updatedOptions, isReviewed, newStatus);
-  console.log(selectedOption);
+   // console.log(selectedOption);
 };
 
   async function testResultDtlSetData(
@@ -316,7 +316,7 @@ const handleOptionClick = async (option) => {
     try {
       if (token) {
         const status = await getUpdatedStatus(isReviewed, newstatus);
-        console.log(status);
+         // console.log(status);
         const res = await API.put(
           "/api/userresultdetails",
           {
@@ -343,7 +343,7 @@ const handleOptionClick = async (option) => {
         navigate("/login");
         return;
       }
-      console.log(error);
+       // console.log(error);
       throw error;
     }
   }
@@ -378,19 +378,19 @@ const handleOptionClick = async (option) => {
       ]);
     }
     const isReviewed = 1;
-    console.log("status" + status);
-    console.log("findselectedoption" + findSelectedOption);
+     // console.log("status" + status);
+     // console.log("findselectedoption" + findSelectedOption);
     let newstatus;
     findSelectedOption && (newstatus = 3);
-    console.log("newstatus" + newstatus);
+     // console.log("newstatus" + newstatus);
     const response = await testResultDtlSetData(
       findSelectedOption,
       isReviewed,
       newstatus
     );
-    console.log(" updatedstatus :" + updatedStatus);
+     // console.log(" updatedstatus :" + updatedStatus);
     if (response?.status == 200) {
-      console.log("review");
+       // console.log("review");
       onNext();
     }
   };
@@ -415,21 +415,21 @@ const handleOptionClick = async (option) => {
     navigate("/");
   };
 
-  console.log(selectedOption);
-  console.log(reviewQuestions);
+   // console.log(selectedOption);
+   // console.log(reviewQuestions);
 
   const attempted = selectedOption.filter((q) => q.selectedOption !== null);
   const reviewed = selectedOption.filter((q) => q.status == 2 || q.status == 3);
-  console.log(reviewed);
+   // console.log(reviewed);
   const skipped = selectedOption.filter((q) => q.status === 0);
-  console.log(skipped);
+   // console.log(skipped);
 
   let totalAnswered = attempted.length;
   let totalReviewed = reviewed.length;
   let skippedQuestion = skipped.length;
 
   const onFinishQuiz = async () => {
-    console.log("remaining:" + remainingTimeRef.current);
+     // console.log("remaining:" + remainingTimeRef.current);
 
     const response = await testResultDtlSetData(findSelectedOption);
     if (response?.status == 200) {

@@ -15,9 +15,9 @@ export const downloadCertificate = async (
   const currentDate = new Date().toLocaleDateString("en-US", dateOptions);
   const doc = new jsPDF("landscape", "pt", "a4");
 
-  console.log('student name:',studentName)
-  console.log('quiz name:',quizTitle)
-  console.log('category', category)
+   // console.log('student name:',studentName)
+   // console.log('quiz name:',quizTitle)
+   // console.log('category', category)
   const image = new Image();
   image.src = "/assets/img/certificate/certificate.png";
   image.onload = () => {

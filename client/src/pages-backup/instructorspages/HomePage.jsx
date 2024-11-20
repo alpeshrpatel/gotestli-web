@@ -22,7 +22,7 @@ const HomePage = () => {
     const author = auth.currentUser.displayName;
     async function getQuestionSets() {
       const { data } = await API.get(`/api/instructor/questionset/${author}`);
-      console.log(data);
+       // console.log(data);
       setQuestionSets(data);
     }
     getQuestionSets();
@@ -33,7 +33,7 @@ const HomePage = () => {
     if (index !== expandedRow) {
       try {
         const { data } = await API.get(`/api/get/userslist/${id}`);
-        console.log(data)
+         // console.log(data)
         setStudentsData(data);
       } catch (error) {
         console.error("Failed to fetch student data:", error);

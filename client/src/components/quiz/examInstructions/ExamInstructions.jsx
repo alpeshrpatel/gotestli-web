@@ -72,9 +72,9 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
 
   useEffect(() => {
     // async function getPendingQuiz() {
-    //   console.log(questionSetId)
+    //    // console.log(questionSetId)
     //   const { data } = await API.get(`/api/userresult/history/user/${userId}/questionset/${questionSetId}`);
-    //   console.log(data)
+    //    // console.log(data)
     //   setInProgressQuizId(data[0]?.id);
     // }
     // getPendingQuiz();
@@ -89,7 +89,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
               },
             }
           );
-          console.log(data);
+            console.log(data);
           if (
             data.message != "Some error occurred while retrieving userresults."
           ) {
@@ -99,7 +99,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
             } else {
               setHistory(data);
             }
-            console.log(data);
+             // console.log(data);
             data.forEach((element) => {
               if (element.status == 2) {
                 setInProgressQuizId(data[0]?.id);
@@ -114,7 +114,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
             navigate("/login");
             return;
           }
-          console.log(error);
+           // console.log(error);
         }
       }
       getHistory();
@@ -126,7 +126,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
               Authorization: `Bearer ${token}`,
             },
           });
-          console.log(data);
+           // console.log(data);
           if (data.length > 0) {
             setFollowersData(data);
           }
@@ -138,7 +138,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
             navigate("/login");
             return;
           }
-          console.log(error);
+           // console.log(error);
         }
       }
       getFollowersData();
@@ -173,7 +173,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
             state: { questionSetId: id, questionSet: questionSet, time: time },
           });
         }
-        console.log("Result Detail Submit Response:", res);
+         // console.log("Result Detail Submit Response:", res);
       }
     } catch (error) {
       if (error.status == 403) {
@@ -216,7 +216,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
             },
           }
         );
-        console.log("Start Quiz Response:", res);
+         // console.log("Start Quiz Response:", res);
         userResultId = res.data.userResultId;
 
         await testResultDtlSetData(userId, questionSetId, userResultId);
@@ -245,7 +245,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
 
     //    setQuestionsSet(response.data);
     //   } catch (error) {
-    //     console.log(error);
+    //      // console.log(error);
     //   }
     // }
     //  getQuestionsSet();
@@ -315,9 +315,9 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
       console.error(error);
     }
   };
-  console.log('history:',history);
+   // console.log('history:',history);
 
-  console.log('timer:'+timerOnValue)
+   // console.log('timer:'+timerOnValue)
 
   return (
     <div className="exam-instructions-container">

@@ -71,8 +71,8 @@ const QuestionSetDetailForm = ({
       }
 
       const endTime = addMinutesToTime(startTime, minutesToAdd);
-      console.log("Calculated Start Time:", startTime);
-      console.log("Calculated End Time:", endTime);
+       // console.log("Calculated Start Time:", startTime);
+       // console.log("Calculated End Time:", endTime);
       setStartTime(startTime);
       setEndTime(endTime);
     }
@@ -102,9 +102,9 @@ const QuestionSetDetailForm = ({
       modified_by: userId,
     };
 
-    console.log(formDataWithTime);
-    console.log(formData);
-    console.log(questionSetId, tagsId);
+     // console.log(formDataWithTime);
+     // console.log(formData);
+     // console.log(questionSetId, tagsId);
     try {
       if (token) {
         const response = await API.post("/api/questionset", formDataWithTime, {
@@ -121,7 +121,7 @@ const QuestionSetDetailForm = ({
             },
           }
         );
-        console.log("tags res:", res);
+         // console.log("tags res:", res);
         const {data} = await API.get(`/api/followers/list/follower/detail/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -155,7 +155,7 @@ const QuestionSetDetailForm = ({
 
     // }
   };
-  console.log(categories);
+   // console.log(categories);
   return (
     <form className="quiz-form " onSubmit={handleSubmit}>
       <div className="form-group">
@@ -436,7 +436,7 @@ const QuestionSetDetailForm = ({
           onChange={(event, newValue) => {
             let tags = "";
             let tagsId = "";
-            console.log(newValue);
+             // console.log(newValue);
             newValue.forEach((tag) => {
               tags = tags + "," + tag.title;
               tagsId = tagsId + "," + tag.id;

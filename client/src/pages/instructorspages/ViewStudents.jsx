@@ -39,7 +39,7 @@ const ViewStudents = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
-  console.log(location);
+   // console.log(location);
   const { set } = location.state;
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
@@ -57,7 +57,7 @@ const ViewStudents = () => {
               },
             }
           );
-          console.log(data);
+           // console.log(data);
           setStudentsData(data);
         }
       } catch (error) {
@@ -102,7 +102,7 @@ const ViewStudents = () => {
                     },
                   }
                 );
-                console.log(response);
+                 // console.log(response);
               }
             } catch (error) {
               if (error.status == 403) {
@@ -126,7 +126,7 @@ const ViewStudents = () => {
       checkStatus();
     }
   }, [studentsData]);
-  console.log(isDisabled);
+   // console.log(isDisabled);
 
   const handleReminderClick = async (studentData) => {
     setIsDisabled((prev) => [...prev, { id: studentData.id }]);
@@ -137,7 +137,7 @@ const ViewStudents = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(data);
+         // console.log(data);
         const response = await API.get(`api/users/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -158,7 +158,7 @@ const ViewStudents = () => {
               },
             }
           );
-          console.log(res);
+           // console.log(res);
           if (res.status == 200) {
             toast.success("Reminder Email sent!");
           } else {
@@ -181,7 +181,7 @@ const ViewStudents = () => {
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value.toLowerCase());
   };
-console.log(studentsData)
+ // console.log(studentsData)
   const filteredData = studentsData.filter((quiz) =>
     // Object.values(quiz).some((value) =>
     //   value ? value.toString().toLowerCase().includes(searchQuery) : false

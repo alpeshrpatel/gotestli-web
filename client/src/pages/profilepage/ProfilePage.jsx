@@ -52,7 +52,7 @@ const ProfilePage = () => {
   useEffect(() => {
     async function getUserProfile() {
       const { data } = await API.get(`/api/users/${userid}`);
-      console.log(data);
+       // console.log(data);
       setUsersData(data);
       setUpdatedData({
         first_name: data.first_name || "",
@@ -93,7 +93,7 @@ const ProfilePage = () => {
               Authorization: `Bearer ${token}`,
             },
           });
-          console.log(data);
+           // console.log(data);
           setBadgesData(data);
         }
         getBadgesData();
@@ -127,7 +127,7 @@ const ProfilePage = () => {
                 },
               }
             );
-            console.log(data);
+             // console.log(data);
           } else {
             // const data = await API.delete(`/api/users/preference/${userid}`, {
             //   headers: {
@@ -167,7 +167,7 @@ const ProfilePage = () => {
       //     user_id: usersData.id,
       //     tagsId,
       //   });
-      //   console.log(data);
+      //    // console.log(data);
       // }
 
       if (res.status == 200) {
@@ -215,11 +215,11 @@ const ProfilePage = () => {
     })
     .filter(Boolean);
 
-  console.log(level1);
-  console.log(level2);
-  console.log(level3);
-  console.log(level4);
-  console.log(badgesData);
+   // console.log(level1);
+   // console.log(level2);
+   // console.log(level3);
+   // console.log(level4);
+   // console.log(badgesData);
   const theme = useTheme()
   return (
     
@@ -269,7 +269,7 @@ const ProfilePage = () => {
               <Typography variant="subtitle1">{usersData.role}</Typography>
             </Box>
           </Paper>
-          <Paper sx={{ p: 2 }}>
+          {/* <Paper sx={{ p: 2 }}>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Typography variant="subtitle1" gutterBottom>
                 Profile
@@ -283,7 +283,7 @@ const ProfilePage = () => {
               <Typography variant="body2">Notifications</Typography>
               <Typography variant="body2">API clients</Typography>
             </Box>
-          </Paper>
+          </Paper> */}
         </Box>
 
         <Box className="" sx={{ flex: 1,minWidth:'350px' }}>
@@ -394,7 +394,7 @@ const ProfilePage = () => {
                 onChange={(event, newValue) => {
                   let tags = "";
                   let tagsId = "";
-                  console.log(newValue);
+                   // console.log(newValue);
                   newValue.forEach((tag) => {
                     tags = tags + "," + tag.title;
                     tagsId = tagsId + "," + tag.id;
