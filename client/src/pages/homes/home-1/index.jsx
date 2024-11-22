@@ -20,6 +20,7 @@ import MetaComponent from "@/components/common/MetaComponent";
 // } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
+import FeedbackButton from "@/components/common/FeedbackButton";
 
 const metadata = {
   title: " Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
@@ -66,6 +67,7 @@ export default function HomePage1() {
           <Header userRole = {userRole}/>
 
           <div className="content-wrapper  js-content-wrapper overflow-hidden w-100">
+            <FeedbackButton />
             {!userRole && (
               <>
                 <HomeHero />

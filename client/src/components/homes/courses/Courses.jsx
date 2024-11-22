@@ -25,7 +25,7 @@ import WidgetsIcon from "@mui/icons-material/Widgets";
 import ListIcon from "@mui/icons-material/List";
 
 export default function Courses({ userRole }) {
-  const [filtered, setFiltered] = useState();
+  const [filtered, setFiltered] = useState([]);
   const [categories, setCategories] = useState([]);
   const [value, setValue] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -47,14 +47,20 @@ export default function Courses({ userRole }) {
     async function getQuestionsSet() {
       try {
         const { data } = await API.get("/api/questionset");
-         // console.log(data);
-        setFiltered(data);
+        if (Array.isArray(data)) {
+          setFiltered(data);
+        } else {
+          console.error("Expected an array, got:", data);
+          setFiltered([]); 
+        }
       } catch (error) {
-         // console.log(error);
+        console.error("Error fetching questions set:", error);
+        setFiltered([]); 
       }
     }
     getQuestionsSet();
   }, []);
+  
 
   const handleChange = async (event, newValue) => {
      // console.log(event);
@@ -221,8 +227,7 @@ export default function Courses({ userRole }) {
             </h4>
           )
         ) : !selectedCategory ? (
-          filtered &&
-          filtered.map((elm, index) => (
+          filtered && Array.isArray(filtered) && filtered?.map((elm, index) => (
             <CourceCard
               view={view}
               role={userRole}
