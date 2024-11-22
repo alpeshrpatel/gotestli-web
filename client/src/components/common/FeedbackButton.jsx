@@ -1,0 +1,213 @@
+import React, { useState } from "react";
+import Modal from "react-responsive-modal";
+import "react-responsive-modal/styles.css";
+import Emoji from "./Emoji";
+import { API } from "@/utils/AxiosInstance";
+import { toast } from "react-toastify";
+
+const visitOptions = [
+  { id: 1, title: "To test my knowledge on a topic" },
+  { id: 2, title: "To learn something new" },
+  { id: 3, title: "For practice and self-improvement" },
+  { id: 4, title: "Just for fun and entertainment" },
+];
+const maxCharacters = 500;
+
+const FeedbackButton = () => {
+  const [open, setOpen] = useState(false);
+  const [selectedEmoji, setSelectedEmoji] = useState("");
+  const [visitReason, setVisitReason] = useState("");
+  const [review, setReview] = useState("");
+
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user")) || "";
+  const userId = user.id;
+
+  const onOpenModal = () => {
+    setOpen(true);
+  };
+
+  const onCloseModal = () => setOpen(false);
+
+  const buttonStyle = {
+    zIndex: 1050,
+    position: "fixed",
+    top: "50%",
+    right: "0",
+    transform: "rotate(270deg) translate(-10%, 50%)",
+    transformOrigin: "center",
+    transition: "box-shadow 0.3s ease-out, transform 0.4s ease-out",
+    cursor: "pointer",
+  };
+
+  const handleMouseOver = (e) => {
+    e.target.style.boxShadow = "0px 10px 15px rgba(0, 0, 0, 0.25)";
+  };
+
+  const handleMouseOut = (e) => {
+    e.target.style.boxShadow = "0px 4px 6px rgba(0, 0, 0, 0.15)";
+  };
+
+  const handleEmojiClick = (emoji) => {
+    setSelectedEmoji(emoji);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      if (token) {
+        const { data } = await API.post(
+          `/api/app/feedback`,
+          {
+            emoji_rating: selectedEmoji,
+            visit_purpose: visitReason,
+            feedback: review,
+            userId:userId
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(data)
+        toast.success('Thanks For Giving Feedback!')
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
+      console.error("Error posting feedback:", error);
+    }
+  };
+  const handleVisitAnswer = (event) => {
+    const selectedFilter = event.target.value;
+    setVisitReason(selectedFilter);
+  };
+  const handleReviewChange = (e) => {
+    if (e.target.value.length <= maxCharacters) {
+      setReview(e.target.value);
+    }
+  };
+
+  return (
+    <>
+      <div
+        style={buttonStyle}
+        onMouseOver={handleMouseOver}
+        onMouseOut={handleMouseOut}
+      >
+        <button
+          className="btn rounded-3 px-4 py-3"
+          style={{
+            backgroundColor: "#ff6f61", // Vibrant coral color
+            color: "#fff",
+            border: "none",
+            fontWeight: "bold",
+            fontSize: "15px",
+            boxShadow: "4px 4px 6px rgba(0, 0, 0, 0.15)", // Initial box shadow
+            transition: "box-shadow 0.3s ease-out, transform 0.4s ease-out",
+          }}
+          onClick={onOpenModal}
+        >
+          Feedback
+        </button>
+      </div>
+      <Modal open={open} onClose={onCloseModal} center>
+        <div className="col-12 rounded p-5 border-1 text-center">
+          <h5 className="mb-2">
+            Overall,how satisfied are you with the website?
+          </h5>
+
+          <div className="d-flex justify-content-center mb-2">
+            <Emoji
+              emoji="😄"
+              onClick={() => handleEmojiClick("Very Happy")}
+              selected={selectedEmoji === "Very Happy"}
+            />
+            <Emoji
+              emoji="🙂"
+              onClick={() => handleEmojiClick("Happy")}
+              selected={selectedEmoji === "Happy"}
+            />
+            <Emoji
+              emoji="😐"
+              onClick={() => handleEmojiClick("Normal")}
+              selected={selectedEmoji === "Normal"}
+            />
+            <Emoji
+              emoji="🙁"
+              onClick={() => handleEmojiClick("Sad")}
+              selected={selectedEmoji === "Sad"}
+            />
+            <Emoji
+              emoji="😡"
+              onClick={() => handleEmojiClick("Awful")}
+              selected={selectedEmoji === "Awful"}
+            />
+          </div>
+          <div className="d-flex justify-content-between mb-4">
+            <h6>Extremely satisfied</h6>
+            <h6>Not at all satisfied</h6>
+          </div>
+
+          <div>
+            <div>
+              <h5 className="mb-2">
+                What was the main purpose for your visit today?
+              </h5>
+              <select
+                value={visitReason}
+                onChange={handleVisitAnswer}
+                className="filterDropdown mb-2"
+                required
+              >
+                <option value="">Select</option>
+                {visitOptions.map((option, index) => (
+                  <option key={index} value={option?.title?.toLowerCase()}>
+                    {option.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mt-4 mb-4">
+              <h5 className="mb-2">
+                Please share any additional feedback: (Optional)
+              </h5>
+              <textarea
+                className="form-control"
+                rows="5"
+                placeholder="Share your feedback here..."
+                value={review}
+                onChange={handleReviewChange}
+              ></textarea>
+              <div className="text-muted ">
+                {maxCharacters - review.length} characters remaining
+              </div>
+            </div>
+            <button
+              onClick={handleSubmit}
+              className={`btn ${
+                selectedEmoji ? "btn-outline-success" : "btn-outline-secondary"
+              } px-4 py-2 fw-bold text-uppercase`}
+              style={{
+                backgroundColor: selectedEmoji ? "#28a745" : "#ccc",
+                transition: "background-color 0.3s ease",
+                cursor: selectedEmoji ? "pointer" : "not-allowed",
+                color: selectedEmoji ? "#fff" : "",
+              }}
+              disabled={!selectedEmoji}
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      </Modal>
+    </>
+  );
+};
+
+export default FeedbackButton;

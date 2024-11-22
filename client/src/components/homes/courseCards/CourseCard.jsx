@@ -79,14 +79,14 @@ export default function CourceCard({ view, search = null, role, data, index }) {
               Authorization: `Bearer ${token}`,
             },
           });
-            console.log(res.data);
+            // console.log(res.data);
           const wishlistedSet = res.data || [];
 
           localStorage.setItem("wishlist", wishlistedSet?.length || 0);
           const isInWishlist = wishlistedSet?.some(
             (set) => set.questionset_id === data.id
           );
-            console.log("isinwishlist: ", isInWishlist);
+            // console.log("isinwishlist: ", isInWishlist);
           setIsWishlisted(isInWishlist);
         }
       } catch (error) {
