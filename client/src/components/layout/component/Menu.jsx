@@ -102,7 +102,7 @@ export default function Menu({ allClasses, headerPosition }) {
                 className={menuItem == "Home" ? "activeMenu" : ""}
                 style={{ fontSize: "18px",whiteSpace: "nowrap" }}
               >
-                Home <i className="icon-chevron-right text-13 ml-10"></i>
+                Home 
               </Link>
 
               {/* <ul className="subnav" style={{ fontSize: "18px" }}>

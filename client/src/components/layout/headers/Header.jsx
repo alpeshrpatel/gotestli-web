@@ -18,7 +18,7 @@ export default function Header({ userRole }) {
   const [user, setUser] = useState(null);
   const [menuItem, setMenuItem] = useState("");
   const [submenu, setSubmenu] = useState("");
-  const [expand, setExpand] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [isDarkMode, setIsDarkMode] = useState(
     localStorage.getItem("theme") === "dark"
   );
@@ -84,6 +84,7 @@ export default function Header({ userRole }) {
      // console.log(e.target.value);
     if (e.key === "Enter") {
        // console.log("enter clicked");
+       setSearchTerm(e.target.value)
       navigate("/search/result", { state: { keyword: e.target.value } });
     }
   };
@@ -139,14 +140,16 @@ export default function Header({ userRole }) {
             <div className="col-auto d-flex align-items-center  ">
               <Menu allClasses={"menu__nav text-white -is-active "} />
             </div>
-            <div className="w-25 d-flex align-ietms-center justify-content-center">
+            <div className="w-25 d-flex align-items-center justify-content-center">
               <div className="header-search__field d-flex items-center align-items-center rounded-5 " style={{height:'10px'}}>
                 <div className="icon icon-search text-dark-1 ml-8 d-flex items-center"></div>
                 <input
                   required
                   type="text"
+                  value={searchTerm}
                   className="px-5 py-2 text-18 lh-12 text-dark-1 fw-500 "
                   placeholder="What do you want ?"
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyDown={handleKeyDown}
                 />
                 {/* <TextField id="outlined-search" label="Search Questions" type="search" className="searchInput mb-2" /> */}
@@ -156,7 +159,7 @@ export default function Header({ userRole }) {
                   className="d-flex items-center align-items-center justify-center size-20 rounded-full bg-purple-3 mr-8"
                   data-el-toggle=".js-search-toggle"
                 >
-                  <CancelIcon fontSize="medium" />
+                  <CancelIcon fontSize="medium" onClick={() => setSearchTerm('')}/>
                 </button>
               </div>
             </div>
