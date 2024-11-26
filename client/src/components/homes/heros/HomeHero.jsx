@@ -77,19 +77,19 @@ const HomeHero = () => {
   return (
     <>
       <section className="masthead -type-1 js-mouse-move-container" style={{height:'100%',paddingTop:'110px',paddingBottom:'50px'}}>
-        <div className="masthead__bg " style={{height:'100%'}}>
-          <img src={"/assets/img/home-1/hero/bg.png"} alt="image" />
+        <div className="masthead__bg " style={{height:'100%',}}>
+          <img src={"/assets/img/home-1/hero/bg-Photoroom.png"} alt="image" style={{objectPosition:'center right'}}/>
         </div>
 
         <div className="container bg-transparent border-0 ">
           <div className="row y-gap-20  items-end  ">
-            <div className="col-xl-6 col-lg-6 col-sm-10">
+            <div className="col-xl-12 col-lg-12 col-sm-10">
               <div
                 className="masthead__content"
                 data-aos="fade-up"
                 data-aos-delay="500"
               >
-                <h1 className="masthead__title text-center" style={{ color: 'white',textAlign:'start', whiteSpace: 'nowrap',  }}>
+                <h1 className="masthead__title  d-flex flex-wrap gap-4 justify-content-center align-items-center mr-30" style={{ color: 'white', whiteSpace: 'nowrap',fontSize:'45px'   }}>
                   
                   <span className=""  style={{ display: 'inline' }}>
                   {title}{" "}
@@ -108,7 +108,7 @@ const HomeHero = () => {
                 <div
                   data-aos="fade-up"
                   data-aos-duration="200"
-                  className="masthead__buttons row x-gap-10 y-gap-10 d-flex justify-content-evenly mx-auto"
+                  className="masthead__buttons  d-flex gap-4 justify-content-center "
                 >
                   <div className="col-12 col-sm-auto ">
                     <Link

@@ -4,6 +4,7 @@ import "react-responsive-modal/styles.css";
 import Emoji from "./Emoji";
 import { API } from "@/utils/AxiosInstance";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const visitOptions = [
   { id: 1, title: "To test my knowledge on a topic" },
@@ -18,10 +19,12 @@ const FeedbackButton = () => {
   const [selectedEmoji, setSelectedEmoji] = useState("");
   const [visitReason, setVisitReason] = useState("");
   const [review, setReview] = useState("");
+  const [onceSubmitted,setOnceSubmitted] = useState(false)
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userId = user.id;
+  const navigate  = useNavigate()
 
   const onOpenModal = () => {
     setOpen(true);
@@ -54,14 +57,14 @@ const FeedbackButton = () => {
 
   const handleSubmit = async () => {
     try {
-      if (token) {
+      
         const { data } = await API.post(
           `/api/app/feedback`,
           {
             emoji_rating: selectedEmoji,
             visit_purpose: visitReason,
             feedback: review,
-            userId:userId
+            userId: userId || null,
           },
           {
             headers: {
@@ -69,9 +72,11 @@ const FeedbackButton = () => {
             },
           }
         );
-        console.log(data)
-        toast.success('Thanks For Giving Feedback!')
-      }
+        console.log(data);
+        toast.success("Thanks For Giving Feedback!");
+        onCloseModal()
+        setOnceSubmitted(true)
+      
     } catch (error) {
       if (error.status == 403) {
         localStorage.removeItem("user");
@@ -116,8 +121,24 @@ const FeedbackButton = () => {
           Feedback
         </button>
       </div>
-      <Modal open={open} onClose={onCloseModal} center>
-        <div className="col-12 rounded p-5 border-1 text-center">
+      <Modal
+        open={open}
+        onClose={onCloseModal}
+        center={false}
+        styles={{
+          modal: {
+            position: "fixed",
+            top: "20%",
+            right: "50px",
+            transform: "translateY(-50%)",
+            width: "450px",
+          },
+          overlay: {
+            background: "transparent",
+          },
+        }}
+      >
+        <div className="col-12 rounded px-3 pt-4 border-1 text-center">
           <h5 className="mb-2">
             Overall,how satisfied are you with the website?
           </h5>
@@ -199,9 +220,9 @@ const FeedbackButton = () => {
                 cursor: selectedEmoji ? "pointer" : "not-allowed",
                 color: selectedEmoji ? "#fff" : "",
               }}
-              disabled={!selectedEmoji}
+              disabled={!selectedEmoji || onceSubmitted}
             >
-              Submit
+              {onceSubmitted ? "Submitted" : "Submit"}
             </button>
           </div>
         </div>

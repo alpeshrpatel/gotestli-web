@@ -50,7 +50,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
   const [setQuestionsSet] = useState([]);
   const [history, setHistory] = useState([]);
   const [followersData, setFollowersData] = useState([]);
-  const[timerOnValue,setTimerOnValue] = useState();
+  const [timerOnValue, setTimerOnValue] = useState();
   const [open, setOpen] = useState(false);
   const [selectedAttemptId, setSelectedAttemptId] = useState(null);
 
@@ -89,7 +89,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
               },
             }
           );
-            console.log(data);
+          console.log(data);
           if (
             data.message != "Some error occurred while retrieving userresults."
           ) {
@@ -99,7 +99,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
             } else {
               setHistory(data);
             }
-             // console.log(data);
+            // console.log(data);
             data.forEach((element) => {
               if (element.status == 2) {
                 setInProgressQuizId(data[0]?.id);
@@ -114,7 +114,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
             navigate("/login");
             return;
           }
-           // console.log(error);
+          // console.log(error);
         }
       }
       getHistory();
@@ -126,7 +126,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
               Authorization: `Bearer ${token}`,
             },
           });
-           // console.log(data);
+          // console.log(data);
           if (data.length > 0) {
             setFollowersData(data);
           }
@@ -138,7 +138,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
             navigate("/login");
             return;
           }
-           // console.log(error);
+          // console.log(error);
         }
       }
       getFollowersData();
@@ -150,7 +150,6 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
     setSelectedAttemptId(attemptId);
     setOpen(true);
   };
-  
 
   async function testResultDtlSetData(userId, questionSetId, userResultId) {
     try {
@@ -173,7 +172,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
             state: { questionSetId: id, questionSet: questionSet, time: time },
           });
         }
-         // console.log("Result Detail Submit Response:", res);
+        // console.log("Result Detail Submit Response:", res);
       }
     } catch (error) {
       if (error.status == 403) {
@@ -216,7 +215,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
             },
           }
         );
-         // console.log("Start Quiz Response:", res);
+        // console.log("Start Quiz Response:", res);
         userResultId = res.data.userResultId;
 
         await testResultDtlSetData(userId, questionSetId, userResultId);
@@ -249,14 +248,14 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
     //   }
     // }
     //  getQuestionsSet();
-    
+
     navigate("/quiz/questions", {
       state: {
         userResultId: inProgressQuizId,
         questionSetId: id,
         questionSet: questionSet,
         time: time,
-        timerOn:timerOnValue,
+        timerOn: timerOnValue,
       },
     });
   };
@@ -315,9 +314,9 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
       console.error(error);
     }
   };
-   // console.log('history:',history);
+  // console.log('history:',history);
 
-   // console.log('timer:'+timerOnValue)
+  // console.log('timer:'+timerOnValue)
 
   return (
     <div className="exam-instructions-container">
@@ -344,8 +343,12 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
                   <div className="d-flex gap-4 items-center mb-2 ">
                     <Typography
                       variant="h5"
-                      className='text-truncate'
-                      sx={{ color: "#ffffff", fontWeight: "bold",maxWidth:'70px' }}
+                      className="text-truncate"
+                      sx={{
+                        color: "#ffffff",
+                        fontWeight: "bold",
+                        maxWidth: "70px",
+                      }}
                     >
                       {data.title}
                     </Typography>
@@ -497,7 +500,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
                       </div>
                     </div>
                   </Grid>
-                  <Typography variant="h7" className="w-100 text-center mt-4">
+                  {/* <Typography variant="h7" className="w-100 text-center mt-4">
                     Do you want timer in Quiz?
                   </Typography>
                   <FormControl
@@ -527,26 +530,29 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
                         label="No"
                       />
                     </RadioGroup>
-                  </FormControl>
-                  {userRole == "student" && (
-                    <Grid item xs={12}>
-                      {!inProgressQuizId ? (
-                        <button
-                          className="button -sm px-24 py-20 -green-5 text-white text-green-5 text-16 mx-auto mt-4"
-                          onClick={handleStartQuiz}
-                        >
-                          Start Quiz
-                        </button>
-                      ) : (
-                        <button
-                          className=" button -sm px-24 py-20 -blue-3 text-white text-blue-3 text-16 mx-auto mt-4 "
-                          onClick={handleResumeQuiz}
-                        >
-                          Resume Quiz
-                        </button>
-                      )}
-                    </Grid>
-                  )}
+                  </FormControl> */}
+
+                  <Grid item xs={12}>
+                    {!inProgressQuizId ? (
+                      <button
+                        className="button -sm px-24 py-20 -green-5 text-white text-green-5 text-16 mx-auto mt-4"
+                        onClick={
+                          userRole == "student"
+                            ? handleStartQuiz
+                            : () => navigate("/login")
+                        }
+                      >
+                        Start Quiz
+                      </button>
+                    ) : (
+                      <button
+                        className=" button -sm px-24 py-20 -blue-3 text-white text-blue-3 text-16 mx-auto mt-4 "
+                        onClick={handleResumeQuiz}
+                      >
+                        Resume Quiz
+                      </button>
+                    )}
+                  </Grid>
                 </Grid>
               </Grid>
 
@@ -640,9 +646,9 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
                                 </TableCell>
                                 <TableCell>
                                   {/* {row.report === 'Report' ? ( */}
-                                  {attempt.status == 1 || attempt.status == 0
-                                    ? (
-                                      <Button
+                                  {attempt.status == 1 ||
+                                  attempt.status == 0 ? (
+                                    <Button
                                       variant="contained"
                                       color="primary"
                                       size="small"
@@ -650,9 +656,10 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
                                     >
                                       Report
                                     </Button>
-                                    )
-                                    : "-"}
-                                 
+                                  ) : (
+                                    "-"
+                                  )}
+
                                   {/* ) : row.report} */}
                                 </TableCell>
                               </TableRow>
@@ -672,7 +679,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
         </div>
       )}
       <Modal open={open} onClose={onCloseReportModal} center>
-        <QuizReport attemptId={selectedAttemptId}/>
+        <QuizReport attemptId={selectedAttemptId} />
       </Modal>
     </div>
   );
