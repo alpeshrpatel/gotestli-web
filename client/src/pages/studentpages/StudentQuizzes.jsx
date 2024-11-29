@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
 import Table from "@/components/common/CommonTable";
 import {
+  Button,
   IconButton,
   MenuItem,
   Select,
@@ -32,6 +33,7 @@ import { BootstrapTooltip } from "@/components/common/Tooltip";
 import ExamInstructions from "@/components/quiz/examInstructions/ExamInstructions";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SearchIcon from "@mui/icons-material/Search";
+import QuizReport from "@/components/quiz/QuizReport";
 
 const metadata = {
   title:
@@ -51,6 +53,7 @@ const columns = [
   { id: "mode", label: "Mode", sortable: false },
   { id: "result", label: "Result", sortable: true },
   { id: "review", label: "Review", sortable: true },
+  { id: "report", label: "Report", sortable: true },
   { id: "download", label: "Download", sortable: false },
 ];
 
@@ -67,6 +70,8 @@ const StudentQuizzes = () => {
   const [questionSetId, setQuestionSetId] = useState();
   const [open, setOpen] = useState(false);
   const [openExamIns, setOpenExamIns] = useState(false);
+  const [openReport, setOpenReport] = useState(false);
+  const [selectedAttemptId, setSelectedAttemptId] = useState(null);
   const [questionSet, setQuestionsSet] = useState([]);
   const [quiz, setQuiz] = useState();
   const [searchQuery, setSearchQuery] = useState("");
@@ -95,7 +100,7 @@ const StudentQuizzes = () => {
               Authorization: `Bearer ${token}`,
             },
           });
-           // console.log(data);
+          // console.log(data);
           setQuestionSets(data);
         }
       } catch (error) {
@@ -125,7 +130,7 @@ const StudentQuizzes = () => {
           }
         );
         if (data.review_id) {
-           // console.log(data);
+          // console.log(data);
           setGivenReview(data);
           setRating({
             satisfaction: data.satisfaction || 0,
@@ -135,7 +140,7 @@ const StudentQuizzes = () => {
           setReview(data.review || "");
           onOpenModal();
         } else {
-           // console.log("null loaded!");
+          // console.log("null loaded!");
           setGivenReview({});
           setRating({
             satisfaction: 0,
@@ -215,7 +220,7 @@ const StudentQuizzes = () => {
       throw error;
     }
   };
-   // console.log(questionSets);
+  // console.log(questionSets);
 
   const handleRating = (name, newRating) => {
     setRating((prev) => ({ ...prev, [name]: newRating }));
@@ -246,7 +251,7 @@ const StudentQuizzes = () => {
           navigate("/login");
           return;
         }
-         // console.log(error);
+        // console.log(error);
       }
     }
     getQuestions();
@@ -254,6 +259,12 @@ const StudentQuizzes = () => {
   };
 
   const onCloseExamInsModal = () => setOpenExamIns(false);
+
+  const onCloseReportModal = () => setOpenReport(false);
+  const onOpenReportModal = (attemptId) => {
+    setSelectedAttemptId(attemptId);
+    setOpenReport(true);
+  };
 
   const handleInProgressClick = (quiz) => {
     setQuiz(quiz);
@@ -315,6 +326,7 @@ const StudentQuizzes = () => {
       }
       return true;
     });
+    console.log(questionSets)
 
   const getRowId = (row, index) => index;
 
@@ -367,6 +379,20 @@ const StudentQuizzes = () => {
         }}
       >
         Review
+      </TableCell>
+      <TableCell>
+        {quiz.status == 1 || quiz.status == 0 ? (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={() => onOpenReportModal(quiz.user_test_result_id)}
+          >
+            Report
+          </Button>
+        ) : (
+          "-"
+        )}
       </TableCell>
       <TableCell style={{}}>
         {quiz.percentage >= quiz?.pass_percentage ? (
@@ -560,6 +586,9 @@ const StudentQuizzes = () => {
             Submit
           </button>
         </div>
+      </Modal>
+      <Modal open={openReport} onClose={onCloseReportModal} center>
+        <QuizReport attemptId={selectedAttemptId} />
       </Modal>
     </div>
   );

@@ -223,7 +223,7 @@ const UploadQuestionSet = () => {
               maxHeight: "50vh",
               overflowY: "auto",
               "&::-webkit-scrollbar": {
-                width: "6px", 
+                width: "0px", 
               },
               "&::-webkit-scrollbar-thumb": {
                 backgroundColor: "#ccc", 
