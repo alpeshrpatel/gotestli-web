@@ -21,11 +21,15 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { API } from "@/utils/AxiosInstance";
-import GoogleIcon from '@mui/icons-material/Google';
+import GoogleIcon from "@mui/icons-material/Google";
+import { toast } from "react-toastify";
+import Loader from "./Loader";
+import { CircularProgress } from "@mui/material";
 
 const SignInWithGoogle = () => {
   const [open, setOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const onOpenModal = () => {
     setOpen(true);
@@ -36,21 +40,22 @@ const SignInWithGoogle = () => {
 
   const googleLogin = async () => {
     try {
+      setIsLoading(true);
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
       const email = auth.currentUser.email;
       let userRole;
-      let names = auth.currentUser?.displayName?.split(" ")
+      let names = auth.currentUser?.displayName?.split(" ");
       let firstname = names[0];
-      let lastname = '';
-      if(names.length > 1){
+      let lastname = "";
+      if (names.length > 1) {
         lastname = names[names.length - 1];
       }
 
       const rolesRef = collection(db, "roles");
       const q = query(rolesRef, where("email", "==", email));
       const querySnapshot = await getDocs(q);
-
+      console.log("empty:", querySnapshot.empty);
       if (querySnapshot.empty) {
         try {
           const res = await API.post("/api/users", {
@@ -58,15 +63,17 @@ const SignInWithGoogle = () => {
             email: auth.currentUser.email,
             created_on: auth.currentUser.metadata?.createdAt,
             last_login: auth.currentUser.metadata?.lastLoginAt,
-            first_name:firstname,
-            last_name:lastname,
+            first_name: firstname,
+            last_name: lastname,
             uid: auth.currentUser.uid,
-            role:selectedRole,
-            provider:'google'
+            role: selectedRole,
+            provider: "google",
           });
-           // console.log(res);
+          // console.log(res);
         } catch (error) {
-           // console.log(error);
+          toast.error(error)
+          navigate('/login')
+          // console.log(error);
         }
         try {
           await setDoc(doc(db, "roles", auth.currentUser.uid), {
@@ -74,31 +81,42 @@ const SignInWithGoogle = () => {
             role: selectedRole,
             email: email,
           });
-           // console.log("Document written ");
+          // console.log("Document written ");
         } catch (e) {
+          toast.error(e)
+          navigate('/login')
           console.error("Error adding document: ", e);
         }
       } else {
-         // console.log("Email already exists in roles collection.");
+        // console.log("Email already exists in roles collection.");
       }
       if (auth.currentUser) {
         const userId = auth.currentUser.uid;
         const docRef = doc(db, "roles", userId);
         const docSnap = await getDoc(docRef);
-         // console.log(docRef);
+        // console.log(docRef);
         if (docSnap.exists()) {
           userRole = docSnap.data().role;
           // setUserRole(docSnap.data().role);
-          const { data }=  await API.get(`/api/users/uid/${userId}`)
+          const { data } = await API.get(`/api/users/uid/${userId}`);
           const resData = await API.get(`/api/users/generate/token/${data.id}`);
-          localStorage.setItem('token', resData.data?.token);
-          localStorage.setItem("user",JSON.stringify({id:data.id,role:userRole,email:data.email}))
-           // console.log(docSnap.data().role);
+          localStorage.setItem("token", resData.data?.token);
+          localStorage.setItem(
+            "user",
+            JSON.stringify({ id: data.id, role: userRole, email: data.email })
+          );
+          // console.log(docSnap.data().role);
         } else {
-           // console.log("No role found for this user");
+          // console.log("No role found for this user");
         }
       } else {
-         // console.log("No user is logged in ");
+        toast.error("Login Failed! ")
+        navigate('/login')
+        // console.log("No user is logged in ");
+      }
+      setIsLoading(false);
+      if(auth.currentUser){
+        toast.success("Logged In Successfully!");
       }
       userRole == "instructor"
         ? navigate("/instructor/home")
@@ -106,7 +124,7 @@ const SignInWithGoogle = () => {
         ? navigate("/")
         : navigate("/admin/dashboard");
     } catch (error) {
-       // console.log(error);
+      // console.log(error);
     }
   };
 
@@ -148,37 +166,42 @@ const SignInWithGoogle = () => {
             </div>
           </div> */}
           <div className="role-radio-buttons bg-white px-5  rounded row gap-2">
-          <FormControl>
-            <FormLabel id="demo-radio-buttons-group-label">
-              * Please Select Role
-            </FormLabel>
-            <RadioGroup
-              aria-labelledby="demo-radio-buttons-group-label"
-              defaultValue="female"
-              name="radio-buttons-group"
-            >
-              <FormControlLabel
-                value="student"
-                control={<Radio />}
-                label="Student"
-                onChange={(e) => setSelectedRole(e.target.value)}
-              />
-              <FormControlLabel
-                value="instructor"
-                control={<Radio />}
-                label="Instructor"
-                onChange={(e) => setSelectedRole(e.target.value)}
-              />
-            </RadioGroup>
-          </FormControl>
-
+            <FormControl>
+              <FormLabel id="demo-radio-buttons-group-label">
+                * Please Select Role
+              </FormLabel>
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                defaultValue="female"
+                name="radio-buttons-group"
+              >
+                <FormControlLabel
+                  value="student"
+                  control={<Radio />}
+                  label="Student"
+                  onChange={(e) => setSelectedRole(e.target.value)}
+                />
+                <FormControlLabel
+                  value="instructor"
+                  control={<Radio />}
+                  label="Instructor"
+                  onChange={(e) => setSelectedRole(e.target.value)}
+                />
+              </RadioGroup>
+            </FormControl>
           </div>
           {selectedRole && (
             <button
               className="button -sm px-24 py-10 -red-3 mt-3 text-white fw-500  text-14 mx-auto"
               onClick={googleLogin}
             >
-              Continue with Google
+              {isLoading ? (
+                <CircularProgress size={30}  sx={{
+                  color: 'inherit'
+                }} />
+              ) : (
+                "Continue with Google"
+              )}
             </button>
           )}
         </div>
@@ -188,7 +211,7 @@ const SignInWithGoogle = () => {
         onClick={onOpenModal}
         // onClick={googleLogin}
       >
-        <GoogleIcon className="text-24 me-2"/>
+        <GoogleIcon className="text-24 me-2" />
         {/* <i class="icon-google text-24 me-2"></i> */}
         {/* <i className="fa fa-google text-24 me-2" aria-hidden="true"></i> */}
         Google

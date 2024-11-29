@@ -21,10 +21,14 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { API } from "@/utils/AxiosInstance";
+import { toast } from "react-toastify";
+import Loader from "./Loader";
+import { CircularProgress } from "@mui/material";
 
 const SignInWithFacebook = () => {
   const [open, setOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const onOpenModal = () => {
     setOpen(true);
@@ -34,22 +38,23 @@ const SignInWithFacebook = () => {
   const navigate = useNavigate();
   const facebookLogin = async () => {
     try {
+      setIsLoading(true);
       const provider = new FacebookAuthProvider();
       await signInWithPopup(auth, provider);
 
       const email = auth.currentUser.email;
       let userRole;
-      let names = auth.currentUser?.displayName?.split(" ")
+      let names = auth.currentUser?.displayName?.split(" ");
       let firstname = names[0];
-      let lastname = '';
-      if(names.length > 1){
+      let lastname = "";
+      if (names.length > 1) {
         lastname = names[names.length - 1];
       }
-       // console.log(auth.currentUser)
+      // console.log(auth.currentUser)
       const rolesRef = collection(db, "roles");
       const q = query(rolesRef, where("email", "==", email));
       const querySnapshot = await getDocs(q);
-
+     
       if (querySnapshot.empty) {
         try {
           const res = await API.post("/api/users", {
@@ -57,15 +62,16 @@ const SignInWithFacebook = () => {
             email: auth.currentUser.email,
             created_on: auth.currentUser.metadata?.createdAt,
             last_login: auth.currentUser.metadata?.lastLoginAt,
-            first_name:firstname,
-            last_name:lastname,
+            first_name: firstname,
+            last_name: lastname,
             uid: auth.currentUser.uid,
-            role:selectedRole,
-            provider:'facebook'
+            role: selectedRole,
+            provider: "facebook",
           });
-           // console.log(res);
+          // console.log(res);
         } catch (error) {
-           // console.log(error);
+          toast.error(error)
+          navigate('/login')
         }
         try {
           await setDoc(doc(db, "roles", auth.currentUser.uid), {
@@ -73,39 +79,60 @@ const SignInWithFacebook = () => {
             role: selectedRole,
             email: email,
           });
-           // console.log("Document written ");
+          // console.log("Document written ");
         } catch (e) {
+          toast.error(error)
           console.error("Error adding document: ", e);
+          navigate('/login')
         }
       } else {
-         // console.log("Email already exists in roles collection.");
+        // console.log("Email already exists in roles collection.");
       }
+     
       if (auth.currentUser) {
         const userId = auth.currentUser.uid;
         const docRef = doc(db, "roles", userId);
         const docSnap = await getDoc(docRef);
-         // console.log(docRef);
+        // console.log(docRef);
         if (docSnap.exists()) {
           userRole = docSnap.data().role;
           // setUserRole(docSnap.data().role);
-          const { data }=  await API.get(`/api/users/uid/${userId}`)
+          try{
+            const { data } = await API.get(`/api/users/uid/${userId}`);
           const resData = await API.get(`/api/users/generate/token/${data.id}`);
-          localStorage.setItem('token', resData.data?.token);
-          localStorage.setItem("user",JSON.stringify({id:data.id,role:userRole,email:data.email}))
-           // console.log(docSnap.data().role);
+          localStorage.setItem("token", resData.data?.token);
+          localStorage.setItem(
+            "user",
+            JSON.stringify({ id: data.id, role: userRole, email: data.email })
+          );
+          }catch(error){
+            toast.error(error)
+            navigate('/login')
+          }
+          
+          // console.log(docSnap.data().role);
         } else {
-           // console.log("No role found for this user");
+          // console.log("No role found for this user");
         }
       } else {
-         // console.log("No user is logged in ");
+        toast.error("Login Failed! ")
+        navigate('/login')
+        // console.log("No user is logged in ");
       }
+      setIsLoading(false);
+      if(auth.currentUser){
+        toast.success("Logged In Successfully!");
+      }
+      
       userRole == "instructor"
         ? navigate("/instructor/home")
         : userRole == "student"
         ? navigate("/")
         : navigate("/admin/dashboard");
     } catch (error) {
-       // console.log(error);
+      // console.log(error);
+      toast.error(error)
+      navigate('/login')
     }
   };
   return (
@@ -113,38 +140,38 @@ const SignInWithFacebook = () => {
       <Modal open={open} onClose={onCloseModal} center>
         <div className="col-lg-12 border-1 rounded">
           {/* <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
-            * Please Select Role
-          </label>
-          <div className="role-radio-buttons bg-white px-5  rounded row gap-2">
-            <div className="form-check col-12">
-              <input
-                className="form-check-input"
-                type="radio"
-                id="studentRole"
-                name="role"
-                value="student"
-                required
-                onChange={(e) => setSelectedRole(e.target.value)}
-              />
-              <label className="form-check-label" htmlFor="studentRole">
-                Student
-              </label>
-            </div>
-            <div className="form-check col-12">
-              <input
-                className="form-check-input"
-                type="radio"
-                id="instructorRole"
-                name="role"
-                value="instructor"
-                required
-                onChange={(e) => setSelectedRole(e.target.value)}
-              />
-              <label className="form-check-label" htmlFor="instructorRole">
-                Instructor
-              </label>
-            </div>
-          </div> */}
+              * Please Select Role
+            </label>
+            <div className="role-radio-buttons bg-white px-5  rounded row gap-2">
+              <div className="form-check col-12">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  id="studentRole"
+                  name="role"
+                  value="student"
+                  required
+                  onChange={(e) => setSelectedRole(e.target.value)}
+                />
+                <label className="form-check-label" htmlFor="studentRole">
+                  Student
+                </label>
+              </div>
+              <div className="form-check col-12">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  id="instructorRole"
+                  name="role"
+                  value="instructor"
+                  required
+                  onChange={(e) => setSelectedRole(e.target.value)}
+                />
+                <label className="form-check-label" htmlFor="instructorRole">
+                  Instructor
+                </label>
+              </div>
+            </div> */}
           <div className="role-radio-buttons bg-white px-5  rounded row gap-2">
             <FormControl>
               <FormLabel id="demo-radio-buttons-group-label">
@@ -175,7 +202,13 @@ const SignInWithFacebook = () => {
               className="button -sm px-24 py-10 -blue-3 mt-3 text-white fw-500  text-14 mx-auto"
               onClick={facebookLogin}
             >
-              Continue with Facebook
+              {isLoading ? (
+                <CircularProgress size={30} sx={{
+                  color: 'inherit'
+                }}/>
+              ) : (
+                "Continue with Facebook"
+              )}
             </button>
           )}
         </div>

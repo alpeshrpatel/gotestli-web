@@ -140,29 +140,34 @@ export default function Header({ userRole }) {
             <div className="col-auto d-flex align-items-center  ">
               <Menu allClasses={"menu__nav text-white -is-active "} />
             </div>
-            <div className="w-25 d-flex align-items-center justify-content-center">
-              <div className="header-search__field d-flex items-center align-items-center rounded-5 " style={{height:'10px'}}>
-                <div className="icon icon-search text-dark-1 ml-8 d-flex items-center"></div>
-                <input
-                  required
-                  type="text"
-                  value={searchTerm}
-                  className="px-5 py-2 text-18 lh-12 text-dark-1 fw-500 "
-                  placeholder="What do you want ?"
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                />
-                {/* <TextField id="outlined-search" label="Search Questions" type="search" className="searchInput mb-2" /> */}
-
-                <button
-                  // onClick={() => setActiveSearch(false)}
-                  className="d-flex items-center align-items-center justify-center size-20 rounded-full bg-purple-3 mr-8"
-                  data-el-toggle=".js-search-toggle"
-                >
-                  <CancelIcon fontSize="medium" onClick={() => setSearchTerm('')}/>
-                </button>
+            {
+              userRole !== 'instructor' && (
+                <div className="w-25 d-flex align-items-center justify-content-center">
+                <div className="header-search__field d-flex items-center align-items-center rounded-5 " style={{height:'10px'}}>
+                  <div className="icon icon-search text-dark-1 ml-8 d-flex items-center"></div>
+                  <input
+                    required
+                    type="text"
+                    value={searchTerm}
+                    className="px-5 py-2 text-18 lh-12 text-dark-1 fw-500 "
+                    placeholder="What do you want ?"
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                  />
+                  {/* <TextField id="outlined-search" label="Search Questions" type="search" className="searchInput mb-2" /> */}
+  
+                  <button
+                    // onClick={() => setActiveSearch(false)}
+                    className="d-flex items-center align-items-center justify-center size-20 rounded-full bg-purple-3 mr-8"
+                    data-el-toggle=".js-search-toggle"
+                  >
+                    <CancelIcon fontSize="medium" onClick={() => setSearchTerm('')}/>
+                  </button>
+                </div>
               </div>
-            </div>
+              )
+            }
+          
 
             <MobileMenu
               setActiveMobileMenu={setActiveMobileMenu}

@@ -229,10 +229,10 @@ const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
             );
           })}
         </ul>
-        <h7 className="card-title mt-4 ">
+        <h6 className="card-title mt-4 ">
           {" "}
           <strong>Explanation:- </strong> {explanation ? explanation : ""}
-        </h7>
+        </h6>
       </div>
     </div>
   );

@@ -121,7 +121,7 @@ const MakeQuestionSet = () => {
       console.error("Error fetching question set:", error);
     }
   };
-   // console.log(questionSets);
+  // console.log(questionSets);
 
   const handleFilter = (event) => {
     const selectedFilter = event.target.value;
@@ -136,7 +136,7 @@ const MakeQuestionSet = () => {
       getQuestionSetId(filteredCategory.id);
     }
   };
-   // console.log("filtered: " + questionSets);
+  // console.log("filtered: " + questionSets);
 
   const getQuestionsFromQSetId = async (questionId) => {
     try {
@@ -196,7 +196,7 @@ const MakeQuestionSet = () => {
         ))
   );
 
-   // console.log(selectedQuestions);
+  // console.log(selectedQuestions);
   const questionSetStore = async (jsonData) => {
     try {
       if (token) {
@@ -206,7 +206,7 @@ const MakeQuestionSet = () => {
           },
         });
 
-         // console.log(res);
+        // console.log(res);
       }
     } catch (error) {
       if (error.status == 403) {
@@ -216,7 +216,7 @@ const MakeQuestionSet = () => {
         navigate("/login");
         return;
       }
-       // console.log(error);
+      // console.log(error);
     }
   };
 
@@ -233,7 +233,7 @@ const MakeQuestionSet = () => {
             }
           );
 
-           // console.log(data);
+          // console.log(data);
           const questionsetid = data?.id + 1 || 1;
           setQuestionSetId(questionsetid);
           return { questionsetid };
@@ -260,7 +260,7 @@ const MakeQuestionSet = () => {
         navigate("/login");
         return;
       }
-       // console.log(error);
+      // console.log(error);
     }
   };
 
@@ -268,13 +268,23 @@ const MakeQuestionSet = () => {
     const value = event.target.value;
     setPageCapicity(parseInt(value));
   };
-   // console.log(pageCapicity);
+  // console.log(pageCapicity);
 
   const handleComplexityFilter = (event) => {
     const selectedFilter = event.target.value;
-    setComplexityFilter(selectedFilter);
-
-    // Filter questions considering all applied filters
+    // setComplexityFilter((prev) => (prev.toLowerCase().includes(selectedFilter.toLowerCase())) ? prev.replace(selectedFilter,'') : prev?.join(selectedFilter))
+    let updatedComplexity = ''
+    setComplexityFilter((prev) => {
+      const lowerCaseSelectedFilter = selectedFilter.toLowerCase();
+      if (prev.toLowerCase().includes(lowerCaseSelectedFilter)) {
+        updatedComplexity = prev.replace(new RegExp(lowerCaseSelectedFilter, 'gi'), '')
+        return prev.replace(new RegExp(lowerCaseSelectedFilter, 'gi'), '');
+      } else {
+        updatedComplexity = `${prev}${selectedFilter}`
+        return `${prev}${selectedFilter}`;
+      }
+    });
+    
     const filteredQuestions = questions.filter((question) => {
       const matchesSearch = question.question
         ?.toLowerCase()
@@ -285,16 +295,14 @@ const MakeQuestionSet = () => {
           (q) => q.question?.toLowerCase() === question.question?.toLowerCase()
         );
       const matchesComplexity =
-        selectedFilter === "" ||
-        question?.complexity?.toLowerCase() === selectedFilter.toLowerCase();
-       // console.log("sf", selectedFilter);
-       // console.log("qc", question?.complexity);
+         updatedComplexity?.toLowerCase()?.includes( question?.complexity?.toLowerCase()) || updatedComplexity === "";
+      // console.log("sf", selectedFilter);
+      // console.log("qc", question?.complexity);
       return matchesSearch && matchesCategory && matchesComplexity;
     });
 
     setFilteredFromAll(filteredQuestions);
   };
-   // console.log(complexityCounter);
   return (
     <>
       <Header userRole={userRole} />
@@ -371,13 +379,21 @@ const MakeQuestionSet = () => {
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+             
+               
+                  <Checkbox
+                    value="easy"
+                    checked={complexityFilter?.toLowerCase()?.includes("easy")}
+                    onChange={handleComplexityFilter}
+                  />
+              
               <label
                 htmlFor="easy"
                 style={{
                   fontSize: "1rem",
                   fontWeight: "bold",
                   color: "#155724",
-                  marginBottom:0
+                  marginBottom: 0,
                 }}
               >
                 Easy
@@ -404,17 +420,21 @@ const MakeQuestionSet = () => {
               display: "flex",
               gap: "10px",
               alignItems: "center",
-              
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+            <Checkbox
+                value="medium"
+                checked={complexityFilter.includes("medium")}
+                onChange={handleComplexityFilter}
+              />
               <label
                 htmlFor="medium"
                 style={{
                   fontSize: "1rem",
                   fontWeight: "bold",
                   color: "#856404",
-                  marginBottom:0
+                  marginBottom: 0,
                 }}
               >
                 Medium
@@ -441,17 +461,21 @@ const MakeQuestionSet = () => {
               display: "flex",
               gap: "10px",
               alignItems: "center",
-              
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+            <Checkbox
+                value="hard"
+                checked={complexityFilter.includes("hard")}
+                onChange={handleComplexityFilter}
+              />
               <label
                 htmlFor="hard"
                 style={{
                   fontSize: "1rem",
                   fontWeight: "bold",
                   color: "#721c24",
-                  marginBottom:0
+                  marginBottom: 0,
                 }}
               >
                 Hard
@@ -472,7 +496,7 @@ const MakeQuestionSet = () => {
           </div>
         </div>
 
-        <FormGroup
+        {/* <FormGroup
           style={{
             display: "flex",
             flexDirection: "row",
@@ -509,8 +533,8 @@ const MakeQuestionSet = () => {
             }
             label="Hard"
           />
-        </FormGroup>
-        <div className="checkboxContainer">
+        </FormGroup> */}
+        <div className="checkboxContainer mt-3">
           <ul>
             {filteredFromAll &&
               filteredFromAll
