@@ -267,7 +267,7 @@ export default function Menu({ allClasses, headerPosition }) {
                   style={{ fontSize: "18px",whiteSpace: "nowrap" }}
                 >
                   Create QuestionSet{" "}
-                  <i className="icon-chevron-right text-13 ml-10"></i>
+                  {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
                 </Link>
                 {/* <ul className="subnav">
                 <li className="menu__backButton js-nav-list-back">
@@ -302,7 +302,7 @@ export default function Menu({ allClasses, headerPosition }) {
                 style={{ fontSize: "18px",whiteSpace: "nowrap" }}
               >
                 Upload QuestionSet{" "}
-                <i className="icon-chevron-right text-13 ml-10"></i>
+                {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
               </Link>
               
             </li>
