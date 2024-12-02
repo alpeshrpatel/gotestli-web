@@ -22,6 +22,12 @@ import { toast } from "react-toastify";
 import { Delete, Edit } from "@mui/icons-material";
 import Header from "@/components/layout/headers/Header";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import "react-responsive-modal/styles.css";
+import { Modal } from "react-responsive-modal";
+import AvatarModal from "./AvatarModal";
+import { BootstrapTooltip } from "@/components/common/Tooltip";
 
 const ProfilePage = () => {
   const [usersData, setUsersData] = useState({});
@@ -38,6 +44,8 @@ const ProfilePage = () => {
   const [defaultTags, setDefaultTags] = useState([]);
   const [isSaveVisible, setIsSaveVisible] = useState(false);
   const [badgesData, setBadgesData] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
 
   // let uid = "";
   // if (auth.currentUser) {
@@ -52,7 +60,7 @@ const ProfilePage = () => {
   useEffect(() => {
     async function getUserProfile() {
       const { data } = await API.get(`/api/users/${userid}`);
-       // console.log(data);
+      // console.log(data);
       setUsersData(data);
       setUpdatedData({
         first_name: data.first_name || "",
@@ -61,6 +69,7 @@ const ProfilePage = () => {
         company: data.company || "",
         phone: data.phone || "",
       });
+      setSelectedAvatar(data.profile_pic || "");
 
       const userTags = data.tags
         ? data.tags.split(",").map((tag) => {
@@ -93,7 +102,7 @@ const ProfilePage = () => {
               Authorization: `Bearer ${token}`,
             },
           });
-           // console.log(data);
+          // console.log(data);
           setBadgesData(data);
         }
         getBadgesData();
@@ -127,7 +136,7 @@ const ProfilePage = () => {
                 },
               }
             );
-             // console.log(data);
+            // console.log(data);
           } else {
             // const data = await API.delete(`/api/users/preference/${userid}`, {
             //   headers: {
@@ -150,6 +159,41 @@ const ProfilePage = () => {
     }
   }, [tagsId]);
 
+  const onCloseAvatarModal = () => setOpen(false);
+  const onOpenAvatarModal = (attemptId) => {
+    setOpen(true);
+  };
+  const handleAvatarSelect = async (avatar) => {
+    setSelectedAvatar(avatar);
+    setOpen(false);
+    try {
+      const res = await API.put(`/api/users/${userid}`, {
+        ...updatedData,
+        profile_pic: avatar,
+      });
+      if (res.status == 200) {
+        toast.success("Avatar updated Successfully!");
+      }
+    } catch (error) {
+      toast.error(`Error: ${error} !`);
+    }
+  };
+
+  const handleDeleteAvatar = async () => {
+    setSelectedAvatar("");
+    try {
+      const res = await API.put(`/api/users/${userid}`, {
+        ...updatedData,
+        profile_pic: "",
+      });
+      if (res.status == 200) {
+        toast.success("Avatar deleted Successfully!");
+      }
+    } catch (error) {
+      toast.error(`Error: ${error} !`);
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUpdatedData((prevState) => ({
@@ -161,7 +205,10 @@ const ProfilePage = () => {
 
   const handleUpdateData = async () => {
     try {
-      const res = await API.put(`/api/users/${userid}`, updatedData);
+      const res = await API.put(`/api/users/${userid}`, {
+        ...updatedData,
+        profile_pic: selectedAvatar,
+      });
       // if(tagsId){
       //   const data = await API.post("/api/users/preference", {
       //     user_id: usersData.id,
@@ -215,27 +262,29 @@ const ProfilePage = () => {
     })
     .filter(Boolean);
 
-   // console.log(level1);
-   // console.log(level2);
-   // console.log(level3);
-   // console.log(level4);
-   // console.log(badgesData);
-  const theme = useTheme()
+  // console.log(level1);
+  // console.log(level2);
+  // console.log(level3);
+  // console.log(level4);
+  // console.log(badgesData);
+  const theme = useTheme();
   return (
-    
     <>
       <Header userRole={userRole} />
       <Box
         sx={{
-          display:'flex',
-          flexWrap:'wrap',
+          display: "flex",
+          flexWrap: "wrap",
           justifyContent: "center",
           p: 3,
           marginTop: "10vw",
-          gap:'20px'
+          gap: "20px",
         }}
         // style={{ backgroundColor: theme.palette.background.default }}
       >
+        <Modal open={open} onClose={onCloseAvatarModal} center>
+          <AvatarModal onAvatarSelect={handleAvatarSelect} />
+        </Modal>
         <Box sx={{ width: 300, mr: 5 }}>
           <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
             <Box
@@ -245,7 +294,7 @@ const ProfilePage = () => {
                 alignItems: "center",
               }}
             >
-              {usersData?.last_name ? (
+              {/* {usersData?.last_name ? (
                 <Avatar
                   sx={{ bgcolor: deepPurple[500], width: 56, height: 56 }}
                 >{`${usersData?.first_name?.[0]?.toUpperCase()}${usersData?.last_name?.[0]?.toUpperCase()}`}</Avatar>
@@ -253,13 +302,46 @@ const ProfilePage = () => {
                 <Avatar
                   sx={{ bgcolor: deepPurple[500], width: 56, height: 56 }}
                 >{`${usersData?.first_name?.[0]?.toUpperCase()}`}</Avatar>
+              )} */}
+              {selectedAvatar ? (
+                <Avatar
+                  sx={{
+                    width: 70,
+                    height: 70,
+                    display: "flex",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                  }}
+                >
+                  <img src={selectedAvatar} alt="" />
+                </Avatar>
+              ) : (
+                <BootstrapTooltip title={'Add Your Avatar'}>
+                  <Avatar
+                    sx={{
+                      bgcolor: deepPurple[500],
+                      width: 56,
+                      height: 56,
+                      display: "flex",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                    }}
+                    onClick={onOpenAvatarModal}
+                  >
+                    <FontAwesomeIcon icon={faUserPlus} />
+                  </Avatar>
+                </BootstrapTooltip>
               )}
+
               <div className="d-flex mt-1 justify-content-center">
-                <IconButton>
+                <IconButton onClick={onOpenAvatarModal}>
                   <Edit sx={{ color: "#3f51b5" }} />
                 </IconButton>
                 <IconButton>
-                  <Delete sx={{ color: "#f50057" }} />
+                  <Delete
+                    sx={{ color: "#f50057" }}
+                    onClick={handleDeleteAvatar}
+                  />
                 </IconButton>
               </div>
               <Typography
@@ -286,7 +368,7 @@ const ProfilePage = () => {
           </Paper> */}
         </Box>
 
-        <Box className="" sx={{ flex: 1,minWidth:'350px' }}>
+        <Box className="" sx={{ flex: 1, minWidth: "350px" }}>
           <Typography variant="h5" sx={{ mb: 2, textAlign: "center" }}>
             Public Profile
           </Typography>
@@ -394,7 +476,7 @@ const ProfilePage = () => {
                 onChange={(event, newValue) => {
                   let tags = "";
                   let tagsId = "";
-                   // console.log(newValue);
+                  // console.log(newValue);
                   newValue.forEach((tag) => {
                     tags = tags + "," + tag.title;
                     tagsId = tagsId + "," + tag.id;
@@ -421,7 +503,7 @@ const ProfilePage = () => {
         </Box>
         <div
           className="container-fluid  card  bg-light rounded place-content-center"
-          style={{ padding: "25px 4vw", width: "40vw", minWidth:'500px' }}
+          style={{ padding: "25px 4vw", width: "40vw", minWidth: "500px" }}
         >
           <Typography variant="h4" sx={{ mb: 2, fontWeight: "500" }}>
             Achievements

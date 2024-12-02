@@ -425,8 +425,9 @@ const ComprehensiveType = ({
                   width="24"
                   height="24"
                   fill="currentColor"
-                  className="bi bi-flag-fill"
+                  className="bi bi-flag-fill pointer"
                   viewBox="0 0 16 16"
+                  onClick={handleReviewClick}
                   style={{ marginRight: "50px", color: selectedOption.some(
                     (selected) =>
                       selected.id === questionId &&
@@ -541,14 +542,15 @@ const ComprehensiveType = ({
                 ))}
               </div>
             </ul>
-            <div className="d-flex justify-content-around">
-              <div className="d-flex justify-content-center align-align-items-center gap-5">
+            <div className="d-flex justify-content-center">
+              <div className="d-flex justify-content-center align-items-center" style={{gap:'75px'}}>
                 {index > 1 && (
                   <button
-                    className="btn btn-primary w-auto p-2"
+                    className="btn btn-primary p-2"
                     style={{
                       backgroundColor: "#6a1b9a",
                       borderColor: "#6a1b9a",
+                      width:'130px'
                     }}
                     onClick={handlePreviousClick}
                   >
@@ -561,10 +563,11 @@ const ComprehensiveType = ({
                 )}
                 {index !== totalQuestions && (
                   <button
-                    className="btn btn-primary w-auto p-2"
+                    className="btn btn-primary p-2"
                     style={{
                       backgroundColor: "#6a1b9a",
                       borderColor: "#6a1b9a",
+                      width:'130px'
                     }}
                     onClick={handleNextClick}
                   >
@@ -578,16 +581,7 @@ const ComprehensiveType = ({
               </div>
 
               <div>
-                <button
-                  className="btn btn-primary w-auto p-2"
-                  style={{
-                    backgroundColor: "#6a1b9a",
-                    borderColor: "#6a1b9a",
-                  }}
-                  onClick={handleReviewClick}
-                >
-                  Review
-                </button>
+               
               </div>
             </div>
           </div>
