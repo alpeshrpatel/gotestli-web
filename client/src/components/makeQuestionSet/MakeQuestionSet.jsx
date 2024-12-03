@@ -9,6 +9,7 @@ import {
   Checkbox,
   FormControlLabel,
   FormGroup,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -17,6 +18,8 @@ import { Modal } from "react-responsive-modal";
 import QuestionSetDetailForm from "./QuestionSetDetailForm";
 import Header from "../layout/headers/Header";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { BootstrapTooltip } from "../common/Tooltip";
 // import axios from "axios";
 
 const MakeQuestionSet = () => {
@@ -273,18 +276,21 @@ const MakeQuestionSet = () => {
   const handleComplexityFilter = (event) => {
     const selectedFilter = event.target.value;
     // setComplexityFilter((prev) => (prev.toLowerCase().includes(selectedFilter.toLowerCase())) ? prev.replace(selectedFilter,'') : prev?.join(selectedFilter))
-    let updatedComplexity = ''
+    let updatedComplexity = "";
     setComplexityFilter((prev) => {
       const lowerCaseSelectedFilter = selectedFilter.toLowerCase();
       if (prev.toLowerCase().includes(lowerCaseSelectedFilter)) {
-        updatedComplexity = prev.replace(new RegExp(lowerCaseSelectedFilter, 'gi'), '')
-        return prev.replace(new RegExp(lowerCaseSelectedFilter, 'gi'), '');
+        updatedComplexity = prev.replace(
+          new RegExp(lowerCaseSelectedFilter, "gi"),
+          ""
+        );
+        return prev.replace(new RegExp(lowerCaseSelectedFilter, "gi"), "");
       } else {
-        updatedComplexity = `${prev}${selectedFilter}`
+        updatedComplexity = `${prev}${selectedFilter}`;
         return `${prev}${selectedFilter}`;
       }
     });
-    
+
     const filteredQuestions = questions.filter((question) => {
       const matchesSearch = question.question
         ?.toLowerCase()
@@ -295,7 +301,10 @@ const MakeQuestionSet = () => {
           (q) => q.question?.toLowerCase() === question.question?.toLowerCase()
         );
       const matchesComplexity =
-         updatedComplexity?.toLowerCase()?.includes( question?.complexity?.toLowerCase()) || updatedComplexity === "";
+        updatedComplexity
+          ?.toLowerCase()
+          ?.includes(question?.complexity?.toLowerCase()) ||
+        updatedComplexity === "";
       // console.log("sf", selectedFilter);
       // console.log("qc", question?.complexity);
       return matchesSearch && matchesCategory && matchesComplexity;
@@ -303,6 +312,49 @@ const MakeQuestionSet = () => {
 
     setFilteredFromAll(filteredQuestions);
   };
+
+  const handleActiveChange = async (questionId, value ) => {
+    // setStatus(value)
+      try {
+        if(token){
+          const {data} = await API.put(`/api/questionmaster/status/question/${questionId}`, {
+            statusId:value
+          } ,{
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          
+            toast.success("Status Change Saved Successfully!");
+            
+           
+            setFilteredFromAll((prevQuestions) =>
+              prevQuestions.map((question) =>
+                question.id == questionId
+                  ? { ...question, status_id: value }
+                  : question
+              )
+            );
+    
+            setQuestions((prevQuestions) =>
+              prevQuestions.map((question) =>
+                question.id == questionId
+                  ? { ...question, status_id: value }
+                  : question
+              )
+            );
+          
+        }
+      } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // toast.error("Invaild token!");
+          navigate("/login");
+          return;
+        }
+      }
+  }
   return (
     <>
       <Header userRole={userRole} />
@@ -379,14 +431,12 @@ const MakeQuestionSet = () => {
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-             
-               
-                  <Checkbox
-                    value="easy"
-                    checked={complexityFilter?.toLowerCase()?.includes("easy")}
-                    onChange={handleComplexityFilter}
-                  />
-              
+              <Checkbox
+                value="easy"
+                checked={complexityFilter?.toLowerCase()?.includes("easy")}
+                onChange={handleComplexityFilter}
+              />
+
               <label
                 htmlFor="easy"
                 style={{
@@ -423,7 +473,7 @@ const MakeQuestionSet = () => {
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-            <Checkbox
+              <Checkbox
                 value="medium"
                 checked={complexityFilter.includes("medium")}
                 onChange={handleComplexityFilter}
@@ -464,7 +514,7 @@ const MakeQuestionSet = () => {
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-            <Checkbox
+              <Checkbox
                 value="hard"
                 checked={complexityFilter.includes("hard")}
                 onChange={handleComplexityFilter}
@@ -545,6 +595,16 @@ const MakeQuestionSet = () => {
                     className="checkboxItem gap-2 text-black d-flex justify-content-between"
                   >
                     <div className="d-flex gap-2 align-content-center">
+                      <BootstrapTooltip title={'Toggle to activate or retire this question.'}>
+                      <Switch
+                        checked={question.status_id}
+                        onChange={(e) =>
+                          handleActiveChange(question.id, e.target.checked)
+                        }
+                        inputProps={{ "aria-label": "controlled" }}
+                      />
+                      </BootstrapTooltip>
+                      
                       <input
                         className="p-2 border-0"
                         type="checkbox"

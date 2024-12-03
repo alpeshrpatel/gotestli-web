@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import SubmitQuizModal from "./SubmitQuizModal/SubmitQuizModal";
 import { Radio } from "@mui/material";
+import CommentForQuestion from "../common/CommentForQuestion";
 
 const SingleChoice = ({
   time,
@@ -118,7 +119,7 @@ const SingleChoice = ({
                 },
               }
             );
-            
+
             const persistedAnswers = data.map((q) => {
               return {
                 id: q.question_set_question_id,
@@ -210,7 +211,11 @@ const SingleChoice = ({
       setSelectedOption(
         selectedOption.map((question) =>
           question.id === questionId
-            ? { ...question, selectedOption: option, status: ((question.status == 2 || question.status == 3) ? 3 : 1) }
+            ? {
+                ...question,
+                selectedOption: option,
+                status: question.status == 2 || question.status == 3 ? 3 : 1,
+              }
             : question
         )
       );
@@ -424,11 +429,16 @@ const SingleChoice = ({
                   className="bi bi-flag-fill pointer"
                   viewBox="0 0 16 16"
                   onClick={handleReviewClick}
-                  style={{ marginRight: "50px", color: selectedOption.some(
-                    (selected) =>
-                      selected.id === questionId &&
-                      (selected.status == 2 || selected.status == 3)
-                  ) ? 'blue' : '' }}
+                  style={{
+                    marginRight: "50px",
+                    color: selectedOption.some(
+                      (selected) =>
+                        selected.id === questionId &&
+                        (selected.status == 2 || selected.status == 3)
+                    )
+                      ? "blue"
+                      : "",
+                  }}
                 >
                   <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001" />
                 </svg>
@@ -477,7 +487,15 @@ const SingleChoice = ({
               </div>
             </div>
             <hr />
-            <h5 className="card-text text-center">{question}</h5>
+            <div
+              className="d-flex gap-4 justify-center "
+              style={{ alignItems: "center" }}
+            >
+              <h5 className="card-text text-center">{question}</h5>
+
+              <CommentForQuestion questionId={questionId} />
+            </div>
+
             {/* <ul className="list-group list-group-flush mt-3 mb-4 ">
               {options?.map((option, id) => (
                 <li
@@ -549,14 +567,17 @@ const SingleChoice = ({
               </div>
             </ul>
             <div className="d-flex justify-content-center">
-              <div className="d-flex justify-content-center align-items-center" style={{gap:'75px'}}>
+              <div
+                className="d-flex justify-content-center align-items-center"
+                style={{ gap: "75px" }}
+              >
                 {index > 1 && (
                   <button
                     className="btn btn-primary p-2"
                     style={{
                       backgroundColor: "#6a1b9a",
                       borderColor: "#6a1b9a",
-                      width:'130px'
+                      width: "130px",
                     }}
                     onClick={handlePreviousClick}
                   >
@@ -573,7 +594,7 @@ const SingleChoice = ({
                     style={{
                       backgroundColor: "#6a1b9a",
                       borderColor: "#6a1b9a",
-                      width:'130px'
+                      width: "130px",
                     }}
                     onClick={handleNextClick}
                   >
@@ -586,9 +607,7 @@ const SingleChoice = ({
                 )}
               </div>
 
-              <div>
-               
-              </div>
+              <div></div>
             </div>
           </div>
         </div>
