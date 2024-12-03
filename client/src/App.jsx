@@ -151,6 +151,8 @@ function App() {
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
 
+ 
+
   return (
     <>
       {/* <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}> */}
@@ -347,10 +349,10 @@ function App() {
             </Routes>
             <ScrollTopBehaviour />
           </BrowserRouter>
-
+          
           <ToastContainer
-            position="top-center"
-            autoClose={3000}
+            position="bottom-center"
+            autoClose={false}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick
