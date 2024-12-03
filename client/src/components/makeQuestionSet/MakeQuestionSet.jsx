@@ -61,7 +61,7 @@ const MakeQuestionSet = () => {
                 Authorization: `Bearer ${token}`,
               },
             }),
-            API.get("/api/questionmaster", {
+            API.get(`/api/questionmaster/user/${userId}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
