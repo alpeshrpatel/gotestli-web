@@ -32,6 +32,7 @@ const columns = [
   { id: "questions", label: "Questions", sortable: false },
   { id: "attempted", label: "Total Attempted", sortable: false },
   { id: "actions", label: "Actions", sortable: false },
+  {id:"active", label:"Active", sortable:false}
 ];
 
 const HomePage = () => {
@@ -65,7 +66,7 @@ const HomePage = () => {
               },
             }
           );
-           // console.log(data);
+           console.log(data);
           setQuestionSets(data);
         }
       } catch (error) {
@@ -170,7 +171,7 @@ const HomePage = () => {
           );
         }
       }
-      // Refresh question sets or update the current state
+      
     } catch (error) {
       if (error.status == 403) {
         localStorage.removeItem("user");
@@ -206,6 +207,43 @@ const HomePage = () => {
       ? true
       : false
   );
+
+  const handleStatusChange = async (qSetId, checked) => {
+    try {
+      if (token) {
+        const res = await API.put(
+          `/api/questionset/update/status`,
+          {
+            status_id:checked, id:qSetId
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setEditOn(null);
+        if (res.status == 200) {
+          setQuestionSets((prev) =>
+            prev.map((qSet) =>
+              qSet.id == qSetId ? { ...qSet, status_id:checked } : qSet
+            )
+          );
+          toast.success('Status Saved Successfully!')
+        }
+      }
+      // Refresh question sets or update the current state
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
+      console.error("Failed to save changes:", error);
+    }
+  }
 
   const getRowId = (row) => row.id;
 
@@ -305,6 +343,13 @@ const HomePage = () => {
             </>
           )}
         </div>
+      </TableCell>
+      <TableCell>
+      <Switch
+              checked={set.status_id}
+              onChange={(e) => handleStatusChange(set.id, e.target.checked)}
+              inputProps={{ "aria-label": "controlled" }}
+            />
       </TableCell>
     </>
   );

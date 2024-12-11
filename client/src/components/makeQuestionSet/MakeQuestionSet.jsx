@@ -7,8 +7,11 @@ import "react-responsive-pagination/themes/classic.css";
 import PaginationTwo from "../common/PaginationTwo";
 import {
   Checkbox,
+  FormControl,
   FormControlLabel,
   FormGroup,
+  Radio,
+  RadioGroup,
   Switch,
   TextField,
   Typography,
@@ -41,6 +44,7 @@ const MakeQuestionSet = () => {
   const [questionSetId, setQuestionSetId] = useState();
   const [open, setOpen] = useState(false);
   const [pageCapicity, setPageCapicity] = useState(10);
+  const [viewQuestion, setViewQuestion] = useState(true);
   const navigate = useNavigate();
 
   const onOpenModal = () => setOpen(true);
@@ -313,48 +317,74 @@ const MakeQuestionSet = () => {
     setFilteredFromAll(filteredQuestions);
   };
 
-  const handleActiveChange = async (questionId, value ) => {
+  const handleActiveChange = async (questionId, value) => {
     // setStatus(value)
-      try {
-        if(token){
-          const {data} = await API.put(`/api/questionmaster/status/question/${questionId}`, {
-            statusId:value
-          } ,{
+    try {
+      if (token) {
+        const { data } = await API.put(
+          `/api/questionmaster/status/question/${questionId}`,
+          {
+            statusId: value,
+          },
+          {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          })
-          
-            toast.success("Status Change Saved Successfully!");
-            
-           
-            setFilteredFromAll((prevQuestions) =>
-              prevQuestions.map((question) =>
-                question.id == questionId
-                  ? { ...question, status_id: value }
-                  : question
-              )
-            );
-    
-            setQuestions((prevQuestions) =>
-              prevQuestions.map((question) =>
-                question.id == questionId
-                  ? { ...question, status_id: value }
-                  : question
-              )
-            );
-          
-        }
-      } catch (error) {
-        if (error.status == 403) {
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
-          // toast.error("Invaild token!");
-          navigate("/login");
-          return;
-        }
+          }
+        );
+
+        toast.success("Status Change Saved Successfully!");
+
+        setFilteredFromAll((prevQuestions) =>
+          prevQuestions.map((question) =>
+            question.id == questionId
+              ? { ...question, status_id: value }
+              : question
+          )
+        );
+
+        setQuestions((prevQuestions) =>
+          prevQuestions.map((question) =>
+            question.id == questionId
+              ? { ...question, status_id: value }
+              : question
+          )
+        );
       }
-  }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // toast.error("Invaild token!");
+        navigate("/login");
+        return;
+      }
+    }
+  };
+
+  const handleViewChange = (selectedView) => {
+    // setFilteredFromAll((prevQuestions) =>
+    //   prevQuestions.filter((question) => question.status_id == checked)
+    // );
+    let filteredQuestions = [];
+    if (selectedView === "all") {
+      // Show all questions
+      filteredQuestions = questions;
+    } else if (selectedView === "active") {
+      // Show only active questions (status_id truthy)
+      filteredQuestions = questions.filter(
+        (question) => question.status_id == 1
+      );
+      // setFilteredFromAll(questions.filter((question) => question.status_id));
+    } else if (selectedView === "retired") {
+      // Show only retired questions (status_id falsy)
+      filteredQuestions = questions.filter((question) => !question.status_id);
+    }
+
+    setFilteredFromAll(filteredQuestions);
+    setViewQuestion(selectedView);
+  };
+  console.log(viewQuestion);
   return (
     <>
       <Header userRole={userRole} />
@@ -545,45 +575,42 @@ const MakeQuestionSet = () => {
             </div>
           </div>
         </div>
+        <div className="d-flex " style={{ justifyContent: "flex-start" }}>
+          <div className="d-flex" style={{ justifyContent: "flex-start" }}>
+            <FormControl>
+              <RadioGroup
+                aria-labelledby="view-questions-radio-group-label"
+                defaultValue="all" // Default to "All" questions
+                name="view-questions-radio-group"
+                onChange={(e) => handleViewChange(e.target.value)}
+                style={{ flexDirection: "row" }} // Horizontal layout
+              >
+                <FormControlLabel value="all" control={<Radio />} label="All" />
+                <FormControlLabel
+                  value="active"
+                  control={<Radio />}
+                  label="Active"
+                />
+                <FormControlLabel
+                  value="retired"
+                  control={<Radio />}
+                  label="Retired"
+                />
+              </RadioGroup>
+            </FormControl>
+          </div>
 
-        {/* <FormGroup
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "flex-end",
-          }}
-        >
-          <FormControlLabel
-            control={
-              <Checkbox
-                value="easy"
-                checked={complexityFilter.includes("easy")}
-                onChange={handleComplexityFilter}
-              />
-            }
-            label="Easy"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                value="medium"
-                checked={complexityFilter.includes("medium")}
-                onChange={handleComplexityFilter}
-              />
-            }
-            label="Medium"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                value="hard"
-                checked={complexityFilter.includes("hard")}
-                onChange={handleComplexityFilter}
-              />
-            }
-            label="Hard"
-          />
-        </FormGroup> */}
+          {/* <BootstrapTooltip title={'Toggle to see active or retire questions.'}>
+                      <Switch
+                        checked={viewQuestion}
+                        onChange={(e) =>
+                          handleViewChange( e.target.checked)
+                        }
+                        inputProps={{ "aria-label": "controlled" }}
+                      />
+                      </BootstrapTooltip> */}
+        </div>
+
         <div className="checkboxContainer mt-3">
           <ul>
             {filteredFromAll &&
@@ -594,17 +621,22 @@ const MakeQuestionSet = () => {
                     key={index}
                     className="checkboxItem gap-2 text-black d-flex justify-content-between"
                   >
-                    <div className="d-flex gap-2 align-content-center">
-                      <BootstrapTooltip title={'Toggle to activate or retire this question.'}>
-                      <Switch
-                        checked={question.status_id}
-                        onChange={(e) =>
-                          handleActiveChange(question.id, e.target.checked)
-                        }
-                        inputProps={{ "aria-label": "controlled" }}
-                      />
+                    <div
+                      className="d-flex gap-2 "
+                      style={{ alignItems: "center" }}
+                    >
+                      <BootstrapTooltip
+                        title={"Toggle to activate or retire this question."}
+                      >
+                        <Switch
+                          checked={question.status_id}
+                          onChange={(e) =>
+                            handleActiveChange(question.id, e.target.checked)
+                          }
+                          inputProps={{ "aria-label": "controlled" }}
+                        />
                       </BootstrapTooltip>
-                      
+
                       <input
                         className="p-2 border-0"
                         type="checkbox"

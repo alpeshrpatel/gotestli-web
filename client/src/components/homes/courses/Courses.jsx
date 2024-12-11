@@ -20,9 +20,12 @@ import { BootstrapTooltip } from "@/components/common/Tooltip";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import CourseList from "../courseCards/CourseList";
+import CourseList from "../courseCards/ListView";
 import WidgetsIcon from "@mui/icons-material/Widgets";
 import ListIcon from "@mui/icons-material/List";
+import TableHeader from "../courseCards/TableHeader";
+import ListView from "../courseCards/ListView";
+import TableBodyContent from "../courseCards/TableBodyContent";
 
 export default function Courses({ userRole }) {
   const [filtered, setFiltered] = useState([]);
@@ -38,7 +41,7 @@ export default function Courses({ userRole }) {
     async function getCategory() {
       const { data } = await API.get("/api/category/parent/categories");
       setCategories(data);
-       // console.log(data);
+      // console.log(data);
     }
     getCategory();
   }, []);
@@ -51,19 +54,18 @@ export default function Courses({ userRole }) {
           setFiltered(data);
         } else {
           console.error("Expected an array, got:", data);
-          setFiltered([]); 
+          setFiltered([]);
         }
       } catch (error) {
         console.error("Error fetching questions set:", error);
-        setFiltered([]); 
+        setFiltered([]);
       }
     }
     getQuestionsSet();
   }, []);
-  
 
   const handleChange = async (event, newValue) => {
-     // console.log(event);
+    // console.log(event);
     let title = event.target.textContent;
     if (title == "All Categories") {
       setSelectedCategory(filtered);
@@ -78,7 +80,7 @@ export default function Courses({ userRole }) {
               },
             }
           );
-           // console.log(data);
+          // console.log(data);
           setStudentsData(data);
         }
       } catch (error) {
@@ -101,7 +103,7 @@ export default function Courses({ userRole }) {
               },
             }
           );
-           // console.log(res);
+          // console.log(res);
           if (res.data) {
             setSelectedCategory(res.data);
           }
@@ -124,8 +126,8 @@ export default function Courses({ userRole }) {
   const userData = JSON.parse(localStorage.getItem("user")) || "";
   // const userRole = userData.role;
   const userId = userData.id;
-   // console.log(filtered);
-   // console.log(userRole);
+  // console.log(filtered);
+  // console.log(userRole);
   let questionSetByInstructor = [];
   if (userRole == "instructor") {
     selectedCategory && selectedCategory?.length > 0
@@ -137,8 +139,8 @@ export default function Courses({ userRole }) {
         ));
   }
 
-   // console.log(questionSetByInstructor);
-   // console.log(value);
+  // console.log(questionSetByInstructor);
+  // console.log(value);
 
   const handleViewChange = (viewType) => setView(viewType);
 
@@ -168,11 +170,12 @@ export default function Courses({ userRole }) {
           </div>
         </div>
       </div>
-      <div className="tabs__controls flex-wrap  pt-20 d-flex justify-center x-gap-10 js-tabs-controls ">
+      <div className=" flex-wrap  pt-20 d-flex justify-center x-gap-10 js-tabs-controls ">
         <Box sx={{ width: "100%" }} className="d-flex justify-center">
           <Tabs
             value={value}
             onChange={handleChange}
+            sx={{ overflowX:'scroll' }}
             aria-label="category tabs"
           >
             <Tab
@@ -199,18 +202,58 @@ export default function Courses({ userRole }) {
         data-aos-duration={800}
       >
         <div className="view-toggle text-center d-flex gap-2 justify-content-center">
-          <Button onClick={() => handleViewChange("card")} className={`d-flex gap-2 `} style={{ backgroundColor: view === 'card' ? '#E4E7EA' : 'transparent' }}>
+          <Button
+            onClick={() => handleViewChange("card")}
+            className={`d-flex gap-2 `}
+            style={{
+              backgroundColor: view === "card" ? "#E4E7EA" : "transparent",
+            }}
+          >
             <WidgetsIcon />
             Card View
           </Button>
-          <Button onClick={() => handleViewChange("list")} className="d-flex gap-2" style={{ backgroundColor: view === 'list' ? '#E4E7EA' : 'transparent' }}>
+          <Button
+            onClick={() => handleViewChange("list")}
+            className="d-flex gap-2"
+            style={{
+              backgroundColor: view === "list" ? "#E4E7EA" : "transparent",
+            }}
+          >
             {" "}
             <ListIcon /> List View
           </Button>
         </div>
         {userRole && userRole === "instructor" ? (
           questionSetByInstructor?.length > 0 ? (
-            questionSetByInstructor.map((elm, index) => (
+            <>
+              {view == "list" ? (
+                <ListView header={<TableHeader />}>
+                  {questionSetByInstructor.map((elm, index) => (
+                    <CourceCard
+                      view={view}
+                      role={userRole}
+                      key={index}
+                      data={elm}
+                      index={index}
+                      data-aos="fade-right"
+                      data-aos-duration={(index + 1) * 300}
+                    />
+                  ))}
+                </ListView>
+              ) : (
+                questionSetByInstructor.map((elm, index) => (
+                  <CourceCard
+                    view={view}
+                    role={userRole}
+                    key={index}
+                    data={elm}
+                    index={index}
+                    data-aos="fade-right"
+                    data-aos-duration={(index + 1) * 300}
+                  />
+                ))
+              )}
+              {/* { questionSetByInstructor.map((elm, index) => (
               <CourceCard
                 view={view}
                 role={userRole}
@@ -220,36 +263,103 @@ export default function Courses({ userRole }) {
                 data-aos="fade-right"
                 data-aos-duration={(index + 1) * 300}
               />
-            ))
+            ))}
+             */}
+            </>
           ) : (
             <h4 className="no-content text-center mt-8">
               No Questionsets found for this instructor.
             </h4>
           )
         ) : !selectedCategory ? (
-          filtered && Array.isArray(filtered) && filtered?.map((elm, index) => (
-            <CourceCard
-              view={view}
-              role={userRole}
-              key={index}
-              data={elm}
-              index={index}
-              data-aos="fade-right"
-              data-aos-duration={(index + 1) * 300}
-            />
-          ))
+          <>
+            {view == "list" ? (
+              <ListView header={<TableHeader />}>
+                {filtered &&
+                  Array.isArray(filtered) &&
+                  filtered?.map((elm, index) => (
+                    <CourceCard
+                      view={view}
+                      role={userRole}
+                      key={index}
+                      data={elm}
+                      index={index}
+                      data-aos="fade-right"
+                      data-aos-duration={(index + 1) * 300}
+                    />
+                  ))}
+              </ListView>
+            ) : (
+              filtered &&
+              Array.isArray(filtered) &&
+              filtered?.map((elm, index) => (
+                <CourceCard
+                  view={view}
+                  role={userRole}
+                  key={index}
+                  data={elm}
+                  index={index}
+                  data-aos="fade-right"
+                  data-aos-duration={(index + 1) * 300}
+                />
+              ))
+            )}
+
+            {/* {filtered &&
+              Array.isArray(filtered) &&
+              filtered?.map((elm, index) => (
+                <CourceCard
+                  view={view}
+                  role={userRole}
+                  key={index}
+                  data={elm}
+                  index={index}
+                  data-aos="fade-right"
+                  data-aos-duration={(index + 1) * 300}
+                />
+              ))} */}
+          </>
         ) : selectedCategory.length > 0 ? (
-          selectedCategory.map((elm, index) => (
-            <CourceCard
-              view={view}
-              role={userRole}
-              key={index}
-              data={elm}
-              index={index}
-              data-aos="fade-right"
-              data-aos-duration={(index + 1) * 300}
-            />
-          ))
+          <>
+            {view == "list" ? (
+              <ListView header={<TableHeader />}>
+                {selectedCategory.map((elm, index) => (
+                  <CourceCard
+                    view={view}
+                    role={userRole}
+                    key={index}
+                    data={elm}
+                    index={index}
+                    data-aos="fade-right"
+                    data-aos-duration={(index + 1) * 300}
+                  />
+                ))}
+              </ListView>
+            ) : (
+              selectedCategory.map((elm, index) => (
+                <CourceCard
+                  view={view}
+                  role={userRole}
+                  key={index}
+                  data={elm}
+                  index={index}
+                  data-aos="fade-right"
+                  data-aos-duration={(index + 1) * 300}
+                />
+              ))
+            )}
+            {/* {selectedCategory.map((elm, index) => (
+              <CourceCard
+                view={view}
+                role={userRole}
+                key={index}
+                data={elm}
+                index={index}
+                data-aos="fade-right"
+                data-aos-duration={(index + 1) * 300}
+              />
+            ))} */}
+          </>
         ) : (
           <h4 className="no-content text-center mt-8">
             No Questionsets found for this Category.

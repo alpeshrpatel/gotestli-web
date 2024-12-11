@@ -104,13 +104,7 @@ export default function LeadershipContent() {
                   <h5 className="leader-title">Dipak Karmur</h5>
                   <p className="leader-position">Head of Product Development</p>
                   <p className="card-text">
-                    Masters of Computer Engineering by profession and Human
-                    Resource professional by choice. Her initial jobs in Tech
-                    Sales made her travel across India but she broke the chain
-                    by taking a plunge to start our Indian operations to hire
-                    and train Tech Talent for our Global customer needs. To know
-                    more about the young blood in our team you can reach out to
-                    her at Recruit@Cogniticllc.com
+                  Computer Engineering graduate and an accomplished full-stack developer known for a passion for innovation and excellence. With extensive expertise in web development and modern technologies, he has a remarkable ability to transform complex ideas into intuitive, user-centric digital solutions. Driven by a relentless enthusiasm for development, he constantly explores new possibilities, staying ahead of industry trends. To discover more about the vibrant energy driving our team, feel free to connect with us at gotesli07@gmail.com
                   </p>
                 </div>
               </div>

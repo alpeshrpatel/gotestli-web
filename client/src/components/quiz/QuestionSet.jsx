@@ -144,14 +144,18 @@ const QuestionSet = () => {
     questionSet,
     time,
     timerOn,
+    lastAttemptedQuestion
   } = location.state;
 
   // Set questions only when questionSet is available and valid
   useEffect(() => {
     if (Array.isArray(questionSet) && questionSet.length > 0) {
-      setQuestions(questionSet);
+      console.log(questionSet)
+      setQuestions(questionSet.sort((a, b) => b.question_id - a.question_id));
+      console.log(lastAttemptedQuestion)
+      lastAttemptedQuestion && setQuestionNumber(lastAttemptedQuestion || 1);
     }
-  }, [questionSet]);
+  }, [questionSet,lastAttemptedQuestion]);
 
   // Fetch paragraph based on the current question
   useEffect(() => {

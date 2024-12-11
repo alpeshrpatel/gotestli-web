@@ -13,31 +13,33 @@ import CommonTable from "@/components/common/CommonTable";
 
 const columns = [
   { id: "index", label: "#", sortable: false },
-  { id: "question", label: "Question", sortable: true },
-  { id: "comments", label: "Comments", sortable: false },
+  { id: "comment", label: "Comment", sortable: true },
+ 
 ];
 
-const ViewQuestions = () => {
-  const [questions, setQuestions] = useState([]);
+const ViewComments = () => {
+  const [comments, setComments] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const token = localStorage.getItem("token");
 
-  const { id } = useParams();
+  const { questionId } = useParams();
+  const {questionSetId} = location.state;
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
   useEffect(() => {
     // const author = auth.currentUser.displayName;
-    async function getQuestions() {
+    async function getComments() {
       try {
         if (token) {
-          const { data } = await API.get(`/api/questionset/questions/${id}`, {
+          const { data } = await API.get(`/api/comments/type/question/question/${questionId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           });
             console.log(data);
-          setQuestions(data);
+          setComments(data);
         }
       } catch (error) {
         if (error.status == 403) {
@@ -47,32 +49,20 @@ const ViewQuestions = () => {
           navigate("/login");
           return;
         }
-        console.error("Failed to fetch Questions data:", error);
+        console.error("Failed to fetch Comments:" , error)
       }
     }
-    getQuestions();
+    getComments();
   }, []);
-   // console.log(isHovered);
-   const handleViewCommentsClick = (questionId) => {
-    navigate(`/quiz/question/comments/${questionId}`,{ state:{questionSetId:id}});
-  };
+ 
 
   const getRowId = (row) => row.id;
 
-  const renderRowCells = (question, index) => (
+  const renderRowCells = (comment, index) => (
     <>
       <TableCell>{index + 1}</TableCell>
-      <TableCell>{question.question}</TableCell>
-      <TableCell
-        onClick={() => handleViewCommentsClick(question.question_id)}
-        style={{
-          textDecoration: "underline",
-          color: "blue",
-          textAlign: "center",
-        }}
-      >
-        View
-      </TableCell>
+      <TableCell>{comment.comment}</TableCell>
+     
     </>
   );
 
@@ -100,23 +90,38 @@ const ViewQuestions = () => {
               Home
             </Typography>
           </Link>
-
+          <Link
+            to={`/quiz/questions/${questionSetId}`}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            <Typography
+              variant="h7"
+              style={{
+                color: isHovered ? "blue" : "black",
+                textDecoration: isHovered ? "underline" : "none",
+              }}
+            >
+             Questions
+            </Typography>
+          </Link>
+          
           <Typography sx={{ color: "text.primary" }} variant="h6">
-            View Questions
+            View Comments
           </Typography>
         </Breadcrumbs>
-        {questions.length > 0 ? (
+        {comments.length > 0 ? (
           <div className="table-responsive mt-1" style={{ paddingTop: "20px" }}>
             <CommonTable
               columns={columns}
-              data={questions}
+              data={comments}
               getRowId={getRowId}
               renderRowCells={renderRowCells}
             />
           </div>
         ) : (
           <h4 className="no-content text-center">
-            This Questionsets not have any questions! 🌟
+            This question not have any comments! 🌟
           </h4>
         )}
       </div>
@@ -125,4 +130,4 @@ const ViewQuestions = () => {
   );
 };
 
-export default ViewQuestions;
+export default ViewComments;
