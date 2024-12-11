@@ -35,6 +35,7 @@ import {
 
 import { Link, useNavigate } from "react-router-dom";
 import { API } from "@/utils/AxiosInstance";
+import { getMonthWiseQuizCount } from "@/utils/GetDatesOfMonth";
 
 const completedAssignmentData = [
   { name: "21", assignmentsCompleted: 1 },
@@ -43,16 +44,17 @@ const completedAssignmentData = [
   { name: "24", assignmentsCompleted: 2 },
 ];
 
-const pieDataOnTimeCompletion = [
-  { name: "On Time", value: 45 },
-  { name: "Late", value: 55 },
-];
+// const passingPercentage = [
+//   // { name: "On Time", value: 45 },
+//   // { name: "Late", value: 55 },
+// ];
 
 const COLORS = ["#0088FE", "#00C49F"];
 
 export default function StudentDashboardOne() {
   const [dshbData, setDshbData] = useState({});
   const [results, setResults] = useState([]);
+  const [passingData,setPassingData] = useState([])
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -60,6 +62,7 @@ export default function StudentDashboardOne() {
   const userRole = user.role;
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  let passingPercentageCnt = 0 ;
 
   useEffect(() => {
     const userId = user.id;
@@ -82,6 +85,15 @@ export default function StudentDashboardOne() {
            // console.log(res.data);
           setResults(res.data);
           setDshbData(data);
+          res && res.data.forEach((quiz) => {
+            if (parseFloat(quiz?.percentage) >= quiz?.pass_percentage) {
+              passingPercentageCnt += 1;
+            }
+          })
+
+          const passingPercentage= [{ name: "Passed", value: passingPercentageCnt },
+           { name: "Failed", value: (res.data.length - passingPercentageCnt) }]
+            setPassingData(passingPercentage)
            // console.log(data);
         }
       } catch (error) {
@@ -97,6 +109,10 @@ export default function StudentDashboardOne() {
     getDataAnalysis();
   }, []);
 
+  const monthWiseCounts = getMonthWiseQuizCount(results);
+  
+  console.log(monthWiseCounts);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -105,6 +121,9 @@ export default function StudentDashboardOne() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  // const passingPercentage =[{ name: "Passed", value: passingPercentageCnt },
+  //   { name: "Failed", value: (results && results.length - passingPercentageCnt) }]
 
   const pieDataAssignmentCompletion = [
     {
@@ -116,6 +135,8 @@ export default function StudentDashboardOne() {
       value: 100 - Math.round(dshbData.quiz_completion_percentage),
     },
   ];
+
+ console.log(results);
 
   return (
     <div className="dashboard__main">
@@ -145,7 +166,7 @@ export default function StudentDashboardOne() {
             <Grid item xs={12} md={6}>
               <Card sx={{ height: "220px" }}>
                 <CardContent>
-                  <Typography variant="h6">Grade Average</Typography>
+                  <Typography variant="h6">Grade Average (%)</Typography>
                   <Typography
                     variant="h3"
                     sx={{ textAlign: "center", marginTop: "50px" }}
@@ -200,17 +221,19 @@ export default function StudentDashboardOne() {
             <Grid item xs={12} md={6}>
               <Card sx={{ height: "220px" }}>
                 <CardContent>
-                  <Typography variant="h6">Quiz Completion (%)</Typography>
-                  <PieChart width={150} height={150}>
+                  <Typography variant="h6">PassPercentage Count (#)</Typography>
+                  <div style={{ width: "100%", height: 150 }}>
+                  <ResponsiveContainer>
+                  <PieChart >
                     <Pie
-                      data={pieDataOnTimeCompletion}
+                      data={passingData}
                       cx="50%"
                       cy="50%"
                       outerRadius={50}
                       fill="#82ca9d"
                       dataKey="value"
                     >
-                      {pieDataOnTimeCompletion.map((entry, index) => (
+                      {passingData.map((entry, index) => (
                         <Cell
                           key={`cell-${index}`}
                           fill={COLORS[index % COLORS.length]}
@@ -219,6 +242,9 @@ export default function StudentDashboardOne() {
                     </Pie>
                     <Tooltip />
                   </PieChart>
+                  </ResponsiveContainer>
+                  </div>
+                 
                 </CardContent>
               </Card>
             </Grid>
@@ -228,16 +254,17 @@ export default function StudentDashboardOne() {
               <CardContent>
                 <Typography variant="h5">Completed Quiz Trends</Typography>
                 <BarChart
-                  width={500}
-                  height={300}
-                  data={completedAssignmentData}
+                  width={635}
+                  height={350}
+                  data={monthWiseCounts}
+                  className="mt-2"
                 >
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
+                  <XAxis dataKey="month" />
+                  <YAxis dataKey="Completed_Quiz"/>
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="assignmentsCompleted" fill="#8884d8" />
+                  <Bar dataKey="Completed_Quiz" fill="#8884d8" />
                 </BarChart>
               </CardContent>
             </Card>
@@ -297,7 +324,7 @@ export default function StudentDashboardOne() {
                               <TableCell>{row.pass_percentage}</TableCell>
                               <TableCell>{row.percentage}</TableCell>
                               <TableCell>
-                                {row.percentage >= row?.pass_percentage
+                                {parseFloat(row.percentage) >= row?.pass_percentage
                                   ? "Pass"
                                   : "Fail"}
                               </TableCell>

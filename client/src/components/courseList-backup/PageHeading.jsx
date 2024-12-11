@@ -9,6 +9,14 @@ export default function PageHeading() {
             <div className="col-12 " style={{textAlign:'center'}}>
               <div>
                 <h1 className="page-header__title">Become an Instructor</h1>
+                <div
+            className="mb-5 rounded mx-auto"
+            style={{
+              height: "1px",
+              width: "40px",
+              border: "3px solid #5856d6",
+            }}
+          ></div>
               </div>
 
               <div>

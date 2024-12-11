@@ -19,12 +19,12 @@ const FeedbackButton = () => {
   const [selectedEmoji, setSelectedEmoji] = useState("");
   const [visitReason, setVisitReason] = useState("");
   const [review, setReview] = useState("");
-  const [onceSubmitted,setOnceSubmitted] = useState(false)
+  const [onceSubmitted, setOnceSubmitted] = useState(false);
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userId = user.id;
-  const navigate  = useNavigate()
+  const navigate = useNavigate();
 
   const onOpenModal = () => {
     setOpen(true);
@@ -32,7 +32,7 @@ const FeedbackButton = () => {
 
   const onCloseModal = () => setOpen(false);
 
-  const buttonStyle = {
+  const buttonStyleLarge = {
     zIndex: 1050,
     position: "fixed",
     top: "50%",
@@ -40,6 +40,17 @@ const FeedbackButton = () => {
     transform: "rotate(270deg) translate(-10%, 50%)",
     transformOrigin: "center",
     transition: "box-shadow 0.3s ease-out, transform 0.4s ease-out",
+    cursor: "pointer",
+  };
+
+  const buttonStyleSmall = {
+    zIndex: 1050,
+    position: "fixed",
+    bottom: "20px",
+    right: "20px",
+    borderRadius: "50%",
+    padding: "10px",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.15)",
     cursor: "pointer",
   };
 
@@ -57,26 +68,24 @@ const FeedbackButton = () => {
 
   const handleSubmit = async () => {
     try {
-      
-        const { data } = await API.post(
-          `/api/app/feedback`,
-          {
-            emoji_rating: selectedEmoji,
-            visit_purpose: visitReason,
-            feedback: review,
-            userId: userId || null,
+      const { data } = await API.post(
+        `/api/app/feedback`,
+        {
+          emoji_rating: selectedEmoji,
+          visit_purpose: visitReason,
+          feedback: review,
+          userId: userId || null,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log(data);
-        toast.success("Thanks For Giving Feedback!");
-        onCloseModal()
-        setOnceSubmitted(true)
-      
+        }
+      );
+      console.log(data);
+      toast.success("Thanks For Giving Feedback!");
+      onCloseModal();
+      setOnceSubmitted(true);
     } catch (error) {
       if (error.status == 403) {
         localStorage.removeItem("user");
@@ -98,13 +107,55 @@ const FeedbackButton = () => {
     }
   };
 
+  const getModalWidth = () => {
+    const screenWidth = window.innerWidth;
+    if (screenWidth > 1024) return "450px"; // Large screens
+    if (screenWidth > 768) return "350px";  // Medium screens
+    return "80%"; // Small screens
+  };
+
   return (
     <>
-      <div
+      {/* <div
         style={buttonStyle}
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}
-      >
+      > */}
+        <div
+          className="d-none d-md-block"
+          style={buttonStyleLarge}
+          onMouseOver={handleMouseOver}
+          onMouseOut={handleMouseOut}
+        >
+          <button
+            className="btn rounded-3 px-4 py-3"
+            style={{
+              backgroundColor: "#ff6f61",
+              color: "#fff",
+              border: "none",
+              fontWeight: "bold",
+              fontSize: "15px",
+              boxShadow: "4px 4px 6px rgba(0, 0, 0, 0.15)",
+            }}
+            onClick={onOpenModal}
+          >
+            Feedback
+          </button>
+        </div>
+        <div
+          className="d-block d-md-none"
+          style={buttonStyleSmall}
+          onMouseOver={handleMouseOver}
+          onMouseOut={handleMouseOut}
+        >
+          <button
+            className="btn rounded-circle"
+            onClick={onOpenModal}
+            style={{ width: "50px", height: "50px",backgroundColor: "#ff6f61", color: "#fff", display:'flex',justifyContent:'center',alignItems:'center'}}
+          >
+            <i className="icon-comment fs-3"></i>
+          </button>
+        </div>
         <button
           className="btn rounded-3 px-4 py-3"
           style={{
@@ -120,7 +171,7 @@ const FeedbackButton = () => {
         >
           Feedback
         </button>
-      </div>
+      {/* </div> */}
       <Modal
         open={open}
         onClose={onCloseModal}
@@ -131,7 +182,7 @@ const FeedbackButton = () => {
             top: "20%",
             right: "50px",
             transform: "translateY(-50%)",
-            width: "450px",
+            width: getModalWidth(),
           },
           overlay: {
             background: "transparent",
@@ -232,3 +283,147 @@ const FeedbackButton = () => {
 };
 
 export default FeedbackButton;
+
+// import React, { useState } from "react";
+// import Modal from "react-responsive-modal";
+// import "react-responsive-modal/styles.css";
+// import Emoji from "./Emoji";
+// import { API } from "@/utils/AxiosInstance";
+// import { toast } from "react-toastify";
+// import { useNavigate } from "react-router-dom";
+
+// const FeedbackButton = () => {
+//   const [open, setOpen] = useState(false);
+//   const [selectedEmoji, setSelectedEmoji] = useState("");
+//   const [visitReason, setVisitReason] = useState("");
+//   const [review, setReview] = useState("");
+//   const [onceSubmitted, setOnceSubmitted] = useState(false);
+
+//   const token = localStorage.getItem("token");
+//   const user = JSON.parse(localStorage.getItem("user")) || "";
+//   const userId = user.id;
+//   const navigate = useNavigate();
+
+//   const onOpenModal = () => {
+//     setOpen(true);
+//   };
+
+//   const onCloseModal = () => setOpen(false);
+
+//   const buttonStyleLarge = {
+//     zIndex: 1050,
+//     position: "fixed",
+//     top: "50%",
+//     right: "0",
+//     transform: "rotate(270deg) translate(-10%, 50%)",
+//     transformOrigin: "center",
+//   };
+
+//   const buttonStyleSmall = {
+//     zIndex: 1050,
+//     position: "fixed",
+//     bottom: "20px",
+//     right: "20px",
+//     borderRadius: "50%",
+//     padding: "10px",
+//     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.15)",
+//   };
+
+//   const handleEmojiClick = (emoji) => {
+//     setSelectedEmoji(emoji);
+//   };
+
+//   const handleSubmit = async () => {
+//     try {
+//       const { data } = await API.post(
+//         `/api/app/feedback`,
+//         {
+//           emoji_rating: selectedEmoji,
+//           visit_purpose: visitReason,
+//           feedback: review,
+//           userId: userId || null,
+//         },
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+//       toast.success("Thanks For Giving Feedback!");
+//       onCloseModal();
+//       setOnceSubmitted(true);
+//     } catch (error) {
+//       if (error.status === 403) {
+//         localStorage.removeItem("user");
+//         localStorage.removeItem("token");
+//         navigate("/login");
+//         return;
+//       }
+//       console.error("Error posting feedback:", error);
+//     }
+//   };
+
+//   const handleVisitAnswer = (event) => {
+//     setVisitReason(event.target.value);
+//   };
+
+//   const handleReviewChange = (e) => {
+//     if (e.target.value.length <= 500) {
+//       setReview(e.target.value);
+//     }
+//   };
+
+//   return (
+//     <>
+//       <div
+//         className="d-none d-md-block"
+//         style={buttonStyleLarge}
+//       >
+//         <button
+//           className="btn rounded-3 px-4 py-3"
+//           style={{
+//             backgroundColor: "#ff6f61",
+//             color: "#fff",
+//             border: "none",
+//             fontWeight: "bold",
+//             fontSize: "15px",
+//             boxShadow: "4px 4px 6px rgba(0, 0, 0, 0.15)",
+//           }}
+//           onClick={onOpenModal}
+//         >
+//           Feedback
+//         </button>
+//       </div>
+//       <div
+//         className="d-block d-md-none"
+//         style={buttonStyleSmall}
+//       >
+//         <button
+//           className="btn btn-danger rounded-circle"
+//           onClick={onOpenModal}
+//           style={{ width: "50px", height: "50px" }}
+//         >
+//           <i className="bi bi-chat-dots"></i>
+//         </button>
+//       </div>
+//       <Modal
+//         open={open}
+//         onClose={onCloseModal}
+//         center={false}
+//         styles={{
+//           modal: {
+//             position: "fixed",
+//             top: "20%",
+//             right: "50px",
+//             transform: "translateY(-50%)",
+//             width: "450px",
+//           },
+//         }}
+//       >
+//         {/* Modal content */}
+//       </Modal>
+//     </>
+//   );
+// };
+
+// export default FeedbackButton;

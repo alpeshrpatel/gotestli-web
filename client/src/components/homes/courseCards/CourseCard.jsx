@@ -28,8 +28,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Rating } from "react-simple-star-rating";
 import { BootstrapTooltip } from "@/components/common/Tooltip";
-import CourseList from "./CourseList";
+import CourseList from "./ListView";
 import { Box, List, ListItem, ListItemText } from "@mui/material";
+import ListTable from "./TableBodyContent";
+import TableBodyContent from "./TableBodyContent";
+import ListView from "./ListView";
 
 export default function CourceCard({ view, search = null, role, data, index }) {
   const [rating, setRating] = useState(0);
@@ -357,9 +360,12 @@ export default function CourceCard({ view, search = null, role, data, index }) {
               </Collapse> */}
             </Card>
           </div>
-        ) : (
-          <CourseList>
-            <Box className="shadow-2">
+        ) : ( 
+            // <ListView body={ <TableBodyContent data={data} rating={rating} role={role} handleWishlistToggle={handleWishlistToggle}/>} />
+
+           
+            <TableBodyContent data={data} rating={rating} role={role} handleWishlistToggle={handleWishlistToggle}/>
+            /* <Box className="shadow-2">
               <List>
                 <ListItem>
                   <img
@@ -435,8 +441,8 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                   )}
                 </ListItem>
               </List>
-            </Box>
-          </CourseList>
+            </Box> */
+          
         )}
 
         {/* <div>

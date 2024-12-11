@@ -1,7 +1,7 @@
 import gsap from "gsap";
 import { Link } from "react-router-dom";
 import { ShapeRendering } from "../../../svg/index";
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 
 
 const masthead_info = [
@@ -42,6 +42,16 @@ const hero_content = {
 const { title, text_underline, info_hero, starts } = hero_content;
 
 const HomeHero = () => {
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 1000);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 1000);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
  
   useEffect(() => {
     const parallaxIt = () => {
@@ -72,6 +82,7 @@ const HomeHero = () => {
     };
 
     parallaxIt();
+    
   }, []);
 
   return (
@@ -89,7 +100,7 @@ const HomeHero = () => {
                 data-aos="fade-up"
                 data-aos-delay="500"
               >
-                <h1 className="masthead__title  d-flex flex-wrap gap-4 justify-content-center align-items-center mr-30" style={{ color: 'white', whiteSpace: 'nowrap',fontSize:'45px'   }}>
+                <h1 className="masthead__title  d-flex flex-wrap gap-4 justify-content-center align-items-center " style={{ color: 'white', whiteSpace: 'nowrap',fontSize: (isSmallScreen ? '1.4rem' : '45px')   }}>
                   
                   <span className=""  style={{ display: 'inline' }}>
                   {title}{" "}
@@ -110,20 +121,20 @@ const HomeHero = () => {
                   data-aos-duration="200"
                   className="masthead__buttons  d-flex gap-4 justify-content-center "
                 >
-                  <div className="col-12 col-sm-auto ">
+                  <div className="col-6 col-sm-auto ">
                     <Link
                       data-barba
                       to="/signup"
-                      className="button -md -purple-1 text-white"
+                      className={`button ${isSmallScreen ? `-sm` : `-md`} -purple-1 text-white`}
                     >
                       Join For Free
                     </Link>
                   </div>
-                  <div className="col-12 col-sm-auto">
+                  <div className="col-6 col-sm-auto">
                     <Link
                       data-barba
                       to="/signup"
-                      className="button -md -outline-green-1 text-green-1"
+                      className={`button ${isSmallScreen ? `-sm` : `-md`} -outline-green-1 text-green-1`}
                     >
                       Find Quizzes
                     </Link>

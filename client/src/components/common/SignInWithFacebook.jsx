@@ -137,7 +137,18 @@ const SignInWithFacebook = () => {
   };
   return (
     <div>
-      <Modal open={open} onClose={onCloseModal} center>
+      <Modal open={open} onClose={onCloseModal} center={false} styles={{
+          modal: {
+            position: "fixed",
+            top: "40%",
+            right: "18%",
+            transform: "translateY(-50%)",
+            width: "450px",
+          },
+        //   overlay: {
+        //     background: "transparent",
+        //   },
+        }}>
         <div className="col-lg-12 border-1 rounded">
           {/* <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
               * Please Select Role

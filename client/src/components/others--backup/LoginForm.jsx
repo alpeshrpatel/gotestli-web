@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore";
 import { CircularProgress, TextField } from "@mui/material";
 import { API } from "@/utils/AxiosInstance";
+import SignInWithGithub from "../common/SignInWithGithub";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -74,7 +75,7 @@ export default function LoginForm() {
       <div className="form-page__content lg:py-50">
         <div className="container mt-5" style={{ backgroundColor: "#bfdeee" }}>
           <div className="row justify-center items-center ">
-            <div className="col-xl-8 col-lg-8">
+            <div className="col-xl-12 col-lg-12">
               <div className=" bg-transparent shadow-1 rounded-16">
                 <h3 className="text-30 lh-13">Login</h3>
                 <p className="mt-10">
@@ -126,11 +127,13 @@ export default function LoginForm() {
                   Or sign in using
                 </div>
 
-                <div className="d-flex x-gap-20 items-center justify-between pt-20">
+               
+              </div>
+              <div className="d-flex x-gap-20 items-center justify-between pt-20">
                   <SignInWithFacebook />
                   <SignInWithGoogle />
+                  <SignInWithGithub />
                 </div>
-              </div>
             </div>
           </div>
         </div>

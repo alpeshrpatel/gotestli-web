@@ -40,7 +40,7 @@ export default function FooterOne() {
                 <img
                   src="/assets/img/header-logo3.png"
                   alt="logo"
-                  style={{ height: "55px", width: "185px" }}
+                  style={{ height: "auto", width: "140px" }}
                 />
               </div>
               <div className='d-flex gap-4 mt-4 align-items-center'>

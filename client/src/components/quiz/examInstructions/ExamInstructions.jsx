@@ -53,6 +53,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
   const [timerOnValue, setTimerOnValue] = useState();
   const [open, setOpen] = useState(false);
   const [selectedAttemptId, setSelectedAttemptId] = useState(null);
+  const [lastAttemptIndex,setLastAttemptIndex] = useState(1)
 
   // const [userRole, setUserRole] = useState("");
   const navigate = useNavigate();
@@ -69,6 +70,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
   const skippedQuestion = 0;
   const totalReviewed = 0;
   let userResultId;
+  let lastAttemptedQuestion;
 
   useEffect(() => {
     // async function getPendingQuiz() {
@@ -100,11 +102,21 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
               setHistory(data);
             }
             // console.log(data);
-            data.forEach((element) => {
-              if (element.status == 2) {
-                setInProgressQuizId(data[0]?.id);
-              }
-            });
+            // data.forEach((element) => {
+            //   if (element.status == 2) {
+            //     setInProgressQuizId(data[0]?.id);
+            //   }
+            // });
+            const inProgressQuiz = data.find((element) => element.status === 2);
+            console.log(inProgressQuiz);
+            if (inProgressQuiz) {
+              setInProgressQuizId(inProgressQuiz.id);
+
+              // Fetch the last attempted question for the in-progress quiz
+             lastAttemptedQuestion = await getLastAttemptedQuestionId(inProgressQuiz.id);
+             setLastAttemptIndex(lastAttemptedQuestion)
+              console.log("Computed last attempted question:", lastAttemptedQuestion);
+            }
           }
         } catch (error) {
           if (error.status == 403) {
@@ -144,6 +156,54 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
       getFollowersData();
     }
   }, []);
+
+ 
+
+  async function getLastAttemptedQuestionId(id) {
+    if (id) {
+      try {
+        const { data } = await API.get(
+          `/api/userresultdetails/userresult/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("last attempt:", data);
+        //  data.reverse().forEach((element,index) => {
+        //   if (!element.answer ) {
+        //     console.log(element.question_set_question_id)
+        //     lastAttemptedQuestion = index+1
+
+        //   }
+        //   return lastAttemptedQuestion;
+        // });
+        const nonAttemptedIndex = data.reverse()
+          .findIndex((element) => !element.answer);
+
+        if (nonAttemptedIndex !== -1) {
+          const lastAttemptedQuestion = nonAttemptedIndex + 1;
+          console.log(
+            "Last attempted question index (1-based):",
+            lastAttemptedQuestion
+          );
+          return lastAttemptedQuestion;
+        }
+
+        return null;
+      } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // toast.error("Invaild token!");
+          navigate("/login");
+          return;
+        }
+        // console.log(error);
+      }
+    }
+  }
 
   const onCloseReportModal = () => setOpen(false);
   const onOpenModal = (attemptId) => {
@@ -256,6 +316,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
         questionSet: questionSet,
         time: time,
         timerOn: timerOnValue,
+        lastAttemptedQuestion: lastAttemptIndex,
       },
     });
   };

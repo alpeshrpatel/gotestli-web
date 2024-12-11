@@ -118,6 +118,7 @@ import { ThemeProvider } from "@mui/material";
 import { darkTheme, lightTheme } from "./components/common/MaterialTheme";
 import QuizReport from "./components/quiz/QuizReport";
 import StudentWishlist from "./pages/studentpages/StudentWishlist";
+import ViewComments from "./pages/instructorspages/ViewComments";
 
 function App() {
   useEffect(() => {
@@ -332,6 +333,12 @@ function App() {
                     element={<ViewQuestions />}
                     role="instructor"
                   />
+                }
+              />
+              <Route
+                path="/quiz/question/comments/:questionId"
+                element={
+                  <ProtectedRoute element={<ViewComments />} role="instructor" />
                 }
               />
               <Route

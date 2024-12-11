@@ -12,6 +12,7 @@ import { Button, IconButton, TextField } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CartButton from "@/components/common/CartButton";
+import SearchHeader from "./SearchHeader";
 
 export default function Header({ userRole }) {
   const [activeMobileMenu, setActiveMobileMenu] = useState(false);
@@ -25,6 +26,7 @@ export default function Header({ userRole }) {
   const [wishlistCount, setWishlistCount] = useState(
     localStorage.getItem("wishlist") || 0
   );
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768);
   // Function to toggle theme and persist to localStorage
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
@@ -32,7 +34,7 @@ export default function Header({ userRole }) {
     localStorage.setItem("theme", newTheme ? "dark" : "light");
   };
   const { pathname } = useLocation();
-  const  navigate  = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     menuList.forEach((elm) => {
@@ -49,6 +51,13 @@ export default function Header({ userRole }) {
         }
       });
     });
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 768);
+     
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [wishlistCount]);
 
   useEffect(() => {
@@ -71,20 +80,20 @@ export default function Header({ userRole }) {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       localStorage.removeItem("wishlist");
-       // console.log("Logout Successfully");
+      // console.log("Logout Successfully");
       window.location.reload();
     } catch (error) {
-       // console.log(error);
+      // console.log(error);
     }
   };
 
   const handleSearch = () => {};
 
   const handleKeyDown = (e) => {
-     // console.log(e.target.value);
+    // console.log(e.target.value);
     if (e.key === "Enter") {
-       // console.log("enter clicked");
-       setSearchTerm(e.target.value)
+      // console.log("enter clicked");
+      setSearchTerm(e.target.value);
       navigate("/search/result", { state: { keyword: e.target.value } });
     }
   };
@@ -92,7 +101,7 @@ export default function Header({ userRole }) {
   return (
     <>
       <header className="header -type-1 ">
-        <div className="header__container">
+        <div className={`header__container`} style={{paddingX:isSmallScreen ? '0px' : '20px',margin:isSmallScreen ? ' 0 0px' : '0 20px'}}>
           {/* <div className="row justify-between items-center"> */}
           {/* <div className="d-flex align-items-center w-50 ">
             <div className="header-left">
@@ -124,14 +133,18 @@ export default function Header({ userRole }) {
           </div>
         </div>
             </div> */}
-          <div className="row justify-content-between align-items-center ">
+          <div className={` ${isSmallScreen ? `d-flex gap-4 ` : `row justify-content-between align-items-center`} `}>
             <div className="col-auto d-flex align-items-center ">
               <div className="header__logo">
                 <Link to="/">
                   <img
                     src="/assets/img/header-logo3.png"
                     alt="logo"
-                    style={{ height: "55px", width: "185px" }}
+                    style={{
+                      height: "auto",
+                      width: "80%",
+                      maxWidth: isSmallScreen ? `100px` : `120px`  ,
+                    }}
                   />
                 </Link>
               </div>
@@ -140,39 +153,48 @@ export default function Header({ userRole }) {
             <div className="col-auto d-flex align-items-center  ">
               <Menu allClasses={"menu__nav text-white -is-active "} />
             </div>
-            {
-              userRole !== 'instructor' && (
-                <div className="w-25 d-flex align-items-center justify-content-center">
-                <div className="header-search__field d-flex items-center align-items-center rounded-5 " style={{height:'10px'}}>
-                  <div className="icon icon-search text-dark-1 ml-8 d-flex items-center"></div>
-                  <input
-                    required
-                    type="text"
-                    value={searchTerm}
-                    className="px-5 py-2 text-18 lh-12 text-dark-1 fw-500 "
-                    placeholder="What do you want ?"
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                  />
-                  {/* <TextField id="outlined-search" label="Search Questions" type="search" className="searchInput mb-2" /> */}
-  
-                  <button
-                    // onClick={() => setActiveSearch(false)}
-                    className="d-flex items-center align-items-center justify-center size-20 rounded-full bg-purple-3 mr-8"
-                    data-el-toggle=".js-search-toggle"
-                  >
-                    <CancelIcon fontSize="medium" onClick={() => setSearchTerm('')}/>
-                  </button>
-                </div>
-              </div>
-              )
-            }
-          
+            {userRole !== "instructor" && (
+              // isSmallScreen ? (
+              //   <div className="relative "> <SearchHeader searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleKeyDown={handleKeyDown}/></div>
+              // ) : (
+                <SearchHeader searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleKeyDown={handleKeyDown}/>
+              // )
+             
+              // <div className="w-25 d-flex align-items-center justify-content-center">
+              //   <div
+              //     className="header-search__field d-flex items-center align-items-center rounded-5 "
+              //     style={{ height: "10px" }}
+              //   >
+              //     <div className="icon icon-search text-dark-1 ml-8 d-flex items-center"></div>
+              //     <input
+              //       required
+              //       type="text"
+              //       value={searchTerm}
+              //       className="px-5 py-2 text-18 lh-12 text-dark-1 fw-500 "
+              //       placeholder="What do you want ?"
+              //       onChange={(e) => setSearchTerm(e.target.value)}
+              //       onKeyDown={handleKeyDown}
+              //     />
+              //     {/* <TextField id="outlined-search" label="Search Questions" type="search" className="searchInput mb-2" /> */}
+
+              //     <button
+              //       // onClick={() => setActiveSearch(false)}
+              //       className="d-flex items-center align-items-center justify-center size-20 rounded-full bg-purple-3 mr-8"
+              //       data-el-toggle=".js-search-toggle"
+              //     >
+              //       <CancelIcon
+              //         fontSize="medium"
+              //         onClick={() => setSearchTerm("")}
+              //       />
+              //     </button>
+              //   </div>
+              // </div>
+            )}
 
             <MobileMenu
               setActiveMobileMenu={setActiveMobileMenu}
               activeMobileMenu={activeMobileMenu}
-              user={user}
+              userRole={userRole}
               handleSignOut={handleSignOut}
             />
 
@@ -192,11 +214,13 @@ export default function Header({ userRole }) {
                   {/* search toggle end */}
 
                   {/* cart toggle start */}
-                  <CartToggle
-                    parentClassess={""} //ml-30 mr-30 xl:ml-20
-                    allClasses={"d-flex items-center text-white"}
-                    wishlistCount={wishlistCount}
-                  />
+                  {userRole == "instructor" ? null : (
+                    <CartToggle
+                      parentClassess={""} //ml-30 mr-30 xl:ml-20
+                      allClasses={"d-flex items-center text-white"}
+                      wishlistCount={wishlistCount}
+                    />
+                  )}
 
                   {/* <CartButton/> */}
 
@@ -228,8 +252,7 @@ export default function Header({ userRole }) {
                   {user ? (
                     <div
                       className=" d-flex justify-space-between items-center mt-2"
-                      style={{  margin:'0 10vw'}}
-                     
+                      style={{ margin: "0 10vw" }}
                     >
                       {/* <h5 className="text-white ml-30   ">
                         {user.displayName}
