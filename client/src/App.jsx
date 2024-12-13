@@ -119,6 +119,9 @@ import { darkTheme, lightTheme } from "./components/common/MaterialTheme";
 import QuizReport from "./components/quiz/QuizReport";
 import StudentWishlist from "./pages/studentpages/StudentWishlist";
 import ViewComments from "./pages/instructorspages/ViewComments";
+import InstructorDashboardOne from "./pages/instructorspages/InstructorDashboardOne";
+import InstructorDashboard from "./pages/instructorspages/InstructorDashboard";
+import AdminDashboard from "./pages/adminpages/AdminDashboard";
 
 function App() {
   useEffect(() => {
@@ -287,7 +290,7 @@ function App() {
               <Route
                 path="/admin/dashboard"
                 element={
-                  <ProtectedRoute element={<DashboardPage />} role="admin" />
+                  <ProtectedRoute element={<AdminDashboard />} role="admin" />
                 }
               />
 
@@ -343,7 +346,7 @@ function App() {
               />
               <Route
                 path="/instructor/dashboard"
-                element={<DashboardPage role="instructor" />}
+                element={<InstructorDashboard role="instructor" />}
                 role="instructor"
               />
 
