@@ -53,7 +53,6 @@ export default function Header({ userRole }) {
     });
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth < 768);
-     
     };
 
     window.addEventListener("resize", handleResize);
@@ -101,7 +100,13 @@ export default function Header({ userRole }) {
   return (
     <>
       <header className="header -type-1 ">
-        <div className={`header__container`} style={{paddingX:isSmallScreen ? '0px' : '20px',margin:isSmallScreen ? ' 0 0px' : '0 20px'}}>
+        <div
+          className={`header__container`}
+          style={{
+            paddingX: isSmallScreen ? "0px" : "20px",
+            margin: isSmallScreen ? " 0 0px" : "0 20px",
+          }}
+        >
           {/* <div className="row justify-between items-center"> */}
           {/* <div className="d-flex align-items-center w-50 ">
             <div className="header-left">
@@ -133,7 +138,13 @@ export default function Header({ userRole }) {
           </div>
         </div>
             </div> */}
-          <div className={` ${isSmallScreen ? `d-flex gap-4 ` : `row justify-content-between align-items-center`} `}>
+          <div
+            className={` ${
+              isSmallScreen
+                ? `d-flex gap-4 `
+                : `row justify-content-between align-items-center`
+            } `}
+          >
             <div className="col-auto d-flex align-items-center ">
               <div className="header__logo">
                 <Link to="/">
@@ -143,7 +154,7 @@ export default function Header({ userRole }) {
                     style={{
                       height: "auto",
                       width: "80%",
-                      maxWidth: isSmallScreen ? `100px` : `120px`  ,
+                      maxWidth: isSmallScreen ? `100px` : `120px`,
                     }}
                   />
                 </Link>
@@ -153,13 +164,17 @@ export default function Header({ userRole }) {
             <div className="col-auto d-flex align-items-center  ">
               <Menu allClasses={"menu__nav text-white -is-active "} />
             </div>
-            {userRole !== "instructor" && (
+            {userRole !== "instructor" && userRole !== 'admin' && (
               // isSmallScreen ? (
               //   <div className="relative "> <SearchHeader searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleKeyDown={handleKeyDown}/></div>
               // ) : (
-                <SearchHeader searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleKeyDown={handleKeyDown}/>
+              <SearchHeader
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                handleKeyDown={handleKeyDown}
+              />
               // )
-             
+
               // <div className="w-25 d-flex align-items-center justify-content-center">
               //   <div
               //     className="header-search__field d-flex items-center align-items-center rounded-5 "
@@ -214,7 +229,7 @@ export default function Header({ userRole }) {
                   {/* search toggle end */}
 
                   {/* cart toggle start */}
-                  {userRole == "instructor" ? null : (
+                  {userRole == "instructor" || userRole == 'admin' ? null : (
                     <CartToggle
                       parentClassess={""} //ml-30 mr-30 xl:ml-20
                       allClasses={"d-flex items-center text-white"}
@@ -257,104 +272,109 @@ export default function Header({ userRole }) {
                       {/* <h5 className="text-white ml-30   ">
                         {user.displayName}
                       </h5> */}
-                      <div className="mt-3">
-                        <div
-                          className={`header-menu js-mobile-menu-toggle left-alignment`}
-                          style={{ fontSize: "18px" }}
-                        >
-                          <div className="header-menu__content">
-                            <div className="menu js-navList">
-                              <ul className={"menu__nav text-white -is-active"}>
-                                <li className="menu-item-has-children -has-mega-menu">
-                                  <Link
-                                    data-barba
-                                    to="#"
-                                    className={
-                                      menuItem == "User Profile"
-                                        ? "activeMenu"
-                                        : ""
-                                    }
-                                    // style={{ position:'relative', top:'3px',marginRight:'1px'}}
-                                  >
-                                    {user.displayName?.split(" ")[0]}
-                                    <i className="icon-chevron-right text-13 ml-10"></i>
-                                  </Link>
-                                  <div
-                                    className="mega "
-                                    style={{
-                                      fontSize: "18px",
-                                      width: "15vw",
-                                      overflow: "auto",
-                                    }}
-                                  >
-                                    <div className="mega__menu">
-                                      <div className="row x-gap-40">
-                                        <div className="col">
-                                          <h4
-                                            className="text-17 fw-500 mb-20"
-                                            style={{ color: "black" }}
-                                          >
-                                            Dashboard Pages
-                                          </h4>
-
-                                          <ul className="mega__list ">
-                                            {userRole == "student" &&
-                                              menuList[2].links[0].links.map(
-                                                (elm, i) => (
-                                                  <li
-                                                    key={i}
-                                                    className={
-                                                      pathname == elm.href
-                                                        ? "activeMenu"
-                                                        : "inActiveMegaMenu"
-                                                    }
-                                                  >
-                                                    <Link
-                                                      data-barba
-                                                      to={elm.href}
-                                                    >
-                                                      {elm.label}
-                                                    </Link>
-                                                  </li>
-                                                )
-                                              )}
-                                            {userRole == "instructor" &&
-                                              menuList[6].links[0].links.map(
-                                                (elm, i) => (
-                                                  <li
-                                                    key={i}
-                                                    className={
-                                                      pathname == elm.href
-                                                        ? "activeMenu"
-                                                        : "inActiveMegaMenu"
-                                                    }
-                                                  >
-                                                    <Link
-                                                      data-barba
-                                                      to={elm.href}
-                                                    >
-                                                      {elm.label}
-                                                    </Link>
-                                                  </li>
-                                                )
-                                              )}
-                                            <button
-                                              className="button -sm -purple-1 text-white fw-500 w-10 text-dark-1 mt-8"
-                                              onClick={handleSignOut}
+                      {userRole !== "admin" && (
+                        <div className="mt-3">
+                          <div
+                            className={`header-menu js-mobile-menu-toggle left-alignment`}
+                            style={{ fontSize: "18px" }}
+                          >
+                            <div className="header-menu__content">
+                              <div className="menu js-navList">
+                                <ul
+                                  className={"menu__nav text-white -is-active"}
+                                >
+                                  <li className="menu-item-has-children -has-mega-menu">
+                                    <Link
+                                      data-barba
+                                      to="#"
+                                      className={
+                                        menuItem == "User Profile"
+                                          ? "activeMenu"
+                                          : ""
+                                      }
+                                      // style={{ position:'relative', top:'3px',marginRight:'1px'}}
+                                    >
+                                      {user.displayName?.split(" ")[0]}
+                                      <i className="icon-chevron-right text-13 ml-10"></i>
+                                    </Link>
+                                    <div
+                                      className="mega "
+                                      style={{
+                                        fontSize: "18px",
+                                        width: "15vw",
+                                        overflow: "auto",
+                                      }}
+                                    >
+                                      <div className="mega__menu">
+                                        <div className="row x-gap-40">
+                                          <div className="col">
+                                            <h4
+                                              className="text-17 fw-500 mb-20"
+                                              style={{ color: "black" }}
                                             >
-                                              Logout
-                                            </button>
-                                          </ul>
+                                              Dashboard Pages
+                                            </h4>
+
+                                            <ul className="mega__list ">
+                                              {userRole == "student" &&
+                                                menuList[2].links[0].links.map(
+                                                  (elm, i) => (
+                                                    <li
+                                                      key={i}
+                                                      className={
+                                                        pathname == elm.href
+                                                          ? "activeMenu"
+                                                          : "inActiveMegaMenu"
+                                                      }
+                                                    >
+                                                      <Link
+                                                        data-barba
+                                                        to={elm.href}
+                                                      >
+                                                        {elm.label}
+                                                      </Link>
+                                                    </li>
+                                                  )
+                                                )}
+                                              {userRole == "instructor" &&
+                                                menuList[6].links[0].links.map(
+                                                  (elm, i) => (
+                                                    <li
+                                                      key={i}
+                                                      className={
+                                                        pathname == elm.href
+                                                          ? "activeMenu"
+                                                          : "inActiveMegaMenu"
+                                                      }
+                                                    >
+                                                      <Link
+                                                        data-barba
+                                                        to={elm.href}
+                                                      >
+                                                        {elm.label}
+                                                      </Link>
+                                                    </li>
+                                                  )
+                                                )}
+                                              <button
+                                                className="button -sm -purple-1 text-white fw-500 w-10 text-dark-1 mt-8"
+                                                onClick={handleSignOut}
+                                              >
+                                                Logout
+                                              </button>
+                                            </ul>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
-                                </li>
-                              </ul>
+                                  </li>
+                                </ul>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      )}
+
                       <div
                         className="d-none d-xl-flex "
                         style={{ position: "absolute", right: 0 }}

@@ -139,7 +139,7 @@ export default function StudentDashboardOne() {
  console.log(results);
 
   return (
-    <div className="dashboard__main">
+    <div className=" w-100" style={{ marginTop: "90px" }}>
       <div className="dashboard__content bg-light-4">
         <div className="row pb-50 mb-10">
           <div className="col-auto">

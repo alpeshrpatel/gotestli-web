@@ -18,5 +18,40 @@ export function getMonthWiseQuizCount(quizData) {
   }
   
   
+  export function getMonthWiseQSetCreateCount(quizData) {
+   
+    const monthCounts = Array.from({ length: 12 }, (_, index) => ({
+      month: new Date(0, index).toLocaleString('default', { month: 'long' }),
+      QuestionSet_created: 0,
+    }));
   
+ 
+    quizData.forEach((quiz) => {
+      if (quiz.modified_date) {
+        const quizDate = new Date(quiz.modified_date);
+        const monthIndex = quizDate.getMonth(); 
+        monthCounts[monthIndex].QuestionSet_created += 1;
+      }
+    });
   
+    return monthCounts;
+  }
+  
+  export function getMonthWiseAttemptCount(quizData) {
+   
+    const monthCounts = Array.from({ length: 12 }, (_, index) => ({
+      month: new Date(0, index).toLocaleString('default', { month: 'long' }),
+      Quiz_Attempt: 0,
+    }));
+  
+ 
+    quizData.forEach((quiz) => {
+      if (quiz.modified_date) {
+        const quizDate = new Date(quiz.modified_date);
+        const monthIndex = quizDate.getMonth(); 
+        monthCounts[monthIndex].Quiz_Attempt += 1;
+      }
+    });
+  
+    return monthCounts;
+  }
