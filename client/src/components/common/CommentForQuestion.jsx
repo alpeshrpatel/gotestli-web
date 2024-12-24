@@ -40,7 +40,7 @@ const CommentForQuestion = ({ questionId }) => {
           }
         );
         
-            toast.success('Comment Saved!')
+            showToast("success",'Comment Saved!')
             setComments('');
             setShowCommentBox(false)
         
@@ -49,7 +49,7 @@ const CommentForQuestion = ({ questionId }) => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }

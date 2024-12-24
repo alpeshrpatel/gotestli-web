@@ -56,7 +56,7 @@ export const menuList = [
           // { href: "/instructor-become", label: "Become an Instructor" },
         ],
       },
-      
+
       {
         title: "Popular Quizzes",
         links: [
@@ -69,36 +69,40 @@ export const menuList = [
           { label: "View All quizzes", href: "#" },
         ],
       },
-    ]
+    ],
   },
+  {
+    title: "User Profile",
+    links: [
       {
-        title:"User Profile",
-        links:[
-          {
-            title: "Dashboard Pages",
-            links: [
-              { href: "/student/dashboard", label: "Dashboard" },
-              { href: "/dshb/quizzes", label: "My quizzes" },           
-              // { href: "/dshb-listing", label: "Add Listing" },          
-              { href: "/dshb/profilepage", label: "Profile Page" },
-              // { href: "/dshb-administration", label: "Administration" },          
-              // { href: "/dshb-dashboard", label: "Single Dashboard" },
-              // { href: "/dshb-grades", label: "Grades" },           
-              // { href: "/dshb-participants", label: "Participants" },
-              // { href: "/dshb-quiz", label: "Quiz" },
-              // { href: "/dshb-survey", label: "Survey" },
-            ],
-          }
-        ]
+        title: "Dashboard Pages",
+        links: [
+          { href: "/dshb/profilepage", label: "Profile Page" },
+          { href: "/student/dashboard", label: "Dashboard" },
+          { href: "/dshb/quizzes", label: "My quizzes" },
+          {href:"/user/purchases", label: "My Purchases"},
+          { href: "/dshb/wishlist", label: "WishList" },
+          { href: "/dshb/quizzes", label: "Reviews" },
+          // { href: "/dshb-listing", label: "Add Listing" },
+
+          // { href: "/dshb-administration", label: "Administration" },
+          // { href: "/dshb-dashboard", label: "Single Dashboard" },
+          // { href: "/dshb-grades", label: "Grades" },
+          // { href: "/dshb-participants", label: "Participants" },
+          // { href: "/dshb-quiz", label: "Quiz" },
+          // { href: "/dshb-survey", label: "Survey" },
+        ],
       },
-      // {
-      //     title : 'Quiz List Layouts',
-      //     links: [
+    ],
+  },
+  // {
+  //     title : 'Quiz List Layouts',
+  //     links: [
 
-      //     ]
+  //     ]
 
-      // },
-  
+  // },
+
   {
     title: "Create QuestionSet",
     links: [
@@ -155,23 +159,23 @@ export const menuList = [
     ],
   },
   {
-    title:"User Profile",
-    links:[
+    title: "User Profile",
+    links: [
       {
         title: "Dashboard Pages",
         links: [
           { href: "/instructor/dashboard", label: "Dashboard" },
-          { href: "/instructor/home", label: "My Questionsets" },           
-          { href: "/dshb/uploaded/files", label: "My Uploads" },          
+          { href: "/instructor/home", label: "My Questionsets" },
+          { href: "/dshb/uploaded/files", label: "My Uploads" },
           { href: "/dshb/profilepage", label: "Profile Page" },
-          // { href: "/dshb-administration", label: "Administration" },          
+          // { href: "/dshb-administration", label: "Administration" },
           // { href: "/dshb-dashboard", label: "Single Dashboard" },
-          // { href: "/dshb-grades", label: "Grades" },           
+          // { href: "/dshb-grades", label: "Grades" },
           // { href: "/dshb-participants", label: "Participants" },
           // { href: "/dshb-quiz", label: "Quiz" },
           // { href: "/dshb-survey", label: "Survey" },
         ],
-      }
-    ]
+      },
+    ],
   },
 ];

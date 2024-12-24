@@ -34,6 +34,7 @@ import ListTable from "./TableBodyContent";
 import TableBodyContent from "./TableBodyContent";
 import ListView from "./ListView";
 
+
 export default function CourceCard({ view, search = null, role, data, index }) {
   const [rating, setRating] = useState(0);
   const [questionSet, setQuestionsSet] = useState([]);
@@ -67,7 +68,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
         if (error.status == 403) {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
-          // toast.error("Invaild token!");
+          // showToast("error","Invaild token!");
           navigate("/login");
           return;
         }
@@ -96,7 +97,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
         if (error.status == 403) {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
-          // toast.error("Invaild token!");
+          // showToast("error","Invaild token!");
           navigate("/login");
           return;
         }
@@ -125,7 +126,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
         if (error.status == 403) {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
-          // toast.error("Invaild token!");
+          // showToast("error","Invaild token!");
           navigate("/login");
           return;
         }
@@ -173,7 +174,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
@@ -188,10 +189,10 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   }).format(date);
    // console.log(data);
    // console.log(rating);
-
+ 
   return (
     <>
-      <Modal open={open} onClose={onCloseModal} center>
+      <Modal open={open} onClose={onCloseModal} center >
         <ExamInstructions
           id={data.id}
           time={data.time_duration}
@@ -249,7 +250,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                   <div className="coursesCard__image_overlay rounded-8"></div>
                 </div>
               </div>
-              <div className="mt-2 ms-2">
+              <div className="mt-2 ms-2" style={{display:'flex',justifyContent:'between',alignItems:'center',gap:'20px'}}>
                 <Rating
                   readonly={true}
                   initialValue={parseFloat(rating)}
@@ -258,6 +259,13 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                   activeColor="#ffd700"
                   emptyColor="#d3d3d3"
                 />
+                {
+                  !data.is_demo ? (
+                    <BootstrapTooltip title={"Purchase This Amazing QuestionSet to Attend it!"}><div className="fs-2">🔒</div></BootstrapTooltip>
+                  
+                ) : ''
+                }
+                
               </div>
               <CardContent>
                 <BootstrapTooltip title={data.short_desc}>

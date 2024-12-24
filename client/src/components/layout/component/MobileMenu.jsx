@@ -38,6 +38,7 @@ export default function MobileMenu({
     setShowMenu(true);
   }, []);
   const { pathname } = useLocation();
+ 
   return (
     <div
       className={`header-menu js-mobile-menu-toggle ${
@@ -199,7 +200,7 @@ export default function MobileMenu({
             className='submenuOne'
             style={{ paddingLeft: 0, display: "flex", gap: "15px" }}
           >
-            <li className="menu-item-has-children ">
+            <li className="menu-item-has-children " style={{display:'flex',flexDirection:'column',gap:'4vh'}}>
               <Link
                 data-barba
                 to={`${userRole == 'admin' ? `/admin/dashboard` :( (userRole == 'instructor') ? `/instructor/home` : `/`) }`}
@@ -208,6 +209,47 @@ export default function MobileMenu({
               >
                 Home 
               </Link>
+              <Link
+                data-barba
+                to={`/dshb/profilepage`}
+                className={pathname == "/dshb/profilepage" ? "activeMenu" : ""}
+                style={{ fontSize: "18px",whiteSpace: "nowrap" }}
+              >
+                Profile Page 
+              </Link>
+              <Link
+                data-barba
+                to={`/student/dashboard`}
+                className={pathname == "/student/dashboard" ? "activeMenu" : ""}
+                style={{ fontSize: "18px",whiteSpace: "nowrap" }}
+              >
+               Dashboard
+              </Link>
+              <Link
+                data-barba
+                to={`/dshb/quizzes`}
+                className={pathname == "/dshb/quizzes" ? "activeMenu" : ""}
+                style={{ fontSize: "18px",whiteSpace: "nowrap" }}
+              >
+               My quizzes
+              </Link>
+              <Link
+                data-barba
+                to={`/dshb/wishlist`}
+                className={pathname == "/dshb/wishlist" ? "activeMenu" : ""}
+                style={{ fontSize: "18px",whiteSpace: "nowrap" }}
+              >
+               WishList
+              </Link>
+              {/* <Link
+                data-barba
+                to={`/dshb/quizzes`}
+                className={pathname == "/dshb/quizzes" ? "activeMenu" : ""}
+                style={{ fontSize: "18px",whiteSpace: "nowrap" }}
+              >
+               Reviews
+              </Link> */}
+              
 
               {/* <ul className="subnav" style={{ fontSize: "18px" }}>
                 <li className="menu__backButton js-nav-list-back text-black">

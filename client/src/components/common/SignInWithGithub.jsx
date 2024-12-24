@@ -69,7 +69,7 @@ const SignInWithGithub = () => {
           });
         } catch (error) {
           console.error(error);
-          toast.error("Failed to save user data.");
+          showToast("error","Failed to save user data.");
           navigate("/login");
         }
       }
@@ -91,20 +91,20 @@ const SignInWithGithub = () => {
             JSON.stringify({ id: data.id, role: userRole, email: data.email })
           );
         } catch (error) {
-          toast.error("Failed to generate token.");
+          showToast("error","Failed to generate token.");
           navigate("/login");
         }
       }
 
       setIsLoading(false);
-      toast.success("Logged in successfully!");
+      showToast("success","Logged in successfully!");
       if (userRole === "instructor") navigate("/instructor/home");
       else if (userRole === "student") navigate("/");
       else navigate("/admin/dashboard");
     } catch (error) {
       setIsLoading(false);
       console.error(error);
-      toast.error("Login failed. Please try again.", error);
+      showToast("error","Login failed. Please try again.", error);
       navigate("/login");
     }
   };

@@ -26,7 +26,7 @@ export default function ContactOne() {
       const  data  = await API.post("/api/contact/messages", formData );
       
       if(data.status == 200){
-        toast.success('Message Sent!')
+        showToast("success",'Message Sent!')
       }
     } catch (error) {
       console.error(error)

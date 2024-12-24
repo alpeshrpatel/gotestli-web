@@ -53,7 +53,17 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
   const [timerOnValue, setTimerOnValue] = useState();
   const [open, setOpen] = useState(false);
   const [selectedAttemptId, setSelectedAttemptId] = useState(null);
-  const [lastAttemptIndex,setLastAttemptIndex] = useState(1)
+  const [lastAttemptIndex, setLastAttemptIndex] = useState(1);
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 1000);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 1000);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // const [userRole, setUserRole] = useState("");
   const navigate = useNavigate();
@@ -113,16 +123,21 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
               setInProgressQuizId(inProgressQuiz.id);
 
               // Fetch the last attempted question for the in-progress quiz
-             lastAttemptedQuestion = await getLastAttemptedQuestionId(inProgressQuiz.id);
-             setLastAttemptIndex(lastAttemptedQuestion)
-              console.log("Computed last attempted question:", lastAttemptedQuestion);
+              lastAttemptedQuestion = await getLastAttemptedQuestionId(
+                inProgressQuiz.id
+              );
+              setLastAttemptIndex(lastAttemptedQuestion);
+              console.log(
+                "Computed last attempted question:",
+                lastAttemptedQuestion
+              );
             }
           }
         } catch (error) {
           if (error.status == 403) {
             localStorage.removeItem("user");
             localStorage.removeItem("token");
-            // toast.error("Invaild token!");
+            // showToast("error","Invaild token!");
             navigate("/login");
             return;
           }
@@ -146,7 +161,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
           if (error.status == 403) {
             localStorage.removeItem("user");
             localStorage.removeItem("token");
-            // toast.error("Invaild token!");
+            // showToast("error","Invaild token!");
             navigate("/login");
             return;
           }
@@ -156,8 +171,6 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
       getFollowersData();
     }
   }, []);
-
- 
 
   async function getLastAttemptedQuestionId(id) {
     if (id) {
@@ -179,7 +192,8 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
         //   }
         //   return lastAttemptedQuestion;
         // });
-        const nonAttemptedIndex = data.reverse()
+        const nonAttemptedIndex = data
+          .reverse()
           .findIndex((element) => !element.answer);
 
         if (nonAttemptedIndex !== -1) {
@@ -196,7 +210,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
         if (error.status == 403) {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
-          // toast.error("Invaild token!");
+          // showToast("error","Invaild token!");
           navigate("/login");
           return;
         }
@@ -238,7 +252,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
@@ -246,7 +260,50 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
     }
   }
 
+  async function getPurchases(){
+      try {
+            if (token) {
+              const { data } = await API.get(
+                `/api/whitelisted/questionset/purchases/user/${userId}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+              console.log(data);
+              return data
+            }
+          } catch (error) {
+            if (error.status == 403) {
+              localStorage.removeItem("user");
+              localStorage.removeItem("token");
+              // showToast("error","Invaild token!");
+              navigate("/login");
+              return;
+            }
+            console.error("Error fetching data:", error);
+          }
+  }
+
   const handleStartQuiz = async () => {
+    if (!data?.is_demo) {
+     const purchases = await getPurchases();
+    //  if(Array.isArray(purchases)){
+      console.log(purchases)
+      if(Array.isArray(purchases) && purchases?.some((item) => item?.questionset_id == questionSetId)) {
+      
+      }else{
+        navigate("/buy/questionset", { state: { qset: data } });
+        return;
+      }
+    //  }else{
+    //   navigate("/buy/questionset", { state: { qset: data } });
+    //   return;
+    // }
+   
+      
+    }
     if (userRole !== "student") {
       navigate("/login");
       return;
@@ -284,7 +341,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
@@ -368,7 +425,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
@@ -380,7 +437,10 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
   // console.log('timer:'+timerOnValue)
 
   return (
-    <div className="exam-instructions-container">
+    <div
+      className="exam-instructions-container"
+      style={{ width: isSmallScreen ? "80vw" : "" }}
+    >
       {/* <h2>Exam Instructions</h2> */}
       <Grid item xs={12}>
         <Card>

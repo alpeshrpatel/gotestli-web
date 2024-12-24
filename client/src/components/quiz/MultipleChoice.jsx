@@ -65,7 +65,7 @@ const MultipleChoice = ({
         if (error.status == 403) {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
-          // toast.error("Invaild token!");
+          // showToast("error","Invaild token!");
           navigate("/login");
           return;
         }
@@ -94,7 +94,7 @@ const MultipleChoice = ({
           if (error.status == 403) {
             localStorage.removeItem("user");
             localStorage.removeItem("token");
-            // toast.error("Invaild token!");
+            // showToast("error","Invaild token!");
             navigate("/login");
             return;
           }
@@ -138,7 +138,7 @@ const MultipleChoice = ({
           if (error.status == 403) {
             localStorage.removeItem("user");
             localStorage.removeItem("token");
-            // toast.error("Invaild token!");
+            // showToast("error","Invaild token!");
             navigate("/login");
             return;
           }
@@ -172,7 +172,7 @@ const MultipleChoice = ({
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
@@ -339,7 +339,7 @@ const handleOptionClick = async (option) => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }

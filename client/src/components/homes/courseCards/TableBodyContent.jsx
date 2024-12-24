@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { red } from "@mui/material/colors";
 import { Rating } from "react-simple-star-rating";
+import { BootstrapTooltip } from "@/components/common/Tooltip";
 
 const TableBodyContent = ({ data, rating, role, handleWishlistToggle }) => {
   const {
@@ -22,15 +23,15 @@ const TableBodyContent = ({ data, rating, role, handleWishlistToggle }) => {
     no_of_question,
     time_duration,
     isWishlisted,
+    is_demo,
   } = data;
 
   return (
-    
     // <TableRow key={data.id}>
     <React.Fragment>
       {/* <TableRow key={data.id}> */}
       {/* Image */}
-      <TableCell align="center" sx={{padding:''}}>
+      <TableCell align="center" sx={{ padding: "" }}>
         <img
           src={image}
           alt="Course"
@@ -44,7 +45,7 @@ const TableBodyContent = ({ data, rating, role, handleWishlistToggle }) => {
       </TableCell>
 
       {/* Title */}
-      <TableCell align="center" sx={{display: "table-cell"}}>
+      <TableCell align="center" sx={{ display: "table-cell" }}>
         <Tooltip title={title}>
           <Typography
             className="text-truncate"
@@ -61,7 +62,7 @@ const TableBodyContent = ({ data, rating, role, handleWishlistToggle }) => {
       </TableCell>
 
       {/* Description */}
-      <TableCell align="center" sx={{display: "table-cell"}}>
+      <TableCell align="center" sx={{ display: "table-cell" }}>
         <Tooltip title={short_desc}>
           <Typography
             className="text-truncate"
@@ -78,7 +79,9 @@ const TableBodyContent = ({ data, rating, role, handleWishlistToggle }) => {
       </TableCell>
 
       {/* Author */}
-      <TableCell align="center" sx={{display: "table-cell"}}>{author}</TableCell>
+      <TableCell align="center" sx={{ display: "table-cell" }}>
+        {author}
+      </TableCell>
 
       {/* Date */}
       <TableCell align="center">{formattedDate}</TableCell>
@@ -100,6 +103,9 @@ const TableBodyContent = ({ data, rating, role, handleWishlistToggle }) => {
           emptyColor="#d3d3d3"
         />
       </TableCell>
+      <TableCell align="center">
+        {!is_demo ? <BootstrapTooltip title={"Purchase This Amazing QuestionSet to Attend it!"}><div className="fs-2">🔒</div></BootstrapTooltip> : ""}
+      </TableCell>
 
       {/* Actions */}
       {/* {role === "student" && (
@@ -112,8 +118,8 @@ const TableBodyContent = ({ data, rating, role, handleWishlistToggle }) => {
           </IconButton>
         </TableCell>
       )} */}
-     {/* </TableRow> */}
-      </React.Fragment>
+      {/* </TableRow> */}
+    </React.Fragment>
   );
 };
 

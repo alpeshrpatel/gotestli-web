@@ -140,7 +140,7 @@ const QuizResult = ({}) => {
           if (error.status == 403) {
             localStorage.removeItem("user");
             localStorage.removeItem("token");
-            // toast.error("Invaild token!");
+            // showToast("error","Invaild token!");
             navigate("/login");
             return;
           }
@@ -166,7 +166,7 @@ const QuizResult = ({}) => {
           if (error.status == 403) {
             localStorage.removeItem("user");
             localStorage.removeItem("token");
-            // toast.error("Invaild token!");
+            // showToast("error","Invaild token!");
             navigate("/login"); 
             return;
           }
@@ -200,14 +200,14 @@ const QuizResult = ({}) => {
               {},
               { headers: { Authorization: `Bearer ${token}` } }
             );
-            toast.success("Achievement saved!");
+            showToast("success","Achievement saved!");
           }
         }
       } catch (error) {
         if (error.status == 403) {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
-          // toast.error("Invaild token!");
+          // showToast("error","Invaild token!");
           navigate("/login");
           return;
         }
@@ -260,7 +260,7 @@ const QuizResult = ({}) => {
             }
           );
           if (res.status == 200) {
-            toast.success("Thank you for giving review!");
+            showToast("success","Thank you for giving review!");
             navigate("/");
           }
         }else{
@@ -281,7 +281,7 @@ const QuizResult = ({}) => {
             }
           );
           if (res.status == 200) {
-            toast.success("Review updated!");
+            showToast("success","Review updated!");
             navigate("/");
           }
         }
@@ -291,7 +291,7 @@ const QuizResult = ({}) => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }

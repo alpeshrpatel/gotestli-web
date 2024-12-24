@@ -34,32 +34,32 @@ export default function Menu({ allClasses, headerPosition }) {
         }
       });
     });
-  //   async function checkUserRole() {
-  //     if (auth.currentUser) {
-  //       const userId = auth.currentUser.uid;
-  //       const docRef = doc(db, "roles", userId);
-  //       const docSnap = await getDoc(docRef);
+    //   async function checkUserRole() {
+    //     if (auth.currentUser) {
+    //       const userId = auth.currentUser.uid;
+    //       const docRef = doc(db, "roles", userId);
+    //       const docSnap = await getDoc(docRef);
 
-  //       if (docSnap.exists()) {
-  //         setUserRole(docSnap.data().role);
-  //          // console.log(docSnap.data().role);
-  //       } else {
-  //          // console.log("No role found for this user");
-  //       }
-  //     } else {
-  //        // console.log("No user is logged in");
-  //     }
-  //   }
-  //   checkUserRole();
-   }, []);
-  const user = JSON.parse( localStorage.getItem('user')) || '';
+    //       if (docSnap.exists()) {
+    //         setUserRole(docSnap.data().role);
+    //          // console.log(docSnap.data().role);
+    //       } else {
+    //          // console.log("No role found for this user");
+    //       }
+    //     } else {
+    //        // console.log("No user is logged in");
+    //     }
+    //   }
+    //   checkUserRole();
+  }, []);
+  const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
 
   const responsiveMarginLeft = () => {
     if (window.innerWidth >= 2500) return "300px";
     // if (window.innerWidth >= 2000) return "22vw";
-    // if (window.innerWidth >= 1200) return "30vw"; 
-      // sm screen
+    // if (window.innerWidth >= 1200) return "30vw";
+    // sm screen
     return "0"; // default for smaller screens
   };
 
@@ -74,8 +74,7 @@ export default function Menu({ allClasses, headerPosition }) {
         // justifyContent: "space-between",
         alignItems: "center",
         gap: "5px",
-        marginLeft: '490px',
-        
+        marginLeft: userRole == "instructor" ? "460px" : "200px",
       }}
     >
       <div className="header-menu__content">
@@ -98,11 +97,17 @@ export default function Menu({ allClasses, headerPosition }) {
             <li className="menu-item-has-children ">
               <Link
                 data-barba
-                to={`${userRole == 'admin' ? `/admin/dashboard` :( (userRole == 'instructor') ? `/instructor/home` : `/`) }`}
+                to={`${
+                  userRole == "admin"
+                    ? `/admin/dashboard`
+                    : userRole == "instructor"
+                    ? `/instructor/home`
+                    : `/`
+                }`}
                 className={menuItem == "Home" ? "activeMenu" : ""}
-                style={{ fontSize: "18px",whiteSpace: "nowrap" }}
+                style={{ fontSize: "18px", whiteSpace: "nowrap" }}
               >
-                Home 
+                Home
               </Link>
 
               {/* <ul className="subnav" style={{ fontSize: "18px" }}>
@@ -257,19 +262,32 @@ export default function Menu({ allClasses, headerPosition }) {
             )} */}
             {userRole == "instructor" && (
               <>
-              <li className="menu-item-has-children">
-                <Link
-                  data-barba
-                  to="/create/questionset"
-                  className={
-                    menuItem == "Create QuestionSet" ? "activeMenu" : ""
-                  }
-                  style={{ fontSize: "18px",whiteSpace: "nowrap" }}
-                >
-                  Create QuestionSet{" "}
-                  {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
-                </Link>
-                {/* <ul className="subnav">
+                <li className="menu-item-has-children">
+                  <Link
+                    data-barba
+                    to="/create/question"
+                    className={
+                     pathname == "/create/question" ? "activeMenu" : ""
+                    }
+                    style={{ fontSize: "18px", whiteSpace: "nowrap" }}
+                  >
+                    Create{" "}
+                    {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
+                  </Link>
+                </li>
+                <li className="menu-item-has-children">
+                  <Link
+                    data-barba
+                    to="/create/questionset"
+                    className={
+                      menuItem == "Create QuestionSet" ? "activeMenu" : ""
+                    }
+                    style={{ fontSize: "18px", whiteSpace: "nowrap" }}
+                  >
+                    Create QuestionSet{" "}
+                    {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
+                  </Link>
+                  {/* <ul className="subnav">
                 <li className="menu__backButton js-nav-list-back">
                   <Link to="#">
                     <i className="icon-chevron-left text-13 mr-10"></i> Events
@@ -291,21 +309,20 @@ export default function Menu({ allClasses, headerPosition }) {
                   </li>
                 ))}
               </ul> */}
-              </li>
-              <li className="menu-item-has-children">
-              <Link
-                data-barba
-                to="/upload/questionset"
-                className={
-                  menuItem == "Create QuestionSet" ? "activeMenu" : ""
-                }
-                style={{ fontSize: "18px",whiteSpace: "nowrap" }}
-              >
-                Upload QuestionSet{" "}
-                {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
-              </Link>
-              
-            </li>
+                </li>
+                <li className="menu-item-has-children">
+                  <Link
+                    data-barba
+                    to="/upload/questionset"
+                    className={
+                      menuItem == "Create QuestionSet" ? "activeMenu" : ""
+                    }
+                    style={{ fontSize: "18px", whiteSpace: "nowrap" }}
+                  >
+                    Upload QuestionSet{" "}
+                    {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
+                  </Link>
+                </li>
               </>
             )}
 

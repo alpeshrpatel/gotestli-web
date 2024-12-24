@@ -83,14 +83,14 @@ const FeedbackButton = () => {
         }
       );
       console.log(data);
-      toast.success("Thanks For Giving Feedback!");
+      showToast("success","Thanks For Giving Feedback!");
       onCloseModal();
       setOnceSubmitted(true);
     } catch (error) {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
@@ -349,7 +349,7 @@ export default FeedbackButton;
 //           },
 //         }
 //       );
-//       toast.success("Thanks For Giving Feedback!");
+//       showToast("success","Thanks For Giving Feedback!");
 //       onCloseModal();
 //       setOnceSubmitted(true);
 //     } catch (error) {
