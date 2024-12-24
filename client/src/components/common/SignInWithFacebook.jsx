@@ -70,7 +70,7 @@ const SignInWithFacebook = () => {
           });
           // console.log(res);
         } catch (error) {
-          toast.error(error)
+          showToast("error",error)
           navigate('/login')
         }
         try {
@@ -81,7 +81,7 @@ const SignInWithFacebook = () => {
           });
           // console.log("Document written ");
         } catch (e) {
-          toast.error(error)
+          showToast("error",error)
           console.error("Error adding document: ", e);
           navigate('/login')
         }
@@ -106,7 +106,7 @@ const SignInWithFacebook = () => {
             JSON.stringify({ id: data.id, role: userRole, email: data.email })
           );
           }catch(error){
-            toast.error(error)
+            showToast("error",error)
             navigate('/login')
           }
           
@@ -115,13 +115,13 @@ const SignInWithFacebook = () => {
           // console.log("No role found for this user");
         }
       } else {
-        toast.error("Login Failed! ")
+        showToast("error","Login Failed! ")
         navigate('/login')
         // console.log("No user is logged in ");
       }
       setIsLoading(false);
       if(auth.currentUser){
-        toast.success("Logged In Successfully!");
+        showToast("success","Logged In Successfully!");
       }
       
       userRole == "instructor"
@@ -131,7 +131,7 @@ const SignInWithFacebook = () => {
         : navigate("/admin/dashboard");
     } catch (error) {
       // console.log(error);
-      toast.error(error)
+      showToast("error",error)
       navigate('/login')
     }
   };

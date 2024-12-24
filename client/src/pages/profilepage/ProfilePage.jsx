@@ -111,7 +111,7 @@ const ProfilePage = () => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
@@ -151,7 +151,7 @@ const ProfilePage = () => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
@@ -172,10 +172,10 @@ const ProfilePage = () => {
         profile_pic: avatar,
       });
       if (res.status == 200) {
-        toast.success("Avatar updated Successfully!");
+        showToast("success","Avatar updated Successfully!");
       }
     } catch (error) {
-      toast.error(`Error: ${error} !`);
+      showToast("error",`Error: ${error} !`);
     }
   };
 
@@ -187,10 +187,10 @@ const ProfilePage = () => {
         profile_pic: "",
       });
       if (res.status == 200) {
-        toast.success("Avatar deleted Successfully!");
+        showToast("success","Avatar deleted Successfully!");
       }
     } catch (error) {
-      toast.error(`Error: ${error} !`);
+      showToast("error",`Error: ${error} !`);
     }
   };
 
@@ -218,7 +218,7 @@ const ProfilePage = () => {
       // }
 
       if (res.status == 200) {
-        toast.success("User updated Successfully!");
+        showToast("success","User updated Successfully!");
       }
     } catch (error) {
       throw error;
@@ -277,7 +277,7 @@ const ProfilePage = () => {
           flexWrap: "wrap",
           justifyContent: "center",
           p: 3,
-          marginTop: "10vw",
+          marginTop: "13vh",
           gap: "20px",
         }}
         // style={{ backgroundColor: theme.palette.background.default }}
@@ -316,7 +316,7 @@ const ProfilePage = () => {
                   <img src={selectedAvatar} alt="" />
                 </Avatar>
               ) : (
-                <BootstrapTooltip title={'Add Your Avatar'}>
+                <BootstrapTooltip title={"Add Your Avatar"}>
                   <Avatar
                     sx={{
                       bgcolor: deepPurple[500],
@@ -386,7 +386,7 @@ const ProfilePage = () => {
           >
             {/* Basics Section */}
 
-            <div className="row gap-2 col-12 px-4 flex justify-content-center">
+            {/* <div className="row gap-2 col-12 px-4 flex justify-content-center">
               <TextField
                 label="First Name"
                 variant="outlined"
@@ -446,7 +446,221 @@ const ProfilePage = () => {
                 value={updatedData.company}
                 onChange={handleInputChange}
               />
+            </div> */}
+            <div className="row gap-2 col-12 px-4 flex justify-content-center">
+              {/* First Name */}
+              <div
+                className="col-5"
+                style={{ display: "flex", flexDirection: "column" }}
+              >
+                <label
+                  htmlFor="first_name"
+                  style={{
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  name="first_name"
+                  id="first_name"
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#f8f9fa",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  value={updatedData.first_name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              {/* Last Name */}
+              <div
+                className="col-5"
+                style={{ display: "flex", flexDirection: "column" }}
+              >
+                <label
+                  htmlFor="last_name"
+                  style={{
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  name="last_name"
+                  id="last_name"
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#f8f9fa",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  value={updatedData.last_name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
             </div>
+
+            <div className="row gap-2 col-12 px-4 flex justify-content-center">
+              {/* Email */}
+              <div
+                className="col-5"
+                style={{ display: "flex", flexDirection: "column" }}
+              >
+                <label
+                  htmlFor="email"
+                  style={{
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Email
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  readOnly
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#e9ecef",
+                    color: "#495057",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  value={updatedData.email}
+                />
+              </div>
+
+              {/* Phone Number */}
+              <div
+                className="col-5"
+                style={{ display: "flex", flexDirection: "column" }}
+              >
+                <label
+                  htmlFor="phone"
+                  style={{
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Phone Number
+                </label>
+                <input
+                  type="number"
+                  name="phone"
+                  id="phone"
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#f8f9fa",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  value={updatedData.phone}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+
+            <div className="row gap-2 col-12 px-4 flex justify-content-center">
+              {/* Role */}
+              <div
+                className="col-5"
+                style={{ display: "flex", flexDirection: "column" }}
+              >
+                <label
+                  htmlFor="role"
+                  style={{
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Role
+                </label>
+                <input
+                  type="text"
+                  name="role"
+                  id="role"
+                  readOnly
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#e9ecef",
+                    color: "#495057",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  value={usersData.role}
+                />
+              </div>
+
+              {/* Company Name */}
+              <div
+                className="col-5"
+                style={{ display: "flex", flexDirection: "column" }}
+              >
+                <label
+                  htmlFor="company"
+                  style={{
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Company Name
+                </label>
+                <input
+                  type="text"
+                  name="company"
+                  id="company"
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#f8f9fa",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  value={updatedData.company}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+
             <div className="row gap-2 col-12 px-4 flex justify-content-center">
               <Autocomplete
                 multiple
@@ -463,7 +677,21 @@ const ProfilePage = () => {
                   "& .MuiInputBase-input": {
                     height: "35px",
                     border: "none",
+                    padding: "12px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#f8f9fa",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
                   },
+                  "& .MuiOutlinedInput-root": {
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                    backgroundColor: "#f8f9fa",
+                  }
                 }}
                 renderInput={(params) => (
                   <TextField
@@ -503,7 +731,7 @@ const ProfilePage = () => {
         </Box>
         <div
           className="container-fluid  card  bg-light rounded place-content-center"
-          style={{ padding: "25px 4vw", width: "40vw", minWidth: "500px" }}
+          style={{ padding: "25px 4vw", width: "40vw", minWidth: "350px" }}
         >
           <Typography variant="h4" sx={{ mb: 2, fontWeight: "500" }}>
             Achievements

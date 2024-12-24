@@ -107,7 +107,7 @@ const StudentQuizzes = () => {
         if (error.status == 403) {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
-          toast.error("Your Session timedout!");
+          showToast("error","Your Session timedout!");
           navigate("/login");
           return;
         }
@@ -156,7 +156,7 @@ const StudentQuizzes = () => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        toast.error("Your Session timedout!");
+        showToast("error","Your Session timedout!");
         navigate("/login");
         return;
       }
@@ -182,7 +182,7 @@ const StudentQuizzes = () => {
             }
           );
           if (res.status == 200) {
-            toast.success("Review updated!");
+            showToast("success","Review updated!");
             navigate("/");
           }
         } else {
@@ -204,7 +204,7 @@ const StudentQuizzes = () => {
             }
           );
           if (res.status == 200) {
-            toast.success("Thank you for giving review!");
+            showToast("success","Thank you for giving review!");
             navigate("/");
           }
         }
@@ -213,7 +213,7 @@ const StudentQuizzes = () => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
@@ -247,7 +247,7 @@ const StudentQuizzes = () => {
         if (error.status == 403) {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
-          // toast.error("Invaild token!");
+          // showToast("error","Invaild token!");
           navigate("/login");
           return;
         }

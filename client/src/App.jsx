@@ -122,6 +122,9 @@ import ViewComments from "./pages/instructorspages/ViewComments";
 import InstructorDashboardOne from "./pages/instructorspages/InstructorDashboardOne";
 import InstructorDashboard from "./pages/instructorspages/InstructorDashboard";
 import AdminDashboard from "./pages/adminpages/AdminDashboard";
+import PurchasePage from "./pages/studentpages/PurchasePage";
+import PurchaseListing from "./pages/studentpages/PurchaseListing";
+import CreateQuestionTable from "./pages/instructorspages/CreateQuestionTable";
 
 function App() {
   useEffect(() => {
@@ -151,6 +154,35 @@ function App() {
       setIsDarkMode(savedTheme === "dark");
     }
   }, []);
+
+  const [toastIds, setToastIds] = useState({
+    success: null,
+    error: null,
+    warning: null,
+  });
+
+  const showToast = (message, type) => {
+    
+    if (toastIds[type]) {
+      toast.dismiss(toastIds[type]);
+    }
+
+    
+    const toastOptions = {
+      position: "bottom-center",
+      theme: "dark",
+      autoClose: type === "success" ? 3000 : false, 
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    };
+
+   
+    const newToastId = toast[type](message, toastOptions);
+
+    setToastIds((prev) => ({ ...prev, [type]: newToastId }));
+  };
 
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
@@ -268,7 +300,24 @@ function App() {
                   />
                 }
               />
-
+              <Route
+                path="/buy/questionset"
+                element={
+                  <ProtectedRoute
+                    element={<PurchasePage/>}
+                    role="student"
+                  />
+                }
+              />
+               <Route
+                path="/user/purchases"
+                element={
+                  <ProtectedRoute
+                    element={<PurchaseListing/>}
+                    role="student"
+                  />
+                }
+              />
               <Route path="/search/result" element={<SearchResult />} />
               <Route
                 path="/dshb/profilepage"
@@ -300,6 +349,15 @@ function App() {
                 element={
                   <ProtectedRoute
                     element={<MakeQuestionSet />}
+                    role="instructor"
+                  />
+                }
+              />
+              <Route
+                path="/create/question"
+                element={
+                  <ProtectedRoute
+                    element={<CreateQuestionTable />}
                     role="instructor"
                   />
                 }

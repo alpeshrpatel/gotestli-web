@@ -64,7 +64,7 @@ const ViewStudents = () => {
         if (error.status == 403) {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
-          // toast.error("Invaild token!");
+          // showToast("error","Invaild token!");
           navigate("/login");
           return;
         }
@@ -108,7 +108,7 @@ const ViewStudents = () => {
               if (error.status == 403) {
                 localStorage.removeItem("user");
                 localStorage.removeItem("token");
-                // toast.error("Invaild token!");
+                // showToast("error","Invaild token!");
                 navigate("/login");
                 return;
               }
@@ -160,9 +160,9 @@ const ViewStudents = () => {
           );
            // console.log(res);
           if (res.status == 200) {
-            toast.success("Reminder Email sent!");
+            showToast("success","Reminder Email sent!");
           } else {
-            toast.error("Error in sending reminder!");
+            showToast("error","Error in sending reminder!");
           }
         }
       }
@@ -170,7 +170,7 @@ const ViewStudents = () => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }

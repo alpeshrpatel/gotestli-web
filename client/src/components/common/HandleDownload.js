@@ -28,12 +28,12 @@ const HandleDownload = async (type, fileName) => {
     if (error.status == 403) {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
-      // toast.error("Invaild token!");
+      // showToast("error","Invaild token!");
       window.location.reload();
       return;
     }
     console.error("Error downloading the file:", error);
-    toast.error("Failed to download file.");
+    showToast("error","Failed to download file.");
   }
 };
 

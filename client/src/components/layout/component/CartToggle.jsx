@@ -1,5 +1,5 @@
 import { menuList } from "@/data--backup/menu";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import React from "react";
 import { useContextElement } from "@/context/Context";
 import { useState, useEffect } from "react";
@@ -14,6 +14,7 @@ const CartToggle = ({ allClasses, parentClassess, wishlistCount }) => {
   const [submenu, setSubmenu] = useState("");
 
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     menuList.forEach((elm) => {
@@ -34,10 +35,10 @@ const CartToggle = ({ allClasses, parentClassess, wishlistCount }) => {
 
   return (
     <>
-      <div className={parentClassess ? parentClassess : ""} style={{marginRight:'0px'}}>
+      <div className={parentClassess ? parentClassess : ""} style={{marginRight:'0px'}} onClick={() => navigate('/dshb/wishlist')}>
         <button
           style={{ position: "relative" }}
-          onClick={() => setActiveCart((pre) => !pre)}
+          // onClick={() => setActiveCart((pre) => !pre)}
           className={`${allClasses ? allClasses : ""}`}
           data-el-toggle=".js-cart-toggle"
         >

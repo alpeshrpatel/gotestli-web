@@ -18,20 +18,20 @@ export default function FooterOne() {
           email: email,
         });
         if (res.status == 200) {
-          toast.success("Subscribed!");
+          showToast("success","Subscribed!");
         }
       }
       setIsDisabled(false);
     } catch (error) {
       if (error.status == 500) {
-        toast.error("Already Subscribed!");
+        showToast("error","Already Subscribed!");
       }
       console.error(error);
       setIsDisabled(false);
     }
   };
   return (
-    <footer className="footer -type-1 bg-dark-1 -green-links">
+    <footer className="footer -type-1 bg-dark-1 -green-links " style={{position:'sticky',width:'100%',bottom:0}}>
       <div className="container-fluid w-100">
         <div className="footer-header py-4">
           <div className="row y-gap-2 justify-between items-center mx-2">

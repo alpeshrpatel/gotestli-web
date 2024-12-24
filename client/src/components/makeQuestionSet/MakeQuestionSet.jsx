@@ -82,7 +82,7 @@ const MakeQuestionSet = () => {
         if (error.status == 403) {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
-          // toast.error("Invaild token!");
+          // showToast("error","Invaild token!");
           navigate("/login");
           return;
         }
@@ -121,7 +121,7 @@ const MakeQuestionSet = () => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
@@ -166,7 +166,7 @@ const MakeQuestionSet = () => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
@@ -176,7 +176,7 @@ const MakeQuestionSet = () => {
 
   const handleCheckboxChange = (question) => {
     setComplexityCounter((prevCount) => {
-      const complexityKey = question?.complexity.toLowerCase();
+      const complexityKey = question?.complexity?.toLowerCase()
       return selectedQuestions.includes(question)
         ? {
             ...prevCount,
@@ -219,7 +219,7 @@ const MakeQuestionSet = () => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
@@ -263,7 +263,7 @@ const MakeQuestionSet = () => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
@@ -333,7 +333,7 @@ const MakeQuestionSet = () => {
           }
         );
 
-        toast.success("Status Change Saved Successfully!");
+        showToast("success","Status Change Saved Successfully!");
 
         setFilteredFromAll((prevQuestions) =>
           prevQuestions.map((question) =>
@@ -355,7 +355,7 @@ const MakeQuestionSet = () => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }

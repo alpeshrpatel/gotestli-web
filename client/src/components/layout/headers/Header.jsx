@@ -301,7 +301,7 @@ export default function Header({ userRole }) {
                                       className="mega "
                                       style={{
                                         fontSize: "18px",
-                                        width: "15vw",
+                                        width: "20vw",
                                         overflow: "auto",
                                       }}
                                     >

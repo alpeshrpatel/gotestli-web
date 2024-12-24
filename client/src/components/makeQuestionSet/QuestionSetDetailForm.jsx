@@ -127,7 +127,7 @@ const QuestionSetDetailForm = ({
             Authorization: `Bearer ${token}`,
           },
         })
-        toast.success("QuestionSet Created Successfully!");
+        showToast("success","QuestionSet Created Successfully!");
         // setFollowers(data)
         data.forEach( async (follower) => {
           await API.post('/api/sendemail/followers/update',
@@ -140,14 +140,14 @@ const QuestionSetDetailForm = ({
           } )
         });
         // if (response) {
-        toast.success("Followers Notified!!");
+        showToast("success","Followers Notified!!");
         navigate("/instructor/home");
       }
     } catch (error) {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }

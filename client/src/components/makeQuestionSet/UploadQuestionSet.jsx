@@ -100,7 +100,7 @@ const UploadQuestionSet = () => {
           }
         );
         if (res.data?.length > 0) {
-          toast.error("Duplicate file upload not allowed!");
+          showToast("error","Duplicate file upload not allowed!");
           return;
         }
       }
@@ -108,7 +108,7 @@ const UploadQuestionSet = () => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
@@ -144,12 +144,12 @@ const UploadQuestionSet = () => {
         },
       });
       // if(response.status == 500){
-      //     toast.error(response.message)
+      //     showToast("error",response.message)
       // }
       setIsUploading(false);
 
       if (response.status == 200 && data.status == 200) {
-        toast.success("File uploaded successfully!!");
+        showToast("success","File uploaded successfully!!");
         
         navigate("/dshb/uploaded/files");
       }
@@ -159,14 +159,14 @@ const UploadQuestionSet = () => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
       if (error.status == 400) {
-        toast.error("Invalid data format in Excel sheet!");
+        showToast("error","Invalid data format in Excel sheet!");
       } else {
-        toast.error("File upload failed!");
+        showToast("error","File upload failed!");
       }
     }
   };
@@ -192,7 +192,7 @@ const UploadQuestionSet = () => {
   //     link.remove();
   //   } catch (error) {
   //     console.error("Error downloading the sample file:", error);
-  //     toast.error("Failed to download sample file.");
+  //     showToast("error","Failed to download sample file.");
   //   }
   // }
 

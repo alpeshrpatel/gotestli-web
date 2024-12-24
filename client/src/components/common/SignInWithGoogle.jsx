@@ -71,7 +71,7 @@ const SignInWithGoogle = () => {
           });
           // console.log(res);
         } catch (error) {
-          toast.error(error)
+          showToast("error",error)
           navigate('/login')
           // console.log(error);
         }
@@ -83,7 +83,7 @@ const SignInWithGoogle = () => {
           });
           // console.log("Document written ");
         } catch (e) {
-          toast.error(e)
+          showToast("error",e)
           navigate('/login')
           console.error("Error adding document: ", e);
         }
@@ -110,13 +110,13 @@ const SignInWithGoogle = () => {
           // console.log("No role found for this user");
         }
       } else {
-        toast.error("Login Failed! ")
+        showToast("error","Login Failed! ")
         navigate('/login')
         // console.log("No user is logged in ");
       }
       setIsLoading(false);
       if(auth.currentUser){
-        toast.success("Logged In Successfully!");
+        showToast("success","Logged In Successfully!");
       }
       userRole == "instructor"
         ? navigate("/instructor/home")

@@ -73,7 +73,7 @@ const HomePage = () => {
         if (error.status == 403) {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
-          // toast.error("Invaild token!");
+          // showToast("error","Invaild token!");
           navigate("/login");
           return;
         }
@@ -140,7 +140,7 @@ const HomePage = () => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
@@ -176,7 +176,7 @@ const HomePage = () => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
@@ -229,7 +229,7 @@ const HomePage = () => {
               qSet.id == qSetId ? { ...qSet, status_id:checked } : qSet
             )
           );
-          toast.success('Status Saved Successfully!')
+          showToast("success",'Status Saved Successfully!')
         }
       }
       // Refresh question sets or update the current state
@@ -237,7 +237,7 @@ const HomePage = () => {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // toast.error("Invaild token!");
+        // showToast("error","Invaild token!");
         navigate("/login");
         return;
       }
