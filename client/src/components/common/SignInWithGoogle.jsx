@@ -1,5 +1,5 @@
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
@@ -30,6 +30,19 @@ const SignInWithGoogle = () => {
   const [open, setOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 600);
+  
+    useEffect(() => {
+      const handleResize = () => {
+        setIsSmallScreen(window.innerWidth < 600);
+      };
+  
+      window.addEventListener("resize", handleResize);
+  
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }, []);
 
   const onOpenModal = () => {
     setOpen(true);
@@ -134,7 +147,7 @@ const SignInWithGoogle = () => {
           modal: {
             position: "fixed",
             top: "40%",
-            right: "18%",
+            right: isSmallScreen ? '0' : '15%',
             transform: "translateY(-50%)",
             width: "450px",
           },
@@ -217,7 +230,14 @@ const SignInWithGoogle = () => {
           )}
         </div>
       </Modal>
-      <button
+      {
+        isSmallScreen ? (
+          <button className="button -sm px-2 py-3 -outline-red-3 text-red-3 text-16 fw-bolder lh-sm "
+        onClick={onOpenModal}>
+          <GoogleIcon className="text-24" />
+        </button>
+        ) : (
+          <button
         className="button -sm px-24 py-25 -outline-red-3 text-red-3 text-16 fw-bolder lh-sm"
         onClick={onOpenModal}
         // onClick={googleLogin}
@@ -227,6 +247,9 @@ const SignInWithGoogle = () => {
         {/* <i className="fa fa-google text-24 me-2" aria-hidden="true"></i> */}
         Google
       </button>
+        )
+      }
+      
     </div>
   );
 };

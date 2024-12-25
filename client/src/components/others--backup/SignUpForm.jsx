@@ -112,19 +112,39 @@ export default function SignUpForm() {
                 onSubmit={handleSubmit}
               >
                 <div className="col-lg-12">
-                  <FormLabel
+                  {/* <FormLabel
                     id="demo-radio-buttons-group-label"
                     className="text-16 lh-1 fw-500 text-dark-1 mb-10"
                   >
                     Role *
-                  </FormLabel>
-                  <div className="role-radio-buttons bg-white px-5  rounded row gap-2">
+                  </FormLabel> */}
+                  <label
+                    htmlFor="email"
+                    style={{
+                      marginBottom: "5px",
+                      fontWeight: "600",
+                      color: "#333",
+                      fontSize: "14px",
+                    }}
+                  >
+                   Role
+                  </label>
+                  <div className="role-radio-buttons bg-white px-5  rounded row gap-2" style={{
+                      padding: "10px",
+                      border: "1px solid #ced4da",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      outline: "none",
+                      backgroundColor: "#f8f9fa",
+                      boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                    }}>
                     <FormControl>
                       <RadioGroup
                         aria-labelledby="demo-radio-buttons-group-label"
                         defaultValue="female"
                         name="radio-buttons-group"
-                        className="rounded row"
+                        className=""
+                        style={{display:'flex',flexDirection:'row',justifyContent:'space-evenly',alignItems:'center'}}
                       >
                         <FormControlLabel
                           value="student"
@@ -144,27 +164,86 @@ export default function SignUpForm() {
                 </div>
 
                 <div className="col-lg-6 ">
-                  <TextField
+                  {/* <TextField
                     required
                     id="outlined-required"
                     label="Email"
                     type="Email"
                     className="bg-white rounded"
                     onChange={(e) => setEmail(e.target.value)}
+                  /> */}
+
+                  <label
+                    htmlFor="email"
+                    style={{
+                      marginBottom: "5px",
+                      fontWeight: "600",
+                      color: "#333",
+                      fontSize: "14px",
+                    }}
+                  >
+                   Email
+                  </label>
+                  <input
+                   required
+                    type="text"
+                    name="email"
+                    id="email"
+                    style={{
+                      padding: "10px",
+                      border: "1px solid #ced4da",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      outline: "none",
+                      backgroundColor: "#f8f9fa",
+                      boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                    }}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                   
                   />
                 </div>
                 <div className="col-lg-6">
-                  <TextField
+                  {/* <TextField
                     required
                     id="outlined-required"
                     label="Username"
                     type="text"
                     className="custom-height bg-white rounded "
                     onChange={(e) => setUserName(e.target.value)}
+                  /> */}
+                   <label
+                    htmlFor="email"
+                    style={{
+                      marginBottom: "5px",
+                      fontWeight: "600",
+                      color: "#333",
+                      fontSize: "14px",
+                    }}
+                  >
+                   User Name
+                  </label>
+                  <input
+                   required
+                    type="text"
+                    name="username"
+                    id="username"
+                    style={{
+                      padding: "10px",
+                      border: "1px solid #ced4da",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      outline: "none",
+                      backgroundColor: "#f8f9fa",
+                      boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                    }}
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                   
                   />
                 </div>
                 <div className="col-lg-6">
-                  <TextField
+                  {/* <TextField
                     required
                     id="outlined-password-input"
                     label="Password"
@@ -172,10 +251,39 @@ export default function SignUpForm() {
                     autoComplete="current-password"
                     className="bg-white rounded"
                     onChange={(e) => setPassword(e.target.value)}
+                  /> */}
+                  <label
+                    htmlFor="password"
+                    style={{
+                      marginBottom: "5px",
+                      fontWeight: "600",
+                      color: "#333",
+                      fontSize: "14px",
+                    }}
+                  >
+                   Password
+                  </label>
+                  <input
+                   required
+                    type="text"
+                    name="password"
+                    id="password"
+                    style={{
+                      padding: "10px",
+                      border: "1px solid #ced4da",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      outline: "none",
+                      backgroundColor: "#f8f9fa",
+                      boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                    }}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                   
                   />
                 </div>
                 <div className="col-lg-6">
-                  <TextField
+                  {/* <TextField
                     required
                     id="outlined-password-input"
                     label="Confirm Password"
@@ -183,6 +291,35 @@ export default function SignUpForm() {
                     autoComplete="current-password"
                     className="bg-white rounded"
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                  /> */}
+                  <label
+                    htmlFor="cnm_password"
+                    style={{
+                      marginBottom: "5px",
+                      fontWeight: "600",
+                      color: "#333",
+                      fontSize: "14px",
+                    }}
+                  >
+                   Confirm Password
+                  </label>
+                  <input
+                   required
+                    type="text"
+                    name="cnm_password"
+                    id="cnm_password"
+                    style={{
+                      padding: "10px",
+                      border: "1px solid #ced4da",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      outline: "none",
+                      backgroundColor: "#f8f9fa",
+                      boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                    }}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                   
                   />
                 </div>
                 <div className="col-12">
@@ -192,7 +329,7 @@ export default function SignUpForm() {
                     id="submit"
                     className="button -md -purple-1 text-white fw-500 w-1/1"
                   >
-                    {isLoading ? <CircularProgress size={30} /> : "Register"}
+                    {isLoading ? <CircularProgress size={30} sx={{ color: "inherit" }}/> : "Register"}
                   </button>
                 </div>
               </form>

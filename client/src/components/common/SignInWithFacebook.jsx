@@ -1,5 +1,5 @@
 import { FacebookAuthProvider, signInWithPopup } from "firebase/auth";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
@@ -29,6 +29,19 @@ const SignInWithFacebook = () => {
   const [open, setOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 600);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 600);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const onOpenModal = () => {
     setOpen(true);
@@ -54,7 +67,7 @@ const SignInWithFacebook = () => {
       const rolesRef = collection(db, "roles");
       const q = query(rolesRef, where("email", "==", email));
       const querySnapshot = await getDocs(q);
-     
+
       if (querySnapshot.empty) {
         try {
           const res = await API.post("/api/users", {
@@ -70,8 +83,8 @@ const SignInWithFacebook = () => {
           });
           // console.log(res);
         } catch (error) {
-          showToast("error",error)
-          navigate('/login')
+          showToast("error", error);
+          navigate("/login");
         }
         try {
           await setDoc(doc(db, "roles", auth.currentUser.uid), {
@@ -81,14 +94,14 @@ const SignInWithFacebook = () => {
           });
           // console.log("Document written ");
         } catch (e) {
-          showToast("error",error)
+          showToast("error", error);
           console.error("Error adding document: ", e);
-          navigate('/login')
+          navigate("/login");
         }
       } else {
         // console.log("Email already exists in roles collection.");
       }
-     
+
       if (auth.currentUser) {
         const userId = auth.currentUser.uid;
         const docRef = doc(db, "roles", userId);
@@ -97,33 +110,35 @@ const SignInWithFacebook = () => {
         if (docSnap.exists()) {
           userRole = docSnap.data().role;
           // setUserRole(docSnap.data().role);
-          try{
+          try {
             const { data } = await API.get(`/api/users/uid/${userId}`);
-          const resData = await API.get(`/api/users/generate/token/${data.id}`);
-          localStorage.setItem("token", resData.data?.token);
-          localStorage.setItem(
-            "user",
-            JSON.stringify({ id: data.id, role: userRole, email: data.email })
-          );
-          }catch(error){
-            showToast("error",error)
-            navigate('/login')
+            const resData = await API.get(
+              `/api/users/generate/token/${data.id}`
+            );
+            localStorage.setItem("token", resData.data?.token);
+            localStorage.setItem(
+              "user",
+              JSON.stringify({ id: data.id, role: userRole, email: data.email })
+            );
+          } catch (error) {
+            showToast("error", error);
+            navigate("/login");
           }
-          
+
           // console.log(docSnap.data().role);
         } else {
           // console.log("No role found for this user");
         }
       } else {
-        showToast("error","Login Failed! ")
-        navigate('/login')
+        showToast("error", "Login Failed! ");
+        navigate("/login");
         // console.log("No user is logged in ");
       }
       setIsLoading(false);
-      if(auth.currentUser){
-        showToast("success","Logged In Successfully!");
+      if (auth.currentUser) {
+        showToast("success", "Logged In Successfully!");
       }
-      
+
       userRole == "instructor"
         ? navigate("/instructor/home")
         : userRole == "student"
@@ -131,24 +146,29 @@ const SignInWithFacebook = () => {
         : navigate("/admin/dashboard");
     } catch (error) {
       // console.log(error);
-      showToast("error",error)
-      navigate('/login')
+      showToast("error", error);
+      navigate("/login");
     }
   };
   return (
     <div>
-      <Modal open={open} onClose={onCloseModal} center={false} styles={{
+      <Modal
+        open={open}
+        onClose={onCloseModal}
+        center={false}
+        styles={{
           modal: {
             position: "fixed",
             top: "40%",
-            right: "18%",
+            right: isSmallScreen ? '0' : '15%',
             transform: "translateY(-50%)",
             width: "450px",
           },
-        //   overlay: {
-        //     background: "transparent",
-        //   },
-        }}>
+          //   overlay: {
+          //     background: "transparent",
+          //   },
+        }}
+      >
         <div className="col-lg-12 border-1 rounded">
           {/* <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
               * Please Select Role
@@ -214,9 +234,12 @@ const SignInWithFacebook = () => {
               onClick={facebookLogin}
             >
               {isLoading ? (
-                <CircularProgress size={30} sx={{
-                  color: 'inherit'
-                }}/>
+                <CircularProgress
+                  size={30}
+                  sx={{
+                    color: "inherit",
+                  }}
+                />
               ) : (
                 "Continue with Facebook"
               )}
@@ -224,13 +247,20 @@ const SignInWithFacebook = () => {
           )}
         </div>
       </Modal>
-      <button
-        className="button -sm px-24 py-25 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm "
-        onClick={onOpenModal}
-      >
-        <i className="icon-facebook text-24 me-2" aria-hidden="true"></i>
-        Facebook
-      </button>
+      {isSmallScreen ? (
+        <button className="button -sm px-2 py-3 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm "
+        onClick={onOpenModal}>
+          <i className="icon-facebook text-24 " aria-hidden="true"></i>
+        </button>
+      ) : (
+        <button
+          className="button -sm px-24 py-25 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm "
+          onClick={onOpenModal}
+        >
+          <i className="icon-facebook text-24 me-2" aria-hidden="true"></i>
+          Facebook
+        </button>
+      )}
     </div>
   );
 };
