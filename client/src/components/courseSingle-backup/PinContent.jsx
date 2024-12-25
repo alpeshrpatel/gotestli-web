@@ -6,7 +6,7 @@ export default function PinContent({ pageItem }) {
   const { isAddedToCartCourses, addCourseToCart } = useContextElement();
   const [isOpen, setIsOpen] = useState(false);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-  // useEffect hook to update the screen width when the window is resized
+ 
   useEffect(() => {
     const handleResize = () => {
       setScreenWidth(window.innerWidth);
@@ -14,7 +14,7 @@ export default function PinContent({ pageItem }) {
 
     window.addEventListener("resize", handleResize);
 
-    // Cleanup the event listener when the component is unmounted
+   
     return () => {
       window.removeEventListener("resize", handleResize);
     };

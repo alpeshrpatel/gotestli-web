@@ -90,17 +90,46 @@ export default function LoginForm() {
                   onSubmit={handleSubmit}
                 >
                   <div className="col-12">
-                    <TextField
+                    {/* <TextField
                       required
                       id="outlined-required"
                       label="Email"
                       type="Email"
                       className="bg-white rounded w-100"
                       onChange={(e) => setEmail(e.target.value)}
-                    />
+                    /> */}
+                    <label
+                    htmlFor="email"
+                    style={{
+                      marginBottom: "5px",
+                      fontWeight: "600",
+                      color: "#333",
+                      fontSize: "14px",
+                    }}
+                  >
+                   Email
+                  </label>
+                  <input
+                   required
+                    type="text"
+                    name="email"
+                    id="email"
+                    style={{
+                      padding: "10px",
+                      border: "1px solid #ced4da",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      outline: "none",
+                      backgroundColor: "#f8f9fa",
+                      boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                    }}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                   
+                  />
                   </div>
                   <div className="col-12">
-                    <TextField
+                    {/* <TextField
                       required
                       id="outlined-password-input"
                       label="Password"
@@ -108,7 +137,36 @@ export default function LoginForm() {
                       autoComplete="current-password"
                       className="bg-white rounded w-100"
                       onChange={(e) => setPassword(e.target.value)}
-                    />
+                    /> */}
+                    <label
+                    htmlFor="password"
+                    style={{
+                      marginBottom: "5px",
+                      fontWeight: "600",
+                      color: "#333",
+                      fontSize: "14px",
+                    }}
+                  >
+                   Password
+                  </label>
+                  <input
+                   required
+                    type="text"
+                    name="password"
+                    id="password"
+                    style={{
+                      padding: "10px",
+                      border: "1px solid #ced4da",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      outline: "none",
+                      backgroundColor: "#f8f9fa",
+                      boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                    }}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                   
+                  />
                   </div>
                   <div className="col-12">
                     <button
@@ -117,7 +175,7 @@ export default function LoginForm() {
                       id="submit"
                       className="button -md -purple-1 text-white fw-500 w-1/1"
                     >
-                      {isLoading ? (<CircularProgress size={30}/>) : 'Login'}
+                      {isLoading ? (<CircularProgress size={30} sx={{ color: "inherit" }}/>) : 'Login'}
                      
                     </button>
                   </div>
