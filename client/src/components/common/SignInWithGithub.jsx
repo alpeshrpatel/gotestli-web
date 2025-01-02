@@ -22,6 +22,7 @@ import { API } from "@/utils/AxiosInstance";
 import { toast } from "react-toastify";
 import { CircularProgress } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { showToast } from "@/utils/toastService";
 
 const SignInWithGithub = () => {
   const [open, setOpen] = useState(false);

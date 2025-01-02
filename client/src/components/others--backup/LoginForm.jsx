@@ -70,6 +70,10 @@ export default function LoginForm() {
       : navigate("/admin/dashboard");
   };
 
+  const handleForgotPassword = () => {
+    navigate('/forget-password')
+  }
+
   return (
     <>
       <div className="form-page__content lg:py-50">
@@ -180,9 +184,12 @@ export default function LoginForm() {
                     </button>
                   </div>
                 </form>
-
+                <div  className="text-purple-1" onClick={handleForgotPassword}>
+                    Forget Password?
+                  </div>
                 <div className="lh-12 text-dark-1 fw-500 text-center mt-20">
                   Or sign in using
+                  
                 </div>
 
                

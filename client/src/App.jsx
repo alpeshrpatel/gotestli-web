@@ -125,6 +125,7 @@ import AdminDashboard from "./pages/adminpages/AdminDashboard";
 import PurchasePage from "./pages/studentpages/PurchasePage";
 import PurchaseListing from "./pages/studentpages/PurchaseListing";
 import CreateQuestionTable from "./pages/instructorspages/CreateQuestionTable";
+import ForgetPasswordPage from "./pages/others/forgetpassword/ForgetPasswordPage";
 
 function App() {
   useEffect(() => {
@@ -230,6 +231,7 @@ function App() {
               <Route path="/" element={<HomePage1 />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
+              <Route path="/forget-password" element={<ForgetPasswordPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/helpcenter" element={<Faqs />} />
