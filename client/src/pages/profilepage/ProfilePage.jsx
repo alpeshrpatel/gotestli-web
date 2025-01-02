@@ -28,6 +28,7 @@ import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import AvatarModal from "./AvatarModal";
 import { BootstrapTooltip } from "@/components/common/Tooltip";
+import { showToast } from "@/utils/toastService";
 
 const ProfilePage = () => {
   const [usersData, setUsersData] = useState({});

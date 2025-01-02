@@ -24,6 +24,7 @@ import { API } from "@/utils/AxiosInstance";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
 import { CircularProgress } from "@mui/material";
+import { showToast } from "@/utils/toastService";
 
 const SignInWithFacebook = () => {
   const [open, setOpen] = useState(false);

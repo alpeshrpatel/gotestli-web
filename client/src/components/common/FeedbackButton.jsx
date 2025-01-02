@@ -5,6 +5,7 @@ import Emoji from "./Emoji";
 import { API } from "@/utils/AxiosInstance";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { showToast } from "@/utils/toastService";
 
 const visitOptions = [
   { id: 1, title: "To test my knowledge on a topic" },

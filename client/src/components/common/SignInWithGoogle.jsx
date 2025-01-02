@@ -25,6 +25,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
 import { CircularProgress } from "@mui/material";
+import { showToast } from "@/utils/toastService";
 
 const SignInWithGoogle = () => {
   const [open, setOpen] = useState(false);
@@ -57,6 +58,10 @@ const SignInWithGoogle = () => {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
       const email = auth.currentUser.email;
+      const token = localStorage.getItem("token");
+  const localUser = JSON.parse(localStorage.getItem("user")) || "";
+  const localUserRole = localUser.role;
+    
       let userRole;
       let names = auth.currentUser?.displayName?.split(" ");
       let firstname = names[0];
@@ -128,6 +133,7 @@ const SignInWithGoogle = () => {
         // console.log("No user is logged in ");
       }
       setIsLoading(false);
+      console.log('auth:',auth.currentUser)
       if(auth.currentUser){
         showToast("success","Logged In Successfully!");
       }

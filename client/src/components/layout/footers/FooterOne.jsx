@@ -5,6 +5,7 @@ import FooterLinks from "../component/FooterLinks";
 import Links from "../component/Links";
 import { API } from "@/utils/AxiosInstance";
 import { toast } from "react-toastify";
+import { showToast } from "@/utils/toastService";
 export default function FooterOne() {
   const [email, setEmail] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
