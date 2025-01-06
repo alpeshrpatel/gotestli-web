@@ -432,8 +432,13 @@ const CreateQuestionTable = () => {
       <Preloader />
       {/* <MetaComponent meta={metadata} /> */}
       <Header userRole={userRole} />
-      <Modal open={open} onClose={onCloseModal} center>
-        <div style={{ width: "50vw" }}>
+      <Modal open={open} onClose={onCloseModal} center  styles={{
+          modal: {
+            width: "70%", 
+            maxWidth: "80%", 
+          },
+        }}>
+        <div style={{ width: "100%" }}>
           <div className="form-group">
             <label>Question Type</label>
             <select className=" px-10 py-2"
@@ -470,11 +475,12 @@ const CreateQuestionTable = () => {
           </div>
           <div className="form-group">
             <label>Question</label>
-            <input
+            <textarea
             required
               type="text"
               value={changedQSet.question}
               onChange={(e) => handleQSetChange("question", e.target.value)}
+              style={{maxHeight: "150px"}}
             />
             {errors.question && <p style={{ color: 'red', fontSize: '12px' }}>{errors.question}</p>}
           </div>
@@ -578,7 +584,7 @@ const CreateQuestionTable = () => {
             {errors.explanation && <p style={{ color: 'red', fontSize: '12px' }}>{errors.explanation}</p>}
           </div>
           <div className="row col-12">
-          <div className="form-group col-6">
+          <div className="form-group col-12 col-sm-6 col-md-3 ">
             <label className="w-full">Complexity</label>
             <select
             required
@@ -593,7 +599,7 @@ const CreateQuestionTable = () => {
             </select>
             {errors.complexity && <p style={{ color: 'red', fontSize: '12px' }}>{errors.complexity}</p>}
           </div>
-          <div className="form-group col-6">
+          <div className="form-group col-12 col-sm-6 col-md-3">
             <label>Marks</label>
             <input
             required
@@ -603,9 +609,7 @@ const CreateQuestionTable = () => {
             />
             {errors.marks && <p style={{ color: 'red', fontSize: '12px' }}>{errors.marks}</p>}
           </div>
-          </div>
-          <div className="row col-12">
-          <div className="form-group col-6">
+          <div className="form-group col-12 col-sm-6 col-md-3 ">
             <label>Negative Marking</label>
             <select className="px-10 py-2"
             required
@@ -616,7 +620,7 @@ const CreateQuestionTable = () => {
               <option value="0">No</option>
             </select>
           </div>
-          <div className="form-group col-6">
+          <div className="form-group col-12 col-sm-6 col-md-3">
             <label>Negative Marks</label>
             <input
             required
