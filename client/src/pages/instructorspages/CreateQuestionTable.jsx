@@ -353,6 +353,7 @@ const CreateQuestionTable = () => {
 
     if (!changedQSet.question_type_id) newErrors.question_type_id = 'Type is required';
     if (!changedQSet.question) newErrors.question = 'Question is required';
+    if (!changedQSet.description) newErrors.description = 'Description is required';
     if (!changedQSet.explanation) newErrors.explanation = 'Explanation is required';
     if (!changedQSet.complexity) newErrors.complexity = 'Complexity is required';
     if (!changedQSet.marks) newErrors.marks = 'Marks is required';
@@ -443,17 +444,19 @@ const CreateQuestionTable = () => {
             <label>Question Type</label>
             <select className=" px-10 py-2"
             required
+            style={{border:'1px solid gray', borderRadius:'5px'}}
               value={changedQSet.question_type_id}
               onChange={(e) =>
                 handleQSetChange("question_type_id", e.target.value)
               }
             >
+              <option value=''>Select Question Type</option>
               <option value="2">Single Choice</option>
               <option value="1">Paragraph</option>
               <option value="6">Comprehensive</option>
               <option value="7">Multiple Choice</option>
             </select>
-            {errors.question_type_id && <p style={{ color: 'red', fontSize: '12px' }}>{errors.question_type_id}</p>}
+            { !changedQSet.question_type_id && errors.question_type_id && <p style={{ color: 'red', fontSize: '12px' }}>{errors.question_type_id}</p>}
           </div>
           <div>
             {changedQSet?.question_type_id == 1 ? (
@@ -482,7 +485,7 @@ const CreateQuestionTable = () => {
               onChange={(e) => handleQSetChange("question", e.target.value)}
               style={{maxHeight: "150px"}}
             />
-            {errors.question && <p style={{ color: 'red', fontSize: '12px' }}>{errors.question}</p>}
+            {!changedQSet.question && errors.question && <p style={{ color: 'red', fontSize: '12px' }}>{errors.question}</p>}
           </div>
           <div className="">
             <label>Options</label>
@@ -567,11 +570,11 @@ const CreateQuestionTable = () => {
           <div className="form-group">
             <label>Description</label>
             <input
-             
               type="text"
               value={changedQSet.description}
               onChange={(e) => handleQSetChange("description", e.target.value)}
             />
+            {!changedQSet.description && errors.description && <p style={{ color: 'red', fontSize: '12px' }}>{errors.description}</p>}
           </div>
           <div className="form-group">
             <label>Explanation</label>
@@ -581,7 +584,7 @@ const CreateQuestionTable = () => {
               value={changedQSet.explanation}
               onChange={(e) => handleQSetChange("explanation", e.target.value)}
             />
-            {errors.explanation && <p style={{ color: 'red', fontSize: '12px' }}>{errors.explanation}</p>}
+            {!changedQSet.explanation && errors.explanation && <p style={{ color: 'red', fontSize: '12px' }}>{errors.explanation}</p>}
           </div>
           <div className="row col-12">
           <div className="form-group col-12 col-sm-6 col-md-3 ">
@@ -590,14 +593,16 @@ const CreateQuestionTable = () => {
             required
             className="w-full px-10 py-2"
               value={changedQSet.complexity}
-              onChange={(e) => handleQSetChange("complexity", e.target.value)}
+              onChange={(e) => handleQSetChange("complexity", e.target.value)} 
+              style={{border:'1px solid gray', borderRadius:'5px'}}
             >
+              <option value=''>Select Complexity</option>
               <option value="easy">Easy</option>
               <option value="medium">Medium</option>
               <option value="hard">Hard</option>
               <option value="very hard">Very Hard</option>
             </select>
-            {errors.complexity && <p style={{ color: 'red', fontSize: '12px' }}>{errors.complexity}</p>}
+            {!changedQSet.complexity && errors.complexity && <p style={{ color: 'red', fontSize: '12px' }}>{errors.complexity}</p>}
           </div>
           <div className="form-group col-12 col-sm-6 col-md-3">
             <label>Marks</label>
@@ -607,15 +612,16 @@ const CreateQuestionTable = () => {
               value={changedQSet.marks}
               onChange={(e) => handleQSetChange("marks", e.target.value)}
             />
-            {errors.marks && <p style={{ color: 'red', fontSize: '12px' }}>{errors.marks}</p>}
+            {!changedQSet.marks && errors.marks && <p style={{ color: 'red', fontSize: '12px' }}>{errors.marks}</p>}
           </div>
           <div className="form-group col-12 col-sm-6 col-md-3 ">
             <label>Negative Marking</label>
-            <select className="px-10 py-2"
+            <select className="px-10 py-2 " style={{border:'1px solid gray', borderRadius:'5px'}}
             required
               value={changedQSet.is_negative}
               onChange={(e) => handleQSetChange("is_negative", e.target.value)}
             >
+              <option value=''>Select</option>
               <option value="1">Yes</option>
               <option value="0">No</option>
             </select>
