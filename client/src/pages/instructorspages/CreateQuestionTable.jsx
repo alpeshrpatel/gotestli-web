@@ -42,23 +42,21 @@ const CreateQuestionTable = () => {
   ]);
   const [questions, setQuestions] = useState([]);
   const [paragraph, setParagraph] = useState("");
-  const [changedQSet, setChangedQSet] = useState([
-    {
-      org_id: 0,
-      paragraph_id: "",
-      question: "",
-      options: "",
-      correct_option: "",
-      description: "",
-      explanation: "",
-      question_type_id: 0,
-      status_id: 1,
-      complexity: "",
-      marks: 0,
-      is_negative: 0,
-      negative_marks: 0,
-    },
-  ]);
+  const [changedQSet, setChangedQSet] = useState({
+    org_id: 0,
+    paragraph_id: "",
+    question: "",
+    options: "",
+    correct_option: "",
+    description: "",
+    explanation: "",
+    question_type_id: 2,
+    status_id: 1,
+    complexity: "easy",
+    marks: 1,
+    is_negative: 0,
+    negative_marks: "",
+  });
 
   const columns = [
     { id: "index", label: "#", sortable: false },
@@ -135,7 +133,7 @@ const CreateQuestionTable = () => {
 
           setQuestions(questionsWithOptions);
 
-          showToast("success", "Questions Fetched Successfully!");
+          // showToast("success", "Questions Fetched Successfully!");
         }
       } catch (error) {
         if (error.status === 403) {
@@ -169,7 +167,7 @@ const CreateQuestionTable = () => {
 
   async function handleSave() {
     // setQuestions(changedQSet);
-    
+
     try {
       if (token && validate()) {
         if (editOn) {
@@ -199,7 +197,7 @@ const CreateQuestionTable = () => {
             },
           });
         }
-        
+
         const response = await API.post(
           "/api/question/paragraph",
           { paragraph: paragraph, userId: userId },
@@ -211,8 +209,8 @@ const CreateQuestionTable = () => {
         );
         console.log(response.data);
         console.log(changedQSet);
-        let finalQId = 0
-        if(editOn){
+        let finalQId = 0;
+        if (editOn) {
           const res2 = await API.put(
             `/api/questionmaster/${editOn}`,
             {
@@ -228,9 +226,9 @@ const CreateQuestionTable = () => {
               },
             }
           );
-          console.log(res2.data)
-          finalQId = res2.data.id
-        }else{
+          console.log(res2.data);
+          finalQId = res2.data.id;
+        } else {
           const res = await API.post(
             "/api/questionmaster",
             {
@@ -246,7 +244,13 @@ const CreateQuestionTable = () => {
               },
             }
           );
-          finalQId = res.data.id
+          if (res.status === 409) {
+            showToast(
+              "error",
+              "A question with the same title and description already exists!"
+            );
+          }
+          finalQId = res.data.id;
         }
         // const res = await API.post(
         //   "/api/questionmaster",
@@ -263,8 +267,6 @@ const CreateQuestionTable = () => {
         //     },
         //   }
         // );
-
-        
 
         const { data } = await API.post(
           "/api/options",
@@ -296,14 +298,13 @@ const CreateQuestionTable = () => {
           is_negative: 0,
           negative_marks: 0,
         });
-        onCloseModal()
-        if(editOn){
+        onCloseModal();
+        if (editOn) {
           showToast("success", "Question Edited Successfully!");
-        }else{
+        } else {
           showToast("success", "Question Created Successfully!");
         }
       }
-      
     } catch (error) {
       if (error.status == 403) {
         localStorage.removeItem("user");
@@ -312,7 +313,7 @@ const CreateQuestionTable = () => {
         navigate("/login");
         return;
       }
-      console.error(error)
+      console.error(error);
       showToast("error", `Error occured: ${error}`);
       // console.log(error);
     }
@@ -347,18 +348,21 @@ const CreateQuestionTable = () => {
     }
     setCurrentOption("");
   }
-  
+
   const validate = () => {
     const newErrors = {};
 
-    if (!changedQSet.question_type_id) newErrors.question_type_id = 'Type is required';
-    if (!changedQSet.question) newErrors.question = 'Question is required';
-    if (!changedQSet.description) newErrors.description = 'Description is required';
-    if (!changedQSet.explanation) newErrors.explanation = 'Explanation is required';
-    if (!changedQSet.complexity) newErrors.complexity = 'Complexity is required';
-    if (!changedQSet.marks) newErrors.marks = 'Marks is required';
-   
-    
+    if (!changedQSet.question_type_id)
+      newErrors.question_type_id = "Type is required";
+    if (!changedQSet.question) newErrors.question = "Question is required";
+    if (!changedQSet.description)
+      newErrors.description = "Description is required";
+    if (!changedQSet.explanation)
+      newErrors.explanation = "Explanation is required";
+    if (!changedQSet.complexity)
+      newErrors.complexity = "Complexity is required";
+    if (!changedQSet.marks) newErrors.marks = "Marks is required";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -371,51 +375,83 @@ const CreateQuestionTable = () => {
       <TableCell>{set?.question_type_id}</TableCell>
       <TableCell>
         <BootstrapTooltip title={set?.question}>
-       <p className="text-truncate"
+          <p
+            className="text-truncate"
             style={{
               maxWidth: "200px",
               overflow: "hidden",
               textOverflow: "ellipsis",
-              
-            }}> {set?.question}</p>
+            }}
+          >
+            {" "}
+            {set?.question}
+          </p>
         </BootstrapTooltip>
-       </TableCell>
-      <TableCell> <BootstrapTooltip title={set?.options}>
-       <p className="text-truncate"
+      </TableCell>
+      <TableCell>
+        {" "}
+        <BootstrapTooltip title={set?.options}>
+          <p
+            className="text-truncate"
             style={{
               maxWidth: "200px",
               overflow: "hidden",
               textOverflow: "ellipsis",
-              
-            }}> {set?.options}</p>
-        </BootstrapTooltip></TableCell>
-      <TableCell> <BootstrapTooltip title={set?.correctAnswer}>
-       <p className="text-truncate"
+            }}
+          >
+            {" "}
+            {set?.options}
+          </p>
+        </BootstrapTooltip>
+      </TableCell>
+      <TableCell>
+        {" "}
+        <BootstrapTooltip title={set?.correctAnswer}>
+          <p
+            className="text-truncate"
             style={{
               maxWidth: "200px",
               overflow: "hidden",
               textOverflow: "ellipsis",
-              
-            }}> {set?.correctAnswer}</p>
-        </BootstrapTooltip></TableCell>
-      <TableCell> <BootstrapTooltip title={set?.description}>
-       <p className="text-truncate"
+            }}
+          >
+            {" "}
+            {set?.correctAnswer}
+          </p>
+        </BootstrapTooltip>
+      </TableCell>
+      <TableCell>
+        {" "}
+        <BootstrapTooltip title={set?.description}>
+          <p
+            className="text-truncate"
             style={{
               maxWidth: "200px",
               overflow: "hidden",
               textOverflow: "ellipsis",
-              
-            }}> {set?.description}</p>
-        </BootstrapTooltip></TableCell>
-      <TableCell> <BootstrapTooltip title={set?.explanation}>
-       <p className="text-truncate"
+            }}
+          >
+            {" "}
+            {set?.description}
+          </p>
+        </BootstrapTooltip>
+      </TableCell>
+      <TableCell>
+        {" "}
+        <BootstrapTooltip title={set?.explanation}>
+          <p
+            className="text-truncate"
             style={{
               maxWidth: "200px",
               overflow: "hidden",
               textOverflow: "ellipsis",
-              
-            }}> {set?.explanation}</p>
-        </BootstrapTooltip></TableCell>
+            }}
+          >
+            {" "}
+            {set?.explanation}
+          </p>
+        </BootstrapTooltip>
+      </TableCell>
       <TableCell>{set?.complexity}</TableCell>
       <TableCell>{set?.marks}</TableCell>
       <TableCell>{set?.is_negative}</TableCell>
@@ -433,30 +469,66 @@ const CreateQuestionTable = () => {
       <Preloader />
       {/* <MetaComponent meta={metadata} /> */}
       <Header userRole={userRole} />
-      <Modal open={open} onClose={onCloseModal} center  styles={{
+      <Modal
+        open={open}
+        onClose={() => {}}
+        showCloseIcon={false}
+        center
+        styles={{
           modal: {
-            width: "70%", 
-            maxWidth: "80%", 
+            width: "70%",
+            maxWidth: "80%",
           },
-        }}>
+        }}
+      >
         <div style={{ width: "100%" }}>
+          <button
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "24px",
+            }}
+            onClick={onCloseModal}
+          >
+            {" "}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 0 24 24"
+              width="24px"
+              fill="#000000"
+            >
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59 7.11 5.7a.996.996 0 1 0-1.41 1.41L10.59 12l-4.89 4.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.39-.38.39-1.02 0-1.4z" />
+            </svg>
+          </button>
           <div className="form-group">
             <label>Question Type</label>
-            <select className=" px-10 py-2"
-            required
-            style={{border:'1px solid gray', borderRadius:'5px'}}
-              value={changedQSet.question_type_id}
+            <select
+              className=" px-10 py-2"
+              required
+              style={{ border: "1px solid gray", borderRadius: "5px" }}
+              value={changedQSet.question_type_id || 2}
               onChange={(e) =>
                 handleQSetChange("question_type_id", e.target.value)
               }
             >
-              <option value=''>Select Question Type</option>
+              {/* <option value="">Select Question Type</option> */}
               <option value="2">Single Choice</option>
               <option value="1">Paragraph</option>
               <option value="6">Comprehensive</option>
               <option value="7">Multiple Choice</option>
             </select>
-            { !changedQSet.question_type_id && errors.question_type_id && <p style={{ color: 'red', fontSize: '12px' }}>{errors.question_type_id}</p>}
+            {!changedQSet.question_type_id && errors.question_type_id && (
+              <p style={{ color: "red", fontSize: "12px" }}>
+                {errors.question_type_id}
+              </p>
+            )}
           </div>
           <div>
             {changedQSet?.question_type_id == 1 ? (
@@ -479,13 +551,17 @@ const CreateQuestionTable = () => {
           <div className="form-group">
             <label>Question</label>
             <textarea
-            required
+              required
               type="text"
               value={changedQSet.question}
               onChange={(e) => handleQSetChange("question", e.target.value)}
-              style={{maxHeight: "150px"}}
+              style={{ maxHeight: "150px" }}
             />
-            {!changedQSet.question && errors.question && <p style={{ color: 'red', fontSize: '12px' }}>{errors.question}</p>}
+            {!changedQSet.question && errors.question && (
+              <p style={{ color: "red", fontSize: "12px" }}>
+                {errors.question}
+              </p>
+            )}
           </div>
           <div className="">
             <label>Options</label>
@@ -567,78 +643,107 @@ const CreateQuestionTable = () => {
               />
             </>
           </div>
-          <div className="form-group">
-            <label>Description</label>
-            <input
-              type="text"
-              value={changedQSet.description}
-              onChange={(e) => handleQSetChange("description", e.target.value)}
-            />
-            {!changedQSet.description && errors.description && <p style={{ color: 'red', fontSize: '12px' }}>{errors.description}</p>}
-          </div>
-          <div className="form-group">
-            <label>Explanation</label>
-            <input
-            required
-              type="text"
-              value={changedQSet.explanation}
-              onChange={(e) => handleQSetChange("explanation", e.target.value)}
-            />
-            {!changedQSet.explanation && errors.explanation && <p style={{ color: 'red', fontSize: '12px' }}>{errors.explanation}</p>}
-          </div>
           <div className="row col-12">
-          <div className="form-group col-12 col-sm-6 col-md-3 ">
-            <label className="w-full">Complexity</label>
-            <select
-            required
-            className="w-full px-10 py-2"
-              value={changedQSet.complexity}
-              onChange={(e) => handleQSetChange("complexity", e.target.value)} 
-              style={{border:'1px solid gray', borderRadius:'5px'}}
-            >
-              <option value=''>Select Complexity</option>
-              <option value="easy">Easy</option>
-              <option value="medium">Medium</option>
-              <option value="hard">Hard</option>
-              <option value="very hard">Very Hard</option>
-            </select>
-            {!changedQSet.complexity && errors.complexity && <p style={{ color: 'red', fontSize: '12px' }}>{errors.complexity}</p>}
+            <div className="form-group col-sm-12 col-md-6">
+              <label>Description</label>
+              <textarea
+                value={changedQSet.description}
+                onChange={(e) =>
+                  handleQSetChange("description", e.target.value)
+                }
+                style={{
+                  maxHeight: "150px",
+                  overflowY: "auto",
+                }}
+              />
+              {!changedQSet.description && errors.description && (
+                <p style={{ color: "red", fontSize: "12px" }}>
+                  {errors.description}
+                </p>
+              )}
+            </div>
+            <div className="form-group  col-sm-12 col-md-6">
+              <label>Explanation</label>
+              <textarea
+                required
+                value={changedQSet.explanation}
+                onChange={(e) =>
+                  handleQSetChange("explanation", e.target.value)
+                }
+                style={{
+                  maxHeight: "150px",
+                  overflowY: "auto",
+                }}
+              />
+              {!changedQSet.explanation && errors.explanation && (
+                <p style={{ color: "red", fontSize: "12px" }}>
+                  {errors.explanation}
+                </p>
+              )}
+            </div>
           </div>
-          <div className="form-group col-12 col-sm-6 col-md-3">
-            <label>Marks</label>
-            <input
-            required
-              type="number"
-              value={changedQSet.marks}
-              onChange={(e) => handleQSetChange("marks", e.target.value)}
-            />
-            {!changedQSet.marks && errors.marks && <p style={{ color: 'red', fontSize: '12px' }}>{errors.marks}</p>}
+
+          <div className="row col-12">
+            <div className="form-group col-12 col-sm-6 col-md-3 ">
+              <label className="w-full">Complexity</label>
+              <select
+                required
+                className="w-full px-10 py-2"
+                value={changedQSet.complexity || "easy"}
+                onChange={(e) => handleQSetChange("complexity", e.target.value)}
+                style={{ border: "1px solid gray", borderRadius: "5px" }}
+              >
+                {/* <option value="">Select Complexity</option> */}
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+                <option value="very hard">Very Hard</option>
+              </select>
+              {!changedQSet.complexity && errors.complexity && (
+                <p style={{ color: "red", fontSize: "12px" }}>
+                  {errors.complexity}
+                </p>
+              )}
+            </div>
+            <div className="form-group col-12 col-sm-6 col-md-3">
+              <label>Marks</label>
+              <input
+                required
+                type="number"
+                value={changedQSet.marks || 1}
+                onChange={(e) => handleQSetChange("marks", e.target.value)}
+              />
+              {!changedQSet.marks && errors.marks && (
+                <p style={{ color: "red", fontSize: "12px" }}>{errors.marks}</p>
+              )}
+            </div>
+            <div className="form-group col-12 col-sm-6 col-md-3 ">
+              <label>Negative Marking</label>
+              <select
+                className="px-10 py-2 "
+                style={{ border: "1px solid gray", borderRadius: "5px" }}
+                required
+                value={changedQSet.is_negative || 0}
+                onChange={(e) =>
+                  handleQSetChange("is_negative", e.target.value)
+                }
+              >
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+              </select>
+            </div>
+            <div className="form-group col-12 col-sm-6 col-md-3">
+              <label>Negative Marks</label>
+              <input
+                required
+                type="number"
+                value={changedQSet.negative_marks || 0}
+                onChange={(e) =>
+                  handleQSetChange("negative_marks", e.target.value)
+                }
+              />
+            </div>
           </div>
-          <div className="form-group col-12 col-sm-6 col-md-3 ">
-            <label>Negative Marking</label>
-            <select className="px-10 py-2 " style={{border:'1px solid gray', borderRadius:'5px'}}
-            required
-              value={changedQSet.is_negative}
-              onChange={(e) => handleQSetChange("is_negative", e.target.value)}
-            >
-              <option value=''>Select</option>
-              <option value="1">Yes</option>
-              <option value="0">No</option>
-            </select>
-          </div>
-          <div className="form-group col-12 col-sm-6 col-md-3">
-            <label>Negative Marks</label>
-            <input
-            required
-              type="number"
-              value={changedQSet.negative_marks}
-              onChange={(e) =>
-                handleQSetChange("negative_marks", e.target.value)
-              }
-            />
-          </div>
-          </div>
-         
         </div>
 
         <Button

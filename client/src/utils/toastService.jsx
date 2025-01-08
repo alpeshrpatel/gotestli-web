@@ -7,22 +7,22 @@ const toastIds = {
 };
 
 export const showToast = (type,message) => {
-  // Dismiss the existing toast of the same type
+  
   if (toastIds[type]) {
     toast.dismiss(toastIds[type]);
   }
 
-  // Define options
+  
   const toastOptions = {
     position: "bottom-center",
     theme: "dark",
-    autoClose: type === "success" ? 3000 : false, // Auto close for success only
-    hideProgressBar: false,
+    autoClose: type === "success" ? 1000 : false, 
+    hideProgressBar: true,
     closeOnClick: true,
-    pauseOnHover: true,
+    pauseOnHover: false,
     draggable: true,
   };
 
-  // Create a new toast and store its ID
+  
   toastIds[type] = toast[type](message, toastOptions);
 };

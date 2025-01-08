@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import SubmitQuizModal from "./SubmitQuizModal/SubmitQuizModal";
 import { Radio, Typography } from "@mui/material";
+import CommentForQuestion from "../common/CommentForQuestion";
 
 const ComprehensiveType = ({
   time,

@@ -167,7 +167,36 @@ const QuestionSetDetailForm = ({
           value={formData.title}
           onChange={handleChange}
         /> */}
-        <TextField
+        <label
+                  htmlFor="title"
+                  style={{
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Title
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  id="title"
+                  required
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#e9ecef",
+                    color: "#495057",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  value={formData.title}
+                  onChange={handleChange}
+                />
+        {/* <TextField
           required
           id="outlined-required"
           label="Title"
@@ -176,7 +205,7 @@ const QuestionSetDetailForm = ({
           value={formData.title}
           className="custom-height-questionsetform bg-white rounded w-100"
           onChange={handleChange}
-        />
+        /> */}
       </div>
 
       <div className="form-group">
@@ -187,7 +216,36 @@ const QuestionSetDetailForm = ({
           value={formData.image}
           onChange={handleChange}
         /> */}
-        <TextField
+        <label
+                  htmlFor="image"
+                  style={{
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Image
+                </label>
+                <input
+                  type="text"
+                  name="image"
+                  id="image"
+                  required
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#e9ecef",
+                    color: "#495057",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  value={formData.image}
+                  onChange={handleChange}
+                />
+        {/* <TextField
           required
           id="outlined-required"
           label="Image"
@@ -196,7 +254,7 @@ const QuestionSetDetailForm = ({
           value={formData.image}
           className="custom-height-questionsetform bg-white rounded w-100"
           onChange={handleChange}
-        />
+        /> */}
       </div>
       <div className="form-group">
         {/* <label>Author:</label>
@@ -207,7 +265,36 @@ const QuestionSetDetailForm = ({
           value={user}
           onChange={handleChange}
         /> */}
-        <TextField
+        <label
+                  htmlFor="user"
+                  style={{
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Author
+                </label>
+                <input
+                  type="text"
+                  name="user"
+                  id="user"
+                  readOnly
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#e9ecef",
+                    color: "#495057",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  value={user}
+                  
+                />
+        {/* <TextField
           id="outlined-read-only-input"
           label="Author"
           defaultValue={user}
@@ -215,7 +302,7 @@ const QuestionSetDetailForm = ({
             readOnly: true,
           }}
           className="custom-height-questionsetform bg-white rounded w-100"
-        />
+        /> */}
       </div>
       <div className="form-group">
         {/* <label>Short Description:</label>
@@ -226,7 +313,36 @@ const QuestionSetDetailForm = ({
           onChange={handleChange}
           required
         /> */}
-        <TextField
+        <label
+                  htmlFor="short_desc"
+                  style={{
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Short Description
+                </label>
+                <input
+                  type="text"
+                  name="short_desc"
+                  id="short_desc"
+                  required
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#e9ecef",
+                    color: "#495057",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  value={formData.short_desc}
+                  onChange={handleChange}
+                />
+        {/* <TextField
           required
           id="outlined-required"
           label="Short Description"
@@ -235,7 +351,7 @@ const QuestionSetDetailForm = ({
           value={formData.short_desc}
           className="custom-height-questionsetform bg-white rounded w-100"
           onChange={handleChange}
-        />
+        /> */}
       </div>
       <div className="form-group">
         {/* <label>Description:</label>
@@ -244,7 +360,36 @@ const QuestionSetDetailForm = ({
           value={formData.description}
           onChange={handleChange}
         ></textarea> */}
-        <TextField
+        <label
+                  htmlFor="description"
+                  style={{
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Description
+                </label>
+                <textarea
+                  
+                  name="description"
+                  id="description"
+                  required
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#e9ecef",
+                    color: "#495057",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  value={formData.description}
+                  onChange={handleChange}
+                />
+        {/* <TextField
           id="outlined-multiline-flexible"
           label="Description"
           name="description"
@@ -253,7 +398,7 @@ const QuestionSetDetailForm = ({
           className="custom-height-questionsetform bg-white rounded w-100"
           multiline
           maxRows={4}
-        />
+        /> */}
       </div>
 
       <div className="form-group row  ">
@@ -266,7 +411,36 @@ const QuestionSetDetailForm = ({
             onChange={handleChange}
             className="w-auto"
           /> */}
-          <TextField
+          <label
+                  htmlFor="start_date"
+                  style={{
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  name="start_date"
+                  id="start_date"
+                  required
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#e9ecef",
+                    color: "#495057",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  value={formData.start_date}
+                  onChange={handleChange}
+                />
+          {/* <TextField
             required
             id="outlined-required"
             label="Start Date"
@@ -281,7 +455,7 @@ const QuestionSetDetailForm = ({
             value={formData.start_date}
             onChange={handleChange}
             className="custom-height-questionsetform bg-white rounded w-100"
-          />
+          /> */}
         </div>
         <div className="d-flex align-content-center col gap-4">
           {/* <label className="align-content-center">End Date:</label>
@@ -292,7 +466,36 @@ const QuestionSetDetailForm = ({
             onChange={handleChange}
             className="w-auto"
           /> */}
-          <TextField
+          <label
+                  htmlFor="end_date"
+                  style={{
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  End Date
+                </label>
+                <input
+                  type="date"
+                  name="end_date"
+                  id="end_date"
+                  required
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#e9ecef",
+                    color: "#495057",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  value={formData.end_date}
+                  onChange={handleChange}
+                />
+          {/* <TextField
             required
             id="outlined-required"
             label="End Date"
@@ -307,10 +510,9 @@ const QuestionSetDetailForm = ({
             value={formData.end_date}
             onChange={handleChange}
             className="custom-height-questionsetform bg-white rounded w-100"
-          />
+          /> */}
         </div>
-      </div>
-      <div className="form-group">
+        <div className="form-group">
         {/* <label>Time Duration:</label>
         <input
           type="text"
@@ -318,7 +520,38 @@ const QuestionSetDetailForm = ({
           value={formData.time_duration}
           onChange={handleChange}
         /> */}
-        <TextField
+        <label
+                  htmlFor="time_duration"
+                  style={{
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Time Duration (in minutes)
+                </label>
+                <input
+                  type="number"
+                  name="time_duration"
+                  id="time_duration"
+                  min='0'
+                  max='200'
+                  required
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#e9ecef",
+                    color: "#495057",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  value={formData.time_duration}
+                  onChange={handleChange}
+                />
+        {/* <TextField
           required
           id="outlined-number"
           label="Time Duration (in minutes)"
@@ -334,8 +567,10 @@ const QuestionSetDetailForm = ({
           value={formData.time_duration}
           className="custom-height-questionsetform bg-white rounded w-100"
           onChange={handleChange}
-        />
+        /> */}
       </div>
+      </div>
+     
       <div className="form-group">
         {/* <label>No. of Questions:</label>
         <input
@@ -345,7 +580,35 @@ const QuestionSetDetailForm = ({
           value={selectedQuestions.length}
           onChange={handleChange}
         /> */}
-        <TextField
+        <label
+                  htmlFor="no_of_question"
+                  style={{
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  No. of Questions
+                </label>
+                <input
+                  type="number"
+                  readOnly
+                  required
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#e9ecef",
+                    color: "#495057",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  value={selectedQuestions.length}
+                  onChange={handleChange}
+                />
+        {/* <TextField
           id="outlined-read-only-input"
           label="No. of Questions"
           defaultValue={selectedQuestions.length}
@@ -353,7 +616,7 @@ const QuestionSetDetailForm = ({
             readOnly: true,
           }}
           className="custom-height-questionsetform bg-white rounded w-100"
-        />
+        /> */}
       </div>
       <div className="form-group row">
         <div className="d-flex align-content-center col gap-4">
@@ -366,7 +629,38 @@ const QuestionSetDetailForm = ({
             required
             className="w-auto"
           /> */}
-          <TextField
+          <label
+                  htmlFor="totalmarks"
+                  style={{
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Total Marks
+                </label>
+                <input
+                  type="number"
+                  name="totalmarks"
+                  id="totalmarks"
+                  min='0'
+                  max='400'
+                  required
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#e9ecef",
+                    color: "#495057",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  value={formData.totalmarks}
+                  onChange={handleChange}
+                />
+          {/* <TextField
             required
             id="outlined-number"
             label="Total Marks"
@@ -382,7 +676,7 @@ const QuestionSetDetailForm = ({
             value={formData.totalmarks}
             className="custom-height-questionsetform bg-white rounded w-100"
             onChange={handleChange}
-          />
+          /> */}
         </div>
         <div className="d-flex align-content-center col gap-4">
           {/* <label className="align-content-center">Pass Percentage:</label>
@@ -394,7 +688,38 @@ const QuestionSetDetailForm = ({
             required
             className="w-auto"
           /> */}
-          <TextField
+          <label
+                  htmlFor="pass_percentage"
+                  style={{
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Pass Percentage
+                </label>
+                <input
+                  type="number"
+                  name="pass_percentage"
+                  id="pass_percentage"
+                  min='0'
+                  max='100'
+                  required
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ced4da",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    backgroundColor: "#e9ecef",
+                    color: "#495057",
+                    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  value={formData.pass_percentage}
+                  onChange={handleChange}
+                />
+          {/* <TextField
             required
             id="outlined-number"
             label="Pass Percentage"
@@ -410,7 +735,7 @@ const QuestionSetDetailForm = ({
             value={formData.pass_percentage}
             className="custom-height-questionsetform bg-white rounded w-100"
             onChange={handleChange}
-          />
+          /> */}
         </div>
       </div>
       <div className="form-group">
@@ -424,7 +749,21 @@ const QuestionSetDetailForm = ({
             "& .MuiInputBase-input": {
               height: "35px",
               border: "none",
+              padding: "12px",
+              border: "1px solid #ced4da",
+              borderRadius: "8px",
+              fontSize: "14px",
+              outline: "none",
+              backgroundColor: "#f8f9fa",
+              boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
             },
+            "& .MuiOutlinedInput-root": {
+              padding: "10px",
+              border: "1px solid #ced4da",
+              borderRadius: "8px",
+              boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+              backgroundColor: "#f8f9fa",
+            }
           }}
           renderInput={(params) => (
             <TextField
