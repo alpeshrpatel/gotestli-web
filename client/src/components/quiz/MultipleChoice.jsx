@@ -15,6 +15,7 @@ import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import SubmitQuizModal from "./SubmitQuizModal/SubmitQuizModal";
 import { Checkbox, Radio } from "@mui/material";
 import { separator } from "@/constants";
+import CommentForQuestion from "../common/CommentForQuestion";
 
 const MultipleChoice = ({
   time,
