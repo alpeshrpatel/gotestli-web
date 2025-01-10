@@ -1,6 +1,7 @@
 import CommonTable from "@/components/common/CommonTable";
 import MetaComponent from "@/components/common/MetaComponent";
 import Preloader from "@/components/common/Preloader";
+import ReadOnlyOption from "@/components/common/ReadOnlyOption";
 import { BootstrapTooltip } from "@/components/common/Tooltip";
 import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";
@@ -29,7 +30,7 @@ const CreateQuestionTable = () => {
       paragraph_id: "",
       question: "",
       options: "",
-      correct_option: "",
+      correctAnswer: "",
       description: "",
       explanation: "",
       question_type_id: "",
@@ -47,7 +48,7 @@ const CreateQuestionTable = () => {
     paragraph_id: "",
     question: "",
     options: "",
-    correct_option: "",
+    correctAnswer: "",
     description: "",
     explanation: "",
     question_type_id: 2,
@@ -57,6 +58,8 @@ const CreateQuestionTable = () => {
     is_negative: 0,
     negative_marks: "",
   });
+  const [options, setOptions] = useState([""]);
+  const [correctOptions, setCorrectOptions] = useState([""]);
 
   const columns = [
     { id: "index", label: "#", sortable: false },
@@ -65,7 +68,7 @@ const CreateQuestionTable = () => {
 
     { id: "question", label: "Question", sortable: true },
     { id: "options", label: "Options", sortable: true },
-    { id: "correct_option", label: "Correct Option(s)", sortable: true },
+    { id: "correctAnswer", label: "Correct Option(s)", sortable: true },
     { id: "description", label: "Description", sortable: true },
     { id: "explanation", label: "Explanation", sortable: true },
     { id: "complexity", label: "Complexity", sortable: true },
@@ -76,7 +79,7 @@ const CreateQuestionTable = () => {
 
   const [editOn, setEditOn] = useState(0);
   const [option, setOption] = useState("");
-  const [correctOption, setCurrentOption] = useState("");
+  const [correctOption, setCorrectOption] = useState("");
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -107,7 +110,7 @@ const CreateQuestionTable = () => {
                   Authorization: `Bearer ${token}`,
                 },
               });
-
+              console.log(response.data)
               const result = response?.data?.reduce(
                 (acc, item) => {
                   if (!acc.correctAnswer) acc.correctAnswer = [];
@@ -273,7 +276,7 @@ const CreateQuestionTable = () => {
           {
             qid: finalQId,
             options: changedQSet.options,
-            correct_option: changedQSet.correct_option,
+            correctAnswer: changedQSet.correctAnswer,
             userId: userId,
           },
           {
@@ -288,7 +291,7 @@ const CreateQuestionTable = () => {
           paragraph_id: "",
           question: "",
           options: "",
-          correct_option: "",
+          correctAnswer: "",
           description: "",
           explanation: "",
           question_type_id: 0,
@@ -305,6 +308,7 @@ const CreateQuestionTable = () => {
           showToast("success", "Question Created Successfully!");
         }
       }
+      window.location.reload();
     } catch (error) {
       if (error.status == 403) {
         localStorage.removeItem("user");
@@ -319,34 +323,45 @@ const CreateQuestionTable = () => {
     }
   }
   async function handleAddOption() {
+    let updatedOptionString = "";
     if (!changedQSet.options && option) {
       setChangedQSet((prev) => ({
         ...prev,
         options: option,
       }));
+      updatedOptionString = option;
     } else if (option) {
+      updatedOptionString = changedQSet?.options?.concat(`:${option}`);
       setChangedQSet((prev) => ({
         ...prev,
         options: changedQSet?.options?.concat(`:${option}`),
       }));
     }
+    handleQSetChange("options", updatedOptionString);
     setOption("");
   }
   async function handleAddCorrectOption() {
-    if (!changedQSet.correct_option && correctOption) {
+    // if (correctOptions.length < 4) {
+    //   setCorrectOptions([...correctOptions, ""]);
+    // }
+    let updatedOptionString = "";
+    if (!changedQSet.correctAnswer && correctOption) {
       setChangedQSet((prev) => ({
         ...prev,
-        correct_option: correctOption,
+        correctAnswer: correctOption,
       }));
+      updatedOptionString = correctOption;
     } else if (correctOption) {
+      updatedOptionString = changedQSet?.correctAnswer?.concat(`:${correctOption}`);
       setChangedQSet((prev) => ({
         ...prev,
-        correct_option: changedQSet?.correct_option?.concat(
+        correctAnswer: changedQSet?.correctAnswer?.concat(
           `:${correctOption}`
         ),
       }));
     }
-    setCurrentOption("");
+    handleQSetChange("correctAnswer", updatedOptionString);
+    setCorrectOption("");
   }
 
   const validate = () => {
@@ -367,7 +382,7 @@ const CreateQuestionTable = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  console.log("questions:", questions);
+  console.log("questions:", changedQSet);
   const getRowId = (row) => row.id;
   const renderRowCells = (set, index) => (
     <>
@@ -574,7 +589,9 @@ const CreateQuestionTable = () => {
                   value={option}
                   onChange={(e) => setOption(e.target.value)}
                 />
-                <button
+                {
+                  (changedQSet?.options?.split(":")?.length < 4 && option) && (
+                    <button
                   className=""
                   onClick={handleAddOption}
                   style={{
@@ -592,14 +609,15 @@ const CreateQuestionTable = () => {
                     style={{ marginX: "auto" }}
                   />{" "}
                 </button>
+                  )
+                }
+                
               </div>
-              <input
-                type="text"
-                readOnly
-                value={changedQSet.options}
-                onChange={(e) => handleQSetChange("options", e.target.value)}
-                style={{ marginTop: "10px" }}
-              />
+              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                {changedQSet?.options?.split(":").map((option, index) => (
+                  <ReadOnlyOption key={index} option={option} />
+                ))}
+              </div>
             </>
           </div>
           <div className="">
@@ -611,9 +629,11 @@ const CreateQuestionTable = () => {
                 <input
                   type="text"
                   value={correctOption}
-                  onChange={(e) => setCurrentOption(e.target.value)}
+                  onChange={(e) => setCorrectOption(e.target.value)}
                 />
-                <button
+                {
+                  (changedQSet?.correctAnswer?.split(":")?.length < 4 && correctOption) && (
+                    <button
                   className=""
                   onClick={handleAddCorrectOption}
                   style={{
@@ -631,18 +651,113 @@ const CreateQuestionTable = () => {
                     style={{ marginX: "auto" }}
                   />{" "}
                 </button>
+                  )
+                }
+                
               </div>
-              <input
+
+              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                {changedQSet?.correctAnswer
+                  ?.split(":")
+                  .map((option, index) => (
+                    <ReadOnlyOption key={index} option={option} />
+                  ))}
+              </div>
+              {/* <input
                 type="text"
                 readOnly
-                value={changedQSet.correct_option}
+                value={changedQSet.correctAnswer}
                 onChange={(e) =>
-                  handleQSetChange("correct_option", e.target.value)
+                  handleQSetChange("correctAnswer", e.target.value)
                 }
                 style={{ marginTop: "10px" }}
-              />
+              /> */}
             </>
           </div>
+          {/* <div>
+        <label>Options</label>
+        {options.map((option, index) => (
+          <div
+            key={index}
+            style={{
+              display: "flex",
+              gap: "4px",
+              alignItems: "center",
+              marginBottom: "10px",
+            }}
+          >
+            <input
+              type="text"
+              value={option}
+              onChange={(e) => setOption(e.target.value)}
+              style={{
+                border: "1px solid gray",
+                borderRadius: "4px",
+                padding: "5px",
+                flexGrow: 1,
+              }}
+            />
+          </div>
+        ))}
+        {options.length < 4 && (
+          <button
+            onClick={handleAddOption}
+            style={{
+              height: "30px",
+              width: "42px",
+              backgroundColor: "#1565C0",
+              color: "white",
+              borderRadius: "100%",
+              marginTop: "10px",
+            }}
+          >
+            <FontAwesomeIcon icon={faPlus} />
+          </button>
+        )}
+      </div> */}
+
+          {/* Correct Options Section */}
+          {/* <div>
+        <label>Correct Options</label>
+        {correctOptions.map((correctOption, index) => (
+          <div
+            key={index}
+            style={{
+              display: "flex",
+              gap: "4px",
+              alignItems: "center",
+              marginBottom: "10px",
+            }}
+          >
+            <input
+              type="text"
+              value={correctOption}
+              onChange={(e) => setCorrectOption(e.target.value)}
+              style={{
+                border: "1px solid gray",
+                borderRadius: "4px",
+                padding: "5px",
+                flexGrow: 1,
+              }}
+            />
+          </div>
+        ))}
+        {correctOptions.length < 4 && (
+          <button
+            onClick={handleAddCorrectOption}
+            style={{
+              height: "30px",
+              width: "42px",
+              backgroundColor: "#1565C0",
+              color: "white",
+              borderRadius: "100%",
+              marginTop: "10px",
+            }}
+          >
+            <FontAwesomeIcon icon={faPlus} />
+          </button>
+        )}
+      </div> */}
           <div className="row col-12">
             <div className="form-group col-sm-12 col-md-6">
               <label>Description</label>

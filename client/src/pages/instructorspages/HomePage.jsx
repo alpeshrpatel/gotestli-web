@@ -201,8 +201,8 @@ const HomePage = () => {
     // Object.values(quiz).some((value) =>
     //   value ? value.toString().toLowerCase().includes(searchQuery) : false
     // )
-    quiz.title.toLowerCase().includes(searchQuery) ||
-    quiz?.short_desc.toLowerCase().includes(searchQuery) ||
+    quiz?.title?.toLowerCase().includes(searchQuery) ||
+    quiz?.short_desc?.toLowerCase().includes(searchQuery) ||
     quiz?.tags?.toLowerCase().includes(searchQuery) ||
     quiz?.author?.toLowerCase().includes(searchQuery)
       ? true
