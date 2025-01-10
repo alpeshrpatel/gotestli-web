@@ -177,7 +177,7 @@ const MakeQuestionSet = () => {
 
   const handleCheckboxChange = (question) => {
     setComplexityCounter((prevCount) => {
-      const complexityKey = question?.complexity?.toLowerCase()
+      const complexityKey = question?.complexity?.toLowerCase();
       return selectedQuestions.includes(question)
         ? {
             ...prevCount,
@@ -204,7 +204,7 @@ const MakeQuestionSet = () => {
         ))
   );
 
-  // console.log(selectedQuestions);
+  console.log(filteredFromAll);
   const questionSetStore = async (jsonData) => {
     try {
       if (token) {
@@ -334,7 +334,7 @@ const MakeQuestionSet = () => {
           }
         );
 
-        showToast("success","Status Change Saved Successfully!");
+        showToast("success", "Status Change Saved Successfully!");
 
         setFilteredFromAll((prevQuestions) =>
           prevQuestions.map((question) =>
@@ -393,7 +393,7 @@ const MakeQuestionSet = () => {
         className="mx-auto"
         style={{
           marginTop: "100px",
-          width: "60vw",
+          width: "80%",
           padding: "30px",
           backgroundColor: "#bfdeee",
           borderRadius: "10px",
@@ -450,6 +450,7 @@ const MakeQuestionSet = () => {
             padding: "10px",
             background: "#f8f9fa",
             borderRadius: "6px",
+            flexWrap: "wrap",
           }}
         >
           {/* Easy Section */}
@@ -637,13 +638,15 @@ const MakeQuestionSet = () => {
                           inputProps={{ "aria-label": "controlled" }}
                         />
                       </BootstrapTooltip>
+                      {question.status_id == 1 ? (
+                        <input
+                          className="p-2 border-0"
+                          type="checkbox"
+                          checked={selectedQuestions.includes(question)}
+                          onChange={() => handleCheckboxChange(question)}
+                        />
+                      ) : ' '}
 
-                      <input
-                        className="p-2 border-0"
-                        type="checkbox"
-                        checked={selectedQuestions.includes(question)}
-                        onChange={() => handleCheckboxChange(question)}
-                      />
                       <label>{question.question}</label>
                     </div>
                     <h6>{question.complexity}</h6>
@@ -674,10 +677,10 @@ const MakeQuestionSet = () => {
 
           {selectedQuestions.length > 0 && (
             <button
-              className="btn btn-success px-3 py-2 w-50 text-18 mt-4 mx-auto"
+              className="button -md px-24 py-20 text-green-5 -outline-green-5  text-16 fw-bolder lh-sm mt-4 mx-auto"
               onClick={handleSubmit}
             >
-              Create
+              Create QuestionSet
             </button>
           )}
         </div>
