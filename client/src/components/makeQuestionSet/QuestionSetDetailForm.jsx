@@ -12,6 +12,7 @@ const QuestionSetDetailForm = ({
   selectedQuestions,
   categories,
   questionSetId,
+  onCloseModal
 }) => {
   const user = auth.currentUser.displayName;
   const [formData, setFormData] = useState({
@@ -169,6 +170,31 @@ const QuestionSetDetailForm = ({
   // console.log(categories);
   return (
     <form className="quiz-form " onSubmit={handleSubmit}>
+      <button
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "24px",
+            }}
+            onClick={onCloseModal}
+          >
+            {" "}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 0 24 24"
+              width="24px"
+              fill="#000000"
+            >
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59 7.11 5.7a.996.996 0 1 0-1.41 1.41L10.59 12l-4.89 4.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.39-.38.39-1.02 0-1.4z" />
+            </svg>
+          </button>
       <div className="form-group">
         {/* <label>Title:</label>
         <input

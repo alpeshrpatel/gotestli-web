@@ -687,7 +687,9 @@ const MakeQuestionSet = () => {
       </div>
       <Modal
         open={open}
-        onClose={onCloseModal}
+        onClose={() => {}}
+        showCloseIcon={false}
+        // onClose={onCloseModal}
         center
         styles={{
           modal: {
@@ -699,6 +701,7 @@ const MakeQuestionSet = () => {
           selectedQuestions={selectedQuestions}
           categories={categories}
           questionSetId={questionSetId}
+          onCloseModal={onCloseModal}
         />
       </Modal>
     </>
