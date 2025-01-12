@@ -175,7 +175,9 @@ export default function Courses({ userRole }) {
           <Tabs
             value={value}
             onChange={handleChange}
-            sx={{ overflowX:'scroll' }}
+            variant="scrollable" 
+            scrollButtons="auto" 
+            // sx={{ overflowX:'scroll' }}
             aria-label="category tabs"
           >
             <Tab

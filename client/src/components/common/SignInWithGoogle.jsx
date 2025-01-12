@@ -155,7 +155,7 @@ const SignInWithGoogle = () => {
             top: "40%",
             right: isSmallScreen ? '0' : '15%',
             transform: "translateY(-50%)",
-            width: "450px",
+            width: isSmallScreen ? "300px": "450px",
           },
         //   overlay: {
         //     background: "transparent",
