@@ -27,6 +27,7 @@ export default function Header({ userRole }) {
     localStorage.getItem("wishlist") || 0
   );
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768);
+  
   // Function to toggle theme and persist to localStorage
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
@@ -56,8 +57,25 @@ export default function Header({ userRole }) {
     };
 
     window.addEventListener("resize", handleResize);
+    
     return () => window.removeEventListener("resize", handleResize);
-  }, [wishlistCount]);
+  });
+
+  useEffect(() => {
+    // Listen for changes to localStorage (e.g., wishlist updates)
+    const handleStorageChange = (event) => {
+      if (event.key === "wishlist") {
+        setWishlistCount(parseInt(localStorage.getItem("wishlist")) || 0);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
 
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
@@ -234,6 +252,7 @@ export default function Header({ userRole }) {
                       parentClassess={""} //ml-30 mr-30 xl:ml-20
                       allClasses={"d-flex items-center text-white"}
                       wishlistCount={wishlistCount}
+                      setWishlistCount={setWishlistCount}
                     />
                   )}
 
@@ -308,12 +327,12 @@ export default function Header({ userRole }) {
                                       <div className="mega__menu">
                                         <div className="row x-gap-40">
                                           <div className="col">
-                                            <h4
+                                            {/* <h4
                                               className="text-17 fw-500 mb-20"
                                               style={{ color: "black" }}
                                             >
                                               Dashboard Pages
-                                            </h4>
+                                            </h4> */}
 
                                             <ul className="mega__list ">
                                               {userRole == "student" &&

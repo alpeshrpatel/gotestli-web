@@ -33,26 +33,30 @@ import { Box, List, ListItem, ListItemText } from "@mui/material";
 import ListTable from "./TableBodyContent";
 import TableBodyContent from "./TableBodyContent";
 import ListView from "./ListView";
-
+import RatingMeter from "@/components/common/RatingMeter";
 
 export default function CourceCard({ view, search = null, role, data, index }) {
   const [rating, setRating] = useState(0);
   const [questionSet, setQuestionsSet] = useState([]);
   const [open, setOpen] = useState(false);
+  const [openRating, setOpenRating] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [wishlistedSet, setWishlistedSet] = useState();
+  const [ratingsData,setRatingsData] = useState([])
+  const [totalRatings,setTotalRatings] = useState(0)
+
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?.id;
   const userRole = user?.role;
-
+  
   useEffect(() => {
     async function getRating() {
       try {
         if (data) {
-           // console.log("rating hello");
+          // console.log("rating hello");
           const response = await API.get(
             `/api/reviews/rating/qset/${data.id}`
             // {
@@ -61,7 +65,32 @@ export default function CourceCard({ view, search = null, role, data, index }) {
             //   },
             // }
           );
-           // console.log(response.data.rating);
+          const avgRatingResponse = await API.get(
+            `/api/reviews/get/rating/ratingmeter/${data.id}`
+          );
+          console.log(avgRatingResponse?.data);
+          const ratingCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+
+          avgRatingResponse?.data?.forEach((obj) => {
+            const roundedRating = Math.floor(parseFloat(obj.avgRating)); 
+            if (ratingCounts[roundedRating] !== undefined) {
+              ratingCounts[roundedRating] += 1;
+            }
+          });
+
+          // Step 2: Calculate percentages
+          const totalRatings = avgRatingResponse?.data?.length;
+          setTotalRatings(totalRatings)
+          const ratingsDataArr = Object.keys(ratingCounts).map((stars) => {
+            return {
+              stars: parseInt(stars),
+              percentage: Math.round(
+                (ratingCounts[stars] / totalRatings) * 100
+              ),
+            };
+          });
+          setRatingsData(ratingsDataArr)
+          console.log(ratingsDataArr);
           setRating(response.data?.rating);
         }
       } catch (error) {
@@ -83,14 +112,14 @@ export default function CourceCard({ view, search = null, role, data, index }) {
               Authorization: `Bearer ${token}`,
             },
           });
-            // console.log(res.data);
+          // console.log(res.data);
           const wishlistedSet = res.data || [];
 
           localStorage.setItem("wishlist", wishlistedSet?.length || 0);
           const isInWishlist = wishlistedSet?.some(
             (set) => set.questionset_id === data.id
           );
-            // console.log("isinwishlist: ", isInWishlist);
+          // console.log("isinwishlist: ", isInWishlist);
           setIsWishlisted(isInWishlist);
         }
       } catch (error) {
@@ -101,7 +130,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
           navigate("/login");
           return;
         }
-         // console.log(error);
+        // console.log(error);
       }
     }
     getWishlist();
@@ -130,7 +159,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
           navigate("/login");
           return;
         }
-         // console.log(error);
+        // console.log(error);
       }
     }
     getQuestions();
@@ -138,6 +167,11 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   };
 
   const onCloseModal = () => setOpen(false);
+
+  const onOpenRatingModal = () => {
+    setOpenRating(true);
+  };
+  const onCloseRatingModal = () => setOpenRating(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -178,7 +212,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
         navigate("/login");
         return;
       }
-       // console.log(error);
+      // console.log(error);
     }
   };
   const date = new Date(data.modified_date);
@@ -187,12 +221,18 @@ export default function CourceCard({ view, search = null, role, data, index }) {
     day: "numeric",
     year: "numeric",
   }).format(date);
-   // console.log(data);
-   // console.log(rating);
- 
+  // console.log(data);
+  // console.log(rating);
+  // const ratingsData = [
+  //   { stars: 5, percentage: 7 },
+  //   { stars: 4, percentage: 17 },
+  //   { stars: 3, percentage: 5 },
+  //   { stars: 2, percentage: 0 },
+  //   { stars: 1, percentage: 0 },
+  // ];
   return (
     <>
-      <Modal open={open} onClose={onCloseModal} center >
+      <Modal open={open} onClose={onCloseModal} center>
         <ExamInstructions
           id={data.id}
           time={data.time_duration}
@@ -250,7 +290,15 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                   <div className="coursesCard__image_overlay rounded-8"></div>
                 </div>
               </div>
-              <div className="mt-2 ms-2" style={{display:'flex',justifyContent:'between',alignItems:'center',gap:'20px'}}>
+              <div
+                className="mt-2 ms-2"
+                style={{
+                  display: "flex",
+                  justifyContent: "between",
+                  alignItems: "center",
+                  gap: "20px",
+                }}
+              >
                 <Rating
                   readonly={true}
                   initialValue={parseFloat(rating)}
@@ -259,17 +307,34 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                   activeColor="#ffd700"
                   emptyColor="#d3d3d3"
                 />
-                {
-                  !data.is_demo ? (
-                    <BootstrapTooltip title={"Purchase This Amazing QuestionSet to Attend it!"}><div className="fs-2">🔒</div></BootstrapTooltip>
-                  
-                ) : ''
-                }
-                
+                <BootstrapTooltip title={<RatingMeter ratings={ratingsData} totalRatings={totalRatings} ratingNumber={rating}/>}>
+                  <div className="icon icon-chevron-down"></div>
+                </BootstrapTooltip>
+                {/* <Rating
+                  readonly={true}
+                  initialValue={parseFloat(rating)}
+                  allowFraction={true}
+                  size={20}
+                  activeColor="#ffd700"
+                  emptyColor="#d3d3d3"
+                /> */}
+                {!data.is_demo ? (
+                  <BootstrapTooltip
+                    title={"Purchase This Amazing QuestionSet to Attend it!"}
+                  >
+                    <div className="fs-2">🔒</div>
+                  </BootstrapTooltip>
+                ) : (
+                  ""
+                )}
               </div>
               <CardContent>
                 <BootstrapTooltip title={data.short_desc}>
-                  <Typography variant="body2" className="text-truncate" sx={{ color: "text.secondary",maxWidth:'400px' }}>
+                  <Typography
+                    variant="body2"
+                    className="text-truncate"
+                    sx={{ color: "text.secondary", maxWidth: "400px" }}
+                  >
                     {data.short_desc}
                   </Typography>
                 </BootstrapTooltip>
@@ -366,14 +431,30 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                   </Typography>
                 </CardContent>
               </Collapse> */}
+              {/* <button onMouseOver={onOpenRatingModal}
+                style={{
+                  textDecoration: "underline",
+                  color: "blue",
+                  textAlign: "center",
+                }}
+              >
+                View Ratings
+              </button>
+              <Modal open={openRating} onClose={onCloseRatingModal} center>
+                <RatingMeter ratings={ratingsData}/>
+              </Modal> */}
             </Card>
           </div>
-        ) : ( 
-            // <ListView body={ <TableBodyContent data={data} rating={rating} role={role} handleWishlistToggle={handleWishlistToggle}/>} />
+        ) : (
+          // <ListView body={ <TableBodyContent data={data} rating={rating} role={role} handleWishlistToggle={handleWishlistToggle}/>} />
 
-           
-            <TableBodyContent data={data} rating={rating} role={role} handleWishlistToggle={handleWishlistToggle}/>
-            /* <Box className="shadow-2">
+          <TableBodyContent
+            data={data}
+            rating={rating}
+            role={role}
+            handleWishlistToggle={handleWishlistToggle}
+          />
+          /* <Box className="shadow-2">
               <List>
                 <ListItem>
                   <img
@@ -450,7 +531,6 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                 </ListItem>
               </List>
             </Box> */
-          
         )}
 
         {/* <div>

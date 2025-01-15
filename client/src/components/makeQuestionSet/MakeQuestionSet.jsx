@@ -189,13 +189,13 @@ const MakeQuestionSet = () => {
           };
     });
     setSelectedQuestions((prevSelectedQuestions) =>
-      prevSelectedQuestions.includes(question)
-        ? prevSelectedQuestions.filter((q) => q !== question)
+      prevSelectedQuestions?.includes(question)
+        ? prevSelectedQuestions?.filter((q) => q !== question)
         : [...prevSelectedQuestions, question]
     );
   };
 
-  let filteredQuestions = questions.filter(
+  let filteredQuestions = questions?.filter(
     (question) =>
       question.question?.toLowerCase()?.includes(searchTerm?.toLowerCase()) &&
       (filter === "" ||
@@ -296,7 +296,7 @@ const MakeQuestionSet = () => {
       }
     });
 
-    const filteredQuestions = questions.filter((question) => {
+    const filteredQuestions = questions?.filter((question) => {
       const matchesSearch = question.question
         ?.toLowerCase()
         ?.includes(searchTerm?.toLowerCase());
@@ -373,13 +373,13 @@ const MakeQuestionSet = () => {
       filteredQuestions = questions;
     } else if (selectedView === "active") {
       // Show only active questions (status_id truthy)
-      filteredQuestions = questions.filter(
+      filteredQuestions = questions?.filter(
         (question) => question.status_id == 1
       );
       // setFilteredFromAll(questions.filter((question) => question.status_id));
     } else if (selectedView === "retired") {
       // Show only retired questions (status_id falsy)
-      filteredQuestions = questions.filter((question) => !question.status_id);
+      filteredQuestions = questions?.filter((question) => !question.status_id);
     }
 
     setFilteredFromAll(filteredQuestions);

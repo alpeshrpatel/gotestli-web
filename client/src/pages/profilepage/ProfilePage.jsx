@@ -666,7 +666,7 @@ const ProfilePage = () => {
               <Autocomplete
                 multiple
                 id="tags-outlined"
-                options={categories.filter(
+                options={categories?.filter(
                   (category) =>
                     !defaultTags?.some((tag) => tag.id == category.id)
                 )}

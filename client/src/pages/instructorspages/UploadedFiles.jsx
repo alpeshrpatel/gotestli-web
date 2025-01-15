@@ -124,7 +124,7 @@ const UploadedFiles = () => {
     <div>
       <Preloader />
       <Header userRole={userRole} />
-      <div className="content-wrapper js-content-wrapper overflow-hidden w-100">
+      <div className="content-wrapper js-content-wrapper overflow-hidden w-100" >
         {/* <Breadcrumbs
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"
@@ -132,7 +132,7 @@ const UploadedFiles = () => {
           {breadcrumbs}
         </Breadcrumbs> */}
         {uploadedData.length > 0 ? (
-          <div className="table-responsive">
+          <div className="table-responsive" style={{}}>
             {/* <table className="custom-table file-table">
               <thead>
                 <tr>
