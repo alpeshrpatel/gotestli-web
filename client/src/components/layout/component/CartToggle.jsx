@@ -7,7 +7,7 @@ import ShopCart from "./ShopCart";
 import CourseCart from "./CourseCart";
 import EventCart from "./EventCart";
 
-const CartToggle = ({ allClasses, parentClassess, wishlistCount }) => {
+const CartToggle = ({ allClasses, parentClassess, wishlistCount, setWishlistCount }) => {
   const { cartProducts, cartCourses, cartEvents } = useContextElement();
   const [activeCart, setActiveCart] = useState(false);
   const [menuItem, setMenuItem] = useState("");
@@ -31,7 +31,26 @@ const CartToggle = ({ allClasses, parentClassess, wishlistCount }) => {
         }
       });
     });
-  }, [wishlistCount]);
+  }, [setWishlistCount]);
+
+  useEffect(() => {
+    console.log('hello')
+    const initialWishlistCount = parseInt(localStorage.getItem("wishlist")) || 0;
+    setWishlistCount(initialWishlistCount);
+      // Listen for changes to localStorage (e.g., wishlist updates)
+      const handleStorageChange = (event) => {
+        if (event.key === "wishlist") {
+          console.log(event.newValue)
+          setWishlistCount(parseInt(localStorage.getItem("wishlist")) || 0);
+        }
+      };
+  
+      window.addEventListener("storage", handleStorageChange);
+  
+      return () => {
+        window.removeEventListener("storage", handleStorageChange);
+      };
+    },[setWishlistCount,wishlistCount]);
 
   return (
     <>

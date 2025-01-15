@@ -288,7 +288,7 @@ export default function CourseListOne() {
                                   <div className="sidebar-checkbox__count">
                                     (
                                     {
-                                      coursesData.filter(
+                                      coursesData?.filter(
                                         (itm) => itm.category == elm.title,
                                       ).length
                                     }

@@ -200,7 +200,10 @@ export default function MobileMenu({
             className='submenuOne'
             style={{ paddingLeft: 0, display: "flex", gap: "15px" }}
           >
-            <li className="menu-item-has-children " style={{display:'flex',flexDirection:'column',gap:'4vh'}}>
+            {
+              userRole == 'student' && (
+                <>
+                   <li className="menu-item-has-children " style={{display:'flex',flexDirection:'column',gap:'4vh'}}>
               <Link
                 data-barba
                 to={`${userRole == 'admin' ? `/admin/dashboard` :( (userRole == 'instructor') ? `/instructor/home` : `/`) }`}
@@ -232,6 +235,14 @@ export default function MobileMenu({
                 style={{ fontSize: "18px",whiteSpace: "nowrap" }}
               >
                My quizzes
+              </Link>
+              <Link
+                data-barba
+                to={`/user/purchases`}
+                className={pathname == "/user/purchases" ? "activeMenu" : ""}
+                style={{ fontSize: "18px",whiteSpace: "nowrap" }}
+              >
+               My Purchases
               </Link>
               <Link
                 data-barba
@@ -272,6 +283,10 @@ export default function MobileMenu({
                 ))}
               </ul> */}
             </li>
+                </>
+              )
+            }
+           
 
             {/* {userRole == "student" && (
               <li className="menu-item-has-children -has-mega-menu">
@@ -404,6 +419,20 @@ export default function MobileMenu({
             {userRole == "instructor" && (
               <>
               <li className="menu-item-has-children">
+              <Link
+                data-barba
+                to="/create/question"
+                className={
+                  pathname == "/create/question" ? "activeMenu" : ""
+                }
+                style={{ fontSize: "18px",whiteSpace: "nowrap" }}
+              >
+               Create Question{" "}
+                {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
+              </Link>
+              
+            </li>
+              <li className="menu-item-has-children">
                 <Link
                   data-barba
                   to="/create/questionset"
@@ -443,15 +472,72 @@ export default function MobileMenu({
                 data-barba
                 to="/upload/questionset"
                 className={
-                  menuItem == "Create QuestionSet" ? "activeMenu" : ""
+                  pathname == "/upload/questionset" ? "activeMenu" : ""
                 }
                 style={{ fontSize: "18px",whiteSpace: "nowrap" }}
               >
-                Upload QuestionSet{" "}
+               Upload QuestionSet{" "}
                 {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
               </Link>
               
             </li>
+              <li className="menu-item-has-children">
+              <Link
+                data-barba
+                to="/instructor/dashboard"
+                className={
+                  pathname == "/instructor/dashboard" ? "activeMenu" : ""
+                }
+                style={{ fontSize: "18px",whiteSpace: "nowrap" }}
+              >
+                Dashboard{" "}
+                {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
+              </Link>
+              
+            </li>
+            <li className="menu-item-has-children">
+              <Link
+                data-barba
+                to="/instructor/home"
+                className={
+                  pathname == "/instructor/home" ? "activeMenu" : ""
+                }
+                style={{ fontSize: "18px",whiteSpace: "nowrap" }}
+              >
+                My Questionsets{" "}
+                {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
+              </Link>
+              
+            </li>
+            <li className="menu-item-has-children">
+              <Link
+                data-barba
+                to="/dshb/uploaded/files"
+                className={
+                  pathname == "/dshb/uploaded/files" ? "activeMenu" : ""
+                }
+                style={{ fontSize: "18px",whiteSpace: "nowrap" }}
+              >
+                My Uploads{" "}
+                {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
+              </Link>
+              
+            </li>
+            <li className="menu-item-has-children">
+              <Link
+                data-barba
+                to="/dshb/profilepage"
+                className={
+                  pathname == "/dshb/profilepage" ? "activeMenu" : ""
+                }
+                style={{ fontSize: "18px",whiteSpace: "nowrap" }}
+              >
+                Profile Page{" "}
+                {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
+              </Link>
+              
+            </li>
+            
               </>
             )}
 
