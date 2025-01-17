@@ -6,9 +6,11 @@ import { useState, useEffect } from "react";
 import ShopCart from "./ShopCart";
 import CourseCart from "./CourseCart";
 import EventCart from "./EventCart";
+import { useLocalStorage } from "@/utils/UseLocalStorage";
 
-const CartToggle = ({ allClasses, parentClassess, wishlistCount, setWishlistCount }) => {
+const CartToggle = ({ allClasses, parentClassess }) => {
   const { cartProducts, cartCourses, cartEvents } = useContextElement();
+  const [wishlistCount, setWishlistCount] = useLocalStorage('wishlist', 0);
   const [activeCart, setActiveCart] = useState(false);
   const [menuItem, setMenuItem] = useState("");
   const [submenu, setSubmenu] = useState("");
@@ -33,25 +35,62 @@ const CartToggle = ({ allClasses, parentClassess, wishlistCount, setWishlistCoun
     });
   }, [setWishlistCount]);
 
-  useEffect(() => {
-    console.log('hello')
-    const initialWishlistCount = parseInt(localStorage.getItem("wishlist")) || 0;
-    setWishlistCount(initialWishlistCount);
-      // Listen for changes to localStorage (e.g., wishlist updates)
-      const handleStorageChange = (event) => {
-        if (event.key === "wishlist") {
-          console.log(event.newValue)
-          setWishlistCount(parseInt(localStorage.getItem("wishlist")) || 0);
-        }
-      };
+  // useEffect(() => {
+  //   console.log('hello')
+  //   const initialWishlistCount = parseInt(localStorage.getItem("wishlist")) || 0;
+  //   setWishlistCount(initialWishlistCount);
+  //     // Listen for changes to localStorage (e.g., wishlist updates)
+  //     const handleStorageChange = (event) => {
+  //       if (event.key === "wishlist") {
+  //         console.log(event.newValue)
+  //         setWishlistCount(event.newValue || 0);
+  //       }
+  //     };
   
-      window.addEventListener("storage", handleStorageChange);
+  //     window.addEventListener("storage", handleStorageChange);
   
-      return () => {
-        window.removeEventListener("storage", handleStorageChange);
-      };
-    },[setWishlistCount,wishlistCount]);
+  //     return () => {
+  //       window.removeEventListener("storage", handleStorageChange);
+  //     };
+  //   },[setWishlistCount,wishlistCount]);
+  // useEffect(() => {
+  //   // Initialize wishlist count
+  //   const updateWishlistCount = () => {
+  //     const count = parseInt(localStorage.getItem("wishlist")) || 0;
+  //     setWishlistCount(count);
+  //   };
 
+  //   // Initial count
+  //   updateWishlistCount();
+
+  //   // Create a custom event handler for localStorage changes
+  //   const handleStorageChange = (e) => {
+  //     if (e.key === "wishlist") {
+  //       updateWishlistCount();
+  //     }
+  //   };
+
+  //   // Listen for storage changes from other tabs/windows
+  //   window.addEventListener("storage", handleStorageChange);
+
+  //   // Create a custom event listener for same-tab updates
+  //   window.addEventListener("wishlistUpdate", updateWishlistCount);
+
+  //   return () => {
+  //     window.removeEventListener("storage", handleStorageChange);
+  //     window.removeEventListener("wishlistUpdate", updateWishlistCount);
+  //   };
+  // }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentValue = parseInt(localStorage.getItem('wishlist')) || 0;
+      if (currentValue !== wishlistCount) {
+        setWishlistCount(currentValue);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [wishlistCount, setWishlistCount]);
   return (
     <>
       <div className={parentClassess ? parentClassess : ""} style={{marginRight:'0px'}} onClick={() => navigate('/dshb/wishlist')}>

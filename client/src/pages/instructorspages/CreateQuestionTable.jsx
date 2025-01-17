@@ -156,6 +156,8 @@ const CreateQuestionTable = () => {
     setEditOn(set.id);
     onOpenModal();
     setChangedQSet(set);
+    setOption('')
+    setCorrectOption('')
   }
 
   async function handleQSetChange(name, value) {
@@ -170,13 +172,14 @@ const CreateQuestionTable = () => {
 
   async function handleSave() {
     // setQuestions(changedQSet);
+    console.log(changedQSet)
 
     try {
       if (token && validate()) {
         if (editOn) {
           const res1 = await API.delete(`/api/options/${editOn}`, {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,   
             },
           });
           // const res2 = await API.put(
