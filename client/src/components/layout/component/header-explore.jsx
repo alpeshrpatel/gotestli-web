@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+
 export const HeaderExplore = ({ allClasses }) => {
   const [exploreActive, setExploreActive] = useState(false);
+  const { pathname } = useLocation();
   return (
     <>
       <div className={`${allClasses ? allClasses : ""}`}>
         <Link
           to="#"
           onClick={() => setExploreActive((pre) => !pre)}
-          className="d-flex items-center"
+          className="d-flex items-center text-white"
           data-el-toggle=".js-explore-toggle"
         >
           <i className="icon icon-explore mr-15"></i>
@@ -22,35 +25,38 @@ export const HeaderExplore = ({ allClasses }) => {
         >
           <div className="explore__item">
             <Link
+              to="/instructor/home"
+              className="d-flex items-center justify-between text-dark-1"
+            >
+              Home
+            </Link>
+           
+          </div>
+          <div className="explore__item">
+            <Link
               to="#"
               className="d-flex items-center justify-between text-dark-1"
             >
-              Architecture<div className="icon-chevron-right text-11"></div>
+              Create<div className="icon-chevron-right text-11"></div>
             </Link>
             <div className="explore__subnav rounded-8">
-              <Link className="text-dark-1" to={`/courses/6`}>
-                Web Design
+              <Link
+                data-barba
+                to="/create/question"
+                className={pathname == "/create/question" ? "activeMenu" : ""}
+                style={{ fontSize: "18px", whiteSpace: "nowrap" }}
+              >
+                Question{" "}
+                {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
               </Link>
-              <Link className="text-dark-1" to={`/courses/6`}>
-                Graphic Design
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6`}>
-                Design Tools
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6`}>
-                User Experience Design
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6`}>
-                Game Design
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6`}>
-                3D & Animation
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6`}>
-                Fashion Design
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6`}>
-                Interior Design
+              <Link
+                data-barba
+                to="/create/questionset"
+                className={pathname == "/create/questionset" ? "activeMenu" : ""}
+                style={{ fontSize: "18px", whiteSpace: "nowrap" }}
+              >
+                QuestionSet{" "}
+                {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
               </Link>
             </div>
           </div>
@@ -60,253 +66,21 @@ export const HeaderExplore = ({ allClasses }) => {
               to="#"
               className="d-flex items-center justify-between text-dark-1"
             >
-              Business<div className="icon-chevron-right text-11"></div>
+              Upload<div className="icon-chevron-right text-11"></div>
             </Link>
             <div className="explore__subnav rounded-8">
-              <Link className="text-dark-1" to={`/courses/6}`}>
-                Web Design
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6}`}>
-                Graphic Design
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6}`}>
-                Design Tools
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6}`}>
-                User Experience Design
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6}`}>
-                Game Design
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6}`}>
-                3D & Animation
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6}`}>
-                Fashion Design
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6}`}>
-                Interior Design
+              <Link
+                data-barba
+                to="/upload/questionset"
+                className={pathname == "/upload/questionset" ? "activeMenu" : ""}
+                style={{ fontSize: "18px", whiteSpace: "nowrap" }}
+              >
+                Upload QuestionSet{" "}
+                {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
               </Link>
             </div>
           </div>
-
-          <div className="explore__item">
-            <Link to="#" className="text-dark-1">
-              Computer Programming
-            </Link>
-          </div>
-
-          <div className="explore__item">
-            <Link to="#" className="text-dark-1">
-              Data Analysis
-            </Link>
-          </div>
-
-          <div className="explore__item">
-            <Link
-              to="#"
-              className="d-flex items-center justify-between text-dark-1"
-            >
-              Design<div className="icon-chevron-right text-11"></div>
-            </Link>
-            <div className="explore__subnav rounded-8">
-              <Link className="text-dark-1" to={`/courses/6`}>
-                Web Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-2/3">
-                Graphic Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-3/3">
-                Design Tools
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-4/3">
-                User Experience Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-5/3">
-                Game Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-6/3">
-                3D & Animation
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6`}>
-                Fashion Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-2/3">
-                Interior Design
-              </Link>
-            </div>
-          </div>
-
-          <div className="explore__item">
-            <Link to="/courses-single-6/3" className="text-dark-1">
-              Education
-            </Link>
-          </div>
-
-          <div className="explore__item">
-            <Link
-              to="#"
-              className="d-flex items-center justify-between text-dark-1"
-            >
-              Electronics<div className="icon-chevron-right text-11"></div>
-            </Link>
-            <div className="explore__subnav rounded-8">
-              <Link className="text-dark-1" to={`/courses/6`}>
-                Web Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-2/3">
-                Graphic Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-3/3">
-                Design Tools
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-4/3">
-                User Experience Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-5/3">
-                Game Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-6/3">
-                3D & Animation
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6`}>
-                Fashion Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-2/3">
-                Interior Design
-              </Link>
-            </div>
-          </div>
-
-          <div className="explore__item">
-            <Link
-              to="#"
-              className="d-flex items-center justify-between text-dark-1"
-            >
-              Language<div className="icon-chevron-right text-11"></div>
-            </Link>
-            <div className="explore__subnav rounded-8">
-              <Link className="text-dark-1" to={`/courses/6`}>
-                Web Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-2/3">
-                Graphic Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-3/3">
-                Design Tools
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-4/3">
-                User Experience Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-5/3">
-                Game Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-6/3">
-                3D & Animation
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6`}>
-                Fashion Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-2/3">
-                Interior Design
-              </Link>
-            </div>
-          </div>
-
-          <div className="explore__item">
-            <Link
-              to="#"
-              className="d-flex items-center justify-between text-dark-1"
-            >
-              Marketing<div className="icon-chevron-right text-11"></div>
-            </Link>
-            <div className="explore__subnav rounded-8">
-              <Link className="text-dark-1" to={`/courses/6`}>
-                Web Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-2/3">
-                Graphic Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-3/3">
-                Design Tools
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-4/3">
-                User Experience Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-5/3">
-                Game Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-6/3">
-                3D & Animation
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6`}>
-                Fashion Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-2/3">
-                Interior Design
-              </Link>
-            </div>
-          </div>
-
-          <div className="explore__item">
-            <Link to="#" className="text-dark-1">
-              Music Arts
-            </Link>
-          </div>
-
-          <div className="explore__item">
-            <Link to="#" className="text-dark-1">
-              Social Science
-            </Link>
-          </div>
-
-          <div className="explore__item">
-            <Link
-              to="#"
-              className="d-flex items-center justify-between text-dark-1"
-            >
-              Photography & Video
-              <div className="icon-chevron-right text-11"></div>
-            </Link>
-            <div className="explore__subnav rounded-8">
-              <Link className="text-dark-1" to={`/courses/6`}>
-                Web Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-2/3">
-                Graphic Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-3/3">
-                Design Tools
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-4/3">
-                User Experience Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-5/3">
-                Game Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-6/3">
-                3D & Animation
-              </Link>
-              <Link className="text-dark-1" to={`/courses/6`}>
-                Fashion Design
-              </Link>
-              <Link className="text-dark-1" to="/courses-single-2/3">
-                Interior Design
-              </Link>
-            </div>
-          </div>
-
-          <div className="explore__item">
-            <Link to={`/courses/6`} className="text-dark-1">
-              IT & Software
-            </Link>
-          </div>
-
-          <div className="explore__item">
-            <Link to="/courses-single-2/3" className="text-purple-1 underline">
-              View All Courses
-            </Link>
-          </div>
+          
         </div>
       </div>
     </>

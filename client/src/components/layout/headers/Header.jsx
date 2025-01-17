@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CartButton from "@/components/common/CartButton";
 import SearchHeader from "./SearchHeader";
+import { HeaderExplore } from "../component/header-explore";
 
 export default function Header({ userRole }) {
   const [activeMobileMenu, setActiveMobileMenu] = useState(false);
@@ -178,9 +179,19 @@ export default function Header({ userRole }) {
                 </Link>
               </div>
             </div>
-
+            {/* <div className="d-flex   ">
+            <HeaderExplore/>
+            </div> */}
+            
             <div className="col-auto d-flex align-items-center  ">
-              <Menu allClasses={"menu__nav text-white -is-active "} />
+             {
+              userRole == 'instructor' ? (
+                <HeaderExplore/>
+              ): (
+                <Menu allClasses={"menu__nav text-white -is-active "} />
+              )
+             }
+              {/* <Menu allClasses={"menu__nav text-white -is-active "} /> */}
             </div>
             {userRole !== "instructor" && userRole !== 'admin' && (
               // isSmallScreen ? (
@@ -251,8 +262,8 @@ export default function Header({ userRole }) {
                     <CartToggle
                       parentClassess={""} //ml-30 mr-30 xl:ml-20
                       allClasses={"d-flex items-center text-white"}
-                      wishlistCount={wishlistCount}
-                      setWishlistCount={setWishlistCount}
+                      // wishlistCount={wishlistCount}
+                      // setWishlistCount={setWishlistCount}
                     />
                   )}
 
