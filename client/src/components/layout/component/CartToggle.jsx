@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import ShopCart from "./ShopCart";
 import CourseCart from "./CourseCart";
 import EventCart from "./EventCart";
-import { useLocalStorage } from "@/utils/UseLocalStorage";
+import { useLocalStorage } from "@/utils/useLocalStorage";
 
 const CartToggle = ({ allClasses, parentClassess }) => {
   const { cartProducts, cartCourses, cartEvents } = useContextElement();
