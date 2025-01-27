@@ -42,8 +42,8 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   const [openRating, setOpenRating] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [wishlistedSet, setWishlistedSet] = useState();
-  const [ratingsData,setRatingsData] = useState([])
-  const [totalRatings,setTotalRatings] = useState(0)
+  const [ratingsData, setRatingsData] = useState([]);
+  const [totalRatings, setTotalRatings] = useState(0);
 
   const navigate = useNavigate();
 
@@ -51,7 +51,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?.id;
   const userRole = user?.role;
-  
+
   useEffect(() => {
     async function getRating() {
       try {
@@ -72,7 +72,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
           const ratingCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
 
           avgRatingResponse?.data?.forEach((obj) => {
-            const roundedRating = Math.floor(parseFloat(obj.avgRating)); 
+            const roundedRating = Math.floor(parseFloat(obj.avgRating));
             if (ratingCounts[roundedRating] !== undefined) {
               ratingCounts[roundedRating] += 1;
             }
@@ -80,7 +80,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
 
           // Step 2: Calculate percentages
           const totalRatings = avgRatingResponse?.data?.length;
-          setTotalRatings(totalRatings)
+          setTotalRatings(totalRatings);
           const ratingsDataArr = Object.keys(ratingCounts).map((stars) => {
             return {
               stars: parseInt(stars),
@@ -89,7 +89,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
               ),
             };
           });
-          setRatingsData(ratingsDataArr)
+          setRatingsData(ratingsDataArr);
           console.log(ratingsDataArr);
           setRating(response.data?.rating);
         }
@@ -299,15 +299,36 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                   gap: "20px",
                 }}
               >
-                <Rating
-                  readonly={true}
-                  initialValue={parseFloat(rating)}
-                  allowFraction={true}
-                  size={20}
-                  activeColor="#ffd700"
-                  emptyColor="#d3d3d3"
-                />
-                <BootstrapTooltip title={<RatingMeter ratings={ratingsData} totalRatings={totalRatings} ratingNumber={rating}/>}>
+                <BootstrapTooltip
+                  title={
+                    <RatingMeter
+                      ratings={ratingsData}
+                      totalRatings={totalRatings}
+                      ratingNumber={rating}
+                    />
+                  }
+                >
+                  <div >
+                    <Rating
+                      className="pointer-none"
+                      readonly={true}
+                      initialValue={parseFloat(rating)}
+                      allowFraction={true}
+                      size={20}
+                      activeColor="#ffd700"
+                      emptyColor="#d3d3d3"
+                    />
+                  </div>
+                </BootstrapTooltip>
+                <BootstrapTooltip
+                  title={
+                    <RatingMeter
+                      ratings={ratingsData}
+                      totalRatings={totalRatings}
+                      ratingNumber={rating}
+                    />
+                  }
+                >
                   <div className="icon icon-chevron-down"></div>
                 </BootstrapTooltip>
                 {/* <Rating

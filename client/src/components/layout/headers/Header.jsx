@@ -186,7 +186,10 @@ export default function Header({ userRole }) {
             <div className="col-auto d-flex align-items-center  ">
              {
               userRole == 'instructor' ? (
-                <HeaderExplore/>
+                <div style={{position:"absolute",left:'200px', display:isSmallScreen ? 'none' : ''}}>
+                  <HeaderExplore/>
+                </div>
+                
               ): (
                 <Menu allClasses={"menu__nav text-white -is-active "} />
               )

@@ -4,7 +4,7 @@ export default function WhyQuiz() {
   
   return (
     // style={{backgroundColor:'#6440FB'}}
-    <section className="layout-pt-lg layout-pb-lg bg-dark-2" style={{marginBottom:'100px'}}>
+    <section className="layout-pt-lg layout-pb-lg bg-dark-2" style={{marginBottom:'1px'}}>
       <div className="container-fluid" style={{ padding: "0px 5vw" }}>
         <div className="row justify-center text-center">
           <div className="col-auto">

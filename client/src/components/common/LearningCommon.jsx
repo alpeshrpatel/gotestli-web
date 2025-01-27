@@ -3,7 +3,7 @@ import { learningPathFive } from "@/data--backup/learningPaths";
 
 export default function LearningCommon() {
   return (
-    <section className="layout-pt-lg layout-pb-lg">
+    <section className="layout-pt-lg ">
       <div className="container-fluid" style={{padding:'0 5vw'}}>
         <div className="row justify-center text-center">
           <div className="col-auto">

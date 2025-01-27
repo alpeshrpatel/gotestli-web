@@ -7,6 +7,7 @@ import {
   Route,
   RouterProvider,
   json,
+  useLocation,
 } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -128,13 +129,19 @@ import CreateQuestionTable from "./pages/instructorspages/CreateQuestionTable";
 import ForgetPasswordPage from "./pages/others/forgetpassword/ForgetPasswordPage";
 
 function App() {
+  const [loading, setLoading] = useState(false);
+  // const location = useLocation();
   useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => setLoading(false), 1000); 
+    
     AOS.init({
       duration: 700,
       offset: 120,
       easing: "ease-out",
       once: true,
     });
+    return () => clearTimeout(timer);
   }, []);
 
   const [isDarkMode, setIsDarkMode] = useState(
@@ -163,23 +170,20 @@ function App() {
   });
 
   const showToast = (message, type) => {
-    
     if (toastIds[type]) {
       toast.dismiss(toastIds[type]);
     }
 
-    
     const toastOptions = {
       position: "bottom-center",
       theme: "dark",
-      autoClose: type === "success" ? 3000 : false, 
+      autoClose: type === "success" ? 3000 : false,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
     };
 
-   
     const newToastId = toast[type](message, toastOptions);
 
     setToastIds((prev) => ({ ...prev, [type]: newToastId }));
@@ -188,15 +192,16 @@ function App() {
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
 
- 
-
   return (
     <>
       {/* <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}> */}
-      <Suspense fallback={<Loader />}>
-        <Context>
-          <BrowserRouter>
-            {/* <Routes>
+      {loading ? (
+        <Loader />
+      ) : (
+        <Suspense fallback={<Loader />}>
+          <Context>
+            <BrowserRouter>
+              {/* <Routes>
             <Route path="/">
               <Route index element={<HomePage1 />} />
               <Route path="home-1" element={<HomePage1 />} />
@@ -226,215 +231,223 @@ function App() {
             </Route>
           </Routes> */}
 
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<HomePage1 />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignupPage />} />
-              <Route path="/forget-password" element={<ForgetPasswordPage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/helpcenter" element={<Faqs />} />
-              <Route path="/leadership" element={<Leadership />} />
-              <Route
-                path="/become/instructor"
-                element={<BecomeInstructorPage />}
-              />
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<HomePage1 />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/signup" element={<SignupPage />} />
+                <Route
+                  path="/forget-password"
+                  element={<ForgetPasswordPage />}
+                />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/helpcenter" element={<Faqs />} />
+                <Route path="/leadership" element={<Leadership />} />
+                <Route
+                  path="/become/instructor"
+                  element={<BecomeInstructorPage />}
+                />
 
-              {/* Student Routes */}
-              {/* <Route path="/" element={
+                {/* Student Routes */}
+                {/* <Route path="/" element={
                 <ProtectedRoute element={<HomePage1 />} role="student" />
               } /> */}
-              <Route
-                path="quiz/singlechoice"
-                element={
-                  <ProtectedRoute element={<SingleChoice />} role="student" />
-                }
-              />
-              <Route
-                path="quiz/report"
-                element={
-                  <ProtectedRoute element={<QuizReport />} role="student" />
-                }
-              />
-              <Route
-                path="quiz/result"
-                element={
-                  <ProtectedRoute element={<QuizResult />} role="student" />
-                }
-              />
-              <Route
-                path="quiz/questions"
-                element={
-                  <ProtectedRoute element={<QuestionSet />} role="student" />
-                }
-              />
-              <Route
-                path="quiz/start"
-                element={
-                  <ProtectedRoute
-                    element={<ExamInstructions />}
-                    role="student"
-                  />
-                }
-              />
-              <Route
-                path="/dshb/quizzes"
-                element={
-                  <ProtectedRoute element={<StudentQuizzes />} role="student" />
-                }
-              />
-              <Route
-                path="/dshb/wishlist"
-                element={
-                  <ProtectedRoute
-                    element={<StudentWishlist />}
-                    role="student"
-                  />
-                }
-              />
-              <Route
-                path="/student/dashboard"
-                element={
-                  <ProtectedRoute
-                    element={<StudentDashboard />}
-                    role="student"
-                  />
-                }
-              />
-              <Route
-                path="/buy/questionset"
-                element={
-                  <ProtectedRoute
-                    element={<PurchasePage/>}
-                    role="student"
-                  />
-                }
-              />
-               <Route
-                path="/user/purchases"
-                element={
-                  <ProtectedRoute
-                    element={<PurchaseListing/>}
-                    role="student"
-                  />
-                }
-              />
-              <Route path="/search/result" element={<SearchResult />} />
-              <Route
-                path="/dshb/profilepage"
-                element={
-                  <ProtectedRoute
-                    element={<ProfilePage />}
-                    role={
-                      userRole == `student`
-                        ? `student`
-                        : userRole == "instructor"
-                        ? "instructor"
-                        : ""
-                    }
-                  />
-                }
-              />
+                <Route
+                  path="quiz/singlechoice"
+                  element={
+                    <ProtectedRoute element={<SingleChoice />} role="student" />
+                  }
+                />
+                <Route
+                  path="quiz/report"
+                  element={
+                    <ProtectedRoute element={<QuizReport />} role="student" />
+                  }
+                />
+                <Route
+                  path="quiz/result"
+                  element={
+                    <ProtectedRoute element={<QuizResult />} role="student" />
+                  }
+                />
+                <Route
+                  path="quiz/questions"
+                  element={
+                    <ProtectedRoute element={<QuestionSet />} role="student" />
+                  }
+                />
+                <Route
+                  path="quiz/start"
+                  element={
+                    <ProtectedRoute
+                      element={<ExamInstructions />}
+                      role="student"
+                    />
+                  }
+                />
+                <Route
+                  path="/dshb/quizzes"
+                  element={
+                    <ProtectedRoute
+                      element={<StudentQuizzes />}
+                      role="student"
+                    />
+                  }
+                />
+                <Route
+                  path="/dshb/wishlist"
+                  element={
+                    <ProtectedRoute
+                      element={<StudentWishlist />}
+                      role="student"
+                    />
+                  }
+                />
+                <Route
+                  path="/student/dashboard"
+                  element={
+                    <ProtectedRoute
+                      element={<StudentDashboard />}
+                      role="student"
+                    />
+                  }
+                />
+                <Route
+                  path="/buy/questionset"
+                  element={
+                    <ProtectedRoute element={<PurchasePage />} role="student" />
+                  }
+                />
+                <Route
+                  path="/user/purchases"
+                  element={
+                    <ProtectedRoute
+                      element={<PurchaseListing />}
+                      role="student"
+                    />
+                  }
+                />
+                <Route path="/search/result" element={<SearchResult />} />
+                <Route
+                  path="/dshb/profilepage"
+                  element={
+                    <ProtectedRoute
+                      element={<ProfilePage />}
+                      role={
+                        userRole == `student`
+                          ? `student`
+                          : userRole == "instructor"
+                          ? "instructor"
+                          : ""
+                      }
+                    />
+                  }
+                />
 
-              {/* Admin Routes */}
-              <Route
-                path="/admin/dashboard"
-                element={
-                  <ProtectedRoute element={<AdminDashboard />} role="admin" />
-                }
-              />
+                {/* Admin Routes */}
+                <Route
+                  path="/admin/dashboard"
+                  element={
+                    <ProtectedRoute element={<AdminDashboard />} role="admin" />
+                  }
+                />
 
-              {/* Instructor Routes */}
-              <Route
-                path="/create/questionset"
-                element={
-                  <ProtectedRoute
-                    element={<MakeQuestionSet />}
-                    role="instructor"
-                  />
-                }
-              />
-              <Route
-                path="/create/question"
-                element={
-                  <ProtectedRoute
-                    element={<CreateQuestionTable />}
-                    role="instructor"
-                  />
-                }
-              />
-              <Route
-                path="/upload/questionset"
-                element={
-                  <ProtectedRoute
-                    element={<UploadQuestionSet />}
-                    role="instructor"
-                  />
-                }
-              />
-              <Route
-                path="/instructor/home"
-                element={
-                  <ProtectedRoute element={<HomePage />} role="instructor" />
-                }
-              />
+                {/* Instructor Routes */}
+                <Route
+                  path="/create/questionset"
+                  element={
+                    <ProtectedRoute
+                      element={<MakeQuestionSet />}
+                      role="instructor"
+                    />
+                  }
+                />
+                <Route
+                  path="/create/question"
+                  element={
+                    <ProtectedRoute
+                      element={<CreateQuestionTable />}
+                      role="instructor"
+                    />
+                  }
+                />
+                <Route
+                  path="/upload/questionset"
+                  element={
+                    <ProtectedRoute
+                      element={<UploadQuestionSet />}
+                      role="instructor"
+                    />
+                  }
+                />
+                <Route
+                  path="/instructor/home"
+                  element={
+                    <ProtectedRoute element={<HomePage />} role="instructor" />
+                  }
+                />
 
-              <Route
-                path="/quiz/students"
-                element={
-                  <ProtectedRoute
-                    element={<ViewStudents />}
-                    role="instructor"
-                  />
-                }
-              />
-              <Route
-                path="/quiz/questions/:id"
-                element={
-                  <ProtectedRoute
-                    element={<ViewQuestions />}
-                    role="instructor"
-                  />
-                }
-              />
-              <Route
-                path="/quiz/question/comments/:questionId"
-                element={
-                  <ProtectedRoute element={<ViewComments />} role="instructor" />
-                }
-              />
-              <Route
-                path="/instructor/dashboard"
-                element={<InstructorDashboard role="instructor" />}
-                role="instructor"
-              />
+                <Route
+                  path="/quiz/students"
+                  element={
+                    <ProtectedRoute
+                      element={<ViewStudents />}
+                      role="instructor"
+                    />
+                  }
+                />
+                <Route
+                  path="/quiz/questions/:id"
+                  element={
+                    <ProtectedRoute
+                      element={<ViewQuestions />}
+                      role="instructor"
+                    />
+                  }
+                />
+                <Route
+                  path="/quiz/question/comments/:questionId"
+                  element={
+                    <ProtectedRoute
+                      element={<ViewComments />}
+                      role="instructor"
+                    />
+                  }
+                />
+                <Route
+                  path="/instructor/dashboard"
+                  element={<InstructorDashboard role="instructor" />}
+                  role="instructor"
+                />
 
-              <Route
-                path="/dshb/uploaded/files"
-                element={<UploadedFiles />}
-                role="instructor"
-              />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-            <ScrollTopBehaviour />
-          </BrowserRouter>
-          
-          <ToastContainer
-            position="bottom-center"
-            autoClose={false}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="dark"
-            transition={Bounce}
-          />
-        </Context>
-      </Suspense>
+                <Route
+                  path="/dshb/uploaded/files"
+                  element={<UploadedFiles />}
+                  role="instructor"
+                />
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+              <ScrollTopBehaviour />
+            </BrowserRouter>
+
+            <ToastContainer
+              position="bottom-center"
+              autoClose={false}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="dark"
+              transition={Bounce}
+            />
+          </Context>
+        </Suspense>
+      )}
+
       {/* </ThemeProvider> */}
     </>
   );

@@ -28,7 +28,7 @@ export default function BecomeInstructorPage() {
       <div className="content-wrapper  js-content-wrapper overflow-hidden">
         {/* <PageLinks /> */}
         <PageHeading />
-        <section className=" layout-pb-lg">
+        <section className="">
           <div className="container-fluid w-100 " style={{display:'flex',flexDirection:'column',justifyContent:'space-between',alignItems:'center'}}>
             <Tabs />
             <LearningCommon />

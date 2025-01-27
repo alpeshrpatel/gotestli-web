@@ -1,4 +1,7 @@
+
+import Lottie, { LottiePlayer } from "lottie-react";
 import React from "react";
+import about from './about.json'
 
 import { Link } from "react-router-dom";
 export default function About() {
@@ -35,17 +38,18 @@ export default function About() {
       </section>
       <section className="layout-pt-md layout-pb-lg">
         <div className="container-fluid" style={{ padding: "0px 5vw" }}>
-          <div className="row y-gap-50 justify-between items-center">
+          <div className="row  justify-between items-center">
             <div className="col-lg-6 pr-50 sm:pr-15">
               <div className="composition -type-8">
-                <div className="-el-1">
-                  <img src="/assets/img/about-1/1.png" alt="image" />
-                </div>
-                <div className="-el-2">
-                  <img src="/assets/img/about-1/2.png" alt="image" />
-                </div>
+                
                 <div className="-el-3">
-                  <img src="/assets/img/about-1/3.png" alt="image" />
+                <Lottie animationData={about} loop={true} />
+                  {/* <LottiePlayer
+                    autoplay
+                    loop
+                    src="/assets/img/about.lottie"
+                    style={{ width: 300, height: 300 }}
+                  /> */}
                 </div>
               </div>
             </div>
