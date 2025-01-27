@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
-
 import React from "react";
+import Lottie from "lottie-react";
+import jointoday from './jointoday.json'
 
 export default function JoinToday() {
   return (
-    <section className="layout-pt-lg layout-pb-md bg-light-4">
+    <section className=" layout-pb-md bg-light-4">
       <div className="container-fluid" style={{padding:'0 5vw'}}>
-        <div className="row y-gap-50 justify-between items-center">
+        <div className="row y-gap-10 justify-between items-center">
           <div className="col-lg-7 pr-60">
-            <img src="/assets/img/become-ins/1.png" alt="image" />
+          <Lottie animationData={jointoday} loop={true} />
           </div>
 
           <div className="col-lg-5">
