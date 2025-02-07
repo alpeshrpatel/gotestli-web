@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   TableBody,
   TableCell,
@@ -16,16 +16,55 @@ import {
 
 const CommonTable = ({
   columns,
-  data,
+  // data,
   getRowId, 
   renderRowCells, 
-  rowsPerPageOptions = [5, 10, 25],
-  initialRowsPerPage = 5,
+  fetchData,
+  
 }) => {
+  let rowsPerPageOptions = [5, 10, 25]
+  let initialRowsPerPage = 5
+
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState(columns[0].id);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(initialRowsPerPage);
+  const [data, setData] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+
+ 
+  
+  
+
+  useEffect(() => {
+    const fetchDataFromAPI = async () => {
+      try {
+        if (typeof fetchData !== "function") {
+          console.error("fetchData is not a function. Check if it is passed as a prop.");
+          return;
+        }
+    
+        const response = await fetchData(page + 1, rowsPerPage);
+    
+        
+    
+        if (!response || typeof response !== "object" || !("data" in response)) {
+          throw new Error("Invalid API response: Expected an object with a 'data' property.");
+        }
+        if (response){
+          console.log("API Response:", response); // Debugging step
+          setData(response.data || []);
+        setTotalCount(response.totalRecords ?? 0); 
+        }
+    
+        
+      } catch (error) {
+        console.error("Error fetching data:", error.message || error);
+      }
+    };
+      fetchDataFromAPI();
+    
+  }, [page, rowsPerPage]); 
 
   const handleSortRequest = (property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -117,7 +156,7 @@ const CommonTable = ({
 
       <TablePagination
         component="div"
-        count={data.length}
+        count={totalCount}
         page={page}
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}

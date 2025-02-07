@@ -127,6 +127,7 @@ import PurchasePage from "./pages/studentpages/PurchasePage";
 import PurchaseListing from "./pages/studentpages/PurchaseListing";
 import CreateQuestionTable from "./pages/instructorspages/CreateQuestionTable";
 import ForgetPasswordPage from "./pages/others/forgetpassword/ForgetPasswordPage";
+// import AppProvider from "./utils/AppContext";
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -198,6 +199,7 @@ function App() {
       {loading ? (
         <Loader />
       ) : (
+        // <AppProvider>
         <Suspense fallback={<Loader />}>
           <Context>
             <BrowserRouter>
@@ -446,6 +448,7 @@ function App() {
             />
           </Context>
         </Suspense>
+       
       )}
 
       {/* </ThemeProvider> */}

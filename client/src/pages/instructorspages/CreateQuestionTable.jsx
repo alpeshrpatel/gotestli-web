@@ -90,66 +90,128 @@ const CreateQuestionTable = () => {
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
 
-  useEffect(() => {
-    async function getQuestions() {
-      try {
-        if (token) {
-          const { data } = await API.get(
-            `/api/questionmaster/detailded/question/${userId}`,
-            {
+  async function fetchData(page = 1, rowsPerPage = 10) {
+    const start = (page - 1) * rowsPerPage + 1;
+    const end = page * rowsPerPage;
+    try {
+      if (token) {
+        const { data } = await API.get(
+          `/api/questionmaster/detailded/question/${userId}?start=${start}&end=${end}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, 
+            },
+          }
+        );
+        console.log('================================',data)
+        const questionsWithOptions = await Promise.all(
+          data.map(async (question) => {
+            const response = await API.get(`/api/options/${question.id}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
-          );
+            });
+            console.log(response.data)
+            const result = response?.data?.reduce(
+              (acc, item) => {
+                if (!acc.correctAnswer) acc.correctAnswer = [];
+                if (!acc.options) acc.options = [];
 
-          const questionsWithOptions = await Promise.all(
-            data.map(async (question) => {
-              const response = await API.get(`/api/options/${question.id}`, {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              });
-              console.log(response.data)
-              const result = response?.data?.reduce(
-                (acc, item) => {
-                  if (!acc.correctAnswer) acc.correctAnswer = [];
-                  if (!acc.options) acc.options = [];
+                if (item.correctAnswer === 1) {
+                  acc.correctAnswer.push(item.options);
+                }
 
-                  if (item.correctAnswer === 1) {
-                    acc.correctAnswer.push(item.options);
-                  }
+                acc.options.push(item.options);
+                return acc;
+              },
+              { correctAnswer: [], options: [] }
+            );
 
-                  acc.options.push(item.options);
-                  return acc;
-                },
-                { correctAnswer: [], options: [] }
-              );
+            return {
+              ...question,
+              correctAnswer: result.correctAnswer.join(":"),
+              options: result.options.join(":"),
+            };
+          })
+        );
 
-              return {
-                ...question,
-                correctAnswer: result.correctAnswer.join(":"),
-                options: result.options.join(":"),
-              };
-            })
-          );
+        setQuestions(questionsWithOptions);
 
-          setQuestions(questionsWithOptions);
-
-          // showToast("success", "Questions Fetched Successfully!");
-        }
-      } catch (error) {
-        if (error.status === 403) {
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
-          navigate("/login");
-          return;
-        }
-        showToast("error", "Error occurred: " + error.message);
+        // showToast("success", "Questions Fetched Successfully!");
+        return { data: [...data?.res] , totalRecords: data?.totalRecords}
       }
+      
+    } catch (error) {
+      if (error.status === 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        navigate("/login");
+        return;
+      }
+      showToast("error", "Error occurred: " + error.message);
     }
+  }
+  
+  useEffect(() => {
+    // async function getQuestions() {
+    //   try {
+    //     if (token) {
+    //       const { data } = await API.get(
+    //         `/api/questionmaster/detailded/question/${userId}`,
+    //         {
+    //           headers: {
+    //             Authorization: `Bearer ${token}`, 
+    //           },
+    //         }
+    //       );
 
-    getQuestions();
+    //       const questionsWithOptions = await Promise.all(
+    //         data.map(async (question) => {
+    //           const response = await API.get(`/api/options/${question.id}`, {
+    //             headers: {
+    //               Authorization: `Bearer ${token}`,
+    //             },
+    //           });
+    //           console.log(response.data)
+    //           const result = response?.data?.reduce(
+    //             (acc, item) => {
+    //               if (!acc.correctAnswer) acc.correctAnswer = [];
+    //               if (!acc.options) acc.options = [];
+
+    //               if (item.correctAnswer === 1) {
+    //                 acc.correctAnswer.push(item.options);
+    //               }
+
+    //               acc.options.push(item.options);
+    //               return acc;
+    //             },
+    //             { correctAnswer: [], options: [] }
+    //           );
+
+    //           return {
+    //             ...question,
+    //             correctAnswer: result.correctAnswer.join(":"),
+    //             options: result.options.join(":"),
+    //           };
+    //         })
+    //       );
+
+    //       setQuestions(questionsWithOptions);
+
+    //       // showToast("success", "Questions Fetched Successfully!");
+    //     }
+    //   } catch (error) {
+    //     if (error.status === 403) {
+    //       localStorage.removeItem("user");
+    //       localStorage.removeItem("token");
+    //       navigate("/login");
+    //       return;
+    //     }
+    //     showToast("error", "Error occurred: " + error.message);
+    //   }
+    // }
+
+    fetchData();
   }, [token, userId]);
 
   function handleEdit(set, index) {
@@ -881,9 +943,10 @@ const CreateQuestionTable = () => {
           {questions && (
             <CommonTable
               columns={columns}
-              data={questions?.length > 0 ? questions : emptyRow}
+              // data={questions?.length > 0 ? questions : emptyRow}
               getRowId={getRowId}
               renderRowCells={renderRowCells}
+              fetchData={fetchData}
             />
           )}
           <div
