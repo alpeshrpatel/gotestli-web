@@ -54,35 +54,46 @@ const HomePage = () => {
   const userId = user.id;
   const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    // const author = auth.currentUser.displayName;
-    async function getQuestionSets() {
-      try {
-        if (token) {
-          const { data } = await API.get(
-            `/api/questionset/instructor/${userId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-           console.log(data);
-          setQuestionSets(data);
-        }
-      } catch (error) {
-        if (error.status == 403) {
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
-          // showToast("error","Invaild token!");
-          navigate("/login");
-          return;
-        }
+  async function getQuestionSets(page = 1, rowsPerPage = 10) {
+    const start = (page - 1) * rowsPerPage + 1;
+    const end = page * rowsPerPage;
+    try {
+      if (token) {
+        const { data } = await API.get(
+          `/api/questionset/instructor/${userId}?start=${start}&end=${end}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+         console.log(data);
+        setQuestionSets(data.res);
+        const theNewObj = {
+          data: data.res,
+          totalRecords: data.totalRecords
+        };
+    
+        console.log('Final theNewObj:', theNewObj);
+        return theNewObj;
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // showToast("error","Invaild token!");
+        navigate("/login");
+        return;
       }
     }
+  }
+
+  useEffect(() => {
+    // const author = auth.currentUser.displayName;
+    
     getQuestionSets();
   }, []);
-
+    console.log('qs',questionSets)
   // async function handleRowClick(id, index) {
   //   setExpandedRow(index === expandedRow ? null : index);
   //   if (index !== expandedRow) {
@@ -197,17 +208,26 @@ const HomePage = () => {
     setSearchQuery(event.target.value.toLowerCase());
   };
 
-  const filteredData = questionSets.filter((quiz) =>
-    // Object.values(quiz).some((value) =>
-    //   value ? value.toString().toLowerCase().includes(searchQuery) : false
-    // )
-    quiz?.title?.toLowerCase().includes(searchQuery) ||
-    quiz?.short_desc?.toLowerCase().includes(searchQuery) ||
-    quiz?.tags?.toLowerCase().includes(searchQuery) ||
-    quiz?.author?.toLowerCase().includes(searchQuery)
-      ? true
-      : false
-  );
+  // const filteredData = questionSets?.filter((quiz) =>
+  //   // Object.values(quiz).some((value) =>
+  //   //   value ? value.toString().toLowerCase().includes(searchQuery) : false
+  //   // )
+  //   quiz?.title?.toLowerCase().includes(searchQuery) ||
+  //   quiz?.short_desc?.toLowerCase().includes(searchQuery) ||
+  //   quiz?.tags?.toLowerCase().includes(searchQuery) ||
+  //   quiz?.author?.toLowerCase().includes(searchQuery)
+  //     ? true
+  //     : false
+  // );
+
+  const filteredData = Array.isArray(questionSets)
+  ? questionSets.filter((quiz) =>
+      quiz?.title?.toLowerCase().includes(searchQuery) ||
+      quiz?.short_desc?.toLowerCase().includes(searchQuery) ||
+      quiz?.tags?.toLowerCase().includes(searchQuery) ||
+      quiz?.author?.toLowerCase().includes(searchQuery)
+    )
+  : [];
 
   const handleStatusChange = async (qSetId, checked) => {
     try {
@@ -544,9 +564,10 @@ const HomePage = () => {
               ) : (
                 <CommonTable
                   columns={columns}
-                  data={filteredData.length > 0 ? filteredData : questionSets}
                   getRowId={getRowId}
                   renderRowCells={renderRowCells}
+                  fetchData={getQuestionSets}
+                  // tableData={filteredData.length > 0 ? filteredData : questionSets}
                 />
               )}
           </div>

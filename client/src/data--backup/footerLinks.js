@@ -7,6 +7,7 @@ export const footerLinks = [
       { href: "/become/instructor", label: "Careers" },
       // { href: "/blog-list-1", label: "Press" },
       { href: "/leadership", label: "Leadership" },
+      { href: "/privacy-policy" , label: "Privacy Policy"},
       { href: "/contact", label: "Contact Us" },
     ],
   },

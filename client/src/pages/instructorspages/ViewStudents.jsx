@@ -46,32 +46,43 @@ const ViewStudents = () => {
   const userRole = user.role;
   const userId = user.id;
   const token = localStorage.getItem("token");
-  useEffect(() => {
-    async function getstudents() {
-      try {
-        if (token) {
-          const { data } = await API.get(
-            `/api/userresult/students/list/${set.id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-           // console.log(data);
-          setStudentsData(data);
-        }
-      } catch (error) {
-        if (error.status == 403) {
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
-          // showToast("error","Invaild token!");
-          navigate("/login");
-          return;
-        }
-        console.error("Failed to fetch student data:", error);
+
+  async function getstudents(page = 1, rowsPerPage = 10) {
+    const start = (page - 1) * rowsPerPage + 1;
+    const end = page * rowsPerPage;
+    try {
+      if (token) {
+        const { data } = await API.get(
+          `/api/userresult/students/list/${set.id}?start=${start}&end=${end}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+         // console.log(data);
+        setStudentsData(data.res);
+        const theNewObj = {
+          data: data.res,
+          totalRecords: data.totalRecords
+        };
+    
+        console.log('Final theNewObj:', theNewObj);
+        return theNewObj;
       }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // showToast("error","Invaild token!");
+        navigate("/login");
+        return;
+      }
+      console.error("Failed to fetch student data:", error);
     }
+  }
+  useEffect(() => {
+    
     getstudents();
   }, []);
 
@@ -381,9 +392,10 @@ const ViewStudents = () => {
               ) : (
                 <CommonTable
                   columns={columns}
-                  data={filteredData.length > 0 ? filteredData : studentsData}
                   getRowId={getRowId}
                   renderRowCells={renderRowCells}
+                  fetchData={getstudents}
+                  // tableData={filteredData.length > 0 ? filteredData : studentsData}
                 />
               )}
             <h5 className=" text-center mt-4" style={{ color: "red" }}>

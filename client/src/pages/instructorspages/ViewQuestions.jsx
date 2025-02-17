@@ -26,30 +26,42 @@ const ViewQuestions = () => {
   const { id } = useParams();
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
+
+  async function getQuestions(page = 1, rowsPerPage = 10) {
+    const start = (page - 1) * rowsPerPage + 1;
+    const end = page * rowsPerPage;
+    try {
+      if (token) {
+        const { data } = await API.get(`/api/questionset/questions/${id}?start=${start}&end=${end}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+          console.log(data);
+        setQuestions(data.res);
+        const theNewObj = {
+          data: data.res,
+          totalRecords: data.totalRecords
+        };
+    
+        console.log('Final theNewObj:', theNewObj);
+        return theNewObj;
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // showToast("error","Invaild token!");
+        navigate("/login");
+        return;
+      }
+      console.error("Failed to fetch Questions data:", error);
+    }
+  }
+
   useEffect(() => {
     // const author = auth.currentUser.displayName;
-    async function getQuestions() {
-      try {
-        if (token) {
-          const { data } = await API.get(`/api/questionset/questions/${id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-            console.log(data);
-          setQuestions(data);
-        }
-      } catch (error) {
-        if (error.status == 403) {
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
-          // showToast("error","Invaild token!");
-          navigate("/login");
-          return;
-        }
-        console.error("Failed to fetch Questions data:", error);
-      }
-    }
+    
     getQuestions();
   }, []);
    // console.log(isHovered);
@@ -109,9 +121,10 @@ const ViewQuestions = () => {
           <div className="table-responsive mt-1" style={{ paddingTop: "20px" }}>
             <CommonTable
               columns={columns}
-              data={questions}
               getRowId={getRowId}
               renderRowCells={renderRowCells}
+              fetchData={getQuestions}
+              // tableData={questions}
             />
           </div>
         ) : (

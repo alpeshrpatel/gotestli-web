@@ -5,6 +5,7 @@ export default function PaginationTwo({
   setPageNumber,
   data,
   pageCapacity,
+  totalRecords
 }) {
   const handlePrevious = () => {
     if (pageNumber == 1) {
@@ -13,7 +14,7 @@ export default function PaginationTwo({
     }
   };
   const handleNext = () => {
-    if (Math.ceil(data.length / pageCapacity) > pageNumber) {
+    if (Math.ceil(totalRecords / pageCapacity) > pageNumber) {
       setPageNumber((pre) => pre + 1);
     }
   };
@@ -32,7 +33,7 @@ export default function PaginationTwo({
         >
           1
         </span>
-        {data.length > pageCapacity ? (
+        {totalRecords > pageCapacity ? (
           <span
             onClick={() => setPageNumber(2)}
             className={` pointer border border-primary-subtle p-2 rounded ${pageNumber == 2 ? "bg-info-subtle" : ""} `}
@@ -43,7 +44,7 @@ export default function PaginationTwo({
         ) : (
           ""
         )}
-        {data.length > pageCapacity * 2 ? (
+        {totalRecords > pageCapacity * 2 ? (
           <span
             onClick={() => setPageNumber(3)}
             className={` pointer border border-primary-subtle p-2 rounded ${pageNumber == 3 ? "bg-info-subtle" : ""} `}
@@ -55,27 +56,27 @@ export default function PaginationTwo({
           ""
         )}
 
-        {data.length > pageCapacity * 4 && pageNumber != 4 && <span>...</span>}
+        {totalRecords > pageCapacity * 4 && pageNumber != 4 && <span>...</span>}
 
         {pageNumber > 3 &&
-          Math.ceil(data.length / pageCapacity) != pageNumber && (
+          Math.ceil(totalRecords / pageCapacity) != pageNumber && (
             <span href="#" className="pointer border border-primary-subtle p-2 rounded bg-info-subtle">
               {pageNumber}
             </span>
           )}
-        {data.length > pageCapacity * 4 &&
-          pageNumber < Math.ceil(data.length / pageCapacity) - 1 &&
+        {totalRecords > pageCapacity * 4 &&
+          pageNumber < Math.ceil(totalRecords / pageCapacity) - 1 &&
           pageNumber > 3 && <span className="">...</span>}
-        {data.length > pageCapacity * 3 + 1 ? (
+        {totalRecords > pageCapacity * 3 + 1 ? (
           <span
             className={` pointer border border-primary-subtle p-2 rounded
-             ${ pageNumber == Math.ceil(data.length / pageCapacity)
+             ${ pageNumber == Math.ceil(totalRecords / pageCapacity)
                 ? "bg-info-subtle"
                 : ""}
             `}
-            onClick={() => setPageNumber(Math.ceil(data.length / pageCapacity))}
+            onClick={() => setPageNumber(Math.ceil(totalRecords / pageCapacity))}
           >
-            {Math.ceil(data.length / pageCapacity)}
+            {Math.ceil(totalRecords / pageCapacity)}
           </span>
         ) : (
           ""

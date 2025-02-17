@@ -46,6 +46,8 @@ const MakeQuestionSet = () => {
   const [open, setOpen] = useState(false);
   const [pageCapicity, setPageCapicity] = useState(10);
   const [viewQuestion, setViewQuestion] = useState(true);
+  const [totalRecords, setTotalRecords] = useState();
+  const [loading,setLoading] = useState(false)
   const navigate = useNavigate();
 
   const onOpenModal = () => setOpen(true);
@@ -57,27 +59,34 @@ const MakeQuestionSet = () => {
   const userRole = user.role;
   const indexOfLastRecord = currentPage * pageCapicity;
   const indexOfFirstRecord = indexOfLastRecord - pageCapicity;
-  let shouldRenderPagination = questions.length > pageCapicity;
+  // let shouldRenderPagination = questions.length > pageCapicity;
+  let shouldRenderPagination = 1;
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true)
+      const start = (currentPage - 1) * pageCapicity + 1;
+      const end = currentPage * pageCapicity;
       try {
         if (token) {
+          setLoading(true)
           const [categoriesResponse, questionsResponse] = await Promise.all([
             API.get("/api/category", {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             }),
-            API.get(`/api/questionmaster/user/${userId}`, {
+            API.get(`/api/questionmaster/user/${userId}?start=${start}&end=${end}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             }),
           ]);
           setCategories(categoriesResponse.data);
-          setQuestions(questionsResponse.data);
-          setFilteredFromAll(questionsResponse.data);
+          setQuestions(questionsResponse.data.res);
+          setFilteredFromAll(questionsResponse.data.res);
+          setTotalRecords(questionsResponse.data.totalRecords)
+          setLoading(false)
         }
       } catch (error) {
         if (error.status == 403) {
@@ -91,14 +100,25 @@ const MakeQuestionSet = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [pageCapicity,currentPage]);
+
+  useEffect(() => {
+    setFilteredFromAll(questions);
+  }, [questions]);
 
   useEffect(() => {
     setQuestionSetsQuestions([]);
     questionSets.forEach((q) => {
       getQuestionsFromQSetId(q.question_set_id);
     });
-  }, [questionSets]);
+  }, [questionSets,pageCapicity,currentPage]);
+
+  // useEffect(() => {
+  //   if (filteredFromAll) {
+  //     setLoading(false); 
+      
+  //   }
+  // }, [filteredFromAll]);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -117,6 +137,7 @@ const MakeQuestionSet = () => {
         );
 
         setQuestionSets(data);
+        setFilteredFromAll(data)
       }
     } catch (error) {
       if (error.status == 403) {
@@ -144,13 +165,15 @@ const MakeQuestionSet = () => {
       getQuestionSetId(filteredCategory.id);
     }
   };
-  // console.log("filtered: " + questionSets);
+   
 
   const getQuestionsFromQSetId = async (questionId) => {
     try {
       if (token) {
+        const start = (currentPage - 1) * pageCapicity + 1;
+        const end = currentPage * pageCapicity;
         const { data } = await API.get(
-          `/api/questionset/questions/${questionId}`,
+          `/api/questionset/questions/${questionId}?start=${start}&end=${end}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -160,7 +183,7 @@ const MakeQuestionSet = () => {
 
         setQuestionSetsQuestions((prevQuestions) => [
           ...prevQuestions,
-          ...data,
+          ...data.res,
         ]);
       }
     } catch (error) {
@@ -385,7 +408,10 @@ const MakeQuestionSet = () => {
     setFilteredFromAll(filteredQuestions);
     setViewQuestion(selectedView);
   };
-  console.log(viewQuestion);
+  console.log('sdgsg',filteredFromAll);
+  console.log(' first sdgsg',indexOfFirstRecord);
+  // console.log('last sdgsg',filteredFromAll.slice(indexOfFirstRecord, indexOfLastRecord));
+
   return (
     <>
       <Header userRole={userRole} />
@@ -423,7 +449,7 @@ const MakeQuestionSet = () => {
           className="filterDropdown mb-2"
         >
           <option value="">All</option>
-          {categories.map((category, index) => (
+          {categories?.map((category, index) => (
             <option key={index} value={category?.title?.toLowerCase()}>
               {category.title}
             </option>
@@ -615,9 +641,10 @@ const MakeQuestionSet = () => {
 
         <div className="checkboxContainer mt-3">
           <ul>
-            {filteredFromAll &&
+            { 
+             !loading && filteredFromAll.length > 0  ? (
               filteredFromAll
-                .slice(indexOfFirstRecord, indexOfLastRecord)
+                // .slice(indexOfFirstRecord, indexOfLastRecord)
                 .map((question, index) => (
                   <div
                     key={index}
@@ -651,7 +678,10 @@ const MakeQuestionSet = () => {
                     </div>
                     <h6>{question.complexity}</h6>
                   </div>
-                ))}
+                ))) : (
+                  'Loading......'
+                )
+              }
           </ul>
           {shouldRenderPagination && (
             <div className="w-75 m-auto d-flex align-items-center justify-content-center">
@@ -660,6 +690,7 @@ const MakeQuestionSet = () => {
                 setPageNumber={setCurrentPage}
                 data={filteredFromAll}
                 pageCapacity={pageCapicity}
+                totalRecords={totalRecords}
               />
               <select
                 className="filterDropdown"

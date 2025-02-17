@@ -91,29 +91,39 @@ const StudentQuizzes = () => {
   };
 
   const onCloseModal = () => setOpen(false);
-  useEffect(() => {
-    // const author = auth.currentUser.displayName;
-    async function getQuestionSets() {
-      try {
-        if (token) {
-          const { data } = await API.get(`/api/userresult/user/${userId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          // console.log(data);
-          setQuestionSets(data);
-        }
-      } catch (error) {
-        if (error.status == 403) {
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
-          showToast("error","Your Session timedout!");
-          navigate("/login");
-          return;
-        }
+  async function getQuestionSets(page = 1, rowsPerPage = 10) {
+    const start = (page - 1) * rowsPerPage + 1;
+    const end = page * rowsPerPage;
+    try {
+      if (token) {
+        const { data } = await API.get(`/api/userresult/pagelimit/user/${userId}?start=${start}&end=${end}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        // console.log(data);
+        setQuestionSets(data.res);
+        const theNewObj = {
+          data: data.res,
+          totalRecords: data.totalRecords
+        };
+    
+        console.log('Final theNewObj:', theNewObj);
+        return theNewObj;
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        showToast("error","Your Session timedout!");
+        navigate("/login");
+        return;
       }
     }
+  }
+  useEffect(() => {
+    // const author = auth.currentUser.displayName;
+   
     getQuestionSets();
   }, []);
 
@@ -503,9 +513,11 @@ const StudentQuizzes = () => {
               ) : (
                 <CommonTable
                   columns={columns}
-                  data={filteredData.length > 0 ? filteredData : questionSets}
+                  
                   getRowId={getRowId}
                   renderRowCells={renderRowCells}
+                  fetchData={getQuestionSets}
+                  // tableData={filteredData.length > 0 ? filteredData : questionSets}
                 />
               )}
             </div>

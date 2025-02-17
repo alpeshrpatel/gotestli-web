@@ -127,6 +127,7 @@ import PurchasePage from "./pages/studentpages/PurchasePage";
 import PurchaseListing from "./pages/studentpages/PurchaseListing";
 import CreateQuestionTable from "./pages/instructorspages/CreateQuestionTable";
 import ForgetPasswordPage from "./pages/others/forgetpassword/ForgetPasswordPage";
+import PrivacyPolicy from "./components/layout/footers/footerpages/PrivacyPolicy";
 // import AppProvider from "./utils/AppContext";
 
 function App() {
@@ -250,6 +251,7 @@ function App() {
                   path="/become/instructor"
                   element={<BecomeInstructorPage />}
                 />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
                 {/* Student Routes */}
                 {/* <Route path="/" element={
