@@ -33,30 +33,41 @@ const StudentWishlist = () => {
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
   const userId = user.id;
+
+  async function getQuestions(page = 1, rowsPerPage = 10) {
+    const start = (page - 1) * rowsPerPage + 1;
+    const end = page * rowsPerPage;
+    try {
+      if (token) {
+        const { data } = await API.get(`/api/wishlist/${userId}?start=${start}&end=${end}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+         // console.log(data);
+        setQuestionSets(data.res);
+        const theNewObj = {
+          data: data.res,
+          totalRecords: data.totalRecords
+        };
+    
+        console.log('Final theNewObj:', theNewObj);
+        return theNewObj;
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // showToast("error","Invaild token!");
+        navigate("/login");
+        return;
+      }
+      console.error("Failed to fetch Questionsets data:", error);
+    }
+  }
   useEffect(() => {
     // const author = auth.currentUser.displayName;
-    async function getQuestions() {
-      try {
-        if (token) {
-          const { data } = await API.get(`/api/wishlist/${userId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-           // console.log(data);
-          setQuestionSets(data);
-        }
-      } catch (error) {
-        if (error.status == 403) {
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
-          // showToast("error","Invaild token!");
-          navigate("/login");
-          return;
-        }
-        console.error("Failed to fetch Questionsets data:", error);
-      }
-    }
+    
     getQuestions();
   }, []);
    // console.log(isHovered);
@@ -212,9 +223,10 @@ const StudentWishlist = () => {
            ) : (
              <CommonTable
                columns={columns}
-               data={filteredData.length > 0 ? filteredData : questionSets}
                getRowId={getRowId}
                renderRowCells={renderRowCells}
+               fetchData={getQuestions}
+              //  tableData={filteredData.length > 0 ? filteredData : questionSets}
              />
            )}
          </div>

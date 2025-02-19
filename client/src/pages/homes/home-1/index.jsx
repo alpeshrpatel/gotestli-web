@@ -21,6 +21,8 @@ import MetaComponent from "@/components/common/MetaComponent";
 import { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
 import FeedbackButton from "@/components/common/FeedbackButton";
+import PayPalButton from "@/components/common/PayPalButton";
+import PaymentComponent from "@/components/common/PaymentComponent";
 
 const metadata = {
   title: " Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
@@ -56,6 +58,16 @@ export default function HomePage1() {
   const user = JSON.parse( localStorage.getItem('user')) || '';
   const userRole = user.role;
 
+  const handleSuccess = (data) => {
+    console.log('Payment successful:', data);
+    // Handle successful payment
+  };
+
+  const handleError = (error) => {
+    console.error('Payment error:', error);
+    // Handle payment error
+  };
+
   return (
     <>
       {isLoading ? (
@@ -85,6 +97,12 @@ export default function HomePage1() {
         <GetApp />
         <Blog />
         <Join /> */}
+         <PayPalButton
+      amount="99.99"
+      onSuccess={handleSuccess}
+      onError={handleError}
+    />
+    <PaymentComponent/>
             <FooterOne />
           </div>
         </>

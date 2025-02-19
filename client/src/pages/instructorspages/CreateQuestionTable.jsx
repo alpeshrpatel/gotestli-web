@@ -43,20 +43,76 @@ const CreateQuestionTable = () => {
   ]);
   const [questions, setQuestions] = useState([]);
   const [paragraph, setParagraph] = useState("");
-  const [changedQSet, setChangedQSet] = useState({
-    org_id: 0,
-    paragraph_id: "",
-    question: "",
-    options: "",
-    correctAnswer: "",
-    description: "",
-    explanation: "",
-    question_type_id: 2,
-    status_id: 1,
-    complexity: "easy",
-    marks: 1,
-    is_negative: 0,
-    negative_marks: "",
+  // const [changedQSet, setChangedQSet] = useState(JSON.parse(localStorage.getItem('createQuestionCache')?.changedQSet) || {
+  //   org_id: 0,
+  //   paragraph_id: "",
+  //   question: "",
+  //   options: "",
+  //   correctAnswer: "",
+  //   description: "",
+  //   explanation: "",
+  //   question_type_id: 2,
+  //   status_id: 1,
+  //   complexity: "easy",
+  //   marks: 1,
+  //   is_negative: 0,
+  //   negative_marks: "",
+  // });
+  const [changedQSet, setChangedQSet] = useState(() => {
+    const cachedData = localStorage.getItem('createQuestionCache');
+    if (cachedData) {
+      try {
+        const parsed = JSON.parse(cachedData);
+        return parsed.changedQSet || {
+          org_id: 0,
+          paragraph_id: "",
+          question: "",
+          options: "",
+          correctAnswer: "",
+          description: "",
+          explanation: "",
+          question_type_id: 2,
+          status_id: 1,
+          complexity: "easy",
+          marks: 1,
+          is_negative: 0,
+          negative_marks: "",
+        };
+      } catch (error) {
+        console.error('Error parsing localStorage data:', error);
+        return {
+          org_id: 0,
+          paragraph_id: "",
+          question: "",
+          options: "",
+          correctAnswer: "",
+          description: "",
+          explanation: "",
+          question_type_id: 2,
+          status_id: 1,
+          complexity: "easy",
+          marks: 1,
+          is_negative: 0,
+          negative_marks: "",
+        };
+      }
+    }
+    
+    return {
+      org_id: 0,
+      paragraph_id: "",
+      question: "",
+      options: "",
+      correctAnswer: "",
+      description: "",
+      explanation: "",
+      question_type_id: 2,
+      status_id: 1,
+      complexity: "easy",
+      marks: 1,
+      is_negative: 0,
+      negative_marks: "",
+    };
   });
   const [options, setOptions] = useState([""]);
   const [correctOptions, setCorrectOptions] = useState([""]);
@@ -90,66 +146,220 @@ const CreateQuestionTable = () => {
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
 
-  useEffect(() => {
-    async function getQuestions() {
-      try {
-        if (token) {
-          const { data } = await API.get(
-            `/api/questionmaster/detailded/question/${userId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
+  // async function fetchData(page = 1, rowsPerPage = 10) {
+  //   const start = (page - 1) * rowsPerPage + 1;
+  //   const end = page * rowsPerPage;
+  //   try {
+  //     if (token) {
+  //       const { data } = await API.get(
+  //         `/api/questionmaster/detailded/question/${userId}?start=${start}&end=${end}`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`, 
+  //           },
+  //         }
+  //       );
+  //       console.log('================================',data)
+  //       const questionsWithOptions = await Promise.all(
+  //         data.map(async (question) => {
+  //           const response = await API.get(`/api/options/${question.id}`, {
+  //             headers: {
+  //               Authorization: `Bearer ${token}`,
+  //             },
+  //           });
+  //           console.log(response.data)
+  //           const result = response?.data?.reduce(
+  //             (acc, item) => {
+  //               if (!acc.correctAnswer) acc.correctAnswer = [];
+  //               if (!acc.options) acc.options = [];
 
-          const questionsWithOptions = await Promise.all(
-            data.map(async (question) => {
-              const response = await API.get(`/api/options/${question.id}`, {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              });
-              console.log(response.data)
-              const result = response?.data?.reduce(
-                (acc, item) => {
-                  if (!acc.correctAnswer) acc.correctAnswer = [];
-                  if (!acc.options) acc.options = [];
+  //               if (item.correctAnswer === 1) {
+  //                 acc.correctAnswer.push(item.options);
+  //               }
 
-                  if (item.correctAnswer === 1) {
-                    acc.correctAnswer.push(item.options);
-                  }
+  //               acc.options.push(item.options);
+  //               return acc;
+  //             },
+  //             { correctAnswer: [], options: [] }
+  //           );
 
-                  acc.options.push(item.options);
-                  return acc;
-                },
-                { correctAnswer: [], options: [] }
-              );
+  //           return {
+  //             ...question,
+  //             correctAnswer: result.correctAnswer.join(":"),
+  //             options: result.options.join(":"),
+  //           };
+  //         })
+  //       );
 
-              return {
-                ...question,
-                correctAnswer: result.correctAnswer.join(":"),
-                options: result.options.join(":"),
-              };
-            })
-          );
-
-          setQuestions(questionsWithOptions);
-
-          // showToast("success", "Questions Fetched Successfully!");
-        }
-      } catch (error) {
-        if (error.status === 403) {
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
-          navigate("/login");
-          return;
-        }
-        showToast("error", "Error occurred: " + error.message);
+  //       setQuestions(questionsWithOptions);
+  //       console.log('data after promise.all',data)
+  //       // showToast("success", "Questions Fetched Successfully!");
+  //       return { data: [...data?.res] , totalRecords: data?.totalRecords}
+  //     }
+      
+  //   } catch (error) {
+  //     if (error.status === 403) {
+  //       localStorage.removeItem("user");
+  //       localStorage.removeItem("token");
+  //       navigate("/login");
+  //       return;
+  //     }
+  //     showToast("error", "Error occurred: " + error.message);
+  //   }
+  // }
+  async function fetchData(page = 1, rowsPerPage = 10) {
+    const start = (page - 1) * rowsPerPage + 1;
+    const end = page * rowsPerPage;
+    
+    try {
+      if (!token) {
+        throw new Error('No token available');
       }
+  
+      // Fetch initial questions data
+      const { data } = await API.get(
+        `/api/questionmaster/detailded/question/${userId}?start=${start}&end=${end}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+  
+      // Check if we received valid data
+      if (!data?.res || !Array.isArray(data.res)) {
+        throw new Error('Invalid data received from API');
+      }
+  
+      // Store the original data
+      const originalData = [...data.res];
+  
+      // Fetch options for each question
+      const questionsWithOptions = await Promise.all(
+        originalData.map(async (question) => {
+          const response = await API.get(`/api/options/${question.id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          console.log('options data:', response)
+          if (!response?.data) {
+            return {
+              ...question,
+              correctAnswer: '',
+              options: '',
+            };
+          }
+  
+          const result = response.data.reduce(
+            (acc, item) => {
+              if (!acc.correctAnswer) acc.correctAnswer = [];
+              if (!acc.options) acc.options = [];
+              if (item.correctAnswer === 1) {
+                acc.correctAnswer.push(item.options);
+              }
+              acc.options.push(item.options);
+              return acc;
+            },
+            { correctAnswer: [], options: [] }
+          );
+  
+          return {
+            ...question,
+            correctAnswer: result.correctAnswer.join(':'),
+            options: result.options.join(':'),
+          };
+        })
+      );
+      console.log(questionsWithOptions)
+      // Update state with the processed questions
+      setQuestions(questionsWithOptions);
+  
+      // Create the final object using the original structure from API
+      const theNewObj = {
+        // data: data.res,
+        data: questionsWithOptions,
+        totalRecords: data.totalRecords
+      };
+  
+      // console.log('Final theNewObj:', theNewObj);
+      return theNewObj;
+  
+    } catch (error) {
+      console.error('Error in fetchData:', error);
+  
+      if (error?.status === 403) {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        navigate('/login');
+        return 'came from error';
+      }
+  
+      showToast('error', `Error occurred: ${error.message}`);
+      return null;
     }
+  }
+  useEffect(() => {
+    // async function getQuestions() {
+    //   try {
+    //     if (token) {
+    //       const { data } = await API.get(
+    //         `/api/questionmaster/detailded/question/${userId}`,
+    //         {
+    //           headers: {
+    //             Authorization: `Bearer ${token}`, 
+    //           },
+    //         }
+    //       );
 
-    getQuestions();
+    //       const questionsWithOptions = await Promise.all(
+    //         data.map(async (question) => {
+    //           const response = await API.get(`/api/options/${question.id}`, {
+    //             headers: {
+    //               Authorization: `Bearer ${token}`,
+    //             },
+    //           });
+    //           console.log(response.data)
+    //           const result = response?.data?.reduce(
+    //             (acc, item) => {
+    //               if (!acc.correctAnswer) acc.correctAnswer = [];
+    //               if (!acc.options) acc.options = [];
+
+    //               if (item.correctAnswer === 1) {
+    //                 acc.correctAnswer.push(item.options);
+    //               }
+
+    //               acc.options.push(item.options);
+    //               return acc;
+    //             },
+    //             { correctAnswer: [], options: [] }
+    //           );
+
+    //           return {
+    //             ...question,
+    //             correctAnswer: result.correctAnswer.join(":"),
+    //             options: result.options.join(":"),
+    //           };
+    //         })
+    //       );
+
+    //       setQuestions(questionsWithOptions);
+
+    //       // showToast("success", "Questions Fetched Successfully!");
+    //     }
+    //   } catch (error) {
+    //     if (error.status === 403) {
+    //       localStorage.removeItem("user");
+    //       localStorage.removeItem("token");
+    //       navigate("/login");
+    //       return;
+    //     }
+    //     showToast("error", "Error occurred: " + error.message);
+    //   }
+    // }
+
+    fetchData();
   }, [token, userId]);
 
   function handleEdit(set, index) {
@@ -161,6 +371,7 @@ const CreateQuestionTable = () => {
   }
 
   async function handleQSetChange(name, value) {
+   
     if (name == "question_type_id" && value == 1) {
       onOpenModal();
     }
@@ -168,11 +379,13 @@ const CreateQuestionTable = () => {
       ...prev,
       [name]: value !== undefined ? value : "",
     }));
+    localStorage.setItem('createQuestionCache', JSON.stringify({changedQSet:changedQSet}))
   }
 
   async function handleSave() {
     // setQuestions(changedQSet);
-    console.log(changedQSet)
+    localStorage.removeItem('createQuestionCache')
+    
 
     try {
       if (token && validate()) {
@@ -213,8 +426,7 @@ const CreateQuestionTable = () => {
             },
           }
         );
-        console.log(response.data);
-        console.log(changedQSet);
+       
         let finalQId = 0;
         if (editOn) {
           const res2 = await API.put(
@@ -232,7 +444,7 @@ const CreateQuestionTable = () => {
               },
             }
           );
-          console.log(res2.data);
+       
           finalQId = res2.data.id;
         } else {
           const res = await API.post(
@@ -288,7 +500,7 @@ const CreateQuestionTable = () => {
             },
           }
         );
-        console.log(data);
+      
         setChangedQSet({
           org_id: 0,
           paragraph_id: "",
@@ -385,7 +597,43 @@ const CreateQuestionTable = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  console.log("questions:", changedQSet);
+  // handle remove options functions
+  const handleRemoveOption = (optionToRemove) => {
+    const currentOptions = changedQSet.options?.split(":") || [];
+    const updatedOptions = currentOptions.filter(opt => opt !== optionToRemove);
+    const updatedOptionString = updatedOptions.join(":");
+    
+    // Also remove from correct answers if it exists there
+    if (changedQSet.correctAnswer?.includes(optionToRemove)) {
+      const currentCorrectOptions = changedQSet.correctAnswer?.split(":") || [];
+      const updatedCorrectOptions = currentCorrectOptions.filter(opt => opt !== optionToRemove);
+      const updatedCorrectOptionString = updatedCorrectOptions.join(":");
+      
+      setChangedQSet(prev => ({
+        ...prev,
+        options: updatedOptionString,
+        correctAnswer: updatedCorrectOptionString
+      }));
+    } else {
+      setChangedQSet(prev => ({
+        ...prev,
+        options: updatedOptionString
+      }));
+    }
+  };
+
+  const handleRemoveCorrectOption = (optionToRemove) => {
+    const currentCorrectOptions = changedQSet.correctAnswer?.split(":") || [];
+    const updatedCorrectOptions = currentCorrectOptions.filter(opt => opt !== optionToRemove);
+    const updatedCorrectOptionString = updatedCorrectOptions.join(":");
+    
+    setChangedQSet(prev => ({
+      ...prev,
+      correctAnswer: updatedCorrectOptionString
+    }));
+  };
+
+  console.log("changedqset:", changedQSet);
   const getRowId = (row) => row.id;
   const renderRowCells = (set, index) => (
     <>
@@ -618,7 +866,9 @@ const CreateQuestionTable = () => {
               </div>
               <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
                 {changedQSet?.options?.split(":").map((option, index) => (
-                  <ReadOnlyOption key={index} option={option} />
+                  <ReadOnlyOption  key={index} 
+                  option={option} 
+                  onRemove={handleRemoveOption} />
                 ))}
               </div>
             </>
@@ -663,7 +913,9 @@ const CreateQuestionTable = () => {
                 {changedQSet?.correctAnswer
                   ?.split(":")
                   .map((option, index) => (
-                    <ReadOnlyOption key={index} option={option} />
+                    <ReadOnlyOption key={index} 
+                    option={option} 
+                    onRemove={handleRemoveCorrectOption}/>
                   ))}
               </div>
               {/* <input
@@ -881,9 +1133,10 @@ const CreateQuestionTable = () => {
           {questions && (
             <CommonTable
               columns={columns}
-              data={questions?.length > 0 ? questions : emptyRow}
               getRowId={getRowId}
               renderRowCells={renderRowCells}
+              fetchData={fetchData}
+              // tableData={questions?.length > 0 ? questions : []}
             />
           )}
           <div

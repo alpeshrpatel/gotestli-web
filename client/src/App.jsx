@@ -127,6 +127,8 @@ import PurchasePage from "./pages/studentpages/PurchasePage";
 import PurchaseListing from "./pages/studentpages/PurchaseListing";
 import CreateQuestionTable from "./pages/instructorspages/CreateQuestionTable";
 import ForgetPasswordPage from "./pages/others/forgetpassword/ForgetPasswordPage";
+import PrivacyPolicy from "./components/layout/footers/footerpages/PrivacyPolicy";
+// import AppProvider from "./utils/AppContext";
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -198,6 +200,7 @@ function App() {
       {loading ? (
         <Loader />
       ) : (
+        // <AppProvider>
         <Suspense fallback={<Loader />}>
           <Context>
             <BrowserRouter>
@@ -248,6 +251,7 @@ function App() {
                   path="/become/instructor"
                   element={<BecomeInstructorPage />}
                 />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
                 {/* Student Routes */}
                 {/* <Route path="/" element={
@@ -446,6 +450,7 @@ function App() {
             />
           </Context>
         </Suspense>
+       
       )}
 
       {/* </ThemeProvider> */}

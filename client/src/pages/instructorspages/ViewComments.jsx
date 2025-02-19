@@ -28,30 +28,41 @@ const ViewComments = () => {
   const {questionSetId} = location.state;
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
+
+  async function getComments(page = 1, rowsPerPage = 10) {
+    const start = (page - 1) * rowsPerPage + 1;
+    const end = page * rowsPerPage;
+    try {
+      if (token) {
+        const { data } = await API.get(`/api/comments/type/question/question/${questionId}?start=${start}&end=${end}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+          console.log(data);
+        setComments(data.res);
+        const theNewObj = {
+          data: data.res,
+          totalRecords: data.totalRecords
+        };
+    
+        console.log('Final theNewObj:', theNewObj);
+        return theNewObj;
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // showToast("error","Invaild token!");
+        navigate("/login");
+        return;
+      }
+      console.error("Failed to fetch Comments:" , error)
+    }
+  }
   useEffect(() => {
     // const author = auth.currentUser.displayName;
-    async function getComments() {
-      try {
-        if (token) {
-          const { data } = await API.get(`/api/comments/type/question/question/${questionId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-            console.log(data);
-          setComments(data);
-        }
-      } catch (error) {
-        if (error.status == 403) {
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
-          // showToast("error","Invaild token!");
-          navigate("/login");
-          return;
-        }
-        console.error("Failed to fetch Comments:" , error)
-      }
-    }
+    
     getComments();
   }, []);
  
@@ -117,6 +128,8 @@ const ViewComments = () => {
               data={comments}
               getRowId={getRowId}
               renderRowCells={renderRowCells}
+              fetchData={getComments}
+              // tableData={comments}
             />
           </div>
         ) : (
