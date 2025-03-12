@@ -20,7 +20,7 @@ const CommonTable = ({
   getRowId, 
   renderRowCells, 
   fetchData,
-  
+  initialData = [],
 }) => {
   let rowsPerPageOptions = [5, 10, 25]
   let initialRowsPerPage = 5
@@ -30,7 +30,7 @@ const CommonTable = ({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(initialRowsPerPage);
   const [data, setData] = useState([]);
-  const [totalCount, setTotalCount] = useState(0);
+  const [totalCount, setTotalCount] = useState(initialData?.length);
 
   const fetchDataFromAPI = async () => {
     try {
@@ -59,10 +59,23 @@ const CommonTable = ({
   };
 
   useEffect(() => {
-   
+    if (fetchData) {
       fetchDataFromAPI();
+    }
+  }, [page, rowsPerPage]);
+
+  // useEffect(() => {
+   
+  //     fetchDataFromAPI();
     
-  }, [page, rowsPerPage]); 
+  // }, [page, rowsPerPage]); 
+  useEffect(() => {
+    if (!fetchData) {
+      setData(initialData);
+      setTotalCount(initialData.length);
+    }
+  }, [initialData, fetchData]);
+  
 console.log('all data:',data)
   const handleSortRequest = (property) => {
     const isAsc = orderBy === property && order === "asc";

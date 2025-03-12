@@ -45,7 +45,7 @@ export function getMonthWiseQuizCount(quizData) {
     }));
   
  
-    quizData.forEach((quiz) => {
+    quizData?.forEach((quiz) => {
       if (quiz.modified_date) {
         const quizDate = new Date(quiz.modified_date);
         const monthIndex = quizDate.getMonth(); 
