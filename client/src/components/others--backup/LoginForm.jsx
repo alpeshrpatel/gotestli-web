@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
 import SignInWithFacebook from "../common/SignInWithFacebook";
 import SignInWithGoogle from "../common/SignInWithGoogle";
 import Loader from "../common/Loader";
@@ -19,6 +19,7 @@ import {
 import { CircularProgress, TextField } from "@mui/material";
 import { API } from "@/utils/AxiosInstance";
 import SignInWithGithub from "../common/SignInWithGithub";
+import { showToast } from "@/utils/toastService";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -40,38 +41,58 @@ export default function LoginForm() {
         const userId = auth.currentUser.uid;
         const docRef = doc(db, "roles", userId);
         const docSnap = await getDoc(docRef);
-         // console.log(docRef);
+         console.log(docRef);
         if (docSnap.exists()) {
           userRole = docSnap.data().role;
           // setUserRole(docSnap.data().role);
-           // console.log(docSnap.data().role);
-         const { data }=  await API.get(`/api/users/uid/${userId}`);
-         const resData = await API.get(`/api/users/generate/token/${data.id}`);
+          // console.log(docSnap.data().role);
+          const { data } = await API.get(`/api/users/uid/${userId}`);
+          const resData = await API.get(`/api/users/generate/token/${data.id}`);
           // console.log(resData.data?.token)
           localStorage.setItem('token', resData.data?.token);
-          localStorage.setItem("user",JSON.stringify({id:data.id,role:userRole,email:data.email}))
+          localStorage.setItem("user", JSON.stringify({ id: data.id, role: userRole, email: data.email }))
+          if(data.org_id){
+            localStorage.setItem("org", JSON.stringify({ id: data.org_id, role: userRole, email: data.email, subdomain: data.company, logo: data.profile_pic, org_name: data.first_name }))
+          }
         } else {
-           // console.log("No role found for this user");
+           console.log("No role found for this user");
         }
       } else {
-         // console.log("No user is logged in ");
+         console.log("No user is logged in ");
       }
 
-       // console.log("Logged in Successfully!!");
+       console.log("Logged in Successfully!!");
       setIsLoading(false);
     } catch (error) {
-       // console.log(error);
+       console.log(error);
+       showToast('error',error.message)
     }
-     // console.log(userRole);
+     console.log(userRole);
     userRole == "instructor"
       ? navigate("/instructor/home")
       : userRole == "student"
-      ? navigate("/")
-      : navigate("/admin/dashboard");
+        ? navigate("/")
+        : navigate("/admin/dashboard");
   };
 
-  const handleForgotPassword = () => {
+  const handleChangePassword = () => {
     navigate('/forget-password')
+  }
+
+  async function handleForgotPassword() {
+  
+    if(email){
+      sendPasswordResetEmail(auth, email)
+      .then(() => {
+         showToast("success", 'Reset Password mail sent successfully!');
+      })
+      .catch((error) => {
+        showToast("error", error.message);
+      });
+    }else{
+      showToast("error", 'Please add email!');
+    }
+    
   }
 
   return (
@@ -103,34 +124,34 @@ export default function LoginForm() {
                       onChange={(e) => setEmail(e.target.value)}
                     /> */}
                     <label
-                    htmlFor="email"
-                    style={{
-                      marginBottom: "5px",
-                      fontWeight: "600",
-                      color: "#333",
-                      fontSize: "14px",
-                    }}
-                  >
-                   Email
-                  </label>
-                  <input
-                   required
-                    type="text"
-                    name="email"
-                    id="email"
-                    style={{
-                      padding: "10px",
-                      border: "1px solid #ced4da",
-                      borderRadius: "8px",
-                      fontSize: "14px",
-                      outline: "none",
-                      backgroundColor: "#f8f9fa",
-                      boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
-                    }}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                   
-                  />
+                      htmlFor="email"
+                      style={{
+                        marginBottom: "5px",
+                        fontWeight: "600",
+                        color: "#333",
+                        fontSize: "14px",
+                      }}
+                    >
+                      Email
+                    </label>
+                    <input
+                      required
+                      type="text"
+                      name="email"
+                      id="email"
+                      style={{
+                        padding: "10px",
+                        border: "1px solid #ced4da",
+                        borderRadius: "8px",
+                        fontSize: "14px",
+                        outline: "none",
+                        backgroundColor: "#f8f9fa",
+                        boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                      }}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+
+                    />
                   </div>
                   <div className="col-12">
                     {/* <TextField
@@ -143,34 +164,34 @@ export default function LoginForm() {
                       onChange={(e) => setPassword(e.target.value)}
                     /> */}
                     <label
-                    htmlFor="password"
-                    style={{
-                      marginBottom: "5px",
-                      fontWeight: "600",
-                      color: "#333",
-                      fontSize: "14px",
-                    }}
-                  >
-                   Password
-                  </label>
-                  <input
-                   required
-                    type="text"
-                    name="password"
-                    id="password"
-                    style={{
-                      padding: "10px",
-                      border: "1px solid #ced4da",
-                      borderRadius: "8px",
-                      fontSize: "14px",
-                      outline: "none",
-                      backgroundColor: "#f8f9fa",
-                      boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
-                    }}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                   
-                  />
+                      htmlFor="password"
+                      style={{
+                        marginBottom: "5px",
+                        fontWeight: "600",
+                        color: "#333",
+                        fontSize: "14px",
+                      }}
+                    >
+                      Password
+                    </label>
+                    <input
+                      required
+                      type="text"
+                      name="password"
+                      id="password"
+                      style={{
+                        padding: "10px",
+                        border: "1px solid #ced4da",
+                        borderRadius: "8px",
+                        fontSize: "14px",
+                        outline: "none",
+                        backgroundColor: "#f8f9fa",
+                        boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                      }}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+
+                    />
                   </div>
                   <div className="col-12">
                     <button
@@ -179,26 +200,32 @@ export default function LoginForm() {
                       id="submit"
                       className="button -md -purple-1 text-white fw-500 w-1/1"
                     >
-                      {isLoading ? (<CircularProgress size={30} sx={{ color: "inherit" }}/>) : 'Login'}
-                     
+                      {isLoading ? (<CircularProgress size={30} sx={{ color: "inherit" }} />) : 'Login'}
+
                     </button>
                   </div>
                 </form>
-                <div  className="text-purple-1" onClick={handleForgotPassword}>
-                    Forget Password?
+                <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                  <div className="text-purple-1 mt-4" style={{ cursor: 'pointer' }} onClick={handleChangePassword}>
+                    Change Password
                   </div>
-                <div className="lh-12 text-dark-1 fw-500 text-center mt-20">
-                  Or sign in using
-                  
+                  <div className="text-purple-1 mt-4" style={{ cursor: 'pointer' }} onClick={handleForgotPassword}>
+                    Forgot Password?
+                  </div>
                 </div>
 
-               
+                <div className="lh-12 text-dark-1 fw-500 text-center mt-20">
+                  Or sign in using
+
+                </div>
+
+
               </div>
               <div className="d-flex x-gap-20 items-center justify-between pt-20">
-                  <SignInWithFacebook />
-                  <SignInWithGoogle />
-                  <SignInWithGithub />
-                </div>
+                <SignInWithFacebook />
+                <SignInWithGoogle />
+                <SignInWithGithub />
+              </div>
             </div>
           </div>
         </div>

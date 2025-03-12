@@ -79,7 +79,7 @@ const UploadedFiles = () => {
     // const author = auth.currentUser.displayName;
    
     getUploads();
-  }, []);
+  }, [userId]);
 
   async function handleDownload(fileName) {
     await HandleDownload("uploadedfile", fileName);
@@ -90,7 +90,7 @@ const UploadedFiles = () => {
     setSearchQuery(event.target.value.toLowerCase());
   };
 
-  const filteredData = uploadedData.filter((quiz) =>
+  const filteredData = uploadedData?.filter((quiz) =>
     // Object.values(quiz).some((value) =>
     //   value ? value.toString().toLowerCase().includes(searchQuery) : false
     // )
@@ -142,7 +142,7 @@ const UploadedFiles = () => {
         >
           {breadcrumbs}
         </Breadcrumbs> */}
-        {uploadedData.length > 0 ? (
+        {uploadedData?.length > 0 ? (
           <div className="table-responsive" style={{}}>
             {/* <table className="custom-table file-table">
               <thead>

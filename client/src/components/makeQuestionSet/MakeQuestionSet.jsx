@@ -339,6 +339,7 @@ const MakeQuestionSet = () => {
     });
 
     setFilteredFromAll(filteredQuestions);
+    setTotalRecords(filteredQuestions.length)
   };
 
   const handleActiveChange = async (questionId, value) => {
@@ -394,6 +395,7 @@ const MakeQuestionSet = () => {
     if (selectedView === "all") {
       // Show all questions
       filteredQuestions = questions;
+      setTotalRecords(filteredFromAll.length)
     } else if (selectedView === "active") {
       // Show only active questions (status_id truthy)
       filteredQuestions = questions?.filter(
@@ -404,12 +406,13 @@ const MakeQuestionSet = () => {
       // Show only retired questions (status_id falsy)
       filteredQuestions = questions?.filter((question) => !question.status_id);
     }
-
+    console.log('qqqqq',filteredFromAll)
     setFilteredFromAll(filteredQuestions);
     setViewQuestion(selectedView);
+    setTotalRecords(filteredQuestions.length)
   };
   console.log('sdgsg',filteredFromAll);
-  console.log(' first sdgsg',indexOfFirstRecord);
+  console.log('total records',totalRecords);
   // console.log('last sdgsg',filteredFromAll.slice(indexOfFirstRecord, indexOfLastRecord));
 
   return (
@@ -679,7 +682,7 @@ const MakeQuestionSet = () => {
                     <h6>{question.complexity}</h6>
                   </div>
                 ))) : (
-                  'Loading......'
+                 totalRecords ? 'Loading......' : 'No Questions Found!'
                 )
               }
           </ul>
@@ -696,7 +699,7 @@ const MakeQuestionSet = () => {
                 className="filterDropdown"
                 value={pageCapicity}
                 onChange={handlePageChange}
-                style={{ margin: "auto 30px" }}
+                style={{ margin: "auto 30px",width:'100px' }}
               >
                 <option value="10">10</option>
                 <option value="25">25</option>

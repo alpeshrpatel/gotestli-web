@@ -98,6 +98,7 @@ export default function Header({ userRole }) {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       localStorage.removeItem("wishlist");
+      localStorage.removeItem("org");
       // console.log("Logout Successfully");
       window.location.reload();
     } catch (error) {

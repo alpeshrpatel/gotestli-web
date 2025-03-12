@@ -128,15 +128,21 @@ import PurchaseListing from "./pages/studentpages/PurchaseListing";
 import CreateQuestionTable from "./pages/instructorspages/CreateQuestionTable";
 import ForgetPasswordPage from "./pages/others/forgetpassword/ForgetPasswordPage";
 import PrivacyPolicy from "./components/layout/footers/footerpages/PrivacyPolicy";
+import OrganizationHomePage from "./pages/organization/OrganizationHomePage";
+import OrgOnboardingForm from "./pages/organization/OrgOnboardingForm";
+import OrganizationList from "./pages/adminpages/OrganizationList";
+import AcceptInvitation from "./pages/organization/AcceptInvitation";
 // import AppProvider from "./utils/AppContext";
 
 function App() {
   const [loading, setLoading] = useState(false);
+  const [currentOrg, setCurrentOrg] = useState(null);
+  const [subdomainChecked, setSubdomainChecked] = useState(false);
   // const location = useLocation();
   useEffect(() => {
     setLoading(true);
-    const timer = setTimeout(() => setLoading(false), 1000); 
-    
+    const timer = setTimeout(() => setLoading(false), 1000);
+
     AOS.init({
       duration: 700,
       offset: 120,
@@ -158,11 +164,23 @@ function App() {
   };
 
   // On initial load, check localStorage for saved theme
+
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
       setIsDarkMode(savedTheme === "dark");
     }
+    // const hostname = window.location.hostname;
+    // console.log('host:', hostname)
+    // const parts = hostname.split('.');
+
+    // // Check if we're on a subdomain
+    // if (parts.length > 1 && parts[0] !== 'www') {
+    //   const orgSubdomain = parts[0];
+    //   console.log(orgSubdomain)
+    //   setCurrentOrg(orgSubdomain);
+    // }
+    // setSubdomainChecked(true);
   }, []);
 
   const [toastIds, setToastIds] = useState({
@@ -192,7 +210,26 @@ function App() {
   };
 
   const user = JSON.parse(localStorage.getItem("user")) || "";
+  const org = JSON.parse(localStorage.getItem("org")) || "";
   const userRole = user.role;
+  console.log(org)
+  const protocol = window.location.protocol;
+  const host = window.location.host.split('.').slice(1).join('.');
+  if (org.subdomain) {
+    const redirectUrl = `https://${org.subdomain}.gotestli.com${window.location.pathname}`;
+    console.log(redirectUrl)
+    // window.location.href = redirectUrl;
+  } else {
+    const redirectUrl = `https://gotestli.com/`;
+    // window.location.href = redirectUrl;
+  }
+
+
+
+
+  // if (!subdomainChecked) {
+  //   return <Loader />;
+  // }
 
   return (
     <>
@@ -236,6 +273,11 @@ function App() {
 
               <Routes>
                 {/* Public Routes */}
+                {/* {(org.id != 0) && (user.role == 'admin') ? (
+                  <Route path="/" element={<OrganizationHomePage orgName={org.org_name} />} />
+                ) : ( */}
+                  <Route path="/" element={<HomePage1 />} />
+                {/* )} */}
                 <Route path="/" element={<HomePage1 />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
@@ -252,7 +294,8 @@ function App() {
                   element={<BecomeInstructorPage />}
                 />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-
+                <Route path="/org-onboarding" element={<OrgOnboardingForm />} />
+                <Route path="/admin/invite-members" element={<AcceptInvitation />} />
                 {/* Student Routes */}
                 {/* <Route path="/" element={
                 <ProtectedRoute element={<HomePage1 />} role="student" />
@@ -342,8 +385,8 @@ function App() {
                         userRole == `student`
                           ? `student`
                           : userRole == "instructor"
-                          ? "instructor"
-                          : ""
+                            ? "instructor"
+                            : ""
                       }
                     />
                   }
@@ -356,6 +399,15 @@ function App() {
                     <ProtectedRoute element={<AdminDashboard />} role="admin" />
                   }
                 />
+                <Route
+                  path="/admin/organization-list/approval"
+                  element={
+                    <ProtectedRoute element={<OrganizationList />} role="admin" />
+                  }
+                />
+                <Route path="/org/homepage" element={
+                  <ProtectedRoute element={<OrganizationHomePage orgName={org.org_name} />} role="admin" />
+                } />
 
                 {/* Instructor Routes */}
                 <Route
@@ -450,7 +502,7 @@ function App() {
             />
           </Context>
         </Suspense>
-       
+
       )}
 
       {/* </ThemeProvider> */}
