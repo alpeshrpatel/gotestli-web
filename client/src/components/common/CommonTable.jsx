@@ -29,7 +29,7 @@ const CommonTable = ({
   const [orderBy, setOrderBy] = useState(columns[0].id);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(initialRowsPerPage);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(initialData || []);
   const [totalCount, setTotalCount] = useState(initialData?.length);
 
   const fetchDataFromAPI = async () => {
@@ -123,10 +123,16 @@ console.log('all data:',data)
     return 0;
   };
 
-  const sortedData = stableSort(data, getComparator(order, orderBy)).slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
+  // const sortedData = stableSort(data, getComparator(order, orderBy)).slice(
+  //   page * rowsPerPage,
+  //   page * rowsPerPage + rowsPerPage
+  // );
+  const sortedData = fetchData 
+  ? stableSort(data, getComparator(order, orderBy)) 
+  : stableSort(data, getComparator(order, orderBy)).slice(
+      page * rowsPerPage,
+      page * rowsPerPage + rowsPerPage
+    );
 
   return (
     <Paper>

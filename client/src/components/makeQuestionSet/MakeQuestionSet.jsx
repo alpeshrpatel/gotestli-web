@@ -48,6 +48,7 @@ const MakeQuestionSet = () => {
   const [viewQuestion, setViewQuestion] = useState(true);
   const [totalRecords, setTotalRecords] = useState();
   const [loading,setLoading] = useState(false)
+  const [selectedViewOfActiveOrRetr,setSelectedViewOfActiveOrRetr] = useState('')
   const navigate = useNavigate();
 
   const onOpenModal = () => setOpen(true);
@@ -62,45 +63,88 @@ const MakeQuestionSet = () => {
   // let shouldRenderPagination = questions.length > pageCapicity;
   let shouldRenderPagination = 1;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true)
-      const start = (currentPage - 1) * pageCapicity + 1;
-      const end = currentPage * pageCapicity;
-      try {
-        if (token) {
-          setLoading(true)
-          const [categoriesResponse, questionsResponse] = await Promise.all([
-            API.get("/api/category", {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }),
-            API.get(`/api/questionmaster/user/${userId}?start=${start}&end=${end}`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }),
-          ]);
-          setCategories(categoriesResponse.data);
-          setQuestions(questionsResponse.data.res);
-          setFilteredFromAll(questionsResponse.data.res);
-          setTotalRecords(questionsResponse.data.totalRecords)
-          setLoading(false)
+  const fetchData = async () => {
+    setLoading(true)
+    const start = (currentPage - 1) * pageCapicity + 1;
+    const end = currentPage * pageCapicity;
+    try {
+      if (token) {
+        setLoading(true)
+        let queryParams = `start=${start}&end=${end}`;
+        
+        // Add search term if exists
+        if (searchTerm) {
+          queryParams += `&search=${encodeURIComponent(searchTerm)}`;
         }
-      } catch (error) {
-        if (error.status == 403) {
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
-          // showToast("error","Invaild token!");
-          navigate("/login");
-          return;
+        
+        // Add complexity filter if exists
+        console.log(complexityFilter)
+        if (complexityFilter) {
+          queryParams += `&complexity=${encodeURIComponent(complexityFilter)}`;
         }
-        console.error("Error fetching data:", error);
+        
+        // Add view filter (active/retired)
+        if (selectedViewOfActiveOrRetr === "active") {
+          queryParams += "&status=1";
+        } else if (selectedViewOfActiveOrRetr === "retired") {
+          queryParams += "&status=0";
+        }
+        
+        // Add category filter if exists
+        if (filter) {
+          const filteredCategory = categories.find(
+            (category) => category.title?.toLowerCase() === filter?.toLowerCase()
+          );
+          if (filteredCategory) {
+            queryParams += `&categoryId=${filteredCategory.id}`;
+          }
+        }
+        const [categoriesResponse, questionsResponse] = await Promise.all([
+          API.get("/api/category", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),              //${userId}?start=${start}&end=${end}
+          API.get(`/api/questionmaster/user/${userId}?${queryParams}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+        ]);
+        setCategories(categoriesResponse.data);
+        setQuestions(questionsResponse.data.res);
+        setFilteredFromAll(questionsResponse.data.res);
+        setTotalRecords(questionsResponse.data.totalRecords)
+        setLoading(false)
       }
-    };
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // showToast("error","Invaild token!");
+        navigate("/login");
+        return;
+      }
+      console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
+   
     fetchData();
   }, [pageCapicity,currentPage]);
+
+  
+
+  useEffect(() => {
+    fetchData();
+  }, [currentPage, pageCapicity]);
+
+
+  // Update filtered questions whenever filters change
+  useEffect(() => {
+    fetchData();
+  }, [searchTerm, complexityFilter, viewQuestion, questionSetsQuestions,selectedViewOfActiveOrRetr]);
+
 
   useEffect(() => {
     setFilteredFromAll(questions);
@@ -119,6 +163,78 @@ const MakeQuestionSet = () => {
       
   //   }
   // }, [filteredFromAll]);
+
+  // const applyFilters = (sourceQuestions = questions) => {
+    
+  //   let result = [...sourceQuestions];
+  //   console.log(' before applyfilter result length:',result.length)
+  //   // Apply search filter
+  //   if (searchTerm) {
+  //     result = result.filter(question => 
+  //       question.question?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+  //     );
+  //   }
+    
+  //   // Apply category filter
+  //   // if (filter !== "") {
+  //   //   result = result.filter(question =>
+  //   //     questionSetsQuestions.some(
+  //   //       q => q.question?.toLowerCase() === question.question?.toLowerCase()
+  //   //     )
+  //   //   );
+  //   // }
+    
+  //   // Apply complexity filter
+  //   if (complexityFilter) {
+  //      result = result?.filter((question) => {
+  //       const matchesSearch = question.question
+  //         ?.toLowerCase()
+  //         ?.includes(searchTerm?.toLowerCase());
+  //       const matchesCategory =
+  //         filter === "" ||
+  //         questionSetsQuestions.some(
+  //           (q) => q.question?.toLowerCase() === question.question?.toLowerCase()
+  //         );
+  //       const matchesComplexity =
+  //         updatedComplexity
+  //           ?.toLowerCase()
+  //           ?.includes(question?.complexity?.toLowerCase()) ||
+  //         updatedComplexity === "";
+  //       // console.log("sf", selectedFilter);
+  //       // console.log("qc", question?.complexity);
+  //       return matchesSearch && matchesCategory && matchesComplexity;
+  //     });
+  //   }
+    
+  //   // Apply view filter (all, active, retired)
+  //   if(selectedViewOfActiveOrRetr){
+  //     if (selectedViewOfActiveOrRetr === "all") {
+  //       // Show all questions
+  //       result = result;
+  //       // setTotalRecords(filteredFromAll.length)
+  //     } else if (selectedViewOfActiveOrRetr === "active") {
+  //       // Show only active questions (status_id truthy)
+  //       result = result?.filter(
+  //         (question) => question.status_id == 1
+  //       );
+  //       // setFilteredFromAll(questions.filter((question) => question.status_id));
+  //     } else if (selectedViewOfActiveOrRetr === "retired") {
+  //       // Show only retired questions (status_id falsy)
+  //       result = result?.filter((question) => !question.status_id);
+  //     }
+  //   }
+   
+    
+  //   // Update total records and filtered questions
+  //   setTotalRecords(result.length);
+  //   console.log('applyfilter:',result)
+  //   console.log('applyfilter result length:',result.length)
+  //   // Apply pagination to filtered results
+  //   const paginatedResults = result.slice(indexOfFirstRecord, indexOfLastRecord);
+  //   setQuestions(result);
+  //   setFilteredFromAll(result);
+  //   result = questions
+  // };
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -302,6 +418,7 @@ const MakeQuestionSet = () => {
   // console.log(pageCapicity);
 
   const handleComplexityFilter = (event) => {
+    
     const selectedFilter = event.target.value;
     // setComplexityFilter((prev) => (prev.toLowerCase().includes(selectedFilter.toLowerCase())) ? prev.replace(selectedFilter,'') : prev?.join(selectedFilter))
     let updatedComplexity = "";
@@ -315,31 +432,32 @@ const MakeQuestionSet = () => {
         return prev.replace(new RegExp(lowerCaseSelectedFilter, "gi"), "");
       } else {
         updatedComplexity = `${prev}${selectedFilter}`;
-        return `${prev}${selectedFilter}`;
+        return `${prev}:${selectedFilter}`;
       }
     });
 
-    const filteredQuestions = questions?.filter((question) => {
-      const matchesSearch = question.question
-        ?.toLowerCase()
-        ?.includes(searchTerm?.toLowerCase());
-      const matchesCategory =
-        filter === "" ||
-        questionSetsQuestions.some(
-          (q) => q.question?.toLowerCase() === question.question?.toLowerCase()
-        );
-      const matchesComplexity =
-        updatedComplexity
-          ?.toLowerCase()
-          ?.includes(question?.complexity?.toLowerCase()) ||
-        updatedComplexity === "";
-      // console.log("sf", selectedFilter);
-      // console.log("qc", question?.complexity);
-      return matchesSearch && matchesCategory && matchesComplexity;
-    });
-
-    setFilteredFromAll(filteredQuestions);
-    setTotalRecords(filteredQuestions.length)
+    // const filteredQuestions = questions?.filter((question) => {
+    //   const matchesSearch = question.question
+    //     ?.toLowerCase()
+    //     ?.includes(searchTerm?.toLowerCase());
+    //   const matchesCategory =
+    //     filter === "" ||
+    //     questionSetsQuestions.some(
+    //       (q) => q.question?.toLowerCase() === question.question?.toLowerCase()
+    //     );
+    //   const matchesComplexity =
+    //     updatedComplexity
+    //       ?.toLowerCase()
+    //       ?.includes(question?.complexity?.toLowerCase()) ||
+    //     updatedComplexity === "";
+    //   // console.log("sf", selectedFilter);
+    //   // console.log("qc", question?.complexity);
+    //   return matchesSearch && matchesCategory && matchesComplexity;
+    // });
+    // setQuestions(filteredQuestions)
+    // setFilteredFromAll(filteredQuestions);
+    
+    // setTotalRecords(filteredQuestions.length)
   };
 
   const handleActiveChange = async (questionId, value) => {
@@ -391,28 +509,31 @@ const MakeQuestionSet = () => {
     // setFilteredFromAll((prevQuestions) =>
     //   prevQuestions.filter((question) => question.status_id == checked)
     // );
-    let filteredQuestions = [];
-    if (selectedView === "all") {
-      // Show all questions
-      filteredQuestions = questions;
-      setTotalRecords(filteredFromAll.length)
-    } else if (selectedView === "active") {
-      // Show only active questions (status_id truthy)
-      filteredQuestions = questions?.filter(
-        (question) => question.status_id == 1
-      );
-      // setFilteredFromAll(questions.filter((question) => question.status_id));
-    } else if (selectedView === "retired") {
-      // Show only retired questions (status_id falsy)
-      filteredQuestions = questions?.filter((question) => !question.status_id);
-    }
-    console.log('qqqqq',filteredFromAll)
-    setFilteredFromAll(filteredQuestions);
-    setViewQuestion(selectedView);
-    setTotalRecords(filteredQuestions.length)
+    // fetchData();
+    setSelectedViewOfActiveOrRetr(selectedView)
+    // let filteredQuestions = [];
+    // if (selectedView === "all") {
+    //   // Show all questions
+    //   filteredQuestions = questions;
+    //   setTotalRecords(filteredFromAll.length)
+    // } else if (selectedView === "active") {
+    //   // Show only active questions (status_id truthy)
+    //   filteredQuestions = questions?.filter(
+    //     (question) => question.status_id == 1
+    //   );
+    //   // setFilteredFromAll(questions.filter((question) => question.status_id));
+    // } else if (selectedView === "retired") {
+    //   // Show only retired questions (status_id falsy)
+    //   filteredQuestions = questions?.filter((question) => !question.status_id);
+    // }
+    // console.log('qqqqq',filteredFromAll)
+    // setFilteredFromAll(filteredQuestions);
+    // setViewQuestion(selectedView);
+    // setQuestions(filteredFromAll)
+    // setTotalRecords(filteredQuestions.length)
   };
-  console.log('sdgsg',filteredFromAll);
-  console.log('total records',totalRecords);
+  // console.log('sdgsg',filteredFromAll);
+  // console.log('total records',totalRecords);
   // console.log('last sdgsg',filteredFromAll.slice(indexOfFirstRecord, indexOfLastRecord));
 
   return (

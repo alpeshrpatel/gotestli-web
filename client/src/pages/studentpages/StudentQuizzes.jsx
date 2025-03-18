@@ -96,7 +96,13 @@ const StudentQuizzes = () => {
     const end = page * rowsPerPage;
     try {
       if (token) {
-        const { data } = await API.get(`/api/userresult/pagelimit/user/${userId}?start=${start}&end=${end}`, {
+        let url = ''
+        if(searchQuery){
+            url = `/api/userresult/pagelimit/user/${userId}?start=${start}&end=${end}&search=${encodeURIComponent(searchQuery)}`;
+        }else{
+          url = `/api/userresult/pagelimit/user/${userId}?start=${start}&end=${end}`
+        }
+        const { data } = await API.get(url, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -125,7 +131,7 @@ const StudentQuizzes = () => {
     // const author = auth.currentUser.displayName;
    
     getQuestionSets();
-  }, []);
+  }, [searchQuery]);
 
   const handleFetchedReview = async (qSetId) => {
     try {
