@@ -143,6 +143,8 @@ const CreateQuestionTable = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?.id;
   const userRole = user?.role;
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
 
@@ -218,7 +220,7 @@ const CreateQuestionTable = () => {
   
       // Fetch initial questions data
       const { data } = await API.get(
-        `/api/questionmaster/detailded/question/${userId}?start=${start}&end=${end}`,
+        `/api/questionmaster/detailded/question/${userId}?start=${start}&end=${end}&orgid=${orgid}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -238,7 +240,7 @@ const CreateQuestionTable = () => {
       // Fetch options for each question
       const questionsWithOptions = await Promise.all(
         originalData.map(async (question) => {
-          const response = await API.get(`/api/options/${question.id}`, {
+          const response = await API.get(`/api/options/${question.id}?orgid=${orgid}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -430,7 +432,7 @@ const CreateQuestionTable = () => {
         let finalQId = 0;
         if (editOn) {
           const res2 = await API.put(
-            `/api/questionmaster/${editOn}`,
+            `/api/questionmaster/${editOn}?orgid=${orgid}`,
             {
               ...changedQSet,
               userId: userId,

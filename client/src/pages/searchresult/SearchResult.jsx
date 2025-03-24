@@ -30,6 +30,8 @@ export default function SearchResult() {
   const { keyword } = location?.state;
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
   // let keyword = "game";
 
   const handleSubmit = (e) => {
@@ -41,7 +43,7 @@ export default function SearchResult() {
       async function getSearchedQuestionsets() {
         try {
           const res = await API.get(
-            `/api/questionset/search/result/${keyword}`,
+            `/api/questionset/search/result/${keyword}?orgid=${orgid}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

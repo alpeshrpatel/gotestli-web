@@ -39,7 +39,13 @@ const StudentWishlist = () => {
     const end = page * rowsPerPage;
     try {
       if (token) {
-        const { data } = await API.get(`/api/wishlist/${userId}?start=${start}&end=${end}`, {
+        let url = ''
+        if(searchQuery){
+          url = `/api/wishlist/${userId}?start=${start}&end=${end}&search=${encodeURIComponent(searchQuery)}`;
+        }else{
+          url = `/api/wishlist/${userId}?start=${start}&end=${end}`
+        }
+        const { data } = await API.get(url, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -69,7 +75,7 @@ const StudentWishlist = () => {
     // const author = auth.currentUser.displayName;
     
     getQuestions();
-  }, []);
+  }, [searchQuery]);
    // console.log(isHovered);
 
   const handleDeleteFromWishlist = async (qSetId) => {
@@ -226,6 +232,7 @@ const StudentWishlist = () => {
                getRowId={getRowId}
                renderRowCells={renderRowCells}
                fetchData={getQuestions}
+               searchQuery={searchQuery}
               //  tableData={filteredData.length > 0 ? filteredData : questionSets}
              />
            )}

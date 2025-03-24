@@ -114,12 +114,14 @@ const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
   const [explanation, setExplanation] = useState();
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
 
   useEffect(() => {
     async function getQuestions() {
       try {
         if (token) {
-          const { data } = await API.get(`/api/questionmaster/${questionId}`, {
+          const { data } = await API.get(`/api/questionmaster/${questionId}?orgid=${orgid}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
            // console.log(data);
@@ -140,7 +142,7 @@ const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
     async function getOptions() {
       try {
         if (token) {
-          const { data } = await API.get(`/api/options/${questionId}`, {
+          const { data } = await API.get(`/api/options/${questionId}?orgid=${orgid}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
            // console.log(data);

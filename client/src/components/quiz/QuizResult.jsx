@@ -101,6 +101,8 @@ const QuizResult = ({}) => {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
   let userId = user.id;
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
 
   useEffect(() => {
     if (percentage >= passPercentage) {
@@ -114,7 +116,7 @@ const QuizResult = ({}) => {
       async function getQuizTitle() {
         try {
           if (token) {
-            const res = await API.get(`/api/questionset/${questionSetId}`, {
+            const res = await API.get(`/api/questionset/${questionSetId}?orgid=${orgid}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
@@ -128,7 +130,7 @@ const QuizResult = ({}) => {
               instructor: res.data.author
             }));
 
-            const { data } = await API.get(`/api/users/${userId}`, {
+            const { data } = await API.get(`/api/users/${userId}?orgid=${orgid}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },

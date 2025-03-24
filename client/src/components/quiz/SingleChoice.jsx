@@ -49,12 +49,14 @@ const SingleChoice = ({
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
 
   useEffect(() => {
     async function getOptions() {
       try {
         if (token) {
-          const response = await API.get(`/api/options/${questionId}`, {
+          const response = await API.get(`/api/options/${questionId}?orgid=${orgid}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -80,7 +82,7 @@ const SingleChoice = ({
         try {
           if (token) {
             const { data } = await API.get(
-              `/api/userresult/user/${userId}/questionset/${questionSetId}`,
+              `/api/userresult/user/${userId}/questionset/${questionSetId}?orgid=${orgid}`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -112,7 +114,7 @@ const SingleChoice = ({
           if (token) {
             // console.log(userResultId);
             const { data } = await API.get(
-              `/api/userresultdetails/get/answers/userresult/${userResultId}/length/${questionSetLength}`,
+              `/api/userresultdetails/get/answers/userresult/${userResultId}/length/${questionSetLength}?orgid=${orgid}`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -158,7 +160,7 @@ const SingleChoice = ({
     try {
       if (token) {
         const { data } = await API.get(
-          `/api/userresultdetails/status/userresult/${userResultId}/questionid/${questionId}`,
+          `/api/userresultdetails/status/userresult/${userResultId}/questionid/${questionId}?orgid=${orgid}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

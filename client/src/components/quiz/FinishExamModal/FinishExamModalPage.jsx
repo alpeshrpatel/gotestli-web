@@ -21,6 +21,8 @@ const FinishExamModalPage = ({
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
 
   useEffect(() => {
     async function getOptions() {
@@ -31,12 +33,12 @@ const FinishExamModalPage = ({
           if (token) {
              // console.log(`Fetching options for id: ${q.id}`);
 
-            const response = await API.get(`/api/options/${q.id}`, {
+            const response = await API.get(`/api/options/${q.id}?orgid=${orgid}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             });
-            const { data } = await API.get(`/api/questionmaster/${q.id}`, {
+            const { data } = await API.get(`/api/questionmaster/${q.id}?orgid=${orgid}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },

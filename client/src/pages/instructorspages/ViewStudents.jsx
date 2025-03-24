@@ -46,14 +46,22 @@ const ViewStudents = () => {
   const userRole = user.role;
   const userId = user.id;
   const token = localStorage.getItem("token");
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
 
   async function getstudents(page = 1, rowsPerPage = 10) {
     const start = (page - 1) * rowsPerPage + 1;
     const end = page * rowsPerPage;
     try {
       if (token) {
+        let url = ''
+        if(searchQuery){
+          url = `/api/userresult/students/list/${set.id}?start=${start}&end=${end}&search=${encodeURIComponent(searchQuery)}&orgid=${orgid}`;
+        }else{
+          url = `/api/userresult/students/list/${set.id}?start=${start}&end=${end}&orgid=${orgid}`;
+        }
         const { data } = await API.get(
-          `/api/userresult/students/list/${set.id}?start=${start}&end=${end}`,
+          url,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -395,6 +403,7 @@ const ViewStudents = () => {
                   getRowId={getRowId}
                   renderRowCells={renderRowCells}
                   fetchData={getstudents}
+                  searchQuery={searchQuery}
                   // tableData={filteredData.length > 0 ? filteredData : studentsData}
                 />
               )}

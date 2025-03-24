@@ -32,6 +32,8 @@ const UploadQuestionSet = () => {
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userId = user.id;
   const userRole = user.role;
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -94,7 +96,7 @@ const UploadQuestionSet = () => {
     try {
       if (token) {
         const res = await API.get(
-          `/api/question/files?filename=${selectedFile.name}`, {
+          `/api/question/files?filename=${selectedFile.name}&orgid=${orgid}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

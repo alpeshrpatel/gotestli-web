@@ -25,14 +25,16 @@ const ViewQuestions = () => {
 
   const { id } = useParams();
   const user = JSON.parse(localStorage.getItem("user")) || "";
-  const userRole = user.role;
+  const userRole = user?.role;
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
 
   async function getQuestions(page = 1, rowsPerPage = 10) {
     const start = (page - 1) * rowsPerPage + 1;
     const end = page * rowsPerPage;
     try {
       if (token) {
-        const { data } = await API.get(`/api/questionset/questions/${id}?start=${start}&end=${end}`, {
+        const { data } = await API.get(`/api/questionset/questions/${id}?start=${start}&end=${end}&orgid=${orgid}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

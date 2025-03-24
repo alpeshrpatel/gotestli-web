@@ -51,6 +51,8 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?.id;
   const userRole = user?.role;
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
 
   useEffect(() => {
     async function getRating() {
@@ -141,7 +143,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
       try {
         if (token) {
           const response = await API.get(
-            `/api/questionset/questions/${data.id}`,
+            `/api/questionset/questions/${data.id}?orgid=${orgid}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

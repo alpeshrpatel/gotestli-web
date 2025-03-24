@@ -57,10 +57,12 @@ const ProfilePage = () => {
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
   let userid = user.id;
-
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
   useEffect(() => {
     async function getUserProfile() {
-      const { data } = await API.get(`/api/users/${userid}`);
+
+      const { data } = await API.get(`/api/users/${userid}?orgid=${orgid}`);
       // console.log(data);
       setUsersData(data);
       setUpdatedData({
@@ -168,7 +170,7 @@ const ProfilePage = () => {
     setSelectedAvatar(avatar);
     setOpen(false);
     try {
-      const res = await API.put(`/api/users/${userid}`, {
+      const res = await API.put(`/api/users/${userid}?orgid=${orgid}`, {
         ...updatedData,
         profile_pic: avatar,
       });
@@ -183,7 +185,7 @@ const ProfilePage = () => {
   const handleDeleteAvatar = async () => {
     setSelectedAvatar("");
     try {
-      const res = await API.put(`/api/users/${userid}`, {
+      const res = await API.put(`/api/users/${userid}?orgid=${orgid}`, {
         ...updatedData,
         profile_pic: "",
       });
@@ -206,7 +208,7 @@ const ProfilePage = () => {
 
   const handleUpdateData = async () => {
     try {
-      const res = await API.put(`/api/users/${userid}`, {
+      const res = await API.put(`/api/users/${userid}?orgid=${orgid}`, {
         ...updatedData,
         profile_pic: selectedAvatar,
       });

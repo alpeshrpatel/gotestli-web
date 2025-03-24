@@ -28,7 +28,8 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   //const [userRole,setUserRole] = useState('');
   const navigate = useNavigate();
-
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
   const handleSubmit = async (e) => {
     e.preventDefault();
     let userRole = "";
@@ -46,7 +47,7 @@ export default function LoginForm() {
           userRole = docSnap.data().role;
           // setUserRole(docSnap.data().role);
           // console.log(docSnap.data().role);
-          const { data } = await API.get(`/api/users/uid/${userId}`);
+          const { data } = await API.get(`/api/users/uid/${userId}?orgid=${orgid}`);
           const resData = await API.get(`/api/users/generate/token/${data.id}`);
           // console.log(resData.data?.token)
           localStorage.setItem('token', resData.data?.token);

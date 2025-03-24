@@ -53,14 +53,22 @@ const HomePage = () => {
   const userRole = user.role;
   const userId = user.id;
   const token = localStorage.getItem("token");
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
 
   async function getQuestionSets(page = 1, rowsPerPage = 10) {
     const start = (page - 1) * rowsPerPage + 1;
     const end = page * rowsPerPage;
     try {
       if (token) {
+        let url = ''
+        if(searchQuery){
+          url = `/api/questionset/instructor/${userId}?start=${start}&end=${end}&search=${encodeURIComponent(searchQuery)}&orgid=${orgid}`;
+        }else{
+          url = `/api/questionset/instructor/${userId}?start=${start}&end=${end}&orgid=${orgid}`;
+        }
         const { data } = await API.get(
-          `/api/questionset/instructor/${userId}?start=${start}&end=${end}`,
+          url,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -92,7 +100,7 @@ const HomePage = () => {
     // const author = auth.currentUser.displayName;
     
     getQuestionSets();
-  }, []);
+  }, [searchQuery]);
     console.log('qs',questionSets)
   // async function handleRowClick(id, index) {
   //   setExpandedRow(index === expandedRow ? null : index);
@@ -163,7 +171,7 @@ const HomePage = () => {
     try {
       if (token) {
         const res = await API.put(
-          `/api/questionset/${set.id}`,
+          `/api/questionset/${set.id}?orgid=${orgid}`,
           {
             changedQSet,
             userId,
@@ -233,7 +241,7 @@ const HomePage = () => {
     try {
       if (token) {
         const res = await API.put(
-          `/api/questionset/update/status`,
+          `/api/questionset/update/status?orgid=${orgid}`,
           {
             status_id:checked, id:qSetId
           },
@@ -567,6 +575,7 @@ const HomePage = () => {
                   getRowId={getRowId}
                   renderRowCells={renderRowCells}
                   fetchData={getQuestionSets}
+                  searchQuery={searchQuery}
                   // tableData={filteredData.length > 0 ? filteredData : questionSets}
                 />
               )}

@@ -43,13 +43,21 @@ const UploadedFiles = () => {
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
   const userId = user.id;
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
 
   async function getUploads(page = 1, rowsPerPage = 10) {
     const start = (page - 1) * rowsPerPage + 1;
     const end = page * rowsPerPage;
     try {
       if (token) {
-        const { data } = await API.get(`/api/question/files/${userId}?start=${start}&end=${end}`, {
+        let url = ''
+        if(searchQuery){
+          url = `/api/question/files/${userId}?start=${start}&end=${end}&search=${encodeURIComponent(searchQuery)}&orgid=${orgid}`;
+        }else{
+          url = `/api/question/files/${userId}?start=${start}&end=${end}&orgid=${orgid}`;
+        }
+        const { data } = await API.get(url, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -79,7 +87,7 @@ const UploadedFiles = () => {
     // const author = auth.currentUser.displayName;
    
     getUploads();
-  }, [userId]);
+  }, [userId,searchQuery]);
 
   async function handleDownload(fileName) {
     await HandleDownload("uploadedfile", fileName);
@@ -234,6 +242,7 @@ const UploadedFiles = () => {
                 getRowId={getRowId}
                 renderRowCells={renderRowCells}
                 fetchData={getUploads}
+                searchQuery={searchQuery}
                 // tableData={filteredData.length > 0 ? filteredData : uploadedData}
               />
             )}

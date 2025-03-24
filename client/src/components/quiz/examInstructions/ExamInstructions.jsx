@@ -81,6 +81,8 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
   const totalReviewed = 0;
   let userResultId;
   let lastAttemptedQuestion;
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
 
   useEffect(() => {
     // async function getPendingQuiz() {
@@ -94,7 +96,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
       async function getHistory() {
         try {
           const { data } = await API.get(
-            `/api/userresult/history/user/${userId}/questionset/${questionSetId}`,
+            `/api/userresult/history/user/${userId}/questionset/${questionSetId}?orgid=${orgid}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -176,7 +178,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
     if (id) {
       try {
         const { data } = await API.get(
-          `/api/userresultdetails/userresult/${id}`,
+          `/api/userresultdetails/userresult/${id}?orgid=${orgid}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
