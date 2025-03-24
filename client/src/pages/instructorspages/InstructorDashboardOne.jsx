@@ -27,13 +27,15 @@ export default function InstructorDashboardOne() {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userId = user.id;
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
 
   useEffect(() => {
     async function getDashboardData() {
       try {
         if (token) {
           const { data } = await API.get(
-            `/api/questionset/instructor/${userId}`,
+            `/api/questionset/instructor/${userId}?orgid=${orgid}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -41,7 +43,7 @@ export default function InstructorDashboardOne() {
             }
           );
           const res = await API.get(
-            `/api/userresult/instructor/total/attempt/${userId}`,
+            `/api/userresult/instructor/total/attempt/${userId}?orgid=${orgid}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

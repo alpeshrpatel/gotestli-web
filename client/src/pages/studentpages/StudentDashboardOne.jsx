@@ -63,6 +63,8 @@ export default function StudentDashboardOne() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   let passingPercentageCnt = 0 ;
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
 
   useEffect(() => {
     const userId = user.id;
@@ -70,14 +72,14 @@ export default function StudentDashboardOne() {
       try {
         if (token) {
           const { data } = await API.get(
-            `/api/userresult/student/dashboard/analysis/${userId}`,
+            `/api/userresult/student/dashboard/analysis/${userId}?orgid=${orgid}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             }
           );
-          const res = await API.get(`/api/userresult/user/${userId}`, {
+          const res = await API.get(`/api/userresult/user/${userId}?orgid=${orgid}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

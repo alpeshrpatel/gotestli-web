@@ -42,9 +42,10 @@ export default function AdminDashboardOne() {
   const userId = user.id;
   const org = JSON.parse(localStorage?.getItem("org")) || "";
   console.log(org)
-
+  let orgid = org?.id || 0;
   const isPublicAdmin = org?.id == 0 || !org?.id;
   const adminType = isPublicAdmin ? "Public Admin" : "Organization Admin";
+  
 
   useEffect(() => {
     async function getDashboardData() {

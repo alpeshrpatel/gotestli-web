@@ -58,6 +58,8 @@ const MakeQuestionSet = () => {
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userId = user.id;
   const userRole = user.role;
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
   const indexOfLastRecord = currentPage * pageCapicity;
   const indexOfFirstRecord = indexOfLastRecord - pageCapicity;
   // let shouldRenderPagination = questions.length > pageCapicity;
@@ -105,7 +107,7 @@ const MakeQuestionSet = () => {
               Authorization: `Bearer ${token}`,
             },
           }),              //${userId}?start=${start}&end=${end}
-          API.get(`/api/questionmaster/user/${userId}?${queryParams}`, {
+          API.get(`/api/questionmaster/user/${userId}?${queryParams}&orgid=${orgid}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -244,7 +246,7 @@ const MakeQuestionSet = () => {
     try {
       if (token) {
         const { data } = await API.get(
-          `/api/questionset/category/${categoryId}`,
+          `/api/questionset/category/${categoryId}?orgid=${orgid}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -289,7 +291,7 @@ const MakeQuestionSet = () => {
         const start = (currentPage - 1) * pageCapicity + 1;
         const end = currentPage * pageCapicity;
         const { data } = await API.get(
-          `/api/questionset/questions/${questionId}?start=${start}&end=${end}`,
+          `/api/questionset/questions/${questionId}?start=${start}&end=${end}?orgid=${orgid}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -372,7 +374,7 @@ const MakeQuestionSet = () => {
       if (token) {
         async function getId() {
           const { data } = await API.get(
-            "/api/questionset/question/questionsetid",
+            `/api/questionset/question/questionsetid?orgid=${orgid}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -435,7 +437,7 @@ const MakeQuestionSet = () => {
         return `${prev}:${selectedFilter}`;
       }
     });
-
+    setCurrentPage(1)
     // const filteredQuestions = questions?.filter((question) => {
     //   const matchesSearch = question.question
     //     ?.toLowerCase()
@@ -465,7 +467,7 @@ const MakeQuestionSet = () => {
     try {
       if (token) {
         const { data } = await API.put(
-          `/api/questionmaster/status/question/${questionId}`,
+          `/api/questionmaster/status/question/${questionId}?orgid=${orgid}`,
           {
             statusId: value,
           },
@@ -511,6 +513,7 @@ const MakeQuestionSet = () => {
     // );
     // fetchData();
     setSelectedViewOfActiveOrRetr(selectedView)
+    setCurrentPage(1)
     // let filteredQuestions = [];
     // if (selectedView === "all") {
     //   // Show all questions
@@ -535,7 +538,6 @@ const MakeQuestionSet = () => {
   // console.log('sdgsg',filteredFromAll);
   // console.log('total records',totalRecords);
   // console.log('last sdgsg',filteredFromAll.slice(indexOfFirstRecord, indexOfLastRecord));
-
   return (
     <>
       <Header userRole={userRole} />

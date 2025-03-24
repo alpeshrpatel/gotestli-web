@@ -21,6 +21,7 @@ const CommonTable = ({
   renderRowCells, 
   fetchData,
   initialData = [],
+  searchQuery = ''
 }) => {
   let rowsPerPageOptions = [5, 10, 25]
   let initialRowsPerPage = 5
@@ -47,7 +48,7 @@ const CommonTable = ({
       //   throw new Error("Invalid API response: Expected an object with a 'data' property.");
       // }
       
-        console.log("API Response:", response); // Debugging step
+      console.log("API Response:", response); // Debugging step
       setData(response.data || []);
       setTotalCount(response.totalRecords ?? 0); 
       
@@ -62,7 +63,7 @@ const CommonTable = ({
     if (fetchData) {
       fetchDataFromAPI();
     }
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage,searchQuery]);
 
   // useEffect(() => {
    

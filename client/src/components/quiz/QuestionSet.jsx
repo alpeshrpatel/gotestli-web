@@ -146,6 +146,8 @@ const QuestionSet = () => {
     timerOn,
     lastAttemptedQuestion
   } = location.state;
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
 
   // Set questions only when questionSet is available and valid
   useEffect(() => {
@@ -166,7 +168,7 @@ const QuestionSet = () => {
           const paragraphId = questions[questionNumber - 1]?.paragraph_id;
           if (token && paragraphId) {
             const response = await API.get(
-              `/api/questionmaster/paragraph/${paragraphId}`,
+              `/api/questionmaster/paragraph/${paragraphId}?orgid=${orgid}`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,

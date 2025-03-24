@@ -37,6 +37,8 @@ export default function Courses({ userRole }) {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
   useEffect(() => {
     async function getCategory() {
       const { data } = await API.get("/api/category/parent/categories");
@@ -49,7 +51,7 @@ export default function Courses({ userRole }) {
   useEffect(() => {
     async function getQuestionsSet() {
       try {
-        const { data } = await API.get("/api/questionset");
+        const { data } = await API.get("/api/questionset?orgid=" + orgid);
         if (Array.isArray(data)) {
           setFiltered(data);
         } else {
@@ -73,7 +75,7 @@ export default function Courses({ userRole }) {
       try {
         if (token) {
           const { data } = await API.get(
-            `/api/userresult/students/list/${set.id}`,
+            `/api/userresult/students/list/${set.id}?orgid=${orgid}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

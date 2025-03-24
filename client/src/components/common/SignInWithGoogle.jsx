@@ -32,18 +32,18 @@ const SignInWithGoogle = () => {
   const [selectedRole, setSelectedRole] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 600);
-  
-    useEffect(() => {
-      const handleResize = () => {
-        setIsSmallScreen(window.innerWidth < 600);
-      };
-  
-      window.addEventListener("resize", handleResize);
-  
-      return () => {
-        window.removeEventListener("resize", handleResize);
-      };
-    }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 600);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const onOpenModal = () => {
     setOpen(true);
@@ -59,9 +59,11 @@ const SignInWithGoogle = () => {
       await signInWithPopup(auth, provider);
       const email = auth.currentUser.email;
       const token = localStorage.getItem("token");
-  const localUser = JSON.parse(localStorage.getItem("user")) || "";
-  const localUserRole = localUser.role;
-    
+      const localUser = JSON.parse(localStorage.getItem("user")) || "";
+      const localUserRole = localUser.role;
+      const org = JSON.parse(localStorage.getItem("org")) || "";
+      let orgid = org?.id || 0;
+
       let userRole;
       let names = auth.currentUser?.displayName?.split(" ");
       let firstname = names[0];
@@ -89,7 +91,7 @@ const SignInWithGoogle = () => {
           });
           // console.log(res);
         } catch (error) {
-          showToast("error",error)
+          showToast("error", error)
           navigate('/login')
           // console.log(error);
         }
@@ -101,7 +103,7 @@ const SignInWithGoogle = () => {
           });
           // console.log("Document written ");
         } catch (e) {
-          showToast("error",e)
+          showToast("error", e)
           navigate('/login')
           console.error("Error adding document: ", e);
         }
@@ -116,7 +118,7 @@ const SignInWithGoogle = () => {
         if (docSnap.exists()) {
           userRole = docSnap.data().role;
           // setUserRole(docSnap.data().role);
-          const { data } = await API.get(`/api/users/uid/${userId}`);
+          const { data } = await API.get(`/api/users/uid/${userId}?orgid=${orgid}`);
           const resData = await API.get(`/api/users/generate/token/${data.id}`);
           localStorage.setItem("token", resData.data?.token);
           localStorage.setItem(
@@ -128,20 +130,20 @@ const SignInWithGoogle = () => {
           // console.log("No role found for this user");
         }
       } else {
-        showToast("error","Login Failed! ")
+        showToast("error", "Login Failed! ")
         navigate('/login')
         // console.log("No user is logged in ");
       }
       setIsLoading(false);
-      console.log('auth:',auth.currentUser)
-      if(auth.currentUser){
-        showToast("success","Logged In Successfully!");
+      console.log('auth:', auth.currentUser)
+      if (auth.currentUser) {
+        showToast("success", "Logged In Successfully!");
       }
       userRole == "instructor"
         ? navigate("/instructor/home")
         : userRole == "student"
-        ? navigate("/")
-        : navigate("/admin/dashboard");
+          ? navigate("/")
+          : navigate("/admin/dashboard");
     } catch (error) {
       // console.log(error);
     }
@@ -150,17 +152,17 @@ const SignInWithGoogle = () => {
   return (
     <div>
       <Modal open={open} onClose={onCloseModal} center={false} styles={{
-          modal: {
-            position: "fixed",
-            top: "40%",
-            right: isSmallScreen ? '0' : '15%',
-            transform: "translateY(-50%)",
-            width: isSmallScreen ? "300px": "450px",
-          },
+        modal: {
+          position: "fixed",
+          top: "40%",
+          right: isSmallScreen ? '0' : '15%',
+          transform: "translateY(-50%)",
+          width: isSmallScreen ? "300px" : "450px",
+        },
         //   overlay: {
         //     background: "transparent",
         //   },
-        }}>
+      }}>
         <div className="col-lg-12 border-1 rounded">
           {/* <label className="text-16 lh-1 fw-500 text-dark-1 mb-10">
             * Please Select Role
@@ -226,7 +228,7 @@ const SignInWithGoogle = () => {
               onClick={googleLogin}
             >
               {isLoading ? (
-                <CircularProgress size={30}  sx={{
+                <CircularProgress size={30} sx={{
                   color: 'inherit'
                 }} />
               ) : (
@@ -239,23 +241,23 @@ const SignInWithGoogle = () => {
       {
         isSmallScreen ? (
           <button className="button -sm px-2 py-3 -outline-red-3 text-red-3 text-16 fw-bolder lh-sm "
-        onClick={onOpenModal}>
-          <GoogleIcon className="text-24" />
-        </button>
+            onClick={onOpenModal}>
+            <GoogleIcon className="text-24" />
+          </button>
         ) : (
           <button
-        className="button -sm px-24 py-25 -outline-red-3 text-red-3 text-16 fw-bolder lh-sm"
-        onClick={onOpenModal}
-        // onClick={googleLogin}
-      >
-        <GoogleIcon className="text-24 me-2" />
-        {/* <i class="icon-google text-24 me-2"></i> */}
-        {/* <i className="fa fa-google text-24 me-2" aria-hidden="true"></i> */}
-        Google
-      </button>
+            className="button -sm px-24 py-25 -outline-red-3 text-red-3 text-16 fw-bolder lh-sm"
+            onClick={onOpenModal}
+          // onClick={googleLogin}
+          >
+            <GoogleIcon className="text-24 me-2" />
+            {/* <i class="icon-google text-24 me-2"></i> */}
+            {/* <i className="fa fa-google text-24 me-2" aria-hidden="true"></i> */}
+            Google
+          </button>
         )
       }
-      
+
     </div>
   );
 };

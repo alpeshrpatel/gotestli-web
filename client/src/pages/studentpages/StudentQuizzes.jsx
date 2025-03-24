@@ -84,6 +84,8 @@ const StudentQuizzes = () => {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
   let userId = user.id;
   const maxCharacters = 500;
   const onOpenModal = () => {
@@ -98,9 +100,9 @@ const StudentQuizzes = () => {
       if (token) {
         let url = ''
         if(searchQuery){
-            url = `/api/userresult/pagelimit/user/${userId}?start=${start}&end=${end}&search=${encodeURIComponent(searchQuery)}`;
+            url = `/api/userresult/pagelimit/user/${userId}?start=${start}&end=${end}&search=${encodeURIComponent(searchQuery)}&orgid=${orgid}`;
         }else{
-          url = `/api/userresult/pagelimit/user/${userId}?start=${start}&end=${end}`
+          url = `/api/userresult/pagelimit/user/${userId}?start=${start}&end=${end}&orgid=${orgid}`;
         }
         const { data } = await API.get(url, {
           headers: {
@@ -252,7 +254,7 @@ const StudentQuizzes = () => {
     async function getQuestions() {
       try {
         if (token) {
-          const response = await API.get(`/api/questionset/questions/${id}`, {
+          const response = await API.get(`/api/questionset/questions/${id}?orgid=${orgid}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -523,6 +525,7 @@ const StudentQuizzes = () => {
                   getRowId={getRowId}
                   renderRowCells={renderRowCells}
                   fetchData={getQuestionSets}
+                  searchQuery={searchQuery}
                   // tableData={filteredData.length > 0 ? filteredData : questionSets}
                 />
               )}

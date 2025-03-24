@@ -42,7 +42,8 @@ const SignInWithGithub = () => {
         };
       }, []);
   const navigate = useNavigate();
-
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
 
@@ -97,7 +98,7 @@ const SignInWithGithub = () => {
       if (docSnap.exists()) {
         userRole = docSnap.data().role;
         try {
-          const { data } = await API.get(`/api/users/uid/${userId}`);
+          const { data } = await API.get(`/api/users/uid/${userId}?orgid=${orgid}`);
           const resData = await API.get(`/api/users/generate/token/${data.id}`);
           localStorage.setItem("token", resData.data?.token);
           localStorage.setItem(

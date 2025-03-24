@@ -3,11 +3,13 @@ import { showToast } from "@/utils/toastService";
 import { toast } from "react-toastify";
 
 const token = localStorage.getItem("token");
+const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
 const HandleDownload = async (type, fileName) => {
   try {
     if (token) {
       const response = await API.get(
-        `/api/question/files/download/?type=${type}&fileName=${fileName}`,
+        `/api/question/files/download/?type=${type}&fileName=${fileName}&orgid=${orgid}`,
         {
           responseType: "blob",
           headers: {

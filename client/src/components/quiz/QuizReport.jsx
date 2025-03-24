@@ -5,13 +5,15 @@ import { API } from "@/utils/AxiosInstance";
 const QuizReport = ({ attemptId }) => {
   const [userResults, setUserResults] = useState([]);
   const token = localStorage.getItem("token");
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
 
   useEffect(() => {
     async function getQuestions() {
       try {
         if (token) {
           const { data } = await API.get(
-            `/api/userresultdetails/userresult/${attemptId}`,
+            `/api/userresultdetails/userresult/${attemptId}?orgid=${orgid}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

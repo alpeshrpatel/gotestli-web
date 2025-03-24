@@ -44,6 +44,9 @@ const SignInWithFacebook = () => {
     };
   }, []);
 
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
+
   const onOpenModal = () => {
     setOpen(true);
   };
@@ -112,7 +115,7 @@ const SignInWithFacebook = () => {
           userRole = docSnap.data().role;
           // setUserRole(docSnap.data().role);
           try {
-            const { data } = await API.get(`/api/users/uid/${userId}`);
+            const { data } = await API.get(`/api/users/uid/${userId}?orgid=${orgid}`);
             const resData = await API.get(
               `/api/users/generate/token/${data.id}`
             );
