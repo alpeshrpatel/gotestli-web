@@ -144,16 +144,16 @@ const QuestionSet = () => {
     questionSet,
     time,
     timerOn,
-    lastAttemptedQuestion
+    lastAttemptedQuestion, questionsData
   } = location.state;
   const org = JSON.parse(localStorage.getItem("org")) || "";
   let orgid = org?.id || 0;
 
   // Set questions only when questionSet is available and valid
   useEffect(() => {
-    if (Array.isArray(questionSet) && questionSet.length > 0) {
+    if (Array.isArray(questionSet?.res) && questionSet?.res.length > 0) {
       console.log(questionSet)
-      setQuestions(questionSet.sort((a, b) => b.question_id - a.question_id));
+      setQuestions(questionSet?.res?.sort((a, b) => b.question_id - a.question_id));
       console.log(lastAttemptedQuestion)
       lastAttemptedQuestion && setQuestionNumber(lastAttemptedQuestion || 1);
     }
@@ -208,7 +208,7 @@ const QuestionSet = () => {
       setQuestionNumber(questionNumber - 1);
     }
   }
-
+  console.log('hello',questionSet)
   return (
     <div>
       {questions.length > 0 && questions[questionNumber - 1] && (

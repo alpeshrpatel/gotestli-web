@@ -233,6 +233,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
         const res = await API.post(
           "/api/userresultdetails/add/user/questions",
           {
+            org_id:orgid,
             userId,
             questionSetId,
             userResultId,
@@ -315,6 +316,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
         const res = await API.post(
           "/api/userresult",
           {
+            org_id:orgid,
             user_id: userId,
             question_set_id: questionSetId,
             total_question: totalQuestions,
@@ -367,7 +369,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
     //   }
     // }
     //  getQuestionsSet();
-
+    console.log(data)
     navigate("/quiz/questions", {
       state: {
         userResultId: inProgressQuizId,
@@ -376,6 +378,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
         time: time,
         timerOn: timerOnValue,
         lastAttemptedQuestion: lastAttemptIndex,
+        questionsData: data
       },
     });
   };

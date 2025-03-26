@@ -73,9 +73,10 @@ import {
   Container,
   CircularProgress,
 } from "@mui/material";
+import { API } from "@/utils/AxiosInstance";
 
 const stripePromise = loadStripe(
-  "pk_test_51QoP1kCc5nEXg12iewiGVqzngS0lh9lweriboJV7TJIzNRHgokIP5wxkK17hjmP0TeTuU69gzAGhY6LtZH60kFQI007ZXU9GuX"
+  "pk_live_51Qr0HoEQegaMI2gpDoIvxflCfwwKTCLtDGvNWZcAbVweqUCtnaJJVwUS7JdQh9FJxxuH0kTEFC4AR4DvyvYioRsL00L1U525Ou"
 );
 
 const CheckoutForm = () => {
@@ -84,7 +85,7 @@ const CheckoutForm = () => {
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-
+  const token = localStorage.getItem("token");
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -97,8 +98,8 @@ const CheckoutForm = () => {
     }
 
     try {
-      const { data } = await axios.post(
-        "http://localhost:3000/create-payment-intent",
+      const { data } = await API.post(
+        "/create-payment-intent",
         {
           amount: amount * 100, // Convert USD to cents
           currency: "usd",
@@ -117,6 +118,31 @@ const CheckoutForm = () => {
       if (error) {
         setMessage(error.message);
       } else if (paymentIntent.status === "succeeded") {
+         try {
+              if (token) {
+                const response = await API.post(
+                  "/api/whitelisted/questionset",
+                  { questionSetId: qset.id, userId: userId, insId: qset.created_by },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                  }
+                );
+                if (response.status == 200) {
+                  showToast("success","Purchase Made Successfully!");
+                }
+              }
+            } catch (error) {
+              if (error.status == 403) {
+                localStorage.removeItem("user");
+                localStorage.removeItem("token");
+                // showToast("error","Invaild token!");
+                navigate("/login");
+                return;
+              }
+              console.error("Error fetching data:", error);
+            }
         setMessage("Payment successful!");
       }
     } catch (err) {

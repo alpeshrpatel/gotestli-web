@@ -370,47 +370,48 @@ const MakeQuestionSet = () => {
   };
 
   const handleSubmit = async () => {
-    try {
-      if (token) {
-        async function getId() {
-          const { data } = await API.get(
-            `/api/questionset/question/questionsetid?orgid=${orgid}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
+    // try {
+    //   if (token) {
+    //     async function getId() {
+    //       const { data } = await API.get(
+    //         `/api/questionset/question/questionsetid?orgid=${orgid}`,
+    //         {
+    //           headers: {
+    //             Authorization: `Bearer ${token}`,
+    //           },
+    //         }
+    //       );
 
-          // console.log(data);
-          const questionsetid = data?.id + 1 || 1;
-          setQuestionSetId(questionsetid);
-          return { questionsetid };
-        }
-        let { questionsetid } = await getId();
+    //       // console.log(data);
+    //       const questionsetid = data?.id + 1 || 1;
+    //       setQuestionSetId(questionsetid);
+    //       return { questionsetid };
+    //     }
+    //     let { questionsetid } = await getId();
 
-        let jsonData = [];
-        selectedQuestions.forEach((question) => {
-          jsonData.push({
-            question_set_id: questionsetid,
-            question_id: question.id,
-            userId: userId,
-          });
-        });
-        questionSetStore(jsonData);
+    //     let jsonData = [];
+    //     selectedQuestions.forEach((question) => {
+    //       jsonData.push({
+    //         question_set_id: questionsetid,
+    //         question_id: question.id,
+    //         userId: userId,
+    //       });
+    //     });
+    //     questionSetStore(jsonData);
 
-        onOpenModal();
-      }
-    } catch (error) {
-      if (error.status == 403) {
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-        // showToast("error","Invaild token!");
-        navigate("/login");
-        return;
-      }
-      // console.log(error);
-    }
+    //     onOpenModal();
+    //   }
+    // } catch (error) {
+    //   if (error.status == 403) {
+    //     localStorage.removeItem("user");
+    //     localStorage.removeItem("token");
+    //     // showToast("error","Invaild token!");
+    //     navigate("/login");
+    //     return;
+    //   }
+    //   // console.log(error);
+    // }
+    onOpenModal()
   };
 
   const handlePageChange = (event) => {
@@ -857,7 +858,7 @@ const MakeQuestionSet = () => {
         <QuestionSetDetailForm
           selectedQuestions={selectedQuestions}
           categories={categories}
-          questionSetId={questionSetId}
+          // questionSetId={questionSetId}
           onCloseModal={onCloseModal}
         />
       </Modal>
