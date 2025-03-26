@@ -7,6 +7,7 @@ import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   updateProfile,
+  deleteUser as firebaseDeleteUser
 } from "firebase/auth";
 import { auth, db } from "@/firebase/Firebase";
 import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
@@ -18,6 +19,7 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { CircularProgress, TextField } from "@mui/material";
 import SignInWithGithub from "../common/SignInWithGithub";
+import { showToast } from "@/utils/toastService";
 
 export default function SignUpForm() {
   const [userName, setUserName] = useState("");
@@ -63,10 +65,19 @@ export default function SignUpForm() {
             uid: auth.currentUser.uid,
             role: selectedRole,
             provider: "manual",
+            org_id:0
           });
           // console.log(res);
         } catch (error) {
-          // console.log(error);
+          try {
+            await firebaseDeleteUser(auth.currentUser);
+            showToast('error', 'Registration failed: ' + error.message);
+            navigate("/signup");
+          } catch (deleteError) {
+            console.error('Failed to delete user:', deleteError);
+            showToast('error', 'Registration and user deletion failed');
+          }
+          navigate("/signup");
         }
         try {
           const docRef = await setDoc(doc(db, "roles", auth.currentUser.uid), {
@@ -84,12 +95,16 @@ export default function SignUpForm() {
         setIsLoading(false);
         navigate("/login");
       } else {
-        alert("Password not matched!!");
+        // alert("Password not matched!!");
+        showToast('error','Password not matched!!')
+        setIsLoading(false);
         // console.log("Password not matched!!");
       }
     } catch (error) {
-      // console.log(error);
-      alert(error.message);
+       console.log(error);
+      // alert(error.message);
+      showToast('error',error.message)
+      setIsLoading(false);
     }
   };
   // console.log(selectedRole);
@@ -199,7 +214,7 @@ export default function SignUpForm() {
                       boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
                     }}
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setEmail((e.target.value).trim())}
                    
                   />
                 </div>
@@ -238,7 +253,7 @@ export default function SignUpForm() {
                       boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
                     }}
                     value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
+                    onChange={(e) => setUserName((e.target.value).trim())}
                    
                   />
                 </div>
@@ -265,7 +280,7 @@ export default function SignUpForm() {
                   </label>
                   <input
                    required
-                    type="text"
+                    type="password"
                     name="password"
                     id="password"
                     style={{
@@ -278,7 +293,7 @@ export default function SignUpForm() {
                       boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
                     }}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => setPassword((e.target.value).trim())}
                    
                   />
                 </div>
@@ -305,7 +320,7 @@ export default function SignUpForm() {
                   </label>
                   <input
                    required
-                    type="text"
+                    type="password"
                     name="cnm_password"
                     id="cnm_password"
                     style={{
@@ -318,7 +333,7 @@ export default function SignUpForm() {
                       boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
                     }}
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={(e) => setConfirmPassword((e.target.value).trim())}
                    
                   />
                 </div>

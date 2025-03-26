@@ -11,7 +11,6 @@ import { showToast } from "@/utils/toastService";
 const QuestionSetDetailForm = ({
   selectedQuestions,
   categories,
-  questionSetId,
   onCloseModal
 }) => {
   const user = auth.currentUser.displayName;
@@ -32,6 +31,7 @@ const QuestionSetDetailForm = ({
     is_demo: true,
     totalmarks: "",
     pass_percentage: "",
+    org_id: 0
   });
   const [tagsId, setTagsId] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -83,8 +83,10 @@ const QuestionSetDetailForm = ({
   const navigate = useNavigate();
   const userdata = JSON.parse(localStorage.getItem("user")) || "";
   const token = localStorage.getItem("token");
-  const userRole = userdata.role;
-  const userId = userdata.id;
+  const userRole = userdata?.role;
+  const userId = userdata?.id;
+  const org = JSON.parse(localStorage.getItem("org")) || "";
+  let orgid = org?.id || 0;
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -92,6 +94,29 @@ const QuestionSetDetailForm = ({
       ...formData,
       [name]: type === "checkbox" ? checked : value,
     });
+  };
+
+  const questionSetStore = async (jsonData) => {
+    try {
+      if (token) {
+        const res = await API.post("/api/questionset/question", jsonData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        // console.log(res);
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // showToast("error","Invaild token!");
+        navigate("/login");
+        return;
+      }
+      // console.log(error);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -102,6 +127,7 @@ const QuestionSetDetailForm = ({
       end_time: endTime,
       created_by: userId,
       modified_by: userId,
+      org_id: orgid
     };
 
     // console.log(formDataWithTime);
@@ -114,54 +140,78 @@ const QuestionSetDetailForm = ({
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(response)
-        const res = await API.post(
-          "/api/questionset/category",
-          { tagsId, questionSetId, userId },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        // console.log("tags res:", res);
-        const { data } = await API.get(
-          `/api/followers/list/follower/detail/${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        showToast("success", "QuestionSet Created Successfully!");
-        // setFollowers(data)
-        data.forEach(async (follower) => {
+        const a = response.status == 200 && response.data.id
+        console.log(a);
+        if (response.status == 200 && response.data.id) {
+          let questionSetId = response?.data?.id;
+          let jsonData = [];
+          selectedQuestions.forEach((question) => {
+            jsonData.push({
+              question_set_id: response?.data?.id,
+              question_id: question.id,
+              userId: userId,
+            });
+          });
+          await questionSetStore(jsonData);
+
+
           await API.post(
-            "/api/sendemail/followers/update",
-            {
-              username: follower.first_name,
-              email: follower.email,
-              instructor: formData.author,
-              title: formData.title,
-            },
+            "/api/questionset/category",
+            { tagsId, questionSetId, userId },
             {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             }
           );
-        });
-        // if (response) {
-        showToast("success", "Followers Notified!!");
-        navigate("/instructor/home");
+          // console.log("tags res:", res);
+          const { data } = await API.get(
+            `/api/followers/list/follower/detail/${userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          showToast("success", "QuestionSet Created Successfully!");
+          // setFollowers(data)
+          console.log(data)
+          if(data?.length > 0){
+            await data?.forEach(async (follower) => {
+              await API.post(
+                "/api/sendemail/followers/update",
+                {
+                  username: follower.first_name,
+                  email: follower.email,
+                  instructor: formData.author,
+                  title: formData.title,
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+            });
+            showToast("success", "Followers Notified!!");
+          }
+         
+          // if (response) {
+          
+          navigate("/instructor/home");
+        }
       }
     } catch (error) {
       if (error.status == 403) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
-        // showToast("error","Invaild token!");
+        showToast("error", "Session Timedout!");
         navigate("/login");
         return;
+      }else{
+        console.log(error)
+        showToast("error", "Questionset Creation Failed!");
+        navigate("/create/questionset");
       }
     }
 
@@ -171,30 +221,30 @@ const QuestionSetDetailForm = ({
   return (
     <form className="quiz-form " onSubmit={handleSubmit}>
       <button
-            style={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              fontSize: "24px",
-            }}
-            onClick={onCloseModal}
-          >
-            {" "}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 0 24 24"
-              width="24px"
-              fill="#000000"
-            >
-              <path d="M0 0h24v24H0V0z" fill="none" />
-              <path d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59 7.11 5.7a.996.996 0 1 0-1.41 1.41L10.59 12l-4.89 4.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.39-.38.39-1.02 0-1.4z" />
-            </svg>
-          </button>
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          background: "transparent",
+          border: "none",
+          cursor: "pointer",
+          fontSize: "24px",
+        }}
+        onClick={onCloseModal}
+      >
+        {" "}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 0 24 24"
+          width="24px"
+          fill="#000000"
+        >
+          <path d="M0 0h24v24H0V0z" fill="none" />
+          <path d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59 7.11 5.7a.996.996 0 1 0-1.41 1.41L10.59 12l-4.89 4.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.39-.38.39-1.02 0-1.4z" />
+        </svg>
+      </button>
       <div className="form-group">
         {/* <label>Title:</label>
         <input
@@ -244,45 +294,45 @@ const QuestionSetDetailForm = ({
         /> */}
       </div>
       <div className="form-group row ">
-      <div className="form-group col-sm-12 col-md-6 d-flex flex-column ">
-        {/* <label>Image:</label>
+        <div className="form-group col-sm-12 col-md-6 d-flex flex-column ">
+          {/* <label>Image:</label>
         <input
           type="text"
           name="image"
           value={formData.image}
           onChange={handleChange}
         /> */}
-        <label
-          htmlFor="image"
-          style={{
-            marginBottom: "5px",
-            fontWeight: "600",
-            color: "#333",
-            fontSize: "14px",
-          }}
-        >
-          Image 
-        </label>
-        <input
-          type="url"
-          name="image"
-          id="image"
-          required
-          style={{
-            padding: "10px",
-            border: "1px solid #ced4da",
-            borderRadius: "8px",
-            fontSize: "14px",
-            outline: "none",
-            backgroundColor: "#e9ecef",
-            color: "#495057",
-            boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
-          }}
-          value={formData.image}
-          onChange={handleChange}
-        />
-        <span className="mt-2"><span style={{color:'red',fontWeight:'500'}}>Note. </span>Add an image URL or provide a public image URL.</span>
-        {/* <TextField
+          <label
+            htmlFor="image"
+            style={{
+              marginBottom: "5px",
+              fontWeight: "600",
+              color: "#333",
+              fontSize: "14px",
+            }}
+          >
+            Image
+          </label>
+          <input
+            type="url"
+            name="image"
+            id="image"
+            required
+            style={{
+              padding: "10px",
+              border: "1px solid #ced4da",
+              borderRadius: "8px",
+              fontSize: "14px",
+              outline: "none",
+              backgroundColor: "#e9ecef",
+              color: "#495057",
+              boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+            }}
+            value={formData.image}
+            onChange={handleChange}
+          />
+          <span className="mt-2"><span style={{ color: 'red', fontWeight: '500' }}>Note. </span>Add an image URL or provide a public image URL.</span>
+          {/* <TextField
           required
           id="outlined-required"
           label="Image"
@@ -292,10 +342,10 @@ const QuestionSetDetailForm = ({
           className="custom-height-questionsetform bg-white rounded w-100"
           onChange={handleChange}
         /> */}
-      </div>
-      
-      <div className="form-group col-sm-12 col-md-6">
-        {/* <label>Author:</label>
+        </div>
+
+        <div className="form-group col-sm-12 col-md-6">
+          {/* <label>Author:</label>
         <input
           readOnly
           type="text"
@@ -303,35 +353,35 @@ const QuestionSetDetailForm = ({
           value={user}
           onChange={handleChange}
         /> */}
-        <label
-          htmlFor="user"
-          style={{
-            marginBottom: "5px",
-            fontWeight: "600",
-            color: "#333",
-            fontSize: "14px",
-          }}
-        >
-          Author
-        </label>
-        <input
-          type="text"
-          name="user"
-          id="user"
-          readOnly
-          style={{
-            padding: "10px",
-            border: "1px solid #ced4da",
-            borderRadius: "8px",
-            fontSize: "14px",
-            outline: "none",
-            backgroundColor: "#e9ecef",
-            color: "#495057",
-            boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
-          }}
-          value={user}
-        />
-        {/* <TextField
+          <label
+            htmlFor="user"
+            style={{
+              marginBottom: "5px",
+              fontWeight: "600",
+              color: "#333",
+              fontSize: "14px",
+            }}
+          >
+            Author
+          </label>
+          <input
+            type="text"
+            name="user"
+            id="user"
+            readOnly
+            style={{
+              padding: "10px",
+              border: "1px solid #ced4da",
+              borderRadius: "8px",
+              fontSize: "14px",
+              outline: "none",
+              backgroundColor: "#e9ecef",
+              color: "#495057",
+              boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+            }}
+            value={user}
+          />
+          {/* <TextField
           id="outlined-read-only-input"
           label="Author"
           defaultValue={user}
@@ -340,9 +390,9 @@ const QuestionSetDetailForm = ({
           }}
           className="custom-height-questionsetform bg-white rounded w-100"
         /> */}
-      </div>
         </div>
-     
+      </div>
+
       <div className="form-group">
         {/* <label>Short Description:</label>
         <input

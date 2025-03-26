@@ -1,4 +1,5 @@
 import MetaComponent from "@/components/common/MetaComponent";
+import PaymentComponent from "@/components/common/PaymentComponent";
 import Paypal from "@/components/common/PayPal";
 import Preloader from "@/components/common/Preloader";
 import Header from "@/components/layout/headers/Header";
@@ -18,7 +19,7 @@ const PurchasePage = () => {
   const token = localStorage.getItem("token");
   const { qset } = location.state;
   const handlePurchase = async () => {
-    setCheckOut(true)
+    // setCheckOut(true)
     try {
       if (token) {
         const response = await API.post(
@@ -56,24 +57,26 @@ const PurchasePage = () => {
           className="content-wrapper js-content-wrapper overflow-hidden"
           style={{ marginTop: "20vh",display:'flex', justifyContent:'center',gap:'100px' }}
         >
-          {checkOut ? (
-            <Paypal />
-          ) : (
+           (
             <>
-              <button
+            <div style={{display:'flex', flexDirection:'column', gap:'20px',width:'50%'}}>
+            <PaymentComponent/>
+              {/* <button
                 className="button -sm px-24 py-25 -outline-red-3 text-red-3 text-16 fw-bolder lh-sm mb-4"
                 onClick={handlePurchase}
               >
                 Purchase
-              </button>
+              </button> */}
               <button
                 className="button -sm px-24 py-25 -outline-red-3 text-red-3 text-16 fw-bolder lh-sm"
                 onClick={() => navigate("/")}
               >
                 Back
               </button>
+            </div>
+              
             </>
-          )}
+          )
         </div>
       </main>
     </div>

@@ -150,7 +150,7 @@ export default function LoginForm() {
                         boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
                       }}
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => setEmail((e.target.value).trim())}
 
                     />
                   </div>
@@ -190,7 +190,7 @@ export default function LoginForm() {
                         boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
                       }}
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e) => setPassword((e.target.value).trim())}
 
                     />
                   </div>

@@ -152,13 +152,13 @@ const ViewStudents = () => {
     setIsDisabled((prev) => [...prev, { id: studentData.id }]);
     try {
       if (token) {
-        const { data } = await API.get(`api/users/${studentData.user_id}`, {
+        const { data } = await API.get(`api/users/${studentData.user_id}?orgid=${orgid}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
          // console.log(data);
-        const response = await API.get(`api/users/${userId}`, {
+        const response = await API.get(`api/users/${userId}?orgid=${orgid}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

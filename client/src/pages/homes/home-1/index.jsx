@@ -97,12 +97,12 @@ export default function HomePage1() {
         <GetApp />
         <Blog />
         <Join /> */}
-         <PayPalButton
+         {/* <PayPalButton
       amount="99.99"
       onSuccess={handleSuccess}
       onError={handleError}
-    />
-    <PaymentComponent/>
+    /> */}
+    {/* <PaymentComponent/> */}
             <FooterOne />
           </div>
         </>
