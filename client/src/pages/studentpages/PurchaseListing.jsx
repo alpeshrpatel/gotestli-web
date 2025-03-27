@@ -16,7 +16,7 @@ const PurchaseListing = () => {
       try {
         if (token) {
           const { data } = await API.get(
-            `/api/whitelisted/questionset/purchases/user/${userId}`,
+            `/api/users/purchases/purchases/user/${userId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
