@@ -44,6 +44,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   const [wishlistedSet, setWishlistedSet] = useState();
   const [ratingsData, setRatingsData] = useState([]);
   const [totalRatings, setTotalRatings] = useState(0);
+  const [purchasedQSet, setPurchasedQSet] = useState([]);
 
   const navigate = useNavigate();
 
@@ -136,6 +137,32 @@ export default function CourceCard({ view, search = null, role, data, index }) {
       }
     }
     getWishlist();
+    async function getPurchases() {
+      try {
+        if (token) {
+          const { data } = await API.get(
+            `/api/users/purchases/purchases/user/${userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log(data);
+          setPurchasedQSet(data);
+        }
+      } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // showToast("error","Invaild token!");
+          navigate("/login");
+          return;
+        }
+        console.error("Error fetching data:", error);
+      }
+    }
+    getPurchases()
   }, [isWishlisted]);
 
   const onOpenModal = () => {
@@ -232,6 +259,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   //   { stars: 2, percentage: 0 },
   //   { stars: 1, percentage: 0 },
   // ];
+  console.log('pr', purchasedQSet)
   return (
     <>
       <Modal open={open} onClose={onCloseModal} center>
@@ -245,9 +273,8 @@ export default function CourceCard({ view, search = null, role, data, index }) {
       </Modal>
 
       <div
-        className={`col-lg-3 col-md-6 pointer ${
-          search ? `col-lg-4 col-md-6 ` : `col-lg-3 col-md-6`
-        } ${view == `list` && `col-lg-12`}`}
+        className={`col-lg-3 col-md-6 pointer ${search ? `col-lg-4 col-md-6 ` : `col-lg-3 col-md-6`
+          } ${view == `list` && `col-lg-12`}`}
         onClick={onOpenModal}
       >
         {view == "card" ? (
@@ -262,7 +289,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                     <div
                       className="text-17 lh-15 fw-500 text-dark-1 text-truncate"
                       style={{ maxWidth: "200px" }}
-                      // data-toggle="tooltip" data-placement="top" title={data.title}
+                    // data-toggle="tooltip" data-placement="top" title={data.title}
                     >
                       <BootstrapTooltip title={data.title}>
                         {data.title}
@@ -341,15 +368,21 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                   activeColor="#ffd700"
                   emptyColor="#d3d3d3"
                 /> */}
-                {!data.is_demo ? (
+                {!data.is_demo && !(purchasedQSet.length > 0 && purchasedQSet?.some((item) => item?.questionset_id == data.id)) ? (
                   <BootstrapTooltip
                     title={"Purchase This Amazing QuestionSet to Attend it!"}
                   >
                     <div className="fs-2">🔒</div>
                   </BootstrapTooltip>
                 ) : (
-                  ""
+                  purchasedQSet.length > 0 && purchasedQSet?.some((item) => item?.questionset_id == data.id) ? (<div className="fs-2">🔓</div> ) : ""
                 )}
+                {
+                  !data.is_demo && !(purchasedQSet.length > 0 && purchasedQSet?.some((item) => item?.questionset_id == data.id)) ?(
+                    <button className="button -sm px-24 py-10 -green-5 mt-2 text-white fw-500  text-14 mx-auto" onClick={() => navigate("/buy/questionset", { state: { qset: data } })}>Buy</button>
+                  ) : ""
+                }
+              
               </div>
               <CardContent>
                 <BootstrapTooltip title={data.short_desc}>
@@ -377,9 +410,8 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                 )}
 
                 <div
-                  className={`d-flex items-center gap-2 ${
-                    role == "instructor" ? `mt-2` : `mt-0`
-                  } `}
+                  className={`d-flex items-center gap-2 ${role == "instructor" ? `mt-2` : `mt-0`
+                    } `}
                 >
                   <Typography
                     variant="caption"
