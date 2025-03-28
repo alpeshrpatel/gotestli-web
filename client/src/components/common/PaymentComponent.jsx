@@ -77,7 +77,7 @@ import { API } from "@/utils/AxiosInstance";
 import { showToast } from "@/utils/toastService";
 import { useNavigate } from "react-router-dom";
 //pk_test_51QoP1kCc5nEXg12iewiGVqzngS0lh9lweriboJV7TJIzNRHgokIP5wxkK17hjmP0TeTuU69gzAGhY6LtZH60kFQI007ZXU9GuX
-const stripePromise = loadStripe( "pk_live_51Qr0HoEQegaMI2gpDoIvxflCfwwKTCLtDGvNWZcAbVweqUCtnaJJVwUS7JdQh9FJxxuH0kTEFC4AR4DvyvYioRsL00L1U525Ou");
+const stripePromise = loadStripe("pk_live_51Qr0HoEQegaMI2gpDoIvxflCfwwKTCLtDGvNWZcAbVweqUCtnaJJVwUS7JdQh9FJxxuH0kTEFC4AR4DvyvYioRsL00L1U525Ou");
   // "pk_live_51Qr0HoEQegaMI2gpDoIvxflCfwwKTCLtDGvNWZcAbVweqUCtnaJJVwUS7JdQh9FJxxuH0kTEFC4AR4DvyvYioRsL00L1U525Ou"
 
 
