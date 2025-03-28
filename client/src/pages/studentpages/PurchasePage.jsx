@@ -23,7 +23,7 @@ const PurchasePage = () => {
     try {
       if (token) {
         const response = await API.post(
-          "/api/users/purchases",
+          "/api/whitelisted/questionset",
           { questionSetId: qset.id, userId: userId, insId: qset.created_by },
           {
             headers: {
@@ -60,7 +60,7 @@ const PurchasePage = () => {
            (
             <>
             <div style={{display:'flex', flexDirection:'column', gap:'20px',width:'50%'}}>
-            <PaymentComponent qset={qset}/>
+            <PaymentComponent/>
               {/* <button
                 className="button -sm px-24 py-25 -outline-red-3 text-red-3 text-16 fw-bolder lh-sm mb-4"
                 onClick={handlePurchase}

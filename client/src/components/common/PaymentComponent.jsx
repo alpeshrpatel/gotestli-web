@@ -80,13 +80,9 @@ import { useNavigate } from "react-router-dom";
 const stripePromise = loadStripe("pk_live_51Qr0HoEQegaMI2gpDoIvxflCfwwKTCLtDGvNWZcAbVweqUCtnaJJVwUS7JdQh9FJxxuH0kTEFC4AR4DvyvYioRsL00L1U525Ou");
   // "pk_live_51Qr0HoEQegaMI2gpDoIvxflCfwwKTCLtDGvNWZcAbVweqUCtnaJJVwUS7JdQh9FJxxuH0kTEFC4AR4DvyvYioRsL00L1U525Ou"
 
-
-const CheckoutForm = ({qset}) => {
+const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user")) || "";
-  const userId = user.id;
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -126,7 +122,7 @@ const CheckoutForm = ({qset}) => {
          try {
               if (token) {
                 const response = await API.post(
-                  "/api/users/purchases",
+                  "/api/whitelisted/questionset",
                   { questionSetId: qset.id, userId: userId, insId: qset.created_by },
                   {
                     headers: {
@@ -136,7 +132,6 @@ const CheckoutForm = ({qset}) => {
                 );
                 if (response.status == 200) {
                   showToast("success","Purchase Made Successfully!");
-                  navigate("/")
                 }
               }
             } catch (error) {
@@ -223,10 +218,10 @@ const CheckoutForm = ({qset}) => {
   );
 };
 
-const PaymentComponent = ({qset}) => {
+const PaymentComponent = () => {
   return (
     <Elements stripe={stripePromise}>
-      <CheckoutForm qset={qset}/>
+      <CheckoutForm />
     </Elements>
   );
 };
