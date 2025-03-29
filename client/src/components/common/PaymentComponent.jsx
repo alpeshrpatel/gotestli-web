@@ -77,12 +77,14 @@ import { API } from "@/utils/AxiosInstance";
 import { showToast } from "@/utils/toastService";
 import { useNavigate } from "react-router-dom";
 //pk_test_51QoP1kCc5nEXg12iewiGVqzngS0lh9lweriboJV7TJIzNRHgokIP5wxkK17hjmP0TeTuU69gzAGhY6LtZH60kFQI007ZXU9GuX
-const stripePromise = loadStripe("pk_live_51Qr0HoEQegaMI2gpDoIvxflCfwwKTCLtDGvNWZcAbVweqUCtnaJJVwUS7JdQh9FJxxuH0kTEFC4AR4DvyvYioRsL00L1U525Ou");
-  // "pk_live_51Qr0HoEQegaMI2gpDoIvxflCfwwKTCLtDGvNWZcAbVweqUCtnaJJVwUS7JdQh9FJxxuH0kTEFC4AR4DvyvYioRsL00L1U525Ou"
-
-const CheckoutForm = () => {
+const stripePromise = loadStripe( "pk_live_51Qr0HoEQegaMI2gpDoIvxflCfwwKTCLtDGvNWZcAbVweqUCtnaJJVwUS7JdQh9FJxxuH0kTEFC4AR4DvyvYioRsL00L1U525Ou");
+// "pk_live_51Qr0HoEQegaMI2gpDoIvxflCfwwKTCLtDGvNWZcAbVweqUCtnaJJVwUS7JdQh9FJxxuH0kTEFC4AR4DvyvYioRsL00L1U525Ou"
+const CheckoutForm = ({qset}) => {
   const stripe = useStripe();
   const elements = useElements();
+  const navigate = useNavigate();
+   const user = JSON.parse(localStorage.getItem("user")) || "";
+   const userId = user.id;
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -122,7 +124,7 @@ const CheckoutForm = () => {
          try {
               if (token) {
                 const response = await API.post(
-                  "/api/whitelisted/questionset",
+                  "/api/users/purchases",
                   { questionSetId: qset.id, userId: userId, insId: qset.created_by },
                   {
                     headers: {
@@ -132,6 +134,7 @@ const CheckoutForm = () => {
                 );
                 if (response.status == 200) {
                   showToast("success","Purchase Made Successfully!");
+                  navigate("/")
                 }
               }
             } catch (error) {
@@ -218,10 +221,10 @@ const CheckoutForm = () => {
   );
 };
 
-const PaymentComponent = () => {
+const PaymentComponent = ({qset}) => {
   return (
     <Elements stripe={stripePromise}>
-      <CheckoutForm />
+      <CheckoutForm qset={qset}/>
     </Elements>
   );
 };
