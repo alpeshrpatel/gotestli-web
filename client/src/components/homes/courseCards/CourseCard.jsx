@@ -44,6 +44,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   const [wishlistedSet, setWishlistedSet] = useState();
   const [ratingsData, setRatingsData] = useState([]);
   const [totalRatings, setTotalRatings] = useState(0);
+  const [purchasedQSet, setPurchasedQSet] = useState([]);
 
   const navigate = useNavigate();
 
@@ -136,6 +137,32 @@ export default function CourceCard({ view, search = null, role, data, index }) {
       }
     }
     getWishlist();
+    async function getPurchases() {
+      try {
+        if (token) {
+          const { data } = await API.get(
+            `/api/users/purchases/purchases/user/${userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log(data);
+          setPurchasedQSet(data);
+        }
+      } catch (error) {
+        if (error.status == 403) {
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          // showToast("error","Invaild token!");
+          navigate("/login");
+          return;
+        }
+        console.error("Error fetching data:", error);
+      }
+    }
+    getPurchases()
   }, [isWishlisted]);
 
   const onOpenModal = () => {
@@ -341,15 +368,20 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                   activeColor="#ffd700"
                   emptyColor="#d3d3d3"
                 /> */}
-                {!data.is_demo ? (
+                { !data.is_demo && !(purchasedQSet.length > 0 && purchasedQSet?.some((item) => item?.questionset_id == data.id)) ? (
                   <BootstrapTooltip
                     title={"Purchase This Amazing QuestionSet to Attend it!"}
                   >
                     <div className="fs-2">🔒</div>
                   </BootstrapTooltip>
                 ) : (
-                  ""
+                   purchasedQSet.length > 0 && purchasedQSet?.some((item) => item?.questionset_id == data.id) ? (<div className="fs-2">🔓</div> ) : ""
                 )}
+                 {
+                   !data.is_demo && !(purchasedQSet.length > 0 && purchasedQSet?.some((item) => item?.questionset_id == data.id)) ?(
+                     <button className="button -sm px-24 py-10 -green-5 mt-2 text-white fw-500  text-14 mx-auto" onClick={() => navigate("/buy/questionset", { state: { qset: data } })}>Buy</button>
+                   ) : ""
+                 }
               </div>
               <CardContent>
                 <BootstrapTooltip title={data.short_desc}>
