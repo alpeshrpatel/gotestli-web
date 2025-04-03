@@ -81,6 +81,7 @@ export const menuList = [
           { href: "/student/dashboard", label: "Dashboard" },
           { href: "/dshb/quizzes", label: "My quizzes" },
           {href:"/user/purchases", label: "My Purchases"},
+          {href:"/user/transactions", label: "My Transactions"},
           { href: "/dshb/wishlist", label: "WishList" },
           { href: "/dshb/quizzes", label: "Reviews" },
           // { href: "/dshb-listing", label: "Add Listing" },

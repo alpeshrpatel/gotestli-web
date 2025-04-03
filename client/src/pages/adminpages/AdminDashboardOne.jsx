@@ -45,7 +45,7 @@ export default function AdminDashboardOne() {
   let orgid = org?.id || 0;
   const isPublicAdmin = org?.id == 0 || !org?.id;
   const adminType = isPublicAdmin ? "Public Admin" : "Organization Admin";
-  
+
 
   useEffect(() => {
     async function getDashboardData() {
@@ -79,9 +79,15 @@ export default function AdminDashboardOne() {
           const organizationResponse = await API.get(
             `/api/org/getall/organizations`,
           );
-          setOrganizationList(organizationResponse?.data)
-
-          console.log(res.data);
+          console.log(organizationResponse?.data)
+          const transactionsResponse = await API.get(
+            `/api/transactions/getall/payments/0?start=1&end=5`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              }
+          },
+          );
+          console.log(transactionsResponse);
           // setTotalAttemptCnt(res.data.attempt_count);
           setQuestionSets(res.data);
           setUserResults(response.data)
@@ -94,7 +100,7 @@ export default function AdminDashboardOne() {
               insCnt += 1
             }
           })
-
+          setOrganizationList(organizationResponse?.data)
           // const dataArr = [
           //   {
           //     id: 1,
@@ -160,9 +166,16 @@ export default function AdminDashboardOne() {
                 link: "/admin/attempts"
               },
               {
+                id: 4,
+                title: "Refund Requests",
+                value: transactionsResponse?.data?.totalRecords,
+                iconClass: "icon-save-money",
+                link: "/admin/refund/requests"
+              },
+              {
                 id: 5,
                 title: "Organizations",
-                value: organizationList?.length || 0,
+                value: organizationResponse?.data?.length || 0,
                 iconClass: "icon-building",
                 link: "/admin/organization-list/approval"
               },
@@ -198,6 +211,13 @@ export default function AdminDashboardOne() {
                 value: response.data.length,
                 iconClass: "icon-edit",
                 link: "/admin/attempts"
+              },
+              {
+                id: 5,
+                title: "Refund Requests",
+                value: transactionsResponse?.data?.totalRecords,
+                iconClass: "icon-save-money",
+                link: "/admin/refund/requests"
               },
             ];
             setStates(dataArr);
@@ -280,11 +300,11 @@ export default function AdminDashboardOne() {
             role: selectedRole,
             provider: "manual",
             org_id: org.id,
-            company:org.subdomain,
+            company: org.subdomain,
           });
           // console.log(res);
           try {
-            const response = await API.post('/api/sendemail/org/user/invitation/from-admin',{ orgName: org.org_name, email: email, password: password, subdomain: org.subdomain, role: selectedRole }, {
+            const response = await API.post('/api/sendemail/org/user/invitation/from-admin', { orgName: org.org_name, email: email, password: password, subdomain: org.subdomain, role: selectedRole }, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
@@ -296,9 +316,9 @@ export default function AdminDashboardOne() {
             console.log(error)
             showToast('error', error.message)
           }
-          
-        setOpen(false)
-          
+
+          setOpen(false)
+
         } catch (error) {
           // console.log(error);
         }
@@ -312,14 +332,14 @@ export default function AdminDashboardOne() {
           // console.log("Document written ");
         } catch (e) {
           console.error("Error adding document: ", e);
-          showToast('error', 'Error adding document:',e.message)
+          showToast('error', 'Error adding document:', e.message)
         }
 
         // console.log("account created successfully!");
         setIsLoading(false);
-        
+
       } else {
-        
+
         showToast('error', 'Password not matched!!')
         setIsLoading(false)
         // console.log("Password not matched!!");
@@ -357,7 +377,7 @@ export default function AdminDashboardOne() {
           },
         }}
       >
-        <div className="col-12 rounded px-3 pt-4 border-1 " style={{overflowX:'hidden',margin:'0px auto'}}>
+        <div className="col-12 rounded px-3 pt-4 border-1 " style={{ overflowX: 'hidden', margin: '0px auto' }}>
           <div className=" justify-content-around items-center mb-8" >
 
             <label
@@ -544,7 +564,7 @@ export default function AdminDashboardOne() {
           }
 
         </div>
-      
+
         {
           !isPublicAdmin && (
             <div className="d-flex flex-wrap">
@@ -601,29 +621,29 @@ export default function AdminDashboardOne() {
                     <CardContent>
                       <Typography variant="subtitle2">Quick Actions</Typography>
                       {!isPublicAdmin && (
-          <div className=" d-flex justify-end items-center">
-            <Button
-              variant="contained"
-              style={{ backgroundColor: "#6440FB", marginRight: "10px" }}
-              className="py-8 px-20"
-              // onClick={() => navigate('/admin/invite-members')}
-              onClick={onOpenModal}
-            >
-              <i className="icon-email mr-10"></i>
-              Invite Members
-            </Button>
+                        <div className=" d-flex justify-end items-center">
+                          <Button
+                            variant="contained"
+                            style={{ backgroundColor: "#6440FB", marginRight: "10px" }}
+                            className="py-8 px-20"
+                            // onClick={() => navigate('/admin/invite-members')}
+                            onClick={onOpenModal}
+                          >
+                            <i className="icon-email mr-10"></i>
+                            Invite Members
+                          </Button>
 
-            <Button
-              variant="outlined"
-              style={{ borderColor: "#6440FB", color: "#6440FB" }}
-              className="py-8 px-20"
-              onClick={() => navigate('/admin/organization-settings')}
-            >
-              <i className="icon-setting mr-10"></i>
-              Organization Settings
-            </Button>
-          </div>
-        )}
+                          <Button
+                            variant="outlined"
+                            style={{ borderColor: "#6440FB", color: "#6440FB" }}
+                            className="py-8 px-20"
+                            onClick={() => navigate('/admin/organization-settings')}
+                          >
+                            <i className="icon-setting mr-10"></i>
+                            Organization Settings
+                          </Button>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 </div>
@@ -634,7 +654,14 @@ export default function AdminDashboardOne() {
 
         <div className="row y-gap-30">
           {states.map((elm, i) => (
-            <div key={i} className="col-xl-3 col-md-6" style={{ cursor: elm?.title === 'Organizations' ? 'pointer' : 'default' }} onClick={() => navigate('/admin/organization-list/approval', { state: { organizationList: organizationList } })}>
+            <div key={i} className="col-xl-3 col-md-6"  style={{ cursor: (elm?.title === 'Organizations' || elm?.title === 'Refund Requests') ? 'pointer' : 'default' }}
+            onClick={() => {
+              if (elm?.title === 'Organizations') {
+                navigate('/admin/organization-list/approval', { state: { organizationList: organizationList } });
+              } else if (elm?.title === 'Refund Requests') {
+                navigate('/admin/refund/requests');
+              }
+            }}>
               <div className="d-flex justify-between items-center py-35 px-30 rounded-16 bg-white -dark-bg-dark-1 shadow-4">
                 <div >
                   <div className="lh-1 fw-500">{elm?.title}</div>
