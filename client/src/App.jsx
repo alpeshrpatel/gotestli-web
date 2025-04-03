@@ -132,6 +132,8 @@ import OrganizationHomePage from "./pages/organization/OrganizationHomePage";
 import OrgOnboardingForm from "./pages/organization/OrgOnboardingForm";
 import OrganizationList from "./pages/adminpages/OrganizationList";
 import AcceptInvitation from "./pages/organization/AcceptInvitation";
+import StudentTransactions from "./pages/studentpages/StudentTransctions";
+import RefundRequestsList from "./pages/adminpages/RefundRequestsList";
 // import AppProvider from "./utils/AppContext";
 
 function App() {
@@ -375,6 +377,15 @@ function App() {
                     />
                   }
                 />
+                <Route
+                  path="/user/transactions"
+                  element={
+                    <ProtectedRoute
+                      element={<StudentTransactions />}
+                      role="student"
+                    />
+                  }
+                />
                 <Route path="/search/result" element={<SearchResult />} />
                 <Route
                   path="/dshb/profilepage"
@@ -408,6 +419,12 @@ function App() {
                 <Route path="/org/homepage" element={
                   <ProtectedRoute element={<OrganizationHomePage orgName={org.org_name} />} role="admin" />
                 } />
+                <Route
+                  path="/admin/refund/requests"
+                  element={
+                    <ProtectedRoute element={<RefundRequestsList/>} role="admin" />
+                  }
+                />
 
                 {/* Instructor Routes */}
                 <Route
