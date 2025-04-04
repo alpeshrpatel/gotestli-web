@@ -84,7 +84,9 @@ const CheckoutForm = ({qset}) => {
   const elements = useElements();
   const navigate = useNavigate();
    const user = JSON.parse(localStorage.getItem("user")) || "";
-   const userId = user.id;
+   const userId = user?.id;
+   const org = JSON.parse(localStorage.getItem("org")) || "";
+   let orgId = org?.id || 0;
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -123,6 +125,14 @@ const CheckoutForm = ({qset}) => {
       } else if (paymentIntent.status === "succeeded") {
          try {
               if (token) {
+                const res = await API.post("/api/transactions", {
+                  questionSetId: qset.id, userId: userId,orgId: orgId, amount: amount, paymentIntentId: data.paymentIntentId,isDelete: 0, status: ''
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                })
                 const response = await API.post(
                   "/api/users/purchases",
                   { questionSetId: qset.id, userId: userId, insId: qset.created_by },
