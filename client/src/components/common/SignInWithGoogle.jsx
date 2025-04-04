@@ -26,6 +26,9 @@ import { toast } from "react-toastify";
 import Loader from "./Loader";
 import { CircularProgress } from "@mui/material";
 import { showToast } from "@/utils/toastService";
+import {
+  deleteUser as firebaseDeleteUser
+} from "firebase/auth";
 
 const SignInWithGoogle = () => {
   const [open, setOpen] = useState(false);
@@ -79,6 +82,7 @@ const SignInWithGoogle = () => {
       if (querySnapshot.empty) {
         try {
           const res = await API.post("/api/users", {
+            org_id: orgid,
             username: auth.currentUser.email,
             email: auth.currentUser.email,
             created_on: auth.currentUser.metadata?.createdAt,
@@ -91,7 +95,13 @@ const SignInWithGoogle = () => {
           });
           // console.log(res);
         } catch (error) {
-          showToast("error", error)
+          try {
+            await firebaseDeleteUser(auth.currentUser);
+            showToast('error', 'Registration failed: ' + error.message);
+          } catch (deleteError) {
+            console.error('Failed to delete user:', deleteError);
+            showToast('error', 'Registration and user deletion failed');
+          }
           navigate('/login')
           // console.log(error);
         }

@@ -25,6 +25,9 @@ import { toast } from "react-toastify";
 import Loader from "./Loader";
 import { CircularProgress } from "@mui/material";
 import { showToast } from "@/utils/toastService";
+import {
+  deleteUser as firebaseDeleteUser
+} from "firebase/auth";
 
 const SignInWithFacebook = () => {
   const [open, setOpen] = useState(false);
@@ -75,6 +78,7 @@ const SignInWithFacebook = () => {
       if (querySnapshot.empty) {
         try {
           const res = await API.post("/api/users", {
+            org_id: orgid,
             username: auth.currentUser.email,
             email: auth.currentUser.email,
             created_on: auth.currentUser.metadata?.createdAt,
@@ -87,6 +91,13 @@ const SignInWithFacebook = () => {
           });
           // console.log(res);
         } catch (error) {
+          try {
+            await firebaseDeleteUser(auth.currentUser);
+            showToast('error', 'Registration failed: ' + error.message);
+          } catch (deleteError) {
+            console.error('Failed to delete user:', deleteError);
+            showToast('error', 'Registration and user deletion failed');
+          }
           showToast("error", error);
           navigate("/login");
         }
@@ -146,8 +157,8 @@ const SignInWithFacebook = () => {
       userRole == "instructor"
         ? navigate("/instructor/home")
         : userRole == "student"
-        ? navigate("/")
-        : navigate("/admin/dashboard");
+          ? navigate("/")
+          : navigate("/admin/dashboard");
     } catch (error) {
       // console.log(error);
       showToast("error", error);
@@ -166,7 +177,7 @@ const SignInWithFacebook = () => {
             top: "40%",
             right: isSmallScreen ? '0' : '15%',
             transform: "translateY(-50%)",
-            width: isSmallScreen ? "300px": "450px",
+            width: isSmallScreen ? "300px" : "450px",
           },
           //   overlay: {
           //     background: "transparent",
@@ -253,7 +264,7 @@ const SignInWithFacebook = () => {
       </Modal>
       {isSmallScreen ? (
         <button className="button -sm px-2 py-3 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm "
-        onClick={onOpenModal}>
+          onClick={onOpenModal}>
           <i className="icon-facebook text-24 " aria-hidden="true"></i>
         </button>
       ) : (
