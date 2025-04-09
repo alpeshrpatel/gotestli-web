@@ -233,7 +233,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
         const res = await API.post(
           "/api/userresultdetails/add/user/questions",
           {
-            org_id:orgid,
+            org_id: orgid,
             userId,
             questionSetId,
             userResultId,
@@ -263,49 +263,49 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
     }
   }
 
-  async function getPurchases(){
-      try {
-            if (token) {
-              const { data } = await API.get(
-                `/api/users/purchases/purchases/user/${userId}`,
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                }
-              );
-              console.log(data);
-              return data
-            }
-          } catch (error) {
-            if (error.status == 403) {
-              localStorage.removeItem("user");
-              localStorage.removeItem("token");
-              // showToast("error","Invaild token!");
-              navigate("/login");
-              return;
-            }
-            console.error("Error fetching data:", error);
+  async function getPurchases() {
+    try {
+      if (token) {
+        const { data } = await API.get(
+          `/api/users/purchases/purchases/user/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
+        );
+        console.log(data);
+        return data
+      }
+    } catch (error) {
+      if (error.status == 403) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        // showToast("error","Invaild token!");
+        navigate("/login");
+        return;
+      }
+      console.error("Error fetching data:", error);
+    }
   }
 
   const handleStartQuiz = async () => {
     if (!data?.is_demo) {
-     const purchases = await getPurchases();
-    //  if(Array.isArray(purchases)){
+      const purchases = await getPurchases();
+      //  if(Array.isArray(purchases)){
       console.log(purchases)
-      if(Array.isArray(purchases) && purchases?.some((item) => item?.questionset_id == questionSetId)) {
-      
-      }else{
+      if (Array.isArray(purchases) && purchases?.some((item) => item?.questionset_id == questionSetId)) {
+
+      } else {
         navigate("/buy/questionset", { state: { qset: data } });
         return;
       }
-    //  }else{
-    //   navigate("/buy/questionset", { state: { qset: data } });
-    //   return;
-    // }
-   
-      
+      //  }else{
+      //   navigate("/buy/questionset", { state: { qset: data } });
+      //   return;
+      // }
+
+
     }
     if (userRole !== "student") {
       navigate("/login");
@@ -316,7 +316,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
         const res = await API.post(
           "/api/userresult",
           {
-            org_id:orgid,
+            org_id: orgid,
             user_id: userId,
             question_set_id: questionSetId,
             total_question: totalQuestions,
@@ -747,7 +747,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
                                   <TableCell> --- </TableCell>
                                 )}
                                 {attempt.modified_date &&
-                                attempt.status == 1 ? (
+                                  attempt.status == 1 ? (
                                   <TableCell>
                                     {attempt.modified_date
                                       .slice(0, 19)
@@ -766,14 +766,14 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
                                 <TableCell>Exam</TableCell>
                                 <TableCell>
                                   {attempt.percentage >=
-                                  questionSet[0]?.pass_percentage
+                                    questionSet[0]?.pass_percentage
                                     ? "Pass"
-                                    : "Fail"}
+                                    : (attempt.status == 2 ? "N/A" : "Fail")}
                                 </TableCell>
                                 <TableCell>
                                   {/* {row.report === 'Report' ? ( */}
                                   {attempt.status == 1 ||
-                                  attempt.status == 0 ? (
+                                    attempt.status == 0 ? (
                                     <Button
                                       variant="contained"
                                       color="primary"
