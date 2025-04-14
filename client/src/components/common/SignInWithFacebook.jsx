@@ -29,9 +29,9 @@ import {
   deleteUser as firebaseDeleteUser
 } from "firebase/auth";
 
-const SignInWithFacebook = () => {
+const SignInWithFacebook = ({selectedRole}) => {
   const [open, setOpen] = useState(false);
-  const [selectedRole, setSelectedRole] = useState("");
+  // const [selectedRole, setSelectedRole] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 600);
 
@@ -245,7 +245,9 @@ const SignInWithFacebook = () => {
           </div>
           {selectedRole && (
             <button
-              className="button -sm px-24 py-10 -blue-3 mt-3 text-white fw-500  text-14 mx-auto"
+              // className="button -sm px-24 py-10 -blue-3 mt-3 text-white fw-500  text-14 mx-auto"
+              className= {`button -sm px-24 py-10 -blue-3 mt-3 text-white fw-500  text-14 mx-auto `}
+            disabled={!selectedRole}
               onClick={facebookLogin}
             >
               {isLoading ? (
@@ -263,14 +265,22 @@ const SignInWithFacebook = () => {
         </div>
       </Modal>
       {isSmallScreen ? (
-        <button className="button -sm px-2 py-3 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm "
-          onClick={onOpenModal}>
+        <button 
+        // className="button -sm px-2 py-3 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm "
+          // onClick={onOpenModal}
+          className= {`button -sm px-2 py-3 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm `}
+          // disabled={!selectedRole}
+          onClick={facebookLogin}
+          >
           <i className="icon-facebook text-24 " aria-hidden="true"></i>
         </button>
       ) : (
         <button
-          className="button -sm px-24 py-25 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm "
-          onClick={onOpenModal}
+          // className="button -sm px-24 py-25 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm "
+          // onClick={onOpenModal}
+          className= {`button -sm px-24 py-25 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm `}
+          // disabled={!selectedRole}
+          onClick={facebookLogin}
         >
           <i className="icon-facebook text-24 me-2" aria-hidden="true"></i>
           Facebook

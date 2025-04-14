@@ -30,9 +30,9 @@ import {
   deleteUser as firebaseDeleteUser
 } from "firebase/auth";
 
-const SignInWithGoogle = () => {
+const SignInWithGoogle = ({selectedRole}) => {
   const [open, setOpen] = useState(false);
-  const [selectedRole, setSelectedRole] = useState("");
+  // const [selectedRole, setSelectedRole] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 600);
 
@@ -250,15 +250,20 @@ const SignInWithGoogle = () => {
       </Modal>
       {
         isSmallScreen ? (
-          <button className="button -sm px-2 py-3 -outline-red-3 text-red-3 text-16 fw-bolder lh-sm "
-            onClick={onOpenModal}>
+          <button className={`button -sm px-2 py-3 -outline-red-3 text-red-3 text-16 fw-bolder lh-sm `}
+          // disabled={!selectedRole}
+          // onClick={onOpenModal}
+            // {`button -sm px-2 py-3 -outline-red-3 text-red-3 text-16 fw-bolder lh-sm btn-social-login ${!selectedRole ? 'btn-disabled' : ''}`}
+            onClick={googleLogin}
+            >
             <GoogleIcon className="text-24" />
           </button>
         ) : (
           <button
-            className="button -sm px-24 py-25 -outline-red-3 text-red-3 text-16 fw-bolder lh-sm"
-            onClick={onOpenModal}
-          // onClick={googleLogin}
+            className= {`button -sm px-24 py-25 -outline-red-3 text-red-3 text-16 fw-bolder lh-sm  `}
+            // disabled={!selectedRole}
+            // onClick={onOpenModal}
+          onClick={googleLogin}
           >
             <GoogleIcon className="text-24 me-2" />
             {/* <i class="icon-google text-24 me-2"></i> */}

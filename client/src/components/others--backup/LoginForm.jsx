@@ -16,7 +16,7 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import { CircularProgress, TextField } from "@mui/material";
+import { CircularProgress, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, TextField } from "@mui/material";
 import { API } from "@/utils/AxiosInstance";
 import SignInWithGithub from "../common/SignInWithGithub";
 import { showToast } from "@/utils/toastService";
@@ -24,7 +24,7 @@ import { showToast } from "@/utils/toastService";
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [selectedRole, setSelectedRole] = useState();
+  const [selectedRole, setSelectedRole] = useState('student');
   const [isLoading, setIsLoading] = useState(false);
   //const [userRole,setUserRole] = useState('');
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ export default function LoginForm() {
         const userId = auth.currentUser.uid;
         const docRef = doc(db, "roles", userId);
         const docSnap = await getDoc(docRef);
-         console.log(docRef);
+        console.log(docRef);
         if (docSnap.exists()) {
           userRole = docSnap.data().role;
           // setUserRole(docSnap.data().role);
@@ -52,23 +52,23 @@ export default function LoginForm() {
           // console.log(resData.data?.token)
           localStorage.setItem('token', resData.data?.token);
           localStorage.setItem("user", JSON.stringify({ id: data.id, role: userRole, email: data.email }))
-          if(data.org_id){
+          if (data.org_id) {
             localStorage.setItem("org", JSON.stringify({ id: data.org_id, role: userRole, email: data.email, subdomain: data.company, logo: data.profile_pic, org_name: data.first_name }))
           }
         } else {
-           console.log("No role found for this user");
+          console.log("No role found for this user");
         }
       } else {
-         console.log("No user is logged in ");
+        console.log("No user is logged in ");
       }
 
-       console.log("Logged in Successfully!!");
+      console.log("Logged in Successfully!!");
       setIsLoading(false);
     } catch (error) {
-       console.log(error);
-       showToast('error',error.message)
+      console.log(error);
+      showToast('error', error.message)
     }
-     console.log(userRole);
+    console.log(userRole);
     userRole == "instructor"
       ? navigate("/instructor/home")
       : userRole == "student"
@@ -81,25 +81,25 @@ export default function LoginForm() {
   }
 
   async function handleForgotPassword() {
-  
-    if(email){
+
+    if (email) {
       sendPasswordResetEmail(auth, email)
-      .then(() => {
-         showToast("success", 'Reset Password mail sent successfully!');
-      })
-      .catch((error) => {
-        showToast("error", error.message);
-      });
-    }else{
+        .then(() => {
+          showToast("success", 'Reset Password mail sent successfully!');
+        })
+        .catch((error) => {
+          showToast("error", error.message);
+        });
+    } else {
       showToast("error", 'Please add email!');
     }
-    
+
   }
 
   return (
     <>
-      <div className="form-page__content lg:py-50">
-        <div className="container mt-5" style={{ backgroundColor: "#bfdeee" }}>
+      <div className="form-page__content lg:py-50" style={{ backgroundColor: "#bfdeee" }}>
+        <div className="container mt-5" style={{ backgroundColor: "#bfdeee" ,border:'none'}}>
           <div className="row justify-center items-center ">
             <div className="col-xl-12 col-lg-12">
               <div className=" bg-transparent shadow-1 rounded-16">
@@ -110,9 +110,42 @@ export default function LoginForm() {
                     Sign up for free
                   </Link>
                 </p>
-
+                <div className=" text-white p-3 rounded-lg text-center font-medium" style={{ backgroundColor: "#877cf6",borderRadius:'20px', marginBottom:'20px' }}>
+                  Select your Role to continue
+                </div>
+                <div className="col-lg-12  rounded " style={{display:'flex',alignItems:'center',border:'none',justifyContent:'space-between'}}>
+                  <FormControl>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center",marginLeft:'0',gap:'20px' }}>
+                    <FormLabel id="demo-radio-buttons-group-label" sx={{fontWeight: "600",
+                        color: "#333",
+                        fontSize: "14px"}}>
+                       Please Select Role
+                    </FormLabel>
+                    <RadioGroup
+                      aria-labelledby="demo-radio-buttons-group-label"
+                      defaultValue="student"
+                      name="radio-buttons-group"
+                      sx={{ display: "flex", flexDirection: "row", justifyContent:'space-evenly', gap: "20px" }}
+                    >
+                      <FormControlLabel
+                        value="student"
+                        control={<Radio />}
+                        label="Student"
+                        onChange={(e) => setSelectedRole(e.target.value)}
+                      />
+                      <FormControlLabel
+                        value="instructor"
+                        control={<Radio />}
+                        label="Instructor"
+                        onChange={(e) => setSelectedRole(e.target.value)}
+                      />
+                    </RadioGroup>
+                    </div>
+                   
+                  </FormControl>
+                </div>
                 <form
-                  className="contact-form respondForm__form row y-gap-20 pt-30 "
+                  className="contact-form respondForm__form row y-gap-5 pt-30 "
                   onSubmit={handleSubmit}
                 >
                   <div className="col-12">
@@ -223,9 +256,9 @@ export default function LoginForm() {
 
               </div>
               <div className="d-flex x-gap-20 items-center justify-between pt-20">
-                <SignInWithFacebook />
-                <SignInWithGoogle />
-                <SignInWithGithub />
+                <SignInWithFacebook selectedRole={selectedRole} />
+                <SignInWithGoogle selectedRole={selectedRole} />
+                <SignInWithGithub selectedRole={selectedRole} />
               </div>
             </div>
           </div>

@@ -27,9 +27,9 @@ import {
   deleteUser as firebaseDeleteUser
 } from "firebase/auth";
 
-const SignInWithGithub = () => {
+const SignInWithGithub = ({selectedRole}) => {
   const [open, setOpen] = useState(false);
-  const [selectedRole, setSelectedRole] = useState("");
+  // const [selectedRole, setSelectedRole] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 600);
 
@@ -135,7 +135,7 @@ const SignInWithGithub = () => {
 
   return (
     <div>
-      <Modal open={open} onClose={onCloseModal} center={false} styles={{
+      {/* <Modal open={open} onClose={onCloseModal} center={false} styles={{
         modal: {
           position: "fixed",
           top: "40%",
@@ -186,11 +186,14 @@ const SignInWithGithub = () => {
             </button>
           )}
         </div>
-      </Modal>
+      </Modal> */}
       {
         isSmallScreen ? (
-          <button className="button -sm px-2 py-3 -outline-black text-black text-16 fw-bolder lh-sm "
-            onClick={onOpenModal}>
+          <button 
+          className= {`button -sm px-2 py-3 -outline-black text-black text-16 fw-bolder lh-sm `}
+          // disabled={!selectedRole}
+            // onClick={onOpenModal}  
+            onClick={githubLogin}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -204,8 +207,11 @@ const SignInWithGithub = () => {
           </button>
         ) : (
           <button
-            className="button -sm px-24 py-25 -outline-black text-black text-16 fw-bolder lh-sm "
-            onClick={onOpenModal}
+            // className="button -sm px-24 py-25 -outline-black text-black text-16 fw-bolder lh-sm "
+            className= {`button -sm px-24 py-25 -outline-black text-black text-16 fw-bolder lh-sm `}
+            // disabled={!selectedRole}
+            // onClick={onOpenModal}
+            onClick={githubLogin}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

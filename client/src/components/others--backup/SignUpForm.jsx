@@ -26,7 +26,7 @@ export default function SignUpForm() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [selectedRole, setSelectedRole] = useState();
+  const [selectedRole, setSelectedRole] = useState('student');
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -109,8 +109,8 @@ export default function SignUpForm() {
   };
   // console.log(selectedRole);
   return (
-    <div className="form-page__content lg:py-50">
-      <div className="container mt-5" style={{ backgroundColor: "#bfdeee" }}>
+    <div className="form-page__content lg:py-50" style={{ backgroundColor: "#bfdeee" }}>
+      <div className="container mt-5" style={{ backgroundColor: "#bfdeee",border:'none' }}>
         <div className="row justify-center items-center">
           <div className="col-xl-12 col-lg-12">
             <div className=" shadow-1 rounded-16">
@@ -126,7 +126,7 @@ export default function SignUpForm() {
                 className="contact-form respondForm__form row y-gap-20 pt-30 "
                 onSubmit={handleSubmit}
               >
-                <div className="col-lg-12">
+                <div className="col-lg-12" style={{display:'flex',alignItems:'center'}}>
                   {/* <FormLabel
                     id="demo-radio-buttons-group-label"
                     className="text-16 lh-1 fw-500 text-dark-1 mb-10"
@@ -144,22 +144,22 @@ export default function SignUpForm() {
                   >
                    Role
                   </label>
-                  <div className="role-radio-buttons bg-white px-5  rounded row gap-2" style={{
+                  <div className="role-radio-buttons px-5  rounded row gap-2" style={{
                       padding: "10px",
-                      border: "1px solid #ced4da",
+                      // border: "1px solid #ced4da",
                       borderRadius: "8px",
                       fontSize: "14px",
                       outline: "none",
-                      backgroundColor: "#f8f9fa",
-                      boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+                      // backgroundColor: "#f8f9fa",
+                      // boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
                     }}>
                     <FormControl>
                       <RadioGroup
                         aria-labelledby="demo-radio-buttons-group-label"
-                        defaultValue="female"
+                        defaultValue="student"
                         name="radio-buttons-group"
                         className=""
-                        style={{display:'flex',flexDirection:'row',justifyContent:'space-evenly',alignItems:'center'}}
+                        style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}
                       >
                         <FormControlLabel
                           value="student"
@@ -354,9 +354,9 @@ export default function SignUpForm() {
               </div>
             </div>
             <div className="d-flex x-gap-20 items-center justify-between pt-20 w-100">
-              <SignInWithFacebook />
-              <SignInWithGoogle />
-              <SignInWithGithub />
+              <SignInWithFacebook selectedRole={selectedRole}/>
+              <SignInWithGoogle selectedRole={selectedRole}/>
+              <SignInWithGithub selectedRole={selectedRole}/>
             </div>
           </div>
         </div>
