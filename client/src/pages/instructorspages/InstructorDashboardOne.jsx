@@ -23,12 +23,14 @@ export default function InstructorDashboardOne() {
   const [totalAttemptCnt, setTotalAttemptCnt] = useState(0);
   const [states, setStates] = useState([]);
   const [radarData, setRadarData] = useState([]);
+  const [monthWiseChartData, setMonthWiseChartData] = useState([]);
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userId = user.id;
   const org = JSON.parse(localStorage.getItem("org")) || "";
   let orgid = org?.id || 0;
+  
 
   useEffect(() => {
     async function getDashboardData() {
@@ -68,6 +70,9 @@ export default function InstructorDashboardOne() {
           );
           console.log(reviewResponse);
           setTotalAttemptCnt(res.data.attempt_count);
+          console.log(data)
+          const monthWiseChartData = getMonthWiseQSetCreateCount(data.res);
+          setMonthWiseChartData(monthWiseChartData)
           setQuestionSets(data);
           const dataArr = [
             {
@@ -79,7 +84,7 @@ export default function InstructorDashboardOne() {
             {
               id: 2,
               title: "Total QuestionSet Created",
-              value: data.length,
+              value: data.totalRecords || 0,
               iconClass: "icon-creative-web",
             },
             {
@@ -123,8 +128,8 @@ export default function InstructorDashboardOne() {
     getDashboardData();
   }, []);
 
-  const monthWiseChartData = getMonthWiseQSetCreateCount(questionSets);
-  console.log(radarData);
+  // const monthWiseChartData = getMonthWiseQSetCreateCount(questionSets);
+  console.log(monthWiseChartData);
 
   return (
     <div className=" w-100" style={{ marginTop: "90px" }}>
@@ -166,7 +171,7 @@ export default function InstructorDashboardOne() {
                
               </div>
               <div className="py-40 px-30">
-                <Charts data={monthWiseChartData} />
+                <Charts data={monthWiseChartData} type = 'QuestionSet_created'/>
               </div>
             </div>
           </div>

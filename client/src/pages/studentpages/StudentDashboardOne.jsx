@@ -57,17 +57,20 @@ export default function StudentDashboardOne() {
   const [passingData,setPassingData] = useState([])
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [monthWiseCounts, setMonthWiseCounts] = useState([]);
 
   const user = JSON.parse(localStorage.getItem("user")) || "";
+  const userId = user?.id || 0;
   const userRole = user.role;
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   let passingPercentageCnt = 0 ;
   const org = JSON.parse(localStorage.getItem("org")) || "";
-  let orgid = org?.id || 0;
+  let orgid = org?.id || 0; 
+
 
   useEffect(() => {
-    const userId = user.id;
+    
     async function getDataAnalysis() {
       try {
         if (token) {
@@ -84,7 +87,9 @@ export default function StudentDashboardOne() {
               Authorization: `Bearer ${token}`,
             },
           });
-           // console.log(res.data);
+            console.log(res.data);
+           const monthWiseCounts = getMonthWiseQuizCount(res.data);
+           setMonthWiseCounts(monthWiseCounts);
           setResults(res.data);
           setDshbData(data);
           res && res.data.forEach((quiz) => {
@@ -110,8 +115,8 @@ export default function StudentDashboardOne() {
     }
     getDataAnalysis();
   }, []);
-
-  const monthWiseCounts = getMonthWiseQuizCount(results);
+  
+  // const monthWiseCounts = getMonthWiseQuizCount(results);
   
   console.log(monthWiseCounts);
 
@@ -253,7 +258,16 @@ export default function StudentDashboardOne() {
           </Grid>
           <Grid item xs={6}>
             <Card sx={{ height: "450px", overflow: "scroll" }}>
-              <CardContent>
+              <div className="d-flex justify-between items-center py-20 px-30 border-bottom-light">
+                              <h2 className="text-17 lh-1 fw-500">
+                                QuestionSet Creation Trend
+                              </h2>
+                             
+                            </div>
+                            <div className="py-40 px-30">
+                              <Charts data={monthWiseCounts} type = 'Completed_Quiz'/>
+                            </div>
+              {/* <CardContent>
                 <Typography variant="h5">Completed Quiz Trends</Typography>
                 <BarChart
                   width={635}
@@ -268,7 +282,7 @@ export default function StudentDashboardOne() {
                   <Legend />
                   <Bar dataKey="Completed_Quiz" fill="#8884d8" />
                 </BarChart>
-              </CardContent>
+              </CardContent> */}
             </Card>
           </Grid>
 

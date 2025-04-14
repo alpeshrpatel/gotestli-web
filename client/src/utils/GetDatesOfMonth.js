@@ -19,21 +19,21 @@ export function getMonthWiseQuizCount(quizData) {
   
   
   export function getMonthWiseQSetCreateCount(quizData) {
-   
+    console.log("quizData", quizData)
     const monthCounts = Array.from({ length: 12 }, (_, index) => ({
       month: new Date(0, index).toLocaleString('default', { month: 'long' }),
       QuestionSet_created: 0,
     }));
   
  
-    quizData.forEach((quiz) => {
+    quizData?.forEach((quiz) => {
       if (quiz.modified_date) {
         const quizDate = new Date(quiz.modified_date);
         const monthIndex = quizDate.getMonth(); 
         monthCounts[monthIndex].QuestionSet_created += 1;
       }
     });
-  
+   console.log("monthCounts", monthCounts)
     return monthCounts;
   }
   

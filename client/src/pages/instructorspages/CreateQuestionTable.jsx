@@ -209,7 +209,7 @@ const CreateQuestionTable = () => {
   //     showToast("error", "Error occurred: " + error.message);
   //   }
   // }
-  async function fetchData(page = 1, rowsPerPage = 10) {
+  async function fetchData(page = 1, rowsPerPage = 5) {
     const start = (page - 1) * rowsPerPage + 1;
     const end = page * rowsPerPage;
     
@@ -236,47 +236,74 @@ const CreateQuestionTable = () => {
   
       // Store the original data
       const originalData = [...data.res];
-  
-      // Fetch options for each question
-      const questionsWithOptions = await Promise.all(
-        originalData.map(async (question) => {
-          const response = await API.get(`/api/options/${question.id}?orgid=${orgid}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          console.log('options data:', response)
-          if (!response?.data) {
-            return {
-              ...question,
-              correctAnswer: '',
-              options: '',
-            };
-          }
-  
-          const result = response.data.reduce(
-            (acc, item) => {
-              if (!acc.correctAnswer) acc.correctAnswer = [];
-              if (!acc.options) acc.options = [];
-              if (item.correctAnswer === 1) {
-                acc.correctAnswer.push(item.options);
-              }
-              acc.options.push(item.options);
-              return acc;
-            },
-            { correctAnswer: [], options: [] }
-          );
-  
+      const questionsWithOptions = data.res.map(question => {
+        // Check if options exist
+        if (question.options && Array.isArray(question.options)) {
+          // Extract all option texts
+          const optionTexts = question.options.map(opt => opt.options);
+          
+          // Find correct answer(s)
+          const correctAnswers = question.options
+            .filter(opt => opt.correctAnswer === 1)
+            .map(opt => opt.options);
+          
           return {
             ...question,
-            correctAnswer: result.correctAnswer.join(':'),
-            options: result.options.join(':'),
+            options: optionTexts.join(':'),
+            correctAnswer: correctAnswers.join(':')
           };
-        })
-      );
-      console.log(questionsWithOptions)
+        } else {
+          // If no options, return question with empty options and correctAnswer
+          return {
+            ...question,
+            options: '',
+            correctAnswer: ''
+          };
+        }
+      });
+      
       // Update state with the processed questions
       setQuestions(questionsWithOptions);
+      // Fetch options for each question
+      // const questionsWithOptions = await Promise.all(
+        // const questionsWithOptions = originalData.map(async (question) => {
+          // const response = await API.get(`/api/options/${question.id}?orgid=${orgid}`, {
+          //   headers: {
+          //     Authorization: `Bearer ${token}`,
+          //   },
+          // });
+          // console.log('options data:', response)
+        //   if (!data?.res?.options?.length <= 0) {
+        //     return {
+        //       ...question,
+        //       correctAnswer: '',
+        //       options: '',
+        //     };
+        //   }
+        //   console.log('data:',data)
+        //   const result = data?.res?.options?.reduce(
+        //     (acc, item) => {
+        //       if (!acc.correctAnswer) acc.correctAnswer = [];
+        //       if (!acc.options) acc.options = [];
+        //       if (item.correctAnswer === 1) {
+        //         acc.correctAnswer.push(item.options);
+        //       }
+        //       acc.options.push(item.options);
+        //       return acc;
+        //     },
+        //     { correctAnswer: [], options: [] }
+        //   );
+        //   console.log('result,', result)
+        //   return {
+        //     ...question,
+        //     correctAnswer: result.correctAnswer.join(':'),
+        //     options: result.options.join(':'),
+        //   };
+        // })
+      // );
+      // console.log(questionsWithOptions)
+      // Update state with the processed questions
+      // setQuestions(questionsWithOptions);
   
       // Create the final object using the original structure from API
       const theNewObj = {
@@ -362,7 +389,7 @@ const CreateQuestionTable = () => {
     // }
 
     fetchData();
-  }, [token, userId]);
+  }, [token, userId, changedQSet]);
 
   function handleEdit(set, index) {
     setEditOn(set.id);
@@ -525,7 +552,7 @@ const CreateQuestionTable = () => {
           showToast("success", "Question Created Successfully!");
         }
       }
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       if (error.status == 403) {
         localStorage.removeItem("user");
