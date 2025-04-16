@@ -176,7 +176,7 @@ export default function AdminDashboardOne() {
                 id: 5,
                 title: "Organizations",
                 value: organizationResponse?.data?.length || 0,
-                iconClass: "icon-building",
+                iconClass: "icon-person-3",
                 link: "/admin/organization-list/approval"
               },
             ];
@@ -654,7 +654,7 @@ export default function AdminDashboardOne() {
 
         <div className="row y-gap-30">
           {states.map((elm, i) => (
-            <div key={i} className="col-xl-3 col-md-6"  style={{ cursor: (elm?.title === 'Organizations' || elm?.title === 'Refund Requests') ? 'pointer' : 'default' }}
+            <div key={i} className="col-xl-3 col-md-6"  style={{ cursor: (elm?.title === 'Organizations' || elm?.title === 'Refund Requests') ? 'pointer' : 'default'}}
             onClick={() => {
               if (elm?.title === 'Organizations') {
                 navigate('/admin/organization-list/approval', { state: { organizationList: organizationList } });
@@ -662,7 +662,7 @@ export default function AdminDashboardOne() {
                 navigate('/admin/refund/requests');
               }
             }}>
-              <div className="d-flex justify-between items-center py-35 px-30 rounded-16 bg-white -dark-bg-dark-1 shadow-4">
+              <div className="d-flex justify-between items-center py-35 px-30 rounded-16 -dark-bg-dark-1 shadow-4" style={{backgroundColor: (elm?.title === 'Organizations' || elm?.title === 'Refund Requests') ? '#D9EAFD' : '' }}>
                 <div >
                   <div className="lh-1 fw-500">{elm?.title}</div>
                   <div className="text-24 lh-1 fw-700 text-dark-1 mt-20">
@@ -689,7 +689,7 @@ export default function AdminDashboardOne() {
 
               </div>
               <div className="py-40 px-30">
-                <Charts data={monthWiseQuestions} type='create' />
+                <Charts data={monthWiseQuestions} type='QuestionSet_created' />
               </div>
             </div>
           </div>

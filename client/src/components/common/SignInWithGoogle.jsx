@@ -30,7 +30,7 @@ import {
   deleteUser as firebaseDeleteUser
 } from "firebase/auth";
 
-const SignInWithGoogle = ({selectedRole}) => {
+const SignInWithGoogle = ({ selectedRole }) => {
   const [open, setOpen] = useState(false);
   // const [selectedRole, setSelectedRole] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -129,6 +129,11 @@ const SignInWithGoogle = ({selectedRole}) => {
           userRole = docSnap.data().role;
           // setUserRole(docSnap.data().role);
           const { data } = await API.get(`/api/users/uid/${userId}?orgid=${orgid}`);
+          if (data.role !== selectedRole) {
+            showToast("error", `You are not authorized as ${selectedRole}`);
+            setIsLoading(false);
+            return;
+          }
           const resData = await API.get(`/api/users/generate/token/${data.id}`);
           localStorage.setItem("token", resData.data?.token);
           localStorage.setItem(
@@ -251,19 +256,19 @@ const SignInWithGoogle = ({selectedRole}) => {
       {
         isSmallScreen ? (
           <button className={`button -sm px-2 py-3 -outline-red-3 text-red-3 text-16 fw-bolder lh-sm `}
-          // disabled={!selectedRole}
-          // onClick={onOpenModal}
+            // disabled={!selectedRole}
+            // onClick={onOpenModal}
             // {`button -sm px-2 py-3 -outline-red-3 text-red-3 text-16 fw-bolder lh-sm btn-social-login ${!selectedRole ? 'btn-disabled' : ''}`}
             onClick={googleLogin}
-            >
+          >
             <GoogleIcon className="text-24" />
           </button>
         ) : (
           <button
-            className= {`button -sm px-24 py-25 -outline-red-3 text-red-3 text-16 fw-bolder lh-sm  `}
+            className={`button -sm px-24 py-25 -outline-red-3 text-red-3 text-16 fw-bolder lh-sm  `}
             // disabled={!selectedRole}
             // onClick={onOpenModal}
-          onClick={googleLogin}
+            onClick={googleLogin}
           >
             <GoogleIcon className="text-24 me-2" />
             {/* <i class="icon-google text-24 me-2"></i> */}

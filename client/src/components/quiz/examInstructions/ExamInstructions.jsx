@@ -440,7 +440,12 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
   // console.log('history:',history);
 
   // console.log('timer:'+timerOnValue)
-
+  const getModalWidth = () => {
+    const screenWidth = window.innerWidth;
+    if (screenWidth > 1024) return "450px"; // Large screens
+    if (screenWidth > 768) return "350px";  // Medium screens
+    return "80%"; // Small screens
+  };
   return (
     <div
       className="exam-instructions-container"
@@ -804,7 +809,11 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
           )}
         </div>
       )}
-      <Modal open={open} onClose={onCloseReportModal} center>
+      <Modal open={open} onClose={onCloseReportModal} center  styles={{
+          modal: {
+            width: getModalWidth,
+          },
+        }}>
         <QuizReport attemptId={selectedAttemptId} />
       </Modal>
     </div>
