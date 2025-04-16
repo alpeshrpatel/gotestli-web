@@ -134,6 +134,7 @@ import OrganizationList from "./pages/adminpages/OrganizationList";
 import AcceptInvitation from "./pages/organization/AcceptInvitation";
 import StudentTransactions from "./pages/studentpages/StudentTransctions";
 import RefundRequestsList from "./pages/adminpages/RefundRequestsList";
+import AdminLoginPage from "./pages/others/adminlogin";
 // import AppProvider from "./utils/AppContext";
 
 function App() {
@@ -282,6 +283,7 @@ function App() {
                 {/* )} */}
                 <Route path="/" element={<HomePage1 />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/admin/login" element={<AdminLoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route
                   path="/forget-password"

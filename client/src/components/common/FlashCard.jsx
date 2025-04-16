@@ -124,7 +124,7 @@ const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
           const { data } = await API.get(`/api/questionmaster/${questionId}?orgid=${orgid}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-           // console.log(data);
+          console.log(data);
           setQuestion(data.question);
           setExplanation(data.explanation);
         }
@@ -145,7 +145,7 @@ const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
           const { data } = await API.get(`/api/options/${questionId}?orgid=${orgid}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-           // console.log(data);
+          // console.log(data);
           setOptions(data);
         }
       } catch (error) {
@@ -162,7 +162,7 @@ const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
     getQuestions();
     getOptions();
   }, [questionId, token, navigate]);
-   // console.log(userAnswer, correctAnswer);
+  // console.log(userAnswer, correctAnswer);
   const correctAnswerArray = correctAnswer?.split(separator);
   const userAnswerArray = userAnswer?.split(separator);
 
@@ -186,9 +186,8 @@ const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
     <div
       className="card p-3 mb-3"
       style={{
-        borderLeft: `5px solid ${
-          areAnswersEqual(correctAnswer,userAnswer) ? "#00c985" : "#e74c3c"
-        }`,
+        borderLeft: `5px solid ${areAnswersEqual(correctAnswer, userAnswer) ? "#00c985" : "#e74c3c"
+          }`,
       }}
     >
       <div className="card-body">
@@ -207,26 +206,53 @@ const Flashcard = ({ questionId, userAnswer, correctAnswer }) => {
             return (
               <li
                 key={index}
-                className={`list-group-item fw-500 ${
-                  isCorrect ? "text-success" : ""
-                } ${isUserAnswer && !isCorrect ? "text-danger" : ""}`}
+                className={`list-group-item fw-500 ${isCorrect ? "text-success" : ""
+                  } ${isUserAnswer && !isCorrect ? "text-danger" : ""}`}
               >
-                <input
-                  type="checkbox"
-                  name={`options-${questionId}`} 
-                  disabled
-                  checked={isUserAnswer}
-                  className="me-2"
-                />
-                {option.options}
-                {isCorrect && (
-                  <span className="badge bg-success ms-lg-4">
-                    Correct Answer
-                  </span>
-                )}
-                {isUserAnswer && !isCorrect && (
-                  <span className="badge bg-danger ms-lg-4">Your Answer</span>
-                )}
+                {
+                  correctAnswer?.includes(separator) ? (
+                    <>
+
+                      <input
+                        type="checkbox"
+                        name={`options-${questionId}`}
+                        disabled
+                        checked={isUserAnswer}
+                        className="me-2"
+                      />
+                      {option.options}
+                      {isCorrect && (
+                        <span className="badge bg-success ms-lg-4">
+                          Correct Answer
+                        </span>
+                      )}
+                      {isUserAnswer && !isCorrect && (
+                        <span className="badge bg-danger ms-lg-4">Your Answer</span>
+                      )}
+                    </>
+                  ) : (
+                    <>
+
+                      <input
+                        type="radio"
+                        name={`options-${questionId}`}
+                        disabled
+                        checked={isUserAnswer}
+                        className="me-2"
+                      />
+                      {option.options}
+                      {isCorrect && (
+                        <span className="badge bg-success ms-lg-4">
+                          Correct Answer
+                        </span>
+                      )}
+                      {isUserAnswer && !isCorrect && (
+                        <span className="badge bg-danger ms-lg-4">Your Answer</span>
+                      )}
+                    </>
+                  )
+                }
+
               </li>
             );
           })}

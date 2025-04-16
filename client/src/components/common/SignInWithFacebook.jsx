@@ -29,7 +29,7 @@ import {
   deleteUser as firebaseDeleteUser
 } from "firebase/auth";
 
-const SignInWithFacebook = ({selectedRole}) => {
+const SignInWithFacebook = ({ selectedRole }) => {
   const [open, setOpen] = useState(false);
   // const [selectedRole, setSelectedRole] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -127,6 +127,11 @@ const SignInWithFacebook = ({selectedRole}) => {
           // setUserRole(docSnap.data().role);
           try {
             const { data } = await API.get(`/api/users/uid/${userId}?orgid=${orgid}`);
+            if (data.role !== selectedRole) {
+              showToast("error", `You are not authorized as ${selectedRole}`);
+              setIsLoading(false);
+              return;
+            }
             const resData = await API.get(
               `/api/users/generate/token/${data.id}`
             );
@@ -246,8 +251,8 @@ const SignInWithFacebook = ({selectedRole}) => {
           {selectedRole && (
             <button
               // className="button -sm px-24 py-10 -blue-3 mt-3 text-white fw-500  text-14 mx-auto"
-              className= {`button -sm px-24 py-10 -blue-3 mt-3 text-white fw-500  text-14 mx-auto `}
-            disabled={!selectedRole}
+              className={`button -sm px-24 py-10 -blue-3 mt-3 text-white fw-500  text-14 mx-auto `}
+              disabled={!selectedRole}
               onClick={facebookLogin}
             >
               {isLoading ? (
@@ -265,20 +270,20 @@ const SignInWithFacebook = ({selectedRole}) => {
         </div>
       </Modal>
       {isSmallScreen ? (
-        <button 
-        // className="button -sm px-2 py-3 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm "
+        <button
+          // className="button -sm px-2 py-3 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm "
           // onClick={onOpenModal}
-          className= {`button -sm px-2 py-3 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm `}
+          className={`button -sm px-2 py-3 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm `}
           // disabled={!selectedRole}
           onClick={facebookLogin}
-          >
+        >
           <i className="icon-facebook text-24 " aria-hidden="true"></i>
         </button>
       ) : (
         <button
           // className="button -sm px-24 py-25 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm "
           // onClick={onOpenModal}
-          className= {`button -sm px-24 py-25 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm `}
+          className={`button -sm px-24 py-25 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm `}
           // disabled={!selectedRole}
           onClick={facebookLogin}
         >

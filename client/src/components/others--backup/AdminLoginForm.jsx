@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
 import SignInWithFacebook from "../common/SignInWithFacebook";
 import SignInWithGoogle from "../common/SignInWithGoogle";
@@ -21,26 +21,20 @@ import { API } from "@/utils/AxiosInstance";
 import SignInWithGithub from "../common/SignInWithGithub";
 import { showToast } from "@/utils/toastService";
 
-export default function LoginForm() {
+export default function AdminLoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [selectedRole, setSelectedRole] = useState('student');
+  const [selectedRole, setSelectedRole] = useState('admin');
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(false);
   //const [userRole,setUserRole] = useState('');
   const navigate = useNavigate();
   const org = JSON.parse(localStorage.getItem("org")) || "";
   let orgid = org?.id || 0;
-
-  useEffect(() => {
-    setErrorMessage(false);
-  }, [selectedRole]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     let userRole = "";
 
     try {
-      setErrorMessage(false);
       setIsLoading(true);
       const data = await signInWithEmailAndPassword(auth, email, password);
 
@@ -55,9 +49,8 @@ export default function LoginForm() {
           // console.log(docSnap.data().role);
           const { data } = await API.get(`/api/users/uid/${userId}?orgid=${orgid}`);
           console.log(data);
-          if (data.role !== selectedRole) {
+          if(data.role !== selectedRole){
             showToast("error", `You are not authorized as ${selectedRole}`);
-            setErrorMessage(true)
             setIsLoading(false);
             return;
           }
@@ -108,11 +101,11 @@ export default function LoginForm() {
     }
 
   }
-console.log(errorMessage)
+
   return (
     <>
       <div className="form-page__content lg:py-50" style={{ backgroundColor: "#bfdeee" }}>
-        <div className="container mt-5" style={{ backgroundColor: "#bfdeee", border: 'none' }}>
+        <div className="container mt-5" style={{ backgroundColor: "#bfdeee" ,border:'none'}}>
           <div className="row justify-center items-center ">
             <div className="col-xl-12 col-lg-12">
               <div className=" bg-transparent shadow-1 rounded-16">
@@ -123,52 +116,7 @@ console.log(errorMessage)
                     Sign up for free
                   </Link>
                 </p>
-                {
-                  errorMessage ? (
-                    <div className=" text-white p-3 rounded-lg text-center font-medium" style={{ backgroundColor: "#FF8282", borderRadius: '20px', marginBottom: '20px' }}>
-                        Authentication Error: You attempted to log in as a ${selectedRole}, but your account is not registered as a ${selectedRole}. Please select the correct role and try again.
-                    </div>
-                  ) : (
-                    <div className=" text-white p-3 rounded-lg text-center font-medium" style={{ backgroundColor: "#877cf6", borderRadius: '20px', marginBottom: '20px' }}>
-                    Select your Role to continue
-                  </div>
-                  )
-                }
-
-               
-                <div className="col-lg-12  rounded " style={{ display: 'flex', alignItems: 'center', border: 'none', justifyContent: 'space-between' }}>
-                  <FormControl>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginLeft: '0', gap: '20px' }}>
-                      <FormLabel id="demo-radio-buttons-group-label" sx={{
-                        fontWeight: "600",
-                        color: "#333",
-                        fontSize: "14px"
-                      }}>
-                        Please Select Role
-                      </FormLabel>
-                      <RadioGroup
-                        aria-labelledby="demo-radio-buttons-group-label"
-                        defaultValue="student"
-                        name="radio-buttons-group"
-                        sx={{ display: "flex", flexDirection: "row", justifyContent: 'space-evenly', gap: "20px" }}
-                      >
-                        <FormControlLabel
-                          value="student"
-                          control={<Radio />}
-                          label="Student"
-                          onChange={(e) => setSelectedRole(e.target.value)}
-                        />
-                        <FormControlLabel
-                          value="instructor"
-                          control={<Radio />}
-                          label="Instructor"
-                          onChange={(e) => setSelectedRole(e.target.value)}
-                        />
-                      </RadioGroup>
-                    </div>
-
-                  </FormControl>
-                </div>
+                
                 <form
                   className="contact-form respondForm__form row y-gap-5 pt-30 "
                   onSubmit={handleSubmit}
