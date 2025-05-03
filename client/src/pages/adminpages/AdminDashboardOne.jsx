@@ -24,6 +24,9 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { generateStrongTempPassword } from "@/utils/TemporaryPasswordGenerator";
 import { showToast } from "@/utils/toastService";
 
+const APP_ID = 1;
+const API_TOKEN = '7b9e6c5f-8a1d-4d3e-b5f2-c9a8e7d6b5c4';
+
 export default function AdminDashboardOne() {
   const [questionSets, setQuestionSets] = useState([]);
   const [userResults, setUserResults] = useState([]);
@@ -46,6 +49,10 @@ export default function AdminDashboardOne() {
   const isPublicAdmin = org?.id == 0 || !org?.id;
   const adminType = isPublicAdmin ? "Public Admin" : "Organization Admin";
 
+  const headers = {
+    "X-API-Token": API_TOKEN,
+    "app-id": APP_ID
+  };
 
   useEffect(() => {
     async function getDashboardData() {
@@ -82,9 +89,9 @@ export default function AdminDashboardOne() {
           console.log(organizationResponse?.data)
           const transactionsResponse = await API.get(
             `/api/transactions/getall/payments/0?start=1&end=5`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              }
+            headers: {
+              Authorization: `Bearer ${token}`,
+            }
           },
           );
           console.log(transactionsResponse);
@@ -304,11 +311,128 @@ export default function AdminDashboardOne() {
           });
           // console.log(res);
           try {
-            const response = await API.post('/api/sendemail/org/user/invitation/from-admin', { orgName: org.org_name, email: email, password: password, subdomain: org.subdomain, role: selectedRole }, {
-              headers: {
-                Authorization: `Bearer ${token}`,
+            // const response = await API.post('/api/sendemail/org/user/invitation/from-admin', { orgName: org.org_name, email: email, password: password, subdomain: org.subdomain, role: selectedRole }, {
+            //   headers: {
+            //     Authorization: `Bearer ${token}`,
+            //   },
+            // })
+            
+            const res = await API.post(
+              `https://api.heerrealtor.com/api/send/email`,
+              {
+                app_id: APP_ID,
+                sender: "gotestli07@gmail.com",
+                sender_name: "Gotestli",
+                recipients: [
+                  {
+                    email: email,
+                    name: '',
+                  }
+                ],
+                content: {
+                  subject: `🎊 Welcome to GoTestli! Your Organization Access is Ready 🚀`,
+                  body_text:
+                    `Dear ${selectedRole === 'instructor' ? 'Instructor' : 'Student'},
+
+We’re excited to welcome you to GoTestli! Your organization, ${org.org_name}, is now onboarded, and your access has been set up. You’re just a step away from unlocking powerful tools designed to enhance learning and assessments.
+
+Here are your login details:
+
+🔑 Login Credentials  
+🔗 Platform URL: https://${org.subdomain}.gotestli.com  
+📧 Username: ${email}  
+🔒 Temporary Password: ${password} (Please change upon first login)  
+
+As a ${selectedRole}, you will have access to:
+
+${selectedRole === 'instructor'
+                      ? `- 📚 Create and manage interactive assessments  
+  - 📊 Track student progress with real-time analytics  
+  - 🔄 Integrate learning content effortlessly  
+  - 🏫 Oversee student participation and performance`
+                      : `- 📝 Access engaging quizzes and assessments  
+  - 📈 Monitor your progress and performance  
+  - 🎯 Enhance learning with personalized content  
+  - 🎓 Stay on top of your academic journey`}  
+
+💡 **Next Steps:**  
+📅 Join us for a live onboarding session on **Wednesday, March 12th at 10:00 AM EST**, where our specialists will guide you through the platform.  
+
+In the meantime, check out our **Getting Started Guide** (https://help.gotestli.com/getting-started) and **Resource Center** (https://help.gotestli.com/resources) to familiarize yourself with GoTestli.  
+
+We’re thrilled to have you on board and can’t wait to see you excel!  
+
+Wishing you success,
+The GoTestLI Team
+
+---------------------
+GoTestli
+Test Your Limits, Expand Your Knowledge
+https://gotestli.com
+
+📩 Need help? Reach out to us at **gotestli07@gmail.com** or call **(800) 555-TEST**.  
+  `,
+                  body_html: `
+<p>Dear <strong>${selectedRole === 'instructor' ? 'Instructor' : 'Student'}</strong>,</p>
+
+<p>We’re excited to welcome you to <strong>GoTestli</strong>! Your organization, <strong>${org.org_name}</strong>, is now onboarded, and your access has been set up. You’re just a step away from unlocking powerful tools designed to enhance learning and assessments.</p>
+
+<div style="background-color: #f8f9fa; border-left: 5px solid #4CAF50; padding: 15px; margin: 20px 0;">
+  <p><strong>🔑 Login Credentials</strong></p>
+  <p>🔗 <strong>Platform URL:</strong> <a href="https://${org.subdomain}.gotestli.com" style="color: #007BFF;">https://${org.subdomain}.gotestli.com</a></p>
+  <p>📧 <strong>Username:</strong> ${email}</p>
+  <p>🔒 <strong>Temporary Password:</strong> <strong>${password}</strong> (Please change upon first login)</p>
+</div>
+
+<p>As a <strong>${selectedRole}</strong>, you will have access to:</p>
+
+${selectedRole === 'instructor'
+                      ? `<ul>
+       <li>📚 Create and manage interactive assessments</li>
+       <li>📊 Track student progress with real-time analytics</li>
+       <li>🔄 Integrate learning content effortlessly</li>
+       <li>🏫 Oversee student participation and performance</li>
+     </ul>`
+                      : `<ul>
+       <li>📝 Access engaging quizzes and assessments</li>
+       <li>📈 Monitor your progress and performance</li>
+       <li>🎯 Enhance learning with personalized content</li>
+       <li>🎓 Stay on top of your academic journey</li>
+     </ul>`}
+
+
+<p>We’re thrilled to have you on board and can’t wait to see you excel!</p>
+
+ <p>Wishing you success,<br/>  
+<p>GoTestli Team</p>
+<hr style="margin: 30px 0;" />
+
+<div style="font-size: 13px; color: #888; text-align: center;">
+  <img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
+  <p><b>GoTestli</b><br/>
+  Test Your Limits, Expand Your Knowledge<br/>
+  <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
+  <p style="margin-top: 10px; font-size: 12px;">
+   
+    <a href="mailto:gotestli07@gmail.com" style="color: #666; text-decoration: none; margin: 0 5px;">✉️ gotestli07@gmail.com</a>
+  </p>
+  
+</div>
+
+<p style="font-size: 12px; color: #666;">
+📩 Need help? Reach out to us at <a href="mailto:gotestli07@gmail.com" style="color: #007BFF;">gotestli07@gmail.com</a> or call (800) 555-TEST.
+</p>
+
+  `,
+                },
+
               },
-            })
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`, ...headers
+                },
+              }
+            );
             if (response.status == 200) {
               showToast('success', 'User registered and invitaion email sent!')
             }
@@ -654,15 +778,15 @@ export default function AdminDashboardOne() {
 
         <div className="row y-gap-30">
           {states.map((elm, i) => (
-            <div key={i} className="col-xl-3 col-md-6"  style={{ cursor: (elm?.title === 'Organizations' || elm?.title === 'Refund Requests') ? 'pointer' : 'default'}}
-            onClick={() => {
-              if (elm?.title === 'Organizations') {
-                navigate('/admin/organization-list/approval', { state: { organizationList: organizationList } });
-              } else if (elm?.title === 'Refund Requests') {
-                navigate('/admin/refund/requests');
-              }
-            }}>
-              <div className="d-flex justify-between items-center py-35 px-30 rounded-16 -dark-bg-dark-1 shadow-4" style={{backgroundColor: (elm?.title === 'Organizations' || elm?.title === 'Refund Requests') ? '#D9EAFD' : '' }}>
+            <div key={i} className="col-xl-3 col-md-6" style={{ cursor: (elm?.title === 'Organizations' || elm?.title === 'Refund Requests') ? 'pointer' : 'default' }}
+              onClick={() => {
+                if (elm?.title === 'Organizations') {
+                  navigate('/admin/organization-list/approval', { state: { organizationList: organizationList } });
+                } else if (elm?.title === 'Refund Requests') {
+                  navigate('/admin/refund/requests');
+                }
+              }}>
+              <div className="d-flex justify-between items-center py-35 px-30 rounded-16 -dark-bg-dark-1 shadow-4" style={{ backgroundColor: (elm?.title === 'Organizations' || elm?.title === 'Refund Requests') ? '#D9EAFD' : '' }}>
                 <div >
                   <div className="lh-1 fw-500">{elm?.title}</div>
                   <div className="text-24 lh-1 fw-700 text-dark-1 mt-20">

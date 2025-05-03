@@ -33,6 +33,9 @@ const columns = [
   { id: "actions", label: "", sortable: false },
 ];
 
+const APP_ID = 1;
+const API_TOKEN = '7b9e6c5f-8a1d-4d3e-b5f2-c9a8e7d6b5c4';
+
 const ViewStudents = () => {
   const [studentsData, setStudentsData] = useState([]);
   const [isDisabled, setIsDisabled] = useState([]);
@@ -164,17 +167,110 @@ const ViewStudents = () => {
           },
         });
         if (data.email && response.data) {
+          const headers = {
+            "X-API-Token": API_TOKEN,
+            "app-id": APP_ID
+          };
           const res = await API.post(
-            `/api/sendemail/`,
+            `https://api.heerrealtor.com/api/send/email`,
             {
-              userResultId: studentData.id,
-              studentData: data,
-              quizData: set,
-              instructor: response?.data?.first_name,
+              app_id: APP_ID,
+              sender: "dipakkarmur45@gmail.com",
+              sender_name: "Gotestli",
+              recipients: [
+                {
+                  email: studentData.email,
+                  name: studentData.first_name,
+                }
+              ],
+              cc: [
+                {
+                  email: studentData.email,
+                  name: studentData.first_name,
+                }
+              ],
+              bcc: [
+                {
+                  email: studentData.email,
+                  name: studentData.first_name,
+                }
+              ],
+              content: {
+                subject: "🚀 Reminder: Your Quiz Awaits! Don't Miss It! 🎯",
+                body_text: `
+                Hi ${studentData.first_name},
+                
+                I hope you're doing great! 🌟 This is a friendly reminder to complete your quiz on **${quizData.title}**. ⏰ The quiz is an important step in reinforcing what you've learned, and I know you'll do amazing! 💪
+                
+                Quiz Details:
+                - Topic: ${quizData.title}
+                - Questions: ${quizData.no_of_question}
+                - Duration: ${quizData.time_duration} Minutes
+                
+                Make sure you're prepared, and don't forget to review your notes before starting! 📚 If you have any questions or need help, feel free to reach out! 📨
+                
+                Good luck! 🍀 I'm rooting for you, and I can't wait to see your results! 🎉
+                
+                Best regards,
+                ${instructor}
+                Instructor ✨
+
+                Wishing you success,
+The GoTestLI Team
+
+---------------------
+GoTestli
+Test Your Limits, Expand Your Knowledge
+https://gotestli.com
+                  `,
+                body_html: `
+                  <p>Hi <b>${studentData.first_name}</b>,</p>
+                  
+                  <p>I hope you're doing great! 🌟 This is a friendly reminder to complete your quiz on <b>${quizData.title}</b>. ⏰ The quiz is an important step in reinforcing what you've learned, and I know you'll do amazing! 💪</p>
+                  
+                  <h3>📝 <b>Quiz Details:</b></h3>
+                  <ul>
+                    <li><b>Topic:</b> ${quizData.title}</li>
+                    <li><b>Questions:</b> ${quizData.no_of_question}</li>
+                    <li><b>Duration:</b> ${quizData.time_duration}</li>
+                  </ul>
+                  
+                  <p>Make sure you're prepared, and don't forget to review your notes before starting! 📚 If you have any questions or need help, feel free to reach out! 📨</p>
+                  
+                  <p>Good luck! 🍀 I'm rooting for you, and I can't wait to see your results! 🎉</p>
+                  
+                  <p>Best regards,<br/>
+                  ${instructor}<br/>
+                  <b>Instructor</b> ✨</p>
+                  <br/>
+                   <p>Wishing you success,<br/>  
+<p>GoTestli Team</p>
+<hr style="margin: 30px 0;" />
+
+<div style="font-size: 13px; color: #888; text-align: center;">
+  <img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
+  <p><b>GoTestli</b><br/>
+  Test Your Limits, Expand Your Knowledge<br/>
+  <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
+  <p style="margin-top: 10px; font-size: 12px;">
+   
+    <a href="mailto:gotestli07@gmail.com" style="color: #666; text-decoration: none; margin: 0 5px;">✉️ gotestli07@gmail.com</a>
+  </p>
+  
+</div>
+                  `,
+              },
+             
             },
+            // {
+            //   userResultId: studentData.id,
+            //   studentData: data,
+            //   quizData: set,
+            //   instructor: response?.data?.first_name,
+            // },
             {
               headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token}`, ...headers 
               },
             }
           );
