@@ -185,15 +185,9 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
             },
           }
         );
+        
         console.log("last attempt:", data);
-        //  data.reverse().forEach((element,index) => {
-        //   if (!element.answer ) {
-        //     console.log(element.question_set_question_id)
-        //     lastAttemptedQuestion = index+1
-
-        //   }
-        //   return lastAttemptedQuestion;
-        // });
+       
         const nonAttemptedIndex = data
           .reverse()
           .findIndex((element) => !element.answer);
