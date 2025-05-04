@@ -23,7 +23,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { showToast } from "@/utils/toastService";
 import emailTemplates from "../../../../email_templates/emailtemplates";
 import { renderTemplate } from "@/utils/renderTemplate";
-import { content } from "html2canvas/dist/types/css/property-descriptors/content";
+
 
 // import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 const columns = [
