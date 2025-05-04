@@ -16,6 +16,9 @@ import ReceiptDownloader from "@/components/common/ReceiptDownloader";
 import { showToast } from "@/utils/toastService";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import emailTemplates from "../../../../email_templates/emailtemplates";
+import { content } from "html2canvas/dist/types/css/property-descriptors/content";
+import { renderTemplate } from "@/utils/renderTemplate";
 // import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 const APP_ID = 1;
@@ -170,8 +173,21 @@ const StudentTransactions = () => {
           })
         console.log(response)
         if (response.status == 200) {
+          const refundRequestAdminEmail = emailTemplates.refundRequestAdminEmail;
+          const dynamicData = {
+            name: payment.name,
+            email: payment.email,
+            amount: payment.amount,
+            paymentId: payment.payment_intent_id,
+            title: payment.title,
+          }
+          const renderedContent = {
+            subject: renderTemplate(refundRequestAdminEmail.subject, dynamicData),
+            body_text: renderTemplate(refundRequestAdminEmail.body_text, dynamicData),
+            body_html: renderTemplate(refundRequestAdminEmail.body_html, dynamicData),
+          };
           const res = await API.post(
-            `https://api.heerrealtor.com/api/send/email`,
+            `https://communication.gotestli.com/api/send/email`,
             {
               app_id: APP_ID,
               sender: "gotestli07@gmail.com",
@@ -182,80 +198,81 @@ const StudentTransactions = () => {
                   name: '',
                 }
               ],
-              content: {
-                to: 'gotestli07@gmail.com', // recipient email
-                subject: `⚠️ New Refund Request Notification - Action Required`,
-                body_text:
-                  `Dear Admin,
-                                        
-                                        This is to notify you that a new refund request has been submitted in the Gotestli platform.
-                                        
-                                        🔍 Request Details:
-                                        - User Email: ${payment.email}
-                                        - Amount Requested: ${payment.amount}
-                                        - Payment ID: ${payment.payment_intent_id}
-                                        - Question Set Title: ${payment.title}
-                                        
-                                        
-                                        
-                                        Please review this request at your earliest convenience through the admin dashboard. The request can be accessed directly at:
-                                        https://gotestli.com/refunds/requests
-                                        
-                                        As per our policy, refund requests need to be processed within 2 business days of submission.
-                                        
-                                        Wishing you success,
-The GoTestLI Team
+              //               content: {
+              //                 to: 'gotestli07@gmail.com', // recipient email
+              //                 subject: `⚠️ New Refund Request Notification - Action Required`,
+              //                 body_text:
+              //                   `Dear Admin,
 
----------------------
-GoTestli
-Test Your Limits, Expand Your Knowledge
-https://gotestli.com
-                                        
-                                        Note: This is an automated notification. Please do not reply to this email.
-                                        `,
-                body_html: `
-                                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                                          <p>Dear <strong>Admin</strong>,</p>
-                                        
-                                          <p>This is to notify you that a new refund request has been submitted in the Gotestli platform.</p>
-                                        
-                                          <div style="background-color: #f8f9fa; border-left: 5px solid #ff9800; padding: 15px; margin: 20px 0;">
-                                            <p><strong>🔍 Request Details:</strong></p>
-                                            <p>👤 <strong>User Email:</strong> ${payment.email}</p>
-                                            <p>💲 <strong>Amount Requested:</strong> ${payment.amount}</p>
-                                            <p>📅 <strong>Request ID:</strong> ${payment.payment_intent_id}</p>
-                                            <p>🆔 <strong>QuestionSet Title:</strong> ${payment.title}</p>
-                                          </div>
-                                        
-                                          
-                                        
-                                          <p>Please review this request at your earliest convenience through the admin dashboard. The request can be accessed directly at:</p>
-                                          <p><a href="https://gotestli.com/refunds/requests" style="color: #007BFF;">https://gotestli.com/refunds/requests</a></p>
-                                        
-                                          <p>As per our policy, refund requests need to be processed within 2 business days of submission.</p>
-                                        
-                                           <p>Wishing you success,<br/>  
-<p>GoTestli Team</p>
-<hr style="margin: 30px 0;" />
+              //                                         This is to notify you that a new refund request has been submitted in the Gotestli platform.
 
-<div style="font-size: 13px; color: #888; text-align: center;">
-  <img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
-  <p><b>GoTestli</b><br/>
-  Test Your Limits, Expand Your Knowledge<br/>
-  <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
-  <p style="margin-top: 10px; font-size: 12px;">
-   
-    <a href="mailto:gotestli07@gmail.com" style="color: #666; text-decoration: none; margin: 0 5px;">✉️ gotestli07@gmail.com</a>
-  </p>
-  
-</div>
-                                        
-                                          <p style="font-size: 12px; color: #666; margin-top: 30px; border-top: 1px solid #eee; padding-top: 10px;">
-                                            Note: This is an automated notification. Please do not reply to this email.
-                                          </p>
-                                        </div>
-                                          `,
-              },
+              //                                         🔍 Request Details:
+              //                                         - User Email: ${payment.email}
+              //                                         - Amount Requested: ${payment.amount}
+              //                                         - Payment ID: ${payment.payment_intent_id}
+              //                                         - Question Set Title: ${payment.title}
+
+
+
+              //                                         Please review this request at your earliest convenience through the admin dashboard. The request can be accessed directly at:
+              //                                         https://gotestli.com/refunds/requests
+
+              //                                         As per our policy, refund requests need to be processed within 2 business days of submission.
+
+              //                                         Wishing you success,
+              // The GoTestLI Team
+
+              // ---------------------
+              // GoTestli
+              // Test Your Limits, Expand Your Knowledge
+              // https://gotestli.com
+
+              //                                         Note: This is an automated notification. Please do not reply to this email.
+              //                                         `,
+              //                 body_html: `
+              //                                         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              //                                           <p>Dear <strong>Admin</strong>,</p>
+
+              //                                           <p>This is to notify you that a new refund request has been submitted in the Gotestli platform.</p>
+
+              //                                           <div style="background-color: #f8f9fa; border-left: 5px solid #ff9800; padding: 15px; margin: 20px 0;">
+              //                                             <p><strong>🔍 Request Details:</strong></p>
+              //                                             <p>👤 <strong>User Email:</strong> ${payment.email}</p>
+              //                                             <p>💲 <strong>Amount Requested:</strong> ${payment.amount}</p>
+              //                                             <p>📅 <strong>Request ID:</strong> ${payment.payment_intent_id}</p>
+              //                                             <p>🆔 <strong>QuestionSet Title:</strong> ${payment.title}</p>
+              //                                           </div>
+
+
+
+              //                                           <p>Please review this request at your earliest convenience through the admin dashboard. The request can be accessed directly at:</p>
+              //                                           <p><a href="https://gotestli.com/refunds/requests" style="color: #007BFF;">https://gotestli.com/refunds/requests</a></p>
+
+              //                                           <p>As per our policy, refund requests need to be processed within 2 business days of submission.</p>
+
+              //                                            <p>Wishing you success,<br/>  
+              // <p>GoTestli Team</p>
+              // <hr style="margin: 30px 0;" />
+
+              // <div style="font-size: 13px; color: #888; text-align: center;">
+              //   <img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
+              //   <p><b>GoTestli</b><br/>
+              //   Test Your Limits, Expand Your Knowledge<br/>
+              //   <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
+              //   <p style="margin-top: 10px; font-size: 12px;">
+
+              //     <a href="mailto:gotestli07@gmail.com" style="color: #666; text-decoration: none; margin: 0 5px;">✉️ gotestli07@gmail.com</a>
+              //   </p>
+
+              // </div>
+
+              //                                           <p style="font-size: 12px; color: #666; margin-top: 30px; border-top: 1px solid #eee; padding-top: 10px;">
+              //                                             Note: This is an automated notification. Please do not reply to this email.
+              //                                           </p>
+              //                                         </div>
+              //                                           `,
+              //               },
+              content: renderedContent,
 
             },
             {
@@ -264,8 +281,21 @@ https://gotestli.com
               },
             }
           )
+          const refundRequestStudentEmail = emailTemplates.refundRequestStudentEmail;
+          const dynamicDataStudent = {
+            name: payment.name,
+            email: payment.email,
+            amount: payment.amount,
+            paymentId: payment.payment_intent_id,
+            title: payment.title,
+          }
+          const renderedContentStudent = {
+            subject: renderTemplate(refundRequestStudentEmail.subject, dynamicDataStudent),
+            body_text: renderTemplate(refundRequestStudentEmail.body_text, dynamicDataStudent),
+            body_html: renderTemplate(refundRequestStudentEmail.body_html, dynamicDataStudent),
+          };
           const resp = await API.post(
-            `https://api.heerrealtor.com/api/send/email`,
+            `https://communication.gotestli.com/api/send/email`,
             {
               app_id: APP_ID,
               sender: "gotestli07@gmail.com",
@@ -276,85 +306,86 @@ https://gotestli.com
                   name: '',
                 }
               ],
-              content: {
-                to: 'gotestli07@gmail.com', // recipient email
-                subject: `📝 Your Refund Request Has Been Received - GoTestli`,
-                body_text:
-                  `Dear Student,
+              //               content: {
+              //                 to: 'gotestli07@gmail.com', // recipient email
+              //                 subject: `📝 Your Refund Request Has Been Received - GoTestli`,
+              //                 body_text:
+              //                   `Dear Student,
 
-Thank you for submitting your refund request with GoTestli. We have received your request and it is now being processed.
+              // Thank you for submitting your refund request with GoTestli. We have received your request and it is now being processed.
 
-🔍 Your Request Details:
-- User Email: ${payment.email}
-- Amount Requested: ${payment.amount}
-- Payment ID: ${payment.payment_intent_id}
-- Question Set Title: ${payment.title}
+              // 🔍 Your Request Details:
+              // - User Email: ${payment.email}
+              // - Amount Requested: ${payment.amount}
+              // - Payment ID: ${payment.payment_intent_id}
+              // - Question Set Title: ${payment.title}
 
-🕒 What happens next?
-Our administrative team will review your request within 2 business days. You will receive an email notification once your request has been processed.
+              // 🕒 What happens next?
+              // Our administrative team will review your request within 2 business days. You will receive an email notification once your request has been processed.
 
-If you have any questions regarding your refund request, please contact our support team at gotestli07@gmail.com or call (800) 555-TEST with your Request ID ready for reference.
+              // If you have any questions regarding your refund request, please contact our support team at gotestli07@gmail.com or call (800) 555-TEST with your Request ID ready for reference.
 
 
-We appreciate your patience during this process.
+              // We appreciate your patience during this process.
 
-Wishing you success,
-The GoTestLI Team
+              // Wishing you success,
+              // The GoTestLI Team
 
----------------------
-GoTestli
-Test Your Limits, Expand Your Knowledge
-https://gotestli.com
+              // ---------------------
+              // GoTestli
+              // Test Your Limits, Expand Your Knowledge
+              // https://gotestli.com
 
-Note: This is an automated confirmation. If you did not submit a refund request, please contact our support team immediately.
-`,
-                body_html: `
-<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-  <p>Dear <strong>Student</strong>,</p>
+              // Note: This is an automated confirmation. If you did not submit a refund request, please contact our support team immediately.
+              // `,
+              //                 body_html: `
+              // <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              //   <p>Dear <strong>Student</strong>,</p>
 
-  <p>Thank you for submitting your refund request with GoTestli. We have received your request and it is now being processed.</p>
+              //   <p>Thank you for submitting your refund request with GoTestli. We have received your request and it is now being processed.</p>
 
-  <div style="background-color: #f8f9fa; border-left: 5px solid #3f51b5; padding: 15px; margin: 20px 0;">
-    <p><strong>🔍 Your Request Details:</strong></p>
-      <p>👤 <strong>User Email:</strong> ${payment.email}</p>
-    <p>💲 <strong>Amount Requested:</strong> ${payment.amount}</p>
-    <p>📅 <strong>Request ID:</strong> ${payment.payment_intent_id}</p>
-    <p>🆔 <strong>QuestionSet Title:</strong> ${payment.title}</p>
-  </div>
+              //   <div style="background-color: #f8f9fa; border-left: 5px solid #3f51b5; padding: 15px; margin: 20px 0;">
+              //     <p><strong>🔍 Your Request Details:</strong></p>
+              //       <p>👤 <strong>User Email:</strong> ${payment.email}</p>
+              //     <p>💲 <strong>Amount Requested:</strong> ${payment.amount}</p>
+              //     <p>📅 <strong>Request ID:</strong> ${payment.payment_intent_id}</p>
+              //     <p>🆔 <strong>QuestionSet Title:</strong> ${payment.title}</p>
+              //   </div>
 
-  <div style="background-color: #f8f9fa; border-left: 5px solid #4CAF50; padding: 15px; margin: 20px 0;">
-    <p><strong>🕒 What happens next?</strong></p>
-    <p>Our administrative team will review your request within 2 business days. You will receive an email notification once your request has been processed.</p>
-  </div>
+              //   <div style="background-color: #f8f9fa; border-left: 5px solid #4CAF50; padding: 15px; margin: 20px 0;">
+              //     <p><strong>🕒 What happens next?</strong></p>
+              //     <p>Our administrative team will review your request within 2 business days. You will receive an email notification once your request has been processed.</p>
+              //   </div>
 
-  <p>If you have any questions regarding your refund request, please contact our support team at <a href="mailto:gotestli07@gmail.com" style="color: #007BFF;">gotestli07@gmail.com</a> or call (800) 555-TEST with your Request ID ready for reference.</p>
+              //   <p>If you have any questions regarding your refund request, please contact our support team at <a href="mailto:gotestli07@gmail.com" style="color: #007BFF;">gotestli07@gmail.com</a> or call (800) 555-TEST with your Request ID ready for reference.</p>
 
- 
 
-  <p>We appreciate your patience during this process.</p>
 
-  <p>Wishing you success,<br/>  
-<p>GoTestli Team</p>
-<hr style="margin: 30px 0;" />
+              //   <p>We appreciate your patience during this process.</p>
 
-<div style="font-size: 13px; color: #888; text-align: center;">
-  <img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
-  <p><b>GoTestli</b><br/>
-  Test Your Limits, Expand Your Knowledge<br/>
-  <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
-  <p style="margin-top: 10px; font-size: 12px;">
-   
-    <a href="mailto:gotestli07@gmail.com" style="color: #666; text-decoration: none; margin: 0 5px;">✉️ gotestli07@gmail.com</a>
-  </p>
-  
-</div>
+              //   <p>Wishing you success,<br/>  
+              // <p>GoTestli Team</p>
+              // <hr style="margin: 30px 0;" />
 
-  <p style="font-size: 12px; color: #666; margin-top: 30px; border-top: 1px solid #eee; padding-top: 10px;">
-    Note: This is an automated confirmation. If you did not submit a refund request, please contact our support team immediately.
-  </p>
-</div>
-  `,
-              },
+              // <div style="font-size: 13px; color: #888; text-align: center;">
+              //   <img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
+              //   <p><b>GoTestli</b><br/>
+              //   Test Your Limits, Expand Your Knowledge<br/>
+              //   <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
+              //   <p style="margin-top: 10px; font-size: 12px;">
+
+              //     <a href="mailto:gotestli07@gmail.com" style="color: #666; text-decoration: none; margin: 0 5px;">✉️ gotestli07@gmail.com</a>
+              //   </p>
+
+              // </div>
+
+              //   <p style="font-size: 12px; color: #666; margin-top: 30px; border-top: 1px solid #eee; padding-top: 10px;">
+              //     Note: This is an automated confirmation. If you did not submit a refund request, please contact our support team immediately.
+              //   </p>
+              // </div>
+              //   `,
+              //               },
+              content: renderedContentStudent,
 
             },
             {

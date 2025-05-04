@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { API } from "@/utils/AxiosInstance";
 import { toast } from "react-toastify";
 import { showToast } from "@/utils/toastService";
+import emailTemplates from "../../../../email_templates/emailtemplates";
+import { renderTemplate } from "@/utils/renderTemplate";
 
 const APP_ID = 1;
 const API_TOKEN = '7b9e6c5f-8a1d-4d3e-b5f2-c9a8e7d6b5c4';
@@ -34,8 +36,22 @@ export default function ContactOne() {
   console.log(formData)
   const handleMessageClick = async () => {
     try {
+      const contactMessageEmail = emailTemplates.contactMessageEmail;
+      const dynamicData = {
+        
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        
+        subject: subject,
+      }
+    const renderedContent = {
+      subject: renderTemplate(contactMessageEmail.subject, dynamicData),
+      body_text: renderTemplate(contactMessageEmail.body_text, dynamicData),
+      body_html: renderTemplate(contactMessageEmail.body_html, dynamicData),
+    };
       const data = await API.post("/api/contact/messages", formData);
-      const resp = await API.post("https://api.heerrealtor.com/api/send/email",
+      const resp = await API.post("https://communication.gotestli.com/api/send/email",
         {
           app_id: APP_ID,
           sender: ADMIN_EMAIL,
@@ -46,68 +62,68 @@ export default function ContactOne() {
               name: 'Gotestli',
             }
           ],
-          content: {
-            subject: `New Contact Message from ${formData.name}`,
-            body_text: `
-      Hi Admin,
+//           content: {
+//             subject: `New Contact Message from ${formData.name}`,
+//             body_text: `
+//       Hi Admin,
       
-      You've received a new message from the Contact Us page on your website.
+//       You've received a new message from the Contact Us page on your website.
       
-      Details:
-      - Name: ${formData.name}
-      - Email: ${formData.email}
-      - Subject: ${subject}
+//       Details:
+//       - Name: ${formData.name}
+//       - Email: ${formData.email}
+//       - Subject: ${subject}
       
-      Message:
-      ${formData.message}
+//       Message:
+//       ${formData.message}
       
-      Please respond to the user at your earliest convenience.
+//       Please respond to the user at your earliest convenience.
       
-      Wishing you success,
-The GoTestLI Team
+//       Wishing you success,
+// The GoTestLI Team
 
----------------------
-GoTestli
-Test Your Limits, Expand Your Knowledge
-https://gotestli.com
-      `,
-            body_html: `
-      <p>Hi <b>Admin</b>,</p>
+// ---------------------
+// GoTestli
+// Test Your Limits, Expand Your Knowledge
+// https://gotestli.com
+//       `,
+//             body_html: `
+//       <p>Hi <b>Admin</b>,</p>
       
-      <p>You've received a new message from the <b>Contact Us</b> page on your website.</p>
+//       <p>You've received a new message from the <b>Contact Us</b> page on your website.</p>
       
-      <p><b>Details:</b></p>
-      <ul>
-      <li><b>Name:</b> ${formData.name}</li>
-      <li><b>Email:</b> ${formData.email}</li>
-      <li><b>Subject:</b> ${subject}</li>
-      </ul>
+//       <p><b>Details:</b></p>
+//       <ul>
+//       <li><b>Name:</b> ${formData.name}</li>
+//       <li><b>Email:</b> ${formData.email}</li>
+//       <li><b>Subject:</b> ${subject}</li>
+//       </ul>
       
-      <p><b>Message:</b></p>
-      <blockquote style="border-left: 4px solid #4CAF50; padding-left: 10px; color: #333;">
-      ${formData.message}
-      </blockquote>
+//       <p><b>Message:</b></p>
+//       <blockquote style="border-left: 4px solid #4CAF50; padding-left: 10px; color: #333;">
+//       ${formData.message}
+//       </blockquote>
       
-      <p>Please respond to the user at your earliest convenience.</p>
+//       <p>Please respond to the user at your earliest convenience.</p>
       
-      <p>Wishing you success,<br/>  
-<p>GoTestli Team</p>
-<hr style="margin: 30px 0;" />
+//       <p>Wishing you success,<br/>  
+// <p>GoTestli Team</p>
+// <hr style="margin: 30px 0;" />
 
-<div style="font-size: 13px; color: #888; text-align: center;">
-  <img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
-  <p><b>GoTestli</b><br/>
-  Test Your Limits, Expand Your Knowledge<br/>
-  <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
-  <p style="margin-top: 10px; font-size: 12px;">
+// <div style="font-size: 13px; color: #888; text-align: center;">
+//   <img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
+//   <p><b>GoTestli</b><br/>
+//   Test Your Limits, Expand Your Knowledge<br/>
+//   <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
+//   <p style="margin-top: 10px; font-size: 12px;">
    
-    <a href="mailto:gotestli07@gmail.com" style="color: #666; text-decoration: none; margin: 0 5px;">✉️ gotestli07@gmail.com</a>
-  </p>
+//     <a href="mailto:gotestli07@gmail.com" style="color: #666; text-decoration: none; margin: 0 5px;">✉️ gotestli07@gmail.com</a>
+//   </p>
   
-</div>
-      `
-          }
-
+// </div>
+//       `
+//           }
+          content: renderedContent,
 
         },
         { headers }

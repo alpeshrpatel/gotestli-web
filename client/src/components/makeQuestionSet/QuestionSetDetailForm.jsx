@@ -7,6 +7,9 @@ import { toast } from "react-toastify";
 import { Checkbox, FormControlLabel, TextField } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import { showToast } from "@/utils/toastService";
+import { renderTemplate } from "@/utils/renderTemplate";
+import emailTemplates from "../../../../email_templates/emailtemplates";
+
 
 const APP_ID = 1;
 const API_TOKEN = '7b9e6c5f-8a1d-4d3e-b5f2-c9a8e7d6b5c4';
@@ -183,92 +186,104 @@ const QuestionSetDetailForm = ({
             "X-API-Token": API_TOKEN,
             "app-id": APP_ID
           };
-          if(data?.length > 0){
+          if (data?.length > 0) {
             await data?.forEach(async (follower) => {
-              
-                        const res = await API.post(
-                          `https://api.heerrealtor.com/api/send/email`,
-                          {
-                            app_id: APP_ID,
-                            sender: "gotestli07@gmail.com",
-                            sender_name: "Gotestli",
-                            recipients: [
-                              {
-                                email: follower.email,
-                                name: follower.first_name,
-                              }
-                            ],
-                            content: {
-                              subject: `📢 New Quiz Alert from ${formData.author}! 🚀 Check it Out Now!`,
-                              body_text: `
-                          Hi ${follower.first_name},
-                          
-                          Great news! ${formData.author} just released a brand new quiz: "${formData.title}" on Gotestli, and you're invited to be one of the first to check it out. 🎉
-                          
-                          By staying updated, you get:
-                          - 🌟 Exclusive access to fresh quizzes
-                          - 📈 A chance to improve your knowledge and skills
-                          - 🎯 Opportunities to engage and learn with other members of the Gotestli community
-                          
-                          Don't miss out on the fun and the learning. Dive into the latest quiz now and see how well you can do!
-                          
-                          Wishing you success,
-The GoTestLI Team
+              const quizAlertEmail = emailTemplates.quizAlertEmail;
+              const dynamicData ={
+                first_name: follower.first_name,
+                last_name: follower.last_name,
+                title: formData.title,
+                author: formData.author,
+              }
+              const renderedContent = {
+                    subject: renderTemplate(quizAlertEmail.subject, dynamicData),
+                    body_text: renderTemplate(quizAlertEmail.body_text, dynamicData),
+                    body_html: renderTemplate(quizAlertEmail.body_html, dynamicData),
+                  };
 
----------------------
-GoTestli
-Test Your Limits, Expand Your Knowledge
-https://gotestli.com
-                            `,
-                              body_html: `
-                          <p>Hi <b>${follower.first_name}</b>,</p>
+              const res = await API.post(
+                `https://communication.gotestli.com/api/send/email`,
+                {
+                  app_id: APP_ID,
+                  sender: "gotestli07@gmail.com",
+                  sender_name: "Gotestli",
+                  recipients: [
+                    {
+                      email: follower.email,
+                      name: follower.first_name,
+                    }
+                  ],
+//                   content: {
+//                     subject: `📢 New Quiz Alert from ${formData.author}! 🚀 Check it Out Now!`,
+//                     body_text: `
+//                           Hi ${follower.first_name},
                           
-                          <p>Great news! <b>${formData.author}</b> just released a brand new quiz: "<b>${formData.title}</b>" on Gotestli, and you're invited to be one of the first to check it out. 🎉</p>
+//                           Great news! ${formData.author} just released a brand new quiz: "${formData.title}" on Gotestli, and you're invited to be one of the first to check it out. 🎉
                           
-                          <p>By staying updated, you get:</p>
-                          <ul>
-                            <li>🌟 Exclusive access to fresh quizzes</li>
-                            <li>📈 A chance to improve your knowledge and skills</li>
-                            <li>🎯 Opportunities to engage and learn with other members of the Gotestli community</li>
-                          </ul>
+//                           By staying updated, you get:
+//                           - 🌟 Exclusive access to fresh quizzes
+//                           - 📈 A chance to improve your knowledge and skills
+//                           - 🎯 Opportunities to engage and learn with other members of the Gotestli community
                           
-                          <p>Don't miss out on the fun and the learning. Dive into the latest quiz now and see how well you can do!</p>
+//                           Don't miss out on the fun and the learning. Dive into the latest quiz now and see how well you can do!
                           
-                          <p>Happy learning,<br/>
-                           <p>Wishing you success,<br/>  
-<p>GoTestli Team</p>
-<hr style="margin: 30px 0;" />
+//                           Wishing you success,
+// The GoTestLI Team
 
-<div style="font-size: 13px; color: #888; text-align: center;">
-  <img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
-  <p><b>GoTestli</b><br/>
-  Test Your Limits, Expand Your Knowledge<br/>
-  <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
-  <p style="margin-top: 10px; font-size: 12px;">
+// ---------------------
+// GoTestli
+// Test Your Limits, Expand Your Knowledge
+// https://gotestli.com
+//                             `,
+//                     body_html: `
+//                           <p>Hi <b>${follower.first_name}</b>,</p>
+                          
+//                           <p>Great news! <b>${formData.author}</b> just released a brand new quiz: "<b>${formData.title}</b>" on Gotestli, and you're invited to be one of the first to check it out. 🎉</p>
+                          
+//                           <p>By staying updated, you get:</p>
+//                           <ul>
+//                             <li>🌟 Exclusive access to fresh quizzes</li>
+//                             <li>📈 A chance to improve your knowledge and skills</li>
+//                             <li>🎯 Opportunities to engage and learn with other members of the Gotestli community</li>
+//                           </ul>
+                          
+//                           <p>Don't miss out on the fun and the learning. Dive into the latest quiz now and see how well you can do!</p>
+                          
+//                           <p>Happy learning,<br/>
+//                            <p>Wishing you success,<br/>  
+// <p>GoTestli Team</p>
+// <hr style="margin: 30px 0;" />
+
+// <div style="font-size: 13px; color: #888; text-align: center;">
+//   <img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
+//   <p><b>GoTestli</b><br/>
+//   Test Your Limits, Expand Your Knowledge<br/>
+//   <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
+//   <p style="margin-top: 10px; font-size: 12px;">
    
-    <a href="mailto:gotestli07@gmail.com" style="color: #666; text-decoration: none; margin: 0 5px;">✉️ gotestli07@gmail.com</a>
-  </p>
+//     <a href="mailto:gotestli07@gmail.com" style="color: #666; text-decoration: none; margin: 0 5px;">✉️ gotestli07@gmail.com</a>
+//   </p>
   
-</div>
-                            `,
-                            },
-                           
-                          },
-                          // {
-                          //   userResultId: studentData.id,
-                          //   studentData: data,
-                          //   quizData: set,
-                          //   instructor: response?.data?.first_name,
-                          // },
-                          {
-                            headers: {
-                              Authorization: `Bearer ${token}`, ...headers 
-                            },
-                          }
-                        );
+// </div>
+//                             `,
+//                   },
+                  content: renderedContent,
+                },
+                // {
+                //   userResultId: studentData.id,
+                //   studentData: data,
+                //   quizData: set,
+                //   instructor: response?.data?.first_name,
+                // },
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`, ...headers
+                  },
+                }
+              );
               // await API.post(
               //   "/api/sendemail/followers/update",
-                
+
               //   {
               //     username: follower.first_name,
               //     email: follower.email,
@@ -284,9 +299,9 @@ https://gotestli.com
             });
             showToast("success", "Followers Notified!!");
           }
-         
+
           // if (response) {
-          
+
           navigate("/instructor/home");
         }
       }
@@ -297,7 +312,7 @@ https://gotestli.com
         showToast("error", "Session Timedout!");
         navigate("/login");
         return;
-      }else{
+      } else {
         console.log(error)
         showToast("error", "Questionset Creation Failed!");
         navigate("/create/questionset");

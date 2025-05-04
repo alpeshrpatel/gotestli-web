@@ -13,6 +13,9 @@ import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import emailTemplates from '../../../../email_templates/emailtemplates'
+import { renderTemplate } from '@/utils/renderTemplate'
+import { content } from 'html2canvas/dist/types/css/property-descriptors/content'
 
 const APP_ID = 1;
 const API_TOKEN = '7b9e6c5f-8a1d-4d3e-b5f2-c9a8e7d6b5c4';
@@ -51,9 +54,20 @@ const OrganizationList = () => {
             if (approval) {
                 const password = generateStrongTempPassword()
                 // const response = await API.post('/api/sendemail/org/onboarding/approval', { orgName: org.org_name, email: org.email, password: password, subdomain: org.subdomain })
-                
+                const adminOrgAccessEmail = emailTemplates.adminOrgAccessEmail;
+                const dynamicData = {
+                  org_name: org.org_name,
+                  email: org.email,
+                  password: password,
+                  subdomain: org.subdomain,
+                }
+                const renderedContent = {
+                  subject: renderTemplate(adminOrgAccessEmail.subject, dynamicData),
+                  body_text: renderTemplate(adminOrgAccessEmail.body_text, dynamicData),
+                  body_html: renderTemplate(adminOrgAccessEmail.body_html, dynamicData),
+                };
                  const res = await API.post(
-                              `https://api.heerrealtor.com/api/send/email`,
+                              `https://communication.gotestli.com/api/send/email`,
                               {
                                 app_id: APP_ID,
                                 sender: "gotestli07@gmail.com",
@@ -64,81 +78,81 @@ const OrganizationList = () => {
                                     name: '',
                                   }
                                 ],
-                                content: {
-                                    subject: `🎉 Welcome Aboard GoTestli! Your Organization is Now Approved ✅`,
-                                    body_text: `
-                                Dear Partner,
-                                Fantastic news! 🚀 Your organization ${org.org_name} has been officially approved for onboarding to the GoTestli platform. We're thrilled to welcome you to our community of innovative educators and learners!
-                                Your dedicated admin portal is now active and ready for you to explore. Here are your credentials to get started:
-                                🔐 ADMIN LOGIN DETAILS:
-                                URL: https://${org.subdomain}.gotestli.com
-                                Username: ${org.email}
-                                Temporary Password: ${password} (Please change upon first login)
-                                With GoTestli, you now have access to:
+//                                 content: {
+//                                     subject: `🎉 Welcome Aboard GoTestli! Your Organization is Now Approved ✅`,
+//                                     body_text: `
+//                                 Dear Partner,
+//                                 Fantastic news! 🚀 Your organization ${org.org_name} has been officially approved for onboarding to the GoTestli platform. We're thrilled to welcome you to our community of innovative educators and learners!
+//                                 Your dedicated admin portal is now active and ready for you to explore. Here are your credentials to get started:
+//                                 🔐 ADMIN LOGIN DETAILS:
+//                                 URL: https://${org.subdomain}.gotestli.com
+//                                 Username: ${org.email}
+//                                 Temporary Password: ${password} (Please change upon first login)
+//                                 With GoTestli, you now have access to:
                                 
-                                📊 Comprehensive assessment creation tools
-                                📈 Real-time analytics and performance tracking
-                                🔄 Seamless content integration capabilities
-                                👥 User management and permission controls
-                                🎓 Extensive quiz and learning resources library
+//                                 📊 Comprehensive assessment creation tools
+//                                 📈 Real-time analytics and performance tracking
+//                                 🔄 Seamless content integration capabilities
+//                                 👥 User management and permission controls
+//                                 🎓 Extensive quiz and learning resources library
                                 
-                                We've scheduled a personalized onboarding session for your team on Wednesday, March 12th at 10:00 AM EST. Our implementation specialist will guide you through platform setup and answer any questions you may have.
-                                In the meantime, feel free to explore our Getting Started Guide (https://help.gotestli.com/getting-started) and Resource Center (https://help.gotestli.com/resources).
-                                We're excited to see the engaging learning experiences you'll create with GoTestli!
-                                Welcome aboard,
-                                The GoTestli Team
-                                Need assistance? Contact our support team at support@gotestli.com or call (800) 555-TEST.
-                                Wishing you success,
-The GoTestLI Team
+//                                 We've scheduled a personalized onboarding session for your team on Wednesday, March 12th at 10:00 AM EST. Our implementation specialist will guide you through platform setup and answer any questions you may have.
+//                                 In the meantime, feel free to explore our Getting Started Guide (https://help.gotestli.com/getting-started) and Resource Center (https://help.gotestli.com/resources).
+//                                 We're excited to see the engaging learning experiences you'll create with GoTestli!
+//                                 Welcome aboard,
+//                                 The GoTestli Team
+//                                 Need assistance? Contact our support team at support@gotestli.com or call (800) 555-TEST.
+//                                 Wishing you success,
+// The GoTestLI Team
 
----------------------
-GoTestli
-Test Your Limits, Expand Your Knowledge
-https://gotestli.com
-                                  `,
-                                    body_html: `
-                                <p>Dear Partner,</p>
-                                <p>Fantastic news! 🚀 Your organization <b>${org.org_name}</b> has been <b>officially approved</b> for onboarding to the GoTestli platform. We're thrilled to welcome you to our community of innovative educators and learners!</p>
-                                <p>Your dedicated admin portal is now <b>active and ready</b> for you to explore. Here are your credentials to get started:</p>
-                                <div style="background-color: #f8f9fa; border-left: 4px solid #4CAF50; padding: 15px; margin: 20px 0;">
-                                  <p><b>🔐 Admin Login Details:</b></p>
-                                  <p>URL: <a href="https://${org.subdomain}.gotestli.com">https://${org.subdomain}.gotestli.com</a><br>
-                                  Username: <b>${org.email}</b><br>
-                                  Temporary Password: <b>${password}</b> (Please change upon first login)</p>
-                                </div>
-                                <p>With GoTestli, you now have access to:</p>
-                                <ul>
-                                  <li>📊 Comprehensive assessment creation tools</li>
-                                  <li>📈 Real-time analytics and performance tracking</li>
-                                  <li>🔄 Seamless content integration capabilities</li>
-                                  <li>👥 User management and permission controls</li>
-                                  <li>🎓 Extensive quiz and learning resources library</li>
-                                </ul>
+// ---------------------
+// GoTestli
+// Test Your Limits, Expand Your Knowledge
+// https://gotestli.com
+//                                   `,
+//                                     body_html: `
+//                                 <p>Dear Partner,</p>
+//                                 <p>Fantastic news! 🚀 Your organization <b>${org.org_name}</b> has been <b>officially approved</b> for onboarding to the GoTestli platform. We're thrilled to welcome you to our community of innovative educators and learners!</p>
+//                                 <p>Your dedicated admin portal is now <b>active and ready</b> for you to explore. Here are your credentials to get started:</p>
+//                                 <div style="background-color: #f8f9fa; border-left: 4px solid #4CAF50; padding: 15px; margin: 20px 0;">
+//                                   <p><b>🔐 Admin Login Details:</b></p>
+//                                   <p>URL: <a href="https://${org.subdomain}.gotestli.com">https://${org.subdomain}.gotestli.com</a><br>
+//                                   Username: <b>${org.email}</b><br>
+//                                   Temporary Password: <b>${password}</b> (Please change upon first login)</p>
+//                                 </div>
+//                                 <p>With GoTestli, you now have access to:</p>
+//                                 <ul>
+//                                   <li>📊 Comprehensive assessment creation tools</li>
+//                                   <li>📈 Real-time analytics and performance tracking</li>
+//                                   <li>🔄 Seamless content integration capabilities</li>
+//                                   <li>👥 User management and permission controls</li>
+//                                   <li>🎓 Extensive quiz and learning resources library</li>
+//                                 </ul>
                                 
-                                <p>We're excited to see the engaging learning experiences you'll create with GoTestli!</p>
-                                <p>Welcome aboard,<br>
-                                <b>The GoTestli Team</b></p>
-                                <p style="font-size: 12px; color: #666;">
-                                Need assistance? Contact our support team at <a href="mailto:gotestli07@gmail.com">gotestli07@gmail.com</a> or call (800) 555-TEST.
-                                </p>
-                                 <p>Wishing you success,<br/>  
-<p>GoTestli Team</p>
-<hr style="margin: 30px 0;" />
+//                                 <p>We're excited to see the engaging learning experiences you'll create with GoTestli!</p>
+//                                 <p>Welcome aboard,<br>
+//                                 <b>The GoTestli Team</b></p>
+//                                 <p style="font-size: 12px; color: #666;">
+//                                 Need assistance? Contact our support team at <a href="mailto:gotestli07@gmail.com">gotestli07@gmail.com</a> or call (800) 555-TEST.
+//                                 </p>
+//                                  <p>Wishing you success,<br/>  
+// <p>GoTestli Team</p>
+// <hr style="margin: 30px 0;" />
 
-<div style="font-size: 13px; color: #888; text-align: center;">
-  <img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
-  <p><b>GoTestli</b><br/>
-  Test Your Limits, Expand Your Knowledge<br/>
-  <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
-  <p style="margin-top: 10px; font-size: 12px;">
+// <div style="font-size: 13px; color: #888; text-align: center;">
+//   <img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
+//   <p><b>GoTestli</b><br/>
+//   Test Your Limits, Expand Your Knowledge<br/>
+//   <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
+//   <p style="margin-top: 10px; font-size: 12px;">
    
-    <a href="mailto:gotestli07@gmail.com" style="color: #666; text-decoration: none; margin: 0 5px;">✉️ gotestli07@gmail.com</a>
-  </p>
+//     <a href="mailto:gotestli07@gmail.com" style="color: #666; text-decoration: none; margin: 0 5px;">✉️ gotestli07@gmail.com</a>
+//   </p>
   
-</div>
-                                  `,
-                                },
-                
+// </div>
+//                                   `,
+//                                 },
+                                content: renderedContent,
                               },
                               {
                                headers
