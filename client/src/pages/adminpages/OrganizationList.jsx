@@ -15,7 +15,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import emailTemplates from '../../../../email_templates/emailtemplates'
 import { renderTemplate } from '@/utils/renderTemplate'
-import { content } from 'html2canvas/dist/types/css/property-descriptors/content'
+
 
 const APP_ID = 1;
 const API_TOKEN = '7b9e6c5f-8a1d-4d3e-b5f2-c9a8e7d6b5c4';

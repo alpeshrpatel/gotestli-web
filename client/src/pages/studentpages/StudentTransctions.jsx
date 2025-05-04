@@ -17,7 +17,6 @@ import { showToast } from "@/utils/toastService";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import emailTemplates from "../../../../email_templates/emailtemplates";
-import { content } from "html2canvas/dist/types/css/property-descriptors/content";
 import { renderTemplate } from "@/utils/renderTemplate";
 // import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
