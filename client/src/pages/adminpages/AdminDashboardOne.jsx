@@ -335,7 +335,7 @@ export default function AdminDashboardOne() {
               body_html: renderTemplate(userOrgAcessEmail.body_html, dynamicData),
             };
             const res = await API.post(
-              `https://communication.gotestli.com/api/send/email`,
+              `https://api.communication.gotestli.com/api/send/email`,
               {
                 app_id: APP_ID,
                 sender: "gotestli07@gmail.com",

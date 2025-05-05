@@ -51,7 +51,7 @@ export default function ContactOne() {
       body_html: renderTemplate(contactMessageEmail.body_html, dynamicData),
     };
       const data = await API.post("/api/contact/messages", formData);
-      const resp = await API.post("https://communication.gotestli.com/api/send/email",
+      const resp = await API.post("https://api.communication.gotestli.com/api/send/email",
         {
           app_id: APP_ID,
           sender: ADMIN_EMAIL,
@@ -130,6 +130,12 @@ export default function ContactOne() {
       );
 
       if (data.status == 200) {
+        setFormData({
+          name: "",
+          email: "",
+          message: "",
+        })
+        setSubject("");
         showToast("success", 'Message Sent!')
       }
     } catch (error) {

@@ -190,7 +190,7 @@ const ViewStudents = () => {
             body_html: renderTemplate(quizReminderEmail.body_html, dynamicData),
           };
           const res = await API.post(
-            `https://communication.gotestli.com/api/send/email`,
+            `https://api.communication.gotestli.com/api/send/email`,
             {
               app_id: APP_ID,
               sender: "dipakkarmur45@gmail.com",

@@ -30,7 +30,7 @@ export default function FooterOne() {
       setIsDisabled(true);
       const data = await API.post("/api/waitinglist", { email: email });
       if (data.status == 200) {
-        const res = await API.post("https://communication.gotestli.com/api/send/email", {
+        const res = await API.post("https://api.communication.gotestli.com/api/send/email", {
           app_id: APP_ID,
           sender: ADMIN_EMAIL,
           sender_name: "Gotestli",
