@@ -12,6 +12,7 @@ import {
 } from "firebase/firestore";
 import { menuList } from "@/data--backup/menu";
 import { useLocation } from "react-router-dom";
+import StudyMaterialMegamenu from "./StudyMaterialMegamenu";
 
 export default function Menu({ allClasses, headerPosition }) {
   const [menuItem, setMenuItem] = useState("");
@@ -65,9 +66,8 @@ export default function Menu({ allClasses, headerPosition }) {
 
   return (
     <div
-      className={`header-menu js-mobile-menu-toggle  ${
-        headerPosition ? headerPosition : ""
-      }`}
+      className={`header-menu js-mobile-menu-toggle  ${headerPosition ? headerPosition : ""
+        }`}
       style={{
         marginTop: "20px",
         display: "flex",
@@ -80,7 +80,7 @@ export default function Menu({ allClasses, headerPosition }) {
       <div className="header-menu__content">
         <div className="mobile-bg js-mobile-bg"></div>
 
-        <div className="d-none xl:d-flex items-center px-20 py-20 border-bottom-light">
+        <div className="d-none xl:d-flex items-center px-20 py-20 border-bottom-light" style={{fontSize:'14px'}}>
           <Link to="/login" className="text-dark-1">
             Log in
           </Link>
@@ -97,15 +97,14 @@ export default function Menu({ allClasses, headerPosition }) {
             <li className="menu-item-has-children ">
               <Link
                 data-barba
-                to={`${
-                  userRole == "admin"
+                to={`${userRole == "admin"
                     ? `/admin/dashboard`
                     : userRole == "instructor"
-                    ? `/instructor/home`
-                    : `/`
-                }`}
-                className={menuItem == "Home" ? "activeMenu" : ""}
-                style={{ fontSize: "18px", whiteSpace: "nowrap" }}
+                      ? `/instructor/home`
+                      : `/`
+                  }`}
+                // className={menuItem == "Home" ? "activeMenu" : ""}
+                style={{ fontSize: "14px", whiteSpace: "nowrap" }}
               >
                 Home
               </Link>
@@ -267,9 +266,9 @@ export default function Menu({ allClasses, headerPosition }) {
                     data-barba
                     to="/create/question"
                     className={
-                     pathname == "/create/question" ? "activeMenu" : ""
+                      pathname == "/create/question" ? "activeMenu" : ""
                     }
-                    style={{ fontSize: "18px", whiteSpace: "nowrap" }}
+                    style={{ fontSize: "14px", whiteSpace: "nowrap" }}
                   >
                     Create{" "}
                     {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
@@ -282,7 +281,7 @@ export default function Menu({ allClasses, headerPosition }) {
                     className={
                       menuItem == "Create QuestionSet" ? "activeMenu" : ""
                     }
-                    style={{ fontSize: "18px", whiteSpace: "nowrap" }}
+                    style={{ fontSize: "14px", whiteSpace: "nowrap" }}
                   >
                     Create QuestionSet{" "}
                     {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
@@ -317,7 +316,7 @@ export default function Menu({ allClasses, headerPosition }) {
                     className={
                       menuItem == "Create QuestionSet" ? "activeMenu" : ""
                     }
-                    style={{ fontSize: "18px", whiteSpace: "nowrap" }}
+                    style={{ fontSize: "14px", whiteSpace: "nowrap" }}
                   >
                     Upload QuestionSet{" "}
                     {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
@@ -326,40 +325,16 @@ export default function Menu({ allClasses, headerPosition }) {
               </>
             )}
 
+            {/* <li className="menu-item-has-children"> */}
+            <div className="d-flex align-items-center">
+            <StudyMaterialMegamenu/>
+            </div>
+             
+              
+             
+            {/* </li> */}
+
             {/* <li className="menu-item-has-children">
-              <Link
-                data-barba
-                to="#"
-                className={menuItem == "Blogs" ? "activeMenu" : ""}
-                style={{fontSize:'18px'}}
-              >
-                Blog <i className="icon-chevron-right text-13 ml-10"></i>
-              </Link>
-              <ul className="subnav">
-                <li className="menu__backButton js-nav-list-back">
-                  <Link to="#">
-                    <i className="icon-chevron-left text-13 mr-10"></i> Blog
-                  </Link>
-                </li>
-
-                {menuList[4].links.map((elm, i) => (
-                  <li
-                    key={i}
-                    className={
-                      pathname.split("/")[1] == elm.href.split("/")[1]
-                        ? "activeMenu"
-                        : "inActiveMenu"
-                    }
-                  >
-                    <Link data-barba to={elm.href}>
-                      {elm.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </li>
-
-            <li className="menu-item-has-children">
               <Link
                 data-barba
                 to="#"

@@ -156,6 +156,7 @@ const ViewStudents = () => {
 
   const handleReminderClick = async (studentData) => {
     setIsDisabled((prev) => [...prev, { id: studentData.id }]);
+    // console.log(studentsData)
     try {
       if (token) {
         const { data } = await API.get(`api/users/${studentData.user_id}?orgid=${orgid}`, {
@@ -163,7 +164,8 @@ const ViewStudents = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        // console.log(data);
+        //  console.log(data);
+         const userData = data
         const response = await API.get(`api/users/${userId}?orgid=${orgid}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -176,7 +178,7 @@ const ViewStudents = () => {
           };
           const quizReminderEmail = emailTemplates.quizReminderEmail;
           const dynamicData = {
-            first_name: studentData.first_name,
+            first_name: userData.first_name,
 
             title: set.title,
 
@@ -189,30 +191,31 @@ const ViewStudents = () => {
             body_text: renderTemplate(quizReminderEmail.body_text, dynamicData),
             body_html: renderTemplate(quizReminderEmail.body_html, dynamicData),
           };
+          const recipient = {
+            email: String(userData.email),
+            name: String(userData.first_name || "Student")
+          };
           const res = await API.post(
             `https://api.communication.gotestli.com/api/send/email`,
             {
               app_id: APP_ID,
-              sender: "dipakkarmur45@gmail.com",
+              sender: "gotestli07@gmail.com",
               sender_name: "Gotestli",
               recipients: [
-                {
-                  email: studentData.email,
-                  name: studentData.first_name,
-                }
+               recipient
               ],
-              cc: [
-                {
-                  email: studentData.email,
-                  name: studentData.first_name,
-                }
-              ],
-              bcc: [
-                {
-                  email: studentData.email,
-                  name: studentData.first_name,
-                }
-              ],
+              // cc: [
+              //   {
+              //     email: studentData.email,
+              //     name: studentData.first_name,
+              //   }
+              // ],
+              // bcc: [
+              //   {
+              //     email: studentData.email,
+              //     name: studentData.first_name,
+              //   }
+              // ],
               //               content: {
               //                 subject: "🚀 Reminder: Your Quiz Awaits! Don't Miss It! 🎯",
               //                 body_text: `

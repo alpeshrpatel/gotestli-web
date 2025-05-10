@@ -12,7 +12,7 @@ import { renderTemplate } from "@/utils/renderTemplate";
 
 const APP_ID = 1;
 const API_TOKEN = '7b9e6c5f-8a1d-4d3e-b5f2-c9a8e7d6b5c4';
-const ADMIN_EMAIL = 'dipakkarmur45@gmail.com'
+const ADMIN_EMAIL = 'gotestli07@gmail.com'
 
 const headers = {
   "X-API-Token": API_TOKEN,
@@ -33,7 +33,7 @@ export default function ContactOne() {
     const target = e.target;
     setFormData((prev) => ({ ...prev, [target.name]: target.value }));
   };
-  console.log(formData)
+  // console.log(formData)
   const handleMessageClick = async () => {
     try {
       const contactMessageEmail = emailTemplates.contactMessageEmail;

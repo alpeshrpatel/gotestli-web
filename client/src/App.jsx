@@ -135,6 +135,18 @@ import AcceptInvitation from "./pages/organization/AcceptInvitation";
 import StudentTransactions from "./pages/studentpages/StudentTransctions";
 import RefundRequestsList from "./pages/adminpages/RefundRequestsList";
 import AdminLoginPage from "./pages/others/adminlogin";
+import AwsEC2CheatSheet from "./pages/cheatsheets/cheatsheetpages/AwsEC2CheatSheet";
+import AwsS3CheatSheet from "./pages/cheatsheets/cheatsheetpages/AwsS3CheatSheet";
+import AwsLambdaCheatSheet from "./pages/cheatsheets/cheatsheetpages/AwsLambdaCheatSheet";
+import AzureVmCheatSheet from "./pages/cheatsheets/cheatsheetpages/AzureVmCheatSheet";
+import AzureBlobCheatSheet from "./pages/cheatsheets/cheatsheetpages/AzureBlobCheatSheet";
+import GcpComputeCheatSheet from "./pages/cheatsheets/cheatsheetpages/GcpComputeCheatSheet";
+import GcpFunctionsCheatSheet from "./pages/cheatsheets/cheatsheetpages/GcpFunctionsCheatSheet";
+import AiSentimentAnalysisCheatSheet from "./pages/cheatsheets/cheatsheetpages/AiSentimentAnalysisCheatSheet";
+import AiTextGenerationCheatSheet from "./pages/cheatsheets/cheatsheetpages/AiTextGenerationCheatSheet";
+import CvImageClassCheatSheet from "./pages/cheatsheets/cheatsheetpages/CvImageClassCheatSheet";
+import CvObjectDetectCheatSheet from "./pages/cheatsheets/cheatsheetpages/CvObjectDetectCheatSheet";
+import MlRegressionCheatSheet from "./pages/cheatsheets/cheatsheetpages/MlRegressionCheatSheet";
 // import AppProvider from "./utils/AppContext";
 
 function App() {
@@ -279,7 +291,7 @@ function App() {
                 {/* {(org.id != 0) && (user.role == 'admin') ? (
                   <Route path="/" element={<OrganizationHomePage orgName={org.org_name} />} />
                 ) : ( */}
-                  <Route path="/" element={<HomePage1 />} />
+                <Route path="/" element={<HomePage1 />} />
                 {/* )} */}
                 <Route path="/" element={<HomePage1 />} />
                 <Route path="/login" element={<LoginPage />} />
@@ -300,6 +312,21 @@ function App() {
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/org-onboarding" element={<OrgOnboardingForm />} />
                 <Route path="/admin/invite-members" element={<AcceptInvitation />} />
+
+                {/* cheatsheet routes */}
+                <Route path="/cheatsheet/aws/ec2" element={<AwsEC2CheatSheet />} />
+                <Route path="/cheatsheet/aws/s3" element={<AwsS3CheatSheet />} />
+                <Route path="/cheatsheet/aws/lambda" element={<AwsLambdaCheatSheet />} />
+                <Route path="/cheatsheet/azure/vm" element={<AzureVmCheatSheet />} />
+                <Route path="/cheatsheet/azure/blob" element={<AzureBlobCheatSheet />} />
+                <Route path="/cheatsheet/gcp/compute" element={<GcpComputeCheatSheet />} />
+                <Route path="/cheatsheet/gcp/functions" element={<GcpFunctionsCheatSheet />} />
+                <Route path="/cheatsheet/ai/sentiment/analysis" element={<AiSentimentAnalysisCheatSheet />} />
+                <Route path="/cheatsheet/ai/text/generation" element={<AiTextGenerationCheatSheet />} />
+                <Route path="/cheatsheet/cv/image/classification" element={<CvImageClassCheatSheet />} />
+                <Route path="/cheatsheet/cv/object/detection" element={<CvObjectDetectCheatSheet />} /> 
+                <Route path="/cheatsheet/ml/supervised/regression" element={<MlRegressionCheatSheet />} /> 
+
                 {/* Student Routes */}
                 {/* <Route path="/" element={
                 <ProtectedRoute element={<HomePage1 />} role="student" />
@@ -424,7 +451,7 @@ function App() {
                 <Route
                   path="/admin/refund/requests"
                   element={
-                    <ProtectedRoute element={<RefundRequestsList/>} role="admin" />
+                    <ProtectedRoute element={<RefundRequestsList />} role="admin" />
                   }
                 />
 

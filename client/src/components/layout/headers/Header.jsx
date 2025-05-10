@@ -14,6 +14,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import CartButton from "@/components/common/CartButton";
 import SearchHeader from "./SearchHeader";
 import { HeaderExplore } from "../component/header-explore";
+import BusinessIcon from '@mui/icons-material/Business';
 
 export default function Header({ userRole }) {
   const [activeMobileMenu, setActiveMobileMenu] = useState(false);
@@ -28,7 +29,7 @@ export default function Header({ userRole }) {
     localStorage.getItem("wishlist") || 0
   );
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768);
-  
+
   // Function to toggle theme and persist to localStorage
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
@@ -58,7 +59,7 @@ export default function Header({ userRole }) {
     };
 
     window.addEventListener("resize", handleResize);
-    
+
     return () => window.removeEventListener("resize", handleResize);
   });
 
@@ -106,7 +107,7 @@ export default function Header({ userRole }) {
     }
   };
 
-  const handleSearch = () => {};
+  const handleSearch = () => { };
 
   const handleKeyDown = (e) => {
     // console.log(e.target.value);
@@ -159,11 +160,10 @@ export default function Header({ userRole }) {
         </div>
             </div> */}
           <div
-            className={` ${
-              isSmallScreen
+            className={` ${isSmallScreen
                 ? `d-flex gap-4 `
                 : `row justify-content-between align-items-center`
-            } `}
+              } `}
           >
             <div className="col-auto d-flex align-items-center ">
               <div className="header__logo">
@@ -183,18 +183,18 @@ export default function Header({ userRole }) {
             {/* <div className="d-flex   ">
             <HeaderExplore/>
             </div> */}
-            
+
             <div className="col-auto d-flex align-items-center  ">
-             {
-              userRole == 'instructor' ? (
-                <div style={{position:"absolute",left:'200px', display:isSmallScreen ? 'none' : ''}}>
-                  <HeaderExplore/>
-                </div>
-                
-              ): (
-                <Menu allClasses={"menu__nav text-white -is-active "} />
-              )
-             }
+              {
+                userRole == 'instructor' ? (
+                  <div style={{ position: "absolute", left: '200px', display: isSmallScreen ? 'none' : '' }}>
+                    <HeaderExplore />
+                  </div>
+
+                ) : (
+                  <Menu allClasses={"menu__nav text-white -is-active "} />
+                )
+              }
               {/* <Menu allClasses={"menu__nav text-white -is-active "} /> */}
             </div>
             {userRole !== "instructor" && userRole !== 'admin' && (
@@ -262,12 +262,29 @@ export default function Header({ userRole }) {
                   {/* search toggle end */}
 
                   {/* cart toggle start */}
+                  {/* organization onboarding form */}
+                  {
+                    userRole !== 'instructor' || userRole !== 'student' ? (
+                      <div className="d-flex items-center gap-2">
+                        <BusinessIcon style={{ color: 'white', fontSize: '30px' }} />
+
+                        <Link
+                          data-barba
+                          to='/org-onboarding'
+                          // className={menuItem == "Home" ? "activeMenu" : ""}
+                          style={{ fontSize: "14px", whiteSpace: "nowrap" }}
+                        >
+                          Join as an Organization
+                        </Link>
+                      </div>
+                    ) : null
+                  }
                   {userRole == "instructor" || userRole == 'admin' ? null : (
                     <CartToggle
                       parentClassess={""} //ml-30 mr-30 xl:ml-20
                       allClasses={"d-flex items-center text-white"}
-                      // wishlistCount={wishlistCount}
-                      // setWishlistCount={setWishlistCount}
+                    // wishlistCount={wishlistCount}
+                    // setWishlistCount={setWishlistCount}
                     />
                   )}
 
@@ -326,7 +343,7 @@ export default function Header({ userRole }) {
                                           ? "activeMenu"
                                           : ""
                                       }
-                                      // style={{ position:'relative', top:'3px',marginRight:'1px'}}
+                                    // style={{ position:'relative', top:'3px',marginRight:'1px'}}
                                     >
                                       {user.displayName?.split(" ")[0]}
                                       <i className="icon-chevron-right text-13 ml-10"></i>
@@ -422,7 +439,7 @@ export default function Header({ userRole }) {
                       </div>
                     </div>
                   ) : (
-                    <div className="header-right__buttons d-flex items-center ml-30 md:d-none">
+                    <div className="header-right__buttons d-flex items-center ml-30 md:d-none align-items-center" style={{fontSize: "14px"}}>
                       <Link
                         to="/login"
                         className="button -underline text-white"
