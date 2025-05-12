@@ -244,6 +244,7 @@ export default function Header({ userRole }) {
               activeMobileMenu={activeMobileMenu}
               userRole={userRole}
               handleSignOut={handleSignOut}
+              isSmallScreen={isSmallScreen}
             />
 
             <div className="col-auto">
@@ -274,7 +275,7 @@ export default function Header({ userRole }) {
                           // className={menuItem == "Home" ? "activeMenu" : ""}
                           style={{ fontSize: "14px", whiteSpace: "nowrap" }}
                         >
-                          Join as an Organization
+                        {isSmallScreen ? null : 'Join as an Organization'}  
                         </Link>
                       </div>
                     ) : null
@@ -297,7 +298,7 @@ export default function Header({ userRole }) {
         </Button> */}
 
                   <div
-                    className="d-block d-xl-none ml-20"
+                    className="d-block d-xl-none ml-5"
                     style={{
                       margin: "4px",
                       right: "0vw",

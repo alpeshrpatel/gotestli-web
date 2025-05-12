@@ -147,6 +147,10 @@ import AiTextGenerationCheatSheet from "./pages/cheatsheets/cheatsheetpages/AiTe
 import CvImageClassCheatSheet from "./pages/cheatsheets/cheatsheetpages/CvImageClassCheatSheet";
 import CvObjectDetectCheatSheet from "./pages/cheatsheets/cheatsheetpages/CvObjectDetectCheatSheet";
 import MlRegressionCheatSheet from "./pages/cheatsheets/cheatsheetpages/MlRegressionCheatSheet";
+import ClassificationCheatSheet from "./pages/cheatsheets/cheatsheetpages/ClassificationCheatSheet";
+import ClusteringCheatSheet from "./pages/cheatsheets/cheatsheetpages/ClusteringCheatSheet";
+import DimensionalityReductionCheatSheet from "./pages/cheatsheets/cheatsheetpages/DimensionalityReductionCheatSheet";
+import CheatSheetHeaderFooterLayout from "./privateroutes/CheatsheetHeaderFooterLayout";
 // import AppProvider from "./utils/AppContext";
 
 function App() {
@@ -312,21 +316,26 @@ function App() {
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/org-onboarding" element={<OrgOnboardingForm />} />
                 <Route path="/admin/invite-members" element={<AcceptInvitation />} />
-
+                
                 {/* cheatsheet routes */}
-                <Route path="/cheatsheet/aws/ec2" element={<AwsEC2CheatSheet />} />
-                <Route path="/cheatsheet/aws/s3" element={<AwsS3CheatSheet />} />
-                <Route path="/cheatsheet/aws/lambda" element={<AwsLambdaCheatSheet />} />
-                <Route path="/cheatsheet/azure/vm" element={<AzureVmCheatSheet />} />
-                <Route path="/cheatsheet/azure/blob" element={<AzureBlobCheatSheet />} />
-                <Route path="/cheatsheet/gcp/compute" element={<GcpComputeCheatSheet />} />
-                <Route path="/cheatsheet/gcp/functions" element={<GcpFunctionsCheatSheet />} />
-                <Route path="/cheatsheet/ai/sentiment/analysis" element={<AiSentimentAnalysisCheatSheet />} />
-                <Route path="/cheatsheet/ai/text/generation" element={<AiTextGenerationCheatSheet />} />
-                <Route path="/cheatsheet/cv/image/classification" element={<CvImageClassCheatSheet />} />
-                <Route path="/cheatsheet/cv/object/detection" element={<CvObjectDetectCheatSheet />} /> 
-                <Route path="/cheatsheet/ml/supervised/regression" element={<MlRegressionCheatSheet />} /> 
-
+                <Route path="/" element={<CheatSheetHeaderFooterLayout />}>
+                 
+                  <Route path="/cheatsheet/aws/ec2" element={<AwsEC2CheatSheet />} />
+                  <Route path="/cheatsheet/aws/s3" element={<AwsS3CheatSheet />} />
+                  <Route path="/cheatsheet/aws/lambda" element={<AwsLambdaCheatSheet />} />
+                  <Route path="/cheatsheet/azure/vm" element={<AzureVmCheatSheet />} />
+                  <Route path="/cheatsheet/azure/blob" element={<AzureBlobCheatSheet />} />
+                  <Route path="/cheatsheet/gcp/compute" element={<GcpComputeCheatSheet />} />
+                  <Route path="/cheatsheet/gcp/functions" element={<GcpFunctionsCheatSheet />} />
+                  <Route path="/cheatsheet/ai/sentiment/analysis" element={<AiSentimentAnalysisCheatSheet />} />
+                  <Route path="/cheatsheet/ai/text/generation" element={<AiTextGenerationCheatSheet />} />
+                  <Route path="/cheatsheet/cv/image/classification" element={<CvImageClassCheatSheet />} />
+                  <Route path="/cheatsheet/cv/object/detection" element={<CvObjectDetectCheatSheet />} />
+                  <Route path="/cheatsheet/ml/supervised/regression" element={<MlRegressionCheatSheet />} />
+                  <Route path="/cheatsheet/ml/supervised/classification" element={<ClassificationCheatSheet />} />
+                  <Route path="/cheatsheet/ml/unsupervised/clustering" element={<ClusteringCheatSheet />} />
+                  <Route path="/cheatsheet/ml/unsupervised/dimensionality/reduction" element={<DimensionalityReductionCheatSheet />} />
+                </Route>
                 {/* Student Routes */}
                 {/* <Route path="/" element={
                 <ProtectedRoute element={<HomePage1 />} role="student" />

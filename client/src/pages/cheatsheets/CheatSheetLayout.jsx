@@ -1,6 +1,7 @@
 import { faCode } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
+import CodeEditorCheatSheet from './cheatsheetpages/CodeEditorCheatSheet';
 
 // const CheatSheetLayout = ({ title, description, sections }) => {
 //   return (
@@ -111,7 +112,8 @@ const CheatSheetLayout = ({ title, description, sections }) => {
                     overflowX: 'auto',
                     margin: 0
                   }}>
-                    <code>{section.code}</code>
+                     <CodeEditorCheatSheet language="python" code={section.code} />
+                    {/* <code>{section.code}</code> */}
                   </pre>
                 </div>
               )}

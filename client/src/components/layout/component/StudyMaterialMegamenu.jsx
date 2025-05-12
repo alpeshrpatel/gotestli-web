@@ -49,11 +49,12 @@ const StudyMaterialMegamenu = ({ allClasses }) => {
                 {
                     title: "Supervised Learning",
                     subItems: ["Regression", "Classification"],
-                    links: ['/cheatsheet/ml/supervised/regression', ''],
+                    links: ['/cheatsheet/ml/supervised/regression', '/cheatsheet/ml/supervised/classification'],
                 },
                 {
                     title: "Unsupervised Learning",
                     subItems: ["Clustering", "Dimensionality Reduction"],
+                    links: ['/cheatsheet/ml/unsupervised/clustering', '/cheatsheet/ml/unsupervised/dimensionality/reduction'],
                 },
             ],
         },
