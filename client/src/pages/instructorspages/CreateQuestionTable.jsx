@@ -608,23 +608,41 @@ const CreateQuestionTable = () => {
     setCorrectOption("");
   }
 
+  // const validate = () => {
+  //   const newErrors = {};
+
+  //   if (!changedQSet.question_type_id)
+  //     newErrors.question_type_id = "Type is required";
+  //   if (!changedQSet.question) newErrors.question = "Question is required";
+  //   if (!changedQSet.description)
+  //     newErrors.description = "Description is required";
+  //   if (!changedQSet.explanation)
+  //     newErrors.explanation = "Explanation is required";
+  //   if (!changedQSet.complexity)
+  //     newErrors.complexity = "Complexity is required";
+  //   if (!changedQSet.marks) newErrors.marks = "Marks is required";
+
+  //   setErrors(newErrors);
+  //   return Object.keys(newErrors).length === 0;
+  // };
   const validate = () => {
-    const newErrors = {};
+  const newErrors = {};
 
-    if (!changedQSet.question_type_id)
-      newErrors.question_type_id = "Type is required";
-    if (!changedQSet.question) newErrors.question = "Question is required";
-    if (!changedQSet.description)
-      newErrors.description = "Description is required";
-    if (!changedQSet.explanation)
-      newErrors.explanation = "Explanation is required";
-    if (!changedQSet.complexity)
-      newErrors.complexity = "Complexity is required";
-    if (!changedQSet.marks) newErrors.marks = "Marks is required";
+  if (!changedQSet.question_type_id && changedQSet.question_type_id !== 0)
+    newErrors.question_type_id = "Type is required";
+  if (!changedQSet.question) newErrors.question = "Question is required";
+  if (!changedQSet.description)
+    newErrors.description = "Description is required";
+  if (!changedQSet.explanation)
+    newErrors.explanation = "Explanation is required";
+  if (!changedQSet.complexity)
+    newErrors.complexity = "Complexity is required";
+  if (!changedQSet.marks && changedQSet.marks !== 0) 
+    newErrors.marks = "Marks is required";
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
 
   // handle remove options functions
   const handleRemoveOption = (optionToRemove) => {
@@ -760,7 +778,7 @@ const CreateQuestionTable = () => {
   );
 
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Preloader />
       {/* <MetaComponent meta={metadata} /> */}
       <Header userRole={userRole} />
@@ -1157,7 +1175,7 @@ const CreateQuestionTable = () => {
 
         {/* <Button onClick={() => handleSave()}>Save</Button> */}
       </Modal>
-      <div className="content-wrapper js-content-wrapper overflow-hidden w-100">
+      <div className="content-wrapper js-content-wrapper overflow-hidden w-100" style={{ flex: 1 }}>
         <div className="table-responsive ">
           {questions && (
             <CommonTable
@@ -1193,8 +1211,9 @@ const CreateQuestionTable = () => {
           </div>
         </div>
 
-        <FooterOne />
+
       </div>
+    <FooterOne />
     </div>
   );
 };

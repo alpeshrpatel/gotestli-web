@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import CourceCard from "../courseCards/CourseCard";
 import { coursesData, catagories } from "../../../data--backup/courses";
 import { useState, useEffect } from "react";
@@ -32,12 +32,19 @@ export default function Courses({ userRole }) {
   const [categories, setCategories] = useState([]);
   const [value, setValue] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [view, setView] = useState("card");
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
   const navigate = useNavigate();
+  const loaderRef = useRef(null);
+
+  const limit = 2;
+    const start = (page - 1) * limit;
+    const end = page * limit;
 
   const token = localStorage.getItem("token");
-  const org = JSON.parse(localStorage.getItem("org")) || "";
+  const org = JSON.parse(localStorage.getItem("org")) || ""; 
   let orgid = org?.id || 0;
   useEffect(() => {
     async function getCategory() {
@@ -48,21 +55,56 @@ export default function Courses({ userRole }) {
     getCategory();
   }, []);
 
-  useEffect(() => {
-    async function getQuestionsSet() {
-      try {
-        const { data } = await API.get("/api/questionset?orgid=" + orgid);
-        if (Array.isArray(data)) {
-          setFiltered(data);
+  async function getQuestionsSet() {
+    if (loading || !hasMore) return;
+    try {
+      setLoading(true);
+      const { data } = await API.get(`/api/questionset?start=${start}&end=${end}&limit=${limit}&orgid=${orgid}`);
+      if (Array.isArray(data)) {
+        const newQuizzes = data
+        // setFiltered(data);
+        if (newQuizzes.length === 0) {
+          setHasMore(false);
         } else {
-          console.error("Expected an array, got:", data);
-          setFiltered([]);
+          setFiltered(prevQuizzes => [...prevQuizzes, ...newQuizzes]);
+          setPage(prevPage => prevPage + 1);
         }
-      } catch (error) {
-        console.error("Error fetching questions set:", error);
+      } else {
+        console.error("Expected an array, got:", data);
         setFiltered([]);
       }
+    } catch (error) {
+      console.error("Error fetching questions set:", error);
+      setFiltered([]);
     }
+     setLoading(false);
+  }
+
+    useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        const target = entries[0];
+        if (target.isIntersecting) {
+          getQuestionsSet();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    
+    const currentLoaderRef = loaderRef.current;
+    if (currentLoaderRef) {
+      observer.observe(currentLoaderRef);
+    }
+    
+    return () => {
+      if (currentLoaderRef) {
+        observer.unobserve(currentLoaderRef);
+      }
+    };
+  }, [loaderRef, page, loading, hasMore]);
+
+  useEffect(() => {
+
     getQuestionsSet();
   }, []);
 
@@ -134,11 +176,11 @@ export default function Courses({ userRole }) {
   if (userRole == "instructor") {
     selectedCategory && selectedCategory?.length > 0
       ? (questionSetByInstructor = selectedCategory?.filter(
-          (set) => set.created_by == userId
-        ))
+        (set) => set.created_by == userId
+      ))
       : (questionSetByInstructor = filtered?.filter(
-          (set) => set.created_by == userId
-        ));
+        (set) => set.created_by == userId
+      ));
   }
 
   // console.log(questionSetByInstructor);
@@ -177,8 +219,8 @@ export default function Courses({ userRole }) {
           <Tabs
             value={value}
             onChange={handleChange}
-            variant="scrollable" 
-            scrollButtons="auto" 
+            variant="scrollable"
+            scrollButtons="auto"
             // sx={{ overflowX:'scroll' }}
             aria-label="category tabs"
           >
@@ -369,6 +411,23 @@ export default function Courses({ userRole }) {
             No Questionsets found for this Category.
           </h4>
         )}
+        {loading && (
+        <div className="flex justify-center my-4">
+          <div className="w-6 h-6 border-2 border-t-blue-500 rounded-full animate-spin"></div>
+        </div>
+      )}
+      
+      {!loading && hasMore && (
+        <div ref={loaderRef} className="h-10" />
+      )}
+      
+      {!hasMore && filtered.length > 0 && (
+        <p className="text-center text-gray-500 my-4">No more quizzes to load</p>
+      )}
+      
+      {!loading && filtered.length === 0 && (
+        <p className="text-center text-gray-500 my-4">No quizzes available</p>
+      )}
         {/* { filtered &&
           filtered.map((elm, index) => (
             <CourceCard

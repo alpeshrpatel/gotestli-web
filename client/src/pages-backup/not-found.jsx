@@ -15,7 +15,7 @@ const metadata = {
 };
 export default function NotFoundPage() {
   return (
-    <div className="main-content  ">
+    <div className="main-content  " style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <MetaComponent meta={metadata} />
 
       <Preloader />

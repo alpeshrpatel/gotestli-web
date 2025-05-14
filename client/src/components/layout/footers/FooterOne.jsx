@@ -117,8 +117,8 @@ export default function FooterOne() {
       setIsDisabled(false);
     }
   };
-  return (                             //position: 'sticky',
-    <footer className="footer -type-1 bg-dark-1 -green-links " style={{  width: '100%', bottom: 0 }}>
+  return (                             //position: 'sticky', style={{  width: '100%', bottom: 0 }}
+    <footer className="footer -type-1 bg-dark-1 -green-links " style={{  width: '100%' }}>
       <div className="container-fluid w-100">
         <div className="footer-header py-4">
           <div className="row y-gap-2 justify-between items-center mx-2">

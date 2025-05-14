@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import HandleDownload from "../common/HandleDownload";
 import { useNavigate } from "react-router-dom";
 import { showToast } from "@/utils/toastService";
+import FooterOne from "../layout/footers/FooterOne";
 
 const UploadQuestionSet = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -200,18 +201,21 @@ const UploadQuestionSet = () => {
   // }
 
   return (
-    <>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Header userRole={userRole} />
       <div
         className="mx-auto"
         style={{
-          marginTop: "100px",
+          marginTop: "130px",
           width: "70vw",
           padding: "30px",
           backgroundColor: "#bfdeee",
           borderRadius: "10px",
           boxShadow:
             "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);",
+            flex: 1,
+            marginBottom:'20px',
+            
         }}
       >
         <Box sx={{ width: "100%", margin: "auto", textAlign: "center" }}>
@@ -453,7 +457,8 @@ const UploadQuestionSet = () => {
           )}
         </Box>
       </div>
-    </>
+      <FooterOne />
+    </div>
   );
 };
 

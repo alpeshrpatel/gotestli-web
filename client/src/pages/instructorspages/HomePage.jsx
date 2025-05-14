@@ -33,7 +33,7 @@ const columns = [
   { id: "questions", label: "Questions", sortable: false },
   { id: "attempted", label: "Total Attempted", sortable: false },
   { id: "actions", label: "Actions", sortable: false },
-  {id:"active", label:"Active", sortable:false}
+  { id: "active", label: "Active", sortable: false }
 ];
 
 const HomePage = () => {
@@ -62,9 +62,9 @@ const HomePage = () => {
     try {
       if (token) {
         let url = ''
-        if(searchQuery){
+        if (searchQuery) {
           url = `/api/questionset/instructor/${userId}?start=${start}&end=${end}&search=${encodeURIComponent(searchQuery)}&orgid=${orgid}`;
-        }else{
+        } else {
           url = `/api/questionset/instructor/${userId}?start=${start}&end=${end}&orgid=${orgid}`;
         }
         const { data } = await API.get(
@@ -75,13 +75,13 @@ const HomePage = () => {
             },
           }
         );
-         console.log(data);
+        console.log(data);
         setQuestionSets(data.res);
         const theNewObj = {
           data: data.res,
           totalRecords: data.totalRecords
         };
-    
+
         console.log('Final theNewObj:', theNewObj);
         return theNewObj;
       }
@@ -98,10 +98,10 @@ const HomePage = () => {
 
   useEffect(() => {
     // const author = auth.currentUser.displayName;
-    
+
     getQuestionSets();
   }, [searchQuery]);
-    console.log('qs',questionSets)
+  console.log('qs', questionSets)
   // async function handleRowClick(id, index) {
   //   setExpandedRow(index === expandedRow ? null : index);
   //   if (index !== expandedRow) {
@@ -191,7 +191,7 @@ const HomePage = () => {
           );
         }
       }
-      
+
     } catch (error) {
       if (error.status == 403) {
         localStorage.removeItem("user");
@@ -204,7 +204,7 @@ const HomePage = () => {
     }
   }
 
-   // console.log(changedQSet);
+  // console.log(changedQSet);
   const handleNavigate = (set) => {
     navigate(`/quiz/students`, { state: { set: set } });
   };
@@ -229,13 +229,13 @@ const HomePage = () => {
   // );
 
   const filteredData = Array.isArray(questionSets)
-  ? questionSets.filter((quiz) =>
+    ? questionSets.filter((quiz) =>
       quiz?.title?.toLowerCase().includes(searchQuery) ||
       quiz?.short_desc?.toLowerCase().includes(searchQuery) ||
       quiz?.tags?.toLowerCase().includes(searchQuery) ||
       quiz?.author?.toLowerCase().includes(searchQuery)
     )
-  : [];
+    : [];
 
   const handleStatusChange = async (qSetId, checked) => {
     try {
@@ -243,7 +243,7 @@ const HomePage = () => {
         const res = await API.put(
           `/api/questionset/update/status?orgid=${orgid}`,
           {
-            status_id:checked, id:qSetId
+            status_id: checked, id: qSetId
           },
           {
             headers: {
@@ -255,10 +255,10 @@ const HomePage = () => {
         if (res.status == 200) {
           setQuestionSets((prev) =>
             prev.map((qSet) =>
-              qSet.id == qSetId ? { ...qSet, status_id:checked } : qSet
+              qSet.id == qSetId ? { ...qSet, status_id: checked } : qSet
             )
           );
-          showToast("success",'Status Saved Successfully!')
+          showToast("success", 'Status Saved Successfully!')
         }
       }
       // Refresh question sets or update the current state
@@ -374,22 +374,22 @@ const HomePage = () => {
         </div>
       </TableCell>
       <TableCell>
-      <Switch
-              checked={set.status_id}
-              onChange={(e) => handleStatusChange(set.id, e.target.checked)}
-              inputProps={{ "aria-label": "controlled" }}
-            />
+        <Switch
+          checked={set.status_id}
+          onChange={(e) => handleStatusChange(set.id, e.target.checked)}
+          inputProps={{ "aria-label": "controlled" }}
+        />
       </TableCell>
     </>
   );
 
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Preloader />
       <MetaComponent meta={metadata} />
       <Header userRole={userRole} />
 
-      <div className="content-wrapper js-content-wrapper overflow-hidden w-100">
+      <div className="content-wrapper js-content-wrapper overflow-hidden w-100" style={{ flex: 1 }}>
         {questionSets.length > 0 ? (
           // <div className="table-responsive">
           //    <table className="custom-table">
@@ -541,44 +541,44 @@ const HomePage = () => {
               renderRowCells={renderRowCells}
             /> */}
             <div
-                className="header-search__field position-relative d-flex align-items-center rounded-5 mt-10"
-                style={{ height: "40px", width: "300px" }}
-              >
-                <SearchIcon
-                  className="position-absolute ms-3 text-muted"
-                  style={{ fontSize: "20px" }}
-                />
-                <input
-                  required
-                  type="text"
-                  className="form-control ps-5 pe-5 text-18 lh-12 text-dark-1 fw-500 w-100"
-                  placeholder="Search..."
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                />
-                {searchQuery && (
-                  <CancelIcon
-                    className="position-absolute end-0 me-3 text-muted"
-                    fontSize="medium"
-                     onClick={()=> setSearchQuery('')} 
-                    style={{ cursor: "pointer" }}
-                  />
-                )}
-              </div>
-              {searchQuery && filteredData.length <= 0 ? (
-                <h4 className="no-content text-center">
-                  It looks a bit empty here! 🌟 No fields matched!
-                </h4>
-              ) : (
-                <CommonTable
-                  columns={columns}
-                  getRowId={getRowId}
-                  renderRowCells={renderRowCells}
-                  fetchData={getQuestionSets}
-                  searchQuery={searchQuery}
-                  // tableData={filteredData.length > 0 ? filteredData : questionSets}
+              className="header-search__field position-relative d-flex align-items-center rounded-5 mt-10"
+              style={{ height: "40px", width: "300px" }}
+            >
+              <SearchIcon
+                className="position-absolute ms-3 text-muted"
+                style={{ fontSize: "20px" }}
+              />
+              <input
+                required
+                type="text"
+                className="form-control ps-5 pe-5 text-18 lh-12 text-dark-1 fw-500 w-100"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+              {searchQuery && (
+                <CancelIcon
+                  className="position-absolute end-0 me-3 text-muted"
+                  fontSize="medium"
+                  onClick={() => setSearchQuery('')}
+                  style={{ cursor: "pointer" }}
                 />
               )}
+            </div>
+            {searchQuery && filteredData.length <= 0 ? (
+              <h4 className="no-content text-center">
+                It looks a bit empty here! 🌟 No fields matched!
+              </h4>
+            ) : (
+              <CommonTable
+                columns={columns}
+                getRowId={getRowId}
+                renderRowCells={renderRowCells}
+                fetchData={getQuestionSets}
+                searchQuery={searchQuery}
+              // tableData={filteredData.length > 0 ? filteredData : questionSets}
+              />
+            )}
           </div>
         ) : (
           <h4 className="no-content text-center">
@@ -588,8 +588,9 @@ const HomePage = () => {
           </h4>
         )}
 
-        <FooterOne />
+
       </div>
+      <FooterOne />
     </div>
   );
 };

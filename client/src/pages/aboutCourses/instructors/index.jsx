@@ -16,15 +16,16 @@ const metadata = {
 export default function InstractorSinglePage() {
   let params = useParams();
   return (
-    <div className="main-content  ">
+    <div className="main-content  " style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <MetaComponent meta={metadata} />
       <Preloader />
       <Header />
-      <div className="content-wrapper  js-content-wrapper overflow-hidden">
+      <div className="content-wrapper  js-content-wrapper overflow-hidden" style={{ flex: 1 }}>
         <PageLinks />
         <InstractorSingle id={params.id} />
-        <FooterOne />
+      
       </div>
+        <FooterOne />
     </div>
   );
 }

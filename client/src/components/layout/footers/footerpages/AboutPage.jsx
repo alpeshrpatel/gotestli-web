@@ -19,12 +19,12 @@ export default function AboutPage() {
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
   return (
-    <div className="main-content  ">
+    <div className="main-content" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <MetaComponent meta={metadata} />
       <Preloader />
 
       <Header userRole={userRole}/>
-      <div className="content-wrapper js-content-wrapper overflow-hidden w-100">
+      <div className="content-wrapper js-content-wrapper overflow-hidden w-100" style={{ flex: 1 }}>
         {/* <PageLinks /> */}
         <About />
         <WhyQuiz />
@@ -33,8 +33,9 @@ export default function AboutPage() {
         <Instructors />
         <Brands /> */}
 
-        <FooterOne />
+       
       </div>
+       <FooterOne />
     </div>
   );
 }

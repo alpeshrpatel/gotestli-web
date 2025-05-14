@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BootstrapTooltip } from "../common/Tooltip";
 import { showToast } from "@/utils/toastService";
+import FooterOne from "../layout/footers/FooterOne";
 // import axios from "axios";
 
 const MakeQuestionSet = () => {
@@ -540,18 +541,19 @@ const MakeQuestionSet = () => {
   // console.log('total records',totalRecords);
   // console.log('last sdgsg',filteredFromAll.slice(indexOfFirstRecord, indexOfLastRecord));
   return (
-    <>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Header userRole={userRole} />
       <div
         className="mx-auto"
         style={{
-          marginTop: "100px",
+          marginTop: "130px",
           width: "80%",
           padding: "30px",
           backgroundColor: "#bfdeee",
           borderRadius: "10px",
           boxShadow:
             "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);",
+            marginBottom:'20px',
         }}
       >
         <Typography
@@ -862,7 +864,8 @@ const MakeQuestionSet = () => {
           onCloseModal={onCloseModal}
         />
       </Modal>
-    </>
+      <FooterOne />
+    </div>
   );
 };
 

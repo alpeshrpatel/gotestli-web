@@ -140,10 +140,10 @@ const UploadedFiles = () => {
   );
 
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Preloader />
       <Header userRole={userRole} />
-      <div className="content-wrapper js-content-wrapper overflow-hidden w-100" >
+      <div className="content-wrapper js-content-wrapper overflow-hidden w-100" style={{ flex: 1 }}>
         {/* <Breadcrumbs
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"

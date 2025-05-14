@@ -48,10 +48,10 @@ const OrgOnboardingForm = () => {
     };
 
     return (
-        <div>
+        <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <Preloader />
             <Header userRole={userRole} />
-            <div className="content-wrapper js-content-wrapper overflow-hidden w-100 " style={{ marginTop: '150px' }}>
+            <div className="content-wrapper js-content-wrapper overflow-hidden w-100 " style={{ marginTop: '150px',flex: 1 }}>
                 <div className="row align-items-center mx-5">
                     {/* Left Section - Description */}
                     <div className="col-md-6 text-center text-md-start">
@@ -212,9 +212,9 @@ const OrgOnboardingForm = () => {
                         </form>
                     </div>
                 </div>
-                <FooterOne />
+              
             </div>
-
+              <FooterOne />                    
         </div>
 
     );

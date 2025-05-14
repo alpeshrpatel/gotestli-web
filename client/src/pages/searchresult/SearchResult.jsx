@@ -90,7 +90,7 @@ export default function SearchResult() {
   let shouldRenderPagination = filteredQuestions.length > 6;
 
   return (
-    <>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       {/* <section className="page-header -type-1">
         <div className="container-fluid ">
           <div className="page-header__content">
@@ -114,9 +114,9 @@ export default function SearchResult() {
       <Header userRole={userRole} />
       <section
         className="layout-pt-md layout-pb-lg container-fluid w-75 "
-        style={{ paddingTop: "120px" }}
+        style={{ paddingTop: "120px"}}
       >
-        <div className="container-fluid">
+        <div className="container-fluid" style={{flex: 1}}>
           <div className="row x-gap-60">
             <div className="col-lg-3">
               <div className="sidebar -shop">
@@ -358,10 +358,12 @@ export default function SearchResult() {
             </div>
           </div>
         </div>
+       
         {/* <div style={{ position: 'sticky', top:'100vh' }}>
-          <FooterOne />
+         
         </div> */}
       </section>
-    </>
+        <FooterOne />
+    </div>
   );
 }

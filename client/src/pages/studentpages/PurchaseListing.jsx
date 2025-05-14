@@ -1,5 +1,6 @@
 import Preloader from "@/components/common/Preloader";
 import CourceCard from "@/components/homes/courseCards/CourseCard";
+import FooterOne from "@/components/layout/footers/FooterOne";
 import Header from "@/components/layout/headers/Header";
 import { API } from "@/utils/AxiosInstance";
 import React, { useEffect, useState } from "react";
@@ -40,11 +41,11 @@ const PurchaseListing = () => {
     getPurchases();
   }, []);
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Header userRole={userRole} />
       <div
         className="content-wrapper js-content-wrapper overflow-hidden"
-        style={{ marginTop: "14vh" }}
+        style={{ marginTop: "14vh", flex:1 }}
       >
         <h2 className=" mt-50 text-center">Your Purchases</h2>
         <div className="pt-40 m-auto row y-gap-30 w-75 pl-0 pr-0">
@@ -68,6 +69,7 @@ const PurchaseListing = () => {
           )}
         </div>
       </div>
+      <FooterOne />
     </div>
   );
 };

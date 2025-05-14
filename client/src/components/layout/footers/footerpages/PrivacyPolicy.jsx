@@ -14,25 +14,25 @@ const PrivacyPolicy = () => {
     const user = JSON.parse(localStorage.getItem("user")) || "";
     const userRole = user.role;
     return (
-        <div className="main-content">
+        <div className="main-content" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <MetaComponent meta={metadata} />
             <Preloader />
 
             <Header userRole={userRole} />
-            <div className="content-wrapper js-content-wrapper overflow-hidden w-100 " style={{ marginTop: '6%' }}>
+            <div className="content-wrapper js-content-wrapper overflow-hidden w-100 " style={{ marginTop: '6%',flex: 1 }}>
                 {/* <PageLinks /> */}
                 <div className="container-fluid my-5">
                     <div className="row">
                         <div className="col-lg-8 offset-lg-2">
                             <h1 className="text-center mb-4">Privacy Policy of GoTestli</h1>
                             <div
-                    className="mb-5 rounded mx-auto"
-                    style={{
-                      height: "1px",
-                      width: "60px",
-                      border: "3px solid #5856d6",
-                    }}
-                  ></div>
+                                className="mb-5 rounded mx-auto"
+                                style={{
+                                    height: "1px",
+                                    width: "60px",
+                                    border: "3px solid #5856d6",
+                                }}
+                            ></div>
 
                             <p>At GoTestli, accessible from our platform, we are committed to protecting your personal information and your right to privacy. This Privacy Policy document contains types of information that is collected and recorded by GoTestli and how we use it. This policy aligns with the data protection regulations in the United States and India.</p>
 
@@ -99,11 +99,11 @@ const PrivacyPolicy = () => {
 
                             <h2>10. Contact Us</h2>
                             <p>If you have any questions or concerns regarding this Privacy Policy or our practices, feel free to contact us at <span style={{
-                                    textDecoration: "underline",
-                                    color: "blue",
-                                    textAlign: "center",
-                                    fontSize:'16px'
-                                }}>
+                                textDecoration: "underline",
+                                color: "blue",
+                                textAlign: "center",
+                                fontSize: '16px'
+                            }}>
                                 <a href="mailto:gotestli07@gmail.com" >gotestli07@gmail.com</a>  </span> .</p>
 
                         </div>
@@ -114,8 +114,9 @@ const PrivacyPolicy = () => {
             <Instructors />
             <Brands /> */}
 
-                <FooterOne />
+
             </div>
+            <FooterOne />
         </div>
 
     );

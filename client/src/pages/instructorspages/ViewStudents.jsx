@@ -376,10 +376,10 @@ const ViewStudents = () => {
     </>
   );
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Preloader />
       <Header userRole={userRole} />
-      <div className="content-wrapper js-content-wrapper overflow-hidden w-100">
+      <div className="content-wrapper js-content-wrapper overflow-hidden w-100" style={{ flex: 1 }}>
         <Breadcrumbs
           aria-label="breadcrumb"
           sx={{ marginTop: "130px", display: "flex", justifyContent: "center" }}

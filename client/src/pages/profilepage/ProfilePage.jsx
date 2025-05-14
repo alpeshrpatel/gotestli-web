@@ -29,6 +29,7 @@ import { Modal } from "react-responsive-modal";
 import AvatarModal from "./AvatarModal";
 import { BootstrapTooltip } from "@/components/common/Tooltip";
 import { showToast } from "@/utils/toastService";
+import FooterOne from "@/components/layout/footers/FooterOne";
 
 const ProfilePage = () => {
   const [usersData, setUsersData] = useState({});
@@ -76,9 +77,9 @@ const ProfilePage = () => {
 
       const userTags = data.tags
         ? data.tags.split(",").map((tag) => {
-            const [id, title] = tag.split(":");
-            return { id, title };
-          })
+          const [id, title] = tag.split(":");
+          return { id, title };
+        })
         : [];
       setDefaultTags(userTags);
     }
@@ -175,10 +176,10 @@ const ProfilePage = () => {
         profile_pic: avatar,
       });
       if (res.status == 200) {
-        showToast("success","Avatar updated Successfully!");
+        showToast("success", "Avatar updated Successfully!");
       }
     } catch (error) {
-      showToast("error",`Error: ${error} !`);
+      showToast("error", `Error: ${error} !`);
     }
   };
 
@@ -190,10 +191,10 @@ const ProfilePage = () => {
         profile_pic: "",
       });
       if (res.status == 200) {
-        showToast("success","Avatar deleted Successfully!");
+        showToast("success", "Avatar deleted Successfully!");
       }
     } catch (error) {
-      showToast("error",`Error: ${error} !`);
+      showToast("error", `Error: ${error} !`);
     }
   };
 
@@ -221,7 +222,7 @@ const ProfilePage = () => {
       // }
 
       if (res.status == 200) {
-        showToast("success","User updated Successfully!");
+        showToast("success", "User updated Successfully!");
       }
     } catch (error) {
       throw error;
@@ -272,7 +273,7 @@ const ProfilePage = () => {
   // console.log(badgesData);
   const theme = useTheme();
   return (
-    <>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Header userRole={userRole} />
       <Box
         sx={{
@@ -282,8 +283,9 @@ const ProfilePage = () => {
           p: 3,
           marginTop: "13vh",
           gap: "20px",
+          flex: 1,
         }}
-        // style={{ backgroundColor: theme.palette.background.default }}
+      // style={{ backgroundColor: theme.palette.background.default }}
       >
         <Modal open={open} onClose={onCloseAvatarModal} center>
           <AvatarModal onAvatarSelect={handleAvatarSelect} />
@@ -720,9 +722,8 @@ const ProfilePage = () => {
             </div>
           </Box>
           <button
-            className={`button -sm px-20 py-20 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm mt-4 mx-auto ${
-              isSaveVisible ? "" : "disabled opacity-50"
-            }`}
+            className={`button -sm px-20 py-20 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm mt-4 mx-auto ${isSaveVisible ? "" : "disabled opacity-50"
+              }`}
             onClick={isSaveVisible ? handleUpdateData : null}
             style={{
               cursor: isSaveVisible ? "pointer" : "not-allowed",
@@ -939,8 +940,10 @@ const ProfilePage = () => {
             </div>
           </div>
         </div>
+
       </Box>
-    </>
+      <FooterOne />
+    </div>
   );
 };
 

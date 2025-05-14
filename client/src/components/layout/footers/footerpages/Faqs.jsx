@@ -17,16 +17,17 @@ export default function Faqs() {
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
   return (
-    <div className="main-content  ">
+    <div className="main-content  " style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <MetaComponent meta={metadata} />
 
       <Preloader />
 
       <Header userRole={userRole}/>
-      <div className="content-wrapper js-content-wrapper overflow-hidden">
+      <div className="content-wrapper js-content-wrapper overflow-hidden" style={{ flex: 1 }}>
         <Faq />
-        <FooterOne />
+      
       </div>
+        <FooterOne />
     </div>
   );
 }
