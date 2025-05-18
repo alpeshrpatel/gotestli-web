@@ -120,7 +120,7 @@ const UploadedFiles = () => {
         {file.status == 0
           ? "Not Started"
           : file.status == 1
-          ? "Completed"
+          ? ( (file.error_rows && file.error_rows?.split(",")?.length) ? (<span style={{color:'red',fontWeight:500}}>Failed</span>) : 'Completed') 
           : "In Progress"}
       </TableCell>
       <TableCell align="center">

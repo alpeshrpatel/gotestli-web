@@ -60,6 +60,10 @@ const StudyMaterialMegamenu = ({ allClasses }) => {
         },
     ];
 
+      const closeMegaMenu = () => {
+        setExploreActive(false);
+    };
+
     return (
         <div className={`${allClasses ? allClasses : ""} position-relative`}>
             <Link
@@ -99,6 +103,7 @@ const StudyMaterialMegamenu = ({ allClasses }) => {
                                                         className={`text-dark text-decoration-none d-block py-1 ${pathname === link ? "active" : ""
                                                             }`}
                                                         style={{ fontSize: "14px" }}
+                                                        onClick={closeMegaMenu}
                                                     >
                                                         {item}
                                                     </Link>
