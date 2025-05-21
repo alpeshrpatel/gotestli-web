@@ -216,7 +216,7 @@ function App() {
     const toastOptions = {
       position: "bottom-center",
       theme: "dark",
-      autoClose: type === "success" ? 3000 : false,
+      autoClose: type === "success" ? 3000 : 6000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,

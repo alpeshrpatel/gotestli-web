@@ -504,6 +504,27 @@ export default function AdminDashboardOne() {
     return "80%"; // Small screens
   };
 
+  const handleStartCronJob = async () => {
+    try {
+      const response = await API.post(
+        `/api/cron/job`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
+      if (response.status == 200) {
+        showToast('success', 'Cron job started successfully!')
+      }
+    } catch (error) {
+      console.log(error)
+      showToast('error', error.message)
+    }
+  }
+
   return (
     <div className=" w-100" style={{ marginTop: "90px" }}>
       <Modal
@@ -663,6 +684,16 @@ export default function AdminDashboardOne() {
           <div className="col-auto">
             <h1 className="text-30 lh-12 fw-700">Dashboard</h1>
             <div className="mt-10">Welcome to Admin Dashboard.</div>
+          </div>
+          <div>
+          <button
+            className={`button -sm px-12 py-20 -outline-green-5 text-green-5 text-16 fw-bolder lh-sm  `}
+            // disabled={!selectedRole}
+            // onClick={onOpenModal}
+            onClick={handleStartCronJob}
+          >
+            Start Cron Job
+          </button>
           </div>
 
           {
