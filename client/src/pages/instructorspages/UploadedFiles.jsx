@@ -13,6 +13,7 @@ import { TableCell } from "@mui/material";
 import CommonTable from "@/components/common/CommonTable";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SearchIcon from "@mui/icons-material/Search";
+import { BootstrapTooltip } from "@/components/common/Tooltip";
 // import Breadcrumbs from "@mui/material/Breadcrumbs";
 // import Typography from "@mui/material/Typography";
 // import Link from "@mui/material/Link";
@@ -37,7 +38,7 @@ const UploadedFiles = () => {
   const [uploadedData, setUploadedData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
-   // console.log(location);
+  // console.log(location);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user")) || "";
@@ -52,9 +53,9 @@ const UploadedFiles = () => {
     try {
       if (token) {
         let url = ''
-        if(searchQuery){
+        if (searchQuery) {
           url = `/api/question/files/${userId}?start=${start}&end=${end}&search=${encodeURIComponent(searchQuery)}&orgid=${orgid}`;
-        }else{
+        } else {
           url = `/api/question/files/${userId}?start=${start}&end=${end}&orgid=${orgid}`;
         }
         const { data } = await API.get(url, {
@@ -62,13 +63,13 @@ const UploadedFiles = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-         // console.log(data);
+        // console.log(data);
         setUploadedData(data.res);
         const theNewObj = {
           data: data.res,
           totalRecords: data.totalRecords
         };
-    
+
         console.log('Final theNewObj:', theNewObj);
         return theNewObj;
       }
@@ -85,9 +86,9 @@ const UploadedFiles = () => {
   }
   useEffect(() => {
     // const author = auth.currentUser.displayName;
-   
+
     getUploads();
-  }, [userId,searchQuery]);
+  }, [userId, searchQuery]);
 
   async function handleDownload(fileName) {
     await HandleDownload("uploadedfile", fileName);
@@ -103,7 +104,7 @@ const UploadedFiles = () => {
     //   value ? value.toString().toLowerCase().includes(searchQuery) : false
     // )
     quiz.file_name.toLowerCase().includes(searchQuery) ||
-    quiz?.file_path.toLowerCase().includes(searchQuery)
+      quiz?.file_path.toLowerCase().includes(searchQuery)
       ? true
       : false
   );
@@ -120,15 +121,38 @@ const UploadedFiles = () => {
         {file.status == 0
           ? "Not Started"
           : file.status == 1
-          ? ( (file.error_rows && file.error_rows?.split(",")?.length) ? (<span style={{color:'red',fontWeight:500}}>Failed</span>) : 'Completed') 
-          : "In Progress"}
+            ? ((file.error_rows && file.error_rows?.split(",")?.length) ? (<span style={{ color: 'red', fontWeight: 500 }}>Failed</span>) : 'Completed')
+            : "In Progress"}
       </TableCell>
       <TableCell align="center">
         {(file.correct_rows && file.correct_rows?.split(",")?.length) || 0}
       </TableCell>
-      <TableCell align="center">
-        {(file.error_rows && file.error_rows?.split(",")?.length) || 0}
-      </TableCell>
+      {
+        (file.error_rows && file.error_rows.split(",").length > 0) ? (
+          <BootstrapTooltip
+            title={
+              <div>
+                <strong>Detailed Error Log:</strong>
+                <ul style={{ margin: 0, paddingLeft: "20px" }}>
+                  {file.error_log?.map((err, i) => (
+                    <li key={i}>{err}</li>
+                  ))}
+                </ul>
+              </div>
+            }
+            arrow
+            placement="top"
+          >
+            <TableCell align="center" style={{ cursor: "pointer", color: "#d32f2f" }}>
+              {file.error_rows.split(",").length}
+            </TableCell>
+          </BootstrapTooltip>
+        ) : (
+          <TableCell align="center">
+            0
+          </TableCell>
+        )
+      }
       <TableCell align="center">
         <FontAwesomeIcon
           icon={faFileArrowDown}
@@ -243,7 +267,7 @@ const UploadedFiles = () => {
                 renderRowCells={renderRowCells}
                 fetchData={getUploads}
                 searchQuery={searchQuery}
-                // tableData={filteredData.length > 0 ? filteredData : uploadedData}
+              // tableData={filteredData.length > 0 ? filteredData : uploadedData}
               />
             )}
           </div>
