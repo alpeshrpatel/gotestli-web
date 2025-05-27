@@ -80,6 +80,12 @@ export default function MobileMenu({
           </div>
         )}
 
+         {/* <li className="menu-item-has-children d-flex align-items-center text-black"> */}
+
+                {/* <StudyMaterialMegamenu /> */}
+
+              {/* </li> */}
+
         {showMenu && activeMobileMenu && (
           <div className="mobileMenu text-dark-1">
             {/* {menuList.map((elm, i) => {
@@ -199,15 +205,11 @@ export default function MobileMenu({
               className='submenuOne'
               style={{ paddingLeft: 0, display: "flex", gap: "15px" }}
             >
-              
+             
               {
                 userRole == 'student' && (
                   <>
-                  <li className="menu-item-has-children d-flex align-items-center text-black">
 
-                <StudyMaterialMegamenu />
-
-              </li>
                     <li className="menu-item-has-children " style={{ display: 'flex', flexDirection: 'column', gap: '4vh' }}>
                       <Link
                         data-barba

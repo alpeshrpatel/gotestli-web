@@ -54,6 +54,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   const userRole = user?.role;
   const org = JSON.parse(localStorage.getItem("org")) || "";
   let orgid = org?.id || 0;
+  let totalMarks = 0;
 
   useEffect(() => {
     async function getRating() {
@@ -177,8 +178,17 @@ export default function CourceCard({ view, search = null, role, data, index }) {
               },
             }
           );
-
+          console.log(response.data);
           setQuestionsSet(response.data);
+          if (response?.data && response?.data.res?.length > 0) {
+            console.log(totalMarks)
+             totalMarks = response.data.res.reduce(
+              (acc, question) => acc + question.marks,
+              0
+            );
+
+          }
+
         }
       } catch (error) {
         if (error.status == 403) {
@@ -259,6 +269,8 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   //   { stars: 2, percentage: 0 },
   //   { stars: 1, percentage: 0 },
   // ];
+  console.log('data: ', data)
+  console.log('questionset: ', questionSet)
   return (
     <>
       <Modal open={open} onClose={onCloseModal} center>
@@ -268,13 +280,13 @@ export default function CourceCard({ view, search = null, role, data, index }) {
           questionSet={questionSet}
           data={data}
           onCloseModal={onCloseModal}
+          totalMarks={totalMarks}
         />
       </Modal>
 
       <div
-        className={`col-lg-3 col-md-6 pointer ${
-          search ? `col-lg-4 col-md-6 ` : `col-lg-3 col-md-6`
-        } ${view == `list` && `col-lg-12`}`}
+        className={`col-lg-3 col-md-6 pointer ${search ? `col-lg-4 col-md-6 ` : `col-lg-3 col-md-6`
+          } ${view == `list` && `col-lg-12`}`}
         onClick={onOpenModal}
       >
         {view == "card" ? (
@@ -289,7 +301,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                     <div
                       className="text-17 lh-15 fw-500 text-dark-1 text-truncate"
                       style={{ maxWidth: "200px" }}
-                      // data-toggle="tooltip" data-placement="top" title={data.title}
+                    // data-toggle="tooltip" data-placement="top" title={data.title}
                     >
                       <BootstrapTooltip title={data.title}>
                         {data.title}
@@ -368,20 +380,20 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                   activeColor="#ffd700"
                   emptyColor="#d3d3d3"
                 /> */}
-                { !data.is_demo && !(purchasedQSet.length > 0 && purchasedQSet?.some((item) => item?.questionset_id == data.id)) ? (
+                {!data.is_demo && !(purchasedQSet.length > 0 && purchasedQSet?.some((item) => item?.questionset_id == data.id)) ? (
                   <BootstrapTooltip
                     title={"Purchase This Amazing QuestionSet to Attend it!"}
                   >
                     <div className="fs-2">🔒</div>
                   </BootstrapTooltip>
                 ) : (
-                   purchasedQSet.length > 0 && purchasedQSet?.some((item) => item?.questionset_id == data.id) ? (<div className="fs-2">🔓</div> ) : ""
+                  purchasedQSet.length > 0 && purchasedQSet?.some((item) => item?.questionset_id == data.id) ? (<div className="fs-2">🔓</div>) : ""
                 )}
-                 {
-                   !data.is_demo && !(purchasedQSet.length > 0 && purchasedQSet?.some((item) => item?.questionset_id == data.id)) ?(
-                     <button className="button -sm px-24 py-10 -green-5 mt-2 text-white fw-500  text-14 mx-auto" onClick={() => navigate("/buy/questionset", { state: { qset: data } })}>Buy</button>
-                   ) : ""
-                 }
+                {
+                  !data.is_demo && !(purchasedQSet.length > 0 && purchasedQSet?.some((item) => item?.questionset_id == data.id)) ? (
+                    <button className="button -sm px-24 py-10 -green-5 mt-2 text-white fw-500  text-14 mx-auto" onClick={() => navigate("/buy/questionset", { state: { qset: data } })}>Buy</button>
+                  ) : ""
+                }
               </div>
               <CardContent>
                 <BootstrapTooltip title={data.short_desc}>
@@ -409,9 +421,8 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                 )}
 
                 <div
-                  className={`d-flex items-center gap-2 ${
-                    role == "instructor" ? `mt-2` : `mt-0`
-                  } `}
+                  className={`d-flex items-center gap-2 ${role == "instructor" ? `mt-2` : `mt-0`
+                    } `}
                 >
                   <Typography
                     variant="caption"

@@ -28,6 +28,7 @@ const ComprehensiveType = ({
   index,
   onNext,
   onPrevious,
+  marks = 0, isNegative = 0, negativeMarks = 0,
 }) => {
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState([]);
@@ -483,6 +484,26 @@ const ComprehensiveType = ({
               </div>
             </div>
             <hr />
+             <div className="alert alert-info py-2 px-3 mb-3" role="alert">
+              <strong>Instructions:</strong> Please read each question carefully. You can select multiple answers if applicable. Questions may carry negative marking.
+            </div>
+
+
+            <div className="d-flex justify-content-between mb-3 px-2">
+              <h6>
+                Marks:{" "}
+                <span className=" bg-success px-2 py-1 text-white" style={{ borderRadius: '5px' }}>
+                  {marks}
+                </span>
+              </h6>
+              <h6>
+                Negative Marks:{" "}
+                <span className=" bg-danger px-2 py-1 text-white" style={{ borderRadius: '5px' }}>
+
+                  {isNegative ? negativeMarks : 0}
+                </span>
+              </h6>
+            </div>
             <h6> <strong>Note.</strong> Read this paragraph carefully and attempt below questions.</h6>
             <Typography className="card-text text-center mt-2 mb-2 " color='InfoText' variant='h8'>
             {paragraph}

@@ -1,11 +1,12 @@
 import { links } from "@/data--backup/links";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
 const StudyMaterialMegamenu = ({ allClasses }) => {
     const [exploreActive, setExploreActive] = useState(false);
     const { pathname } = useLocation();
+    const linkRef = useRef(null);
 
     const menuData = [
         {
@@ -58,18 +59,56 @@ const StudyMaterialMegamenu = ({ allClasses }) => {
                 },
             ],
         },
+        {
+            title: "Web Development",
+            subItems: [
+                {
+                    title: "Frontend Frameworks",
+                    subItems: ["React JS", "Angular", "Vue JS", "Next JS"],
+                    links: ['/cheatsheet/web/reactjs', '/cheatsheet/web/angular', '/cheatsheet/web/vuejs', '/cheatsheet/web/nextjs'],
+
+                },
+                {
+                    title: "Backend Frameworks",
+                    subItems: ["Node JS", "Express JS", "Django", "Flask", "FastAPI"],
+                    links: ['/cheatsheet/web/nodejs', '/cheatsheet/web/expressjs', '/cheatsheet/web/django', '/cheatsheet/web/flask', '/cheatsheet/web/fastapi'],
+
+                },
+            ],
+        },
     ];
 
-      const closeMegaMenu = () => {
+    useEffect(() => {
+        const handleClick = (event) => {
+            if (linkRef.current && linkRef.current.contains(event.target)) {
+                // Click originated from the link itself, ignore
+                return;
+            }
+
+            setExploreActive((prev) => {
+                if (prev) {
+                    return false;
+                }
+                return prev;
+            });
+        };
+        window.addEventListener('click', handleClick);
+        return () => {
+            window.removeEventListener('click', handleClick);
+        };
+    }, []);
+
+    const closeMegaMenu = () => {
         setExploreActive(false);
     };
 
     return (
         <div className={`${allClasses ? allClasses : ""} position-relative`}>
             <Link
+                ref={linkRef}
                 to="#"
                 onClick={() => setExploreActive((prev) => !prev)}
-                className="d-flex align-items-center text-white text-nowrap" style={{ fontSize: "14px", gap:'5px' }}
+                className="d-flex align-items-center text-white text-nowrap" style={{ fontSize: "14px", gap: '5px', color: 'black' }}
             >
                 <i className="icon icon-online-learning mr-2"></i>
                 Study Material

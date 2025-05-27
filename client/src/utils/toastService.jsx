@@ -16,7 +16,7 @@ export const showToast = (type,message) => {
   const toastOptions = {
     position: "bottom-center",
     theme: "dark",
-    autoClose: type === "success" ? 1000 : false, 
+    autoClose: type === "success" ? 2000 : 3000, 
     hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: false,

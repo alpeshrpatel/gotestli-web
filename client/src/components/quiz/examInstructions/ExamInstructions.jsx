@@ -44,7 +44,7 @@ import QuizReport from "../QuizReport";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 
-const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
+const ExamInstructions = ({ id, time, questionSet, data, onCloseModal,totalMarks }) => {
   const [startTestResultData, setStartTestResultData] = useState([]);
   const [inProgressQuizId, setInProgressQuizId] = useState();
   const [setQuestionsSet] = useState([]);
@@ -83,6 +83,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
   let lastAttemptedQuestion;
   const org = JSON.parse(localStorage.getItem("org")) || "";
   let orgid = org?.id || 0;
+ 
 
   useEffect(() => {
     // async function getPendingQuiz() {
@@ -172,7 +173,22 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
       }
       getFollowersData();
     }
+//     function calculateTotalMarks() {
+//     if (questionSet && questionSet.length > 0) {
+//       const totalMarks = questionSet.reduce(
+//         (acc, question) => acc + question.marks,
+//         0
+//       );
+//       return totalMarks;
+//     }
+//     return 0;
+//   }
+
+//  totalMarks = calculateTotalMarks();
+
   }, []);
+
+  console.log('totalMarks:',totalMarks)
 
   async function getLastAttemptedQuestionId(id) {
     if (id) {
@@ -185,9 +201,9 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
             },
           }
         );
-        
+
         console.log("last attempt:", data);
-       
+
         const nonAttemptedIndex = data
           .reverse()
           .findIndex((element) => !element.answer);
@@ -594,7 +610,10 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
                         />
                       </div>
                       <div style={{ marginLeft: "10px" }}>
-                        <Typography variant="h6">{data.totalmarks}</Typography>
+                        {/* <Typography variant="h6">{data.totalmarks}</Typography> */}
+                        <Typography variant="h6">
+                          {totalMarks}
+                        </Typography>
                         <Typography variant="body2">Max. Marks</Typography>
                       </div>
                     </div>
@@ -803,11 +822,11 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal }) => {
           )}
         </div>
       )}
-      <Modal open={open} onClose={onCloseReportModal} center  styles={{
-          modal: {
-            width: getModalWidth,
-          },
-        }}>
+      <Modal open={open} onClose={onCloseReportModal} center styles={{
+        modal: {
+          width: getModalWidth,
+        },
+      }}>
         <QuizReport attemptId={selectedAttemptId} />
       </Modal>
     </div>

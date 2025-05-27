@@ -126,7 +126,7 @@ console.log(errorMessage)
                 {
                   errorMessage ? (
                     <div className=" text-white p-3 rounded-lg text-center font-medium" style={{ backgroundColor: "#FF8282", borderRadius: '20px', marginBottom: '20px' }}>
-                        Authentication Error: You attempted to log in as a ${selectedRole}, but your account is not registered as a ${selectedRole}. Please select the correct role and try again.
+                        Authentication Error: You attempted to log in as a {selectedRole}, but your account is not registered as a {selectedRole}. Please select the correct role and try again.
                     </div>
                   ) : (
                     <div className=" text-white p-3 rounded-lg text-center font-medium" style={{ backgroundColor: "#877cf6", borderRadius: '20px', marginBottom: '20px' }}>

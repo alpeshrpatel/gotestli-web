@@ -24,7 +24,7 @@ import CodeEditorCheatSheet from './cheatsheetpages/CodeEditorCheatSheet';
 //   );
 // };
 
-const CheatSheetLayout = ({ title, description, sections }) => {
+const CheatSheetLayout = ({language='python', title, description, sections }) => {
   return (
     <div style={{
       backgroundColor: '#f7f9fc',
@@ -112,7 +112,7 @@ const CheatSheetLayout = ({ title, description, sections }) => {
                     overflowX: 'auto',
                     margin: 0
                   }}>
-                     <CodeEditorCheatSheet language="python" code={section.code} />
+                     <CodeEditorCheatSheet language={language} code={section.code} />
                     {/* <code>{section.code}</code> */}
                   </pre>
                 </div>
@@ -127,7 +127,7 @@ const CheatSheetLayout = ({ title, description, sections }) => {
           color: '#888888',
           fontSize: '14px'
         }}>
-          <p>Last updated: May 10, 2025</p>
+          <p>Last updated: May 23, 2025</p>
         </footer>
       </div>
     </div>

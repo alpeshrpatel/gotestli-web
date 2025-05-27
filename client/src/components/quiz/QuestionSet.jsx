@@ -225,6 +225,9 @@ const QuestionSet = () => {
             index={questionNumber}
             onNext={handleNextClick}
             onPrevious={handlePreviousClick}
+            marks={questions[questionNumber - 1].marks}
+            isNegative={questions[questionNumber - 1].is_negative}
+            negativeMarks={questions[questionNumber - 1].negative_marks}
           />
         ) : (
           questions[questionNumber - 1].question_type_id == "7" ? (
@@ -239,6 +242,9 @@ const QuestionSet = () => {
             index={questionNumber}
             onNext={handleNextClick}
             onPrevious={handlePreviousClick}
+             marks={questions[questionNumber - 1].marks}
+            isNegative={questions[questionNumber - 1].is_negative}
+            negativeMarks={questions[questionNumber - 1].negative_marks}
             />
           ): (
             <SingleChoice
@@ -252,6 +258,9 @@ const QuestionSet = () => {
             index={questionNumber}
             onNext={handleNextClick}
             onPrevious={handlePreviousClick}
+             marks={questions[questionNumber - 1].marks}
+            isNegative={questions[questionNumber - 1].is_negative}
+            negativeMarks={questions[questionNumber - 1].negative_marks}
           />
           )
           

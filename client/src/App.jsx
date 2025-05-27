@@ -151,6 +151,15 @@ import ClassificationCheatSheet from "./pages/cheatsheets/cheatsheetpages/Classi
 import ClusteringCheatSheet from "./pages/cheatsheets/cheatsheetpages/ClusteringCheatSheet";
 import DimensionalityReductionCheatSheet from "./pages/cheatsheets/cheatsheetpages/DimensionalityReductionCheatSheet";
 import CheatSheetHeaderFooterLayout from "./privateroutes/CheatsheetHeaderFooterLayout";
+import ReactJsCheatSheet from "./pages/cheatsheets/cheatsheetpages/ReactJsCheatSheet";
+import AngularJsCheatSheet from "./pages/cheatsheets/cheatsheetpages/AngularJsCheatSheet";
+import VueJsCheatSheet from "./pages/cheatsheets/cheatsheetpages/VeuJsCheatSheet";
+import NextJsCheatSheet from "./pages/cheatsheets/cheatsheetpages/NextJsCheatSheet";
+import NodeJsCheatSheet from "./pages/cheatsheets/cheatsheetpages/NodeJsCheatSheet";
+import ExpressJsCheatSheet from "./pages/cheatsheets/cheatsheetpages/ExpressJsCheatSheet";
+import DjangoCheatSheet from "./pages/cheatsheets/cheatsheetpages/DjangoCheatSheet";
+import FlaskCheatSheet from "./pages/cheatsheets/cheatsheetpages/FlaskCheatSheet";
+import FastApiCheatSheet from "./pages/cheatsheets/cheatsheetpages/FastApiCheatSheet";
 // import AppProvider from "./utils/AppContext";
 
 function App() {
@@ -335,6 +344,15 @@ function App() {
                   <Route path="/cheatsheet/ml/supervised/classification" element={<ClassificationCheatSheet />} />
                   <Route path="/cheatsheet/ml/unsupervised/clustering" element={<ClusteringCheatSheet />} />
                   <Route path="/cheatsheet/ml/unsupervised/dimensionality/reduction" element={<DimensionalityReductionCheatSheet />} />
+                  <Route path="/cheatsheet/web/reactjs" element={<ReactJsCheatSheet />} />
+                  <Route path="/cheatsheet/web/angular" element={<AngularJsCheatSheet />} />
+                  <Route path="/cheatsheet/web/vuejs" element={<VueJsCheatSheet />} />
+                  <Route path="/cheatsheet/web/nextjs" element={<NextJsCheatSheet />} />
+                  <Route path="/cheatsheet/web/nodejs" element={<NodeJsCheatSheet />} />
+                  <Route path="/cheatsheet/web/expressjs" element={<ExpressJsCheatSheet />} />
+                  <Route path="/cheatsheet/web/django" element={<DjangoCheatSheet />} />
+                  <Route path="/cheatsheet/web/flask" element={<FlaskCheatSheet />} />
+                  <Route path="/cheatsheet/web/fastapi" element={<FastApiCheatSheet />} />
                 </Route>
                 {/* Student Routes */}
                 {/* <Route path="/" element={
@@ -544,7 +562,7 @@ function App() {
 
             <ToastContainer
               position="bottom-center"
-              autoClose={false}
+              autoClose={true}
               hideProgressBar={false}
               newestOnTop={false}
               closeOnClick

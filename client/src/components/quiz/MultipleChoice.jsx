@@ -28,6 +28,7 @@ const MultipleChoice = ({
   index,
   onNext,
   onPrevious,
+  marks = 0, isNegative = false, negativeMarks = 0,
 }) => {
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState([]);
@@ -72,7 +73,7 @@ const MultipleChoice = ({
           navigate("/login");
           return;
         }
-         // console.log(error);
+        // console.log(error);
       }
     }
     getOptions();
@@ -90,7 +91,7 @@ const MultipleChoice = ({
                 },
               }
             );
-             // console.log(data[0]?.id);
+            // console.log(data[0]?.id);
             setUserResultId(data[0]?.id);
           }
         } catch (error) {
@@ -101,7 +102,7 @@ const MultipleChoice = ({
             navigate("/login");
             return;
           }
-           // console.log(error);
+          // console.log(error);
         }
       }
     }
@@ -113,7 +114,7 @@ const MultipleChoice = ({
       if (userResultId) {
         try {
           if (token) {
-             // console.log(userResultId);
+            // console.log(userResultId);
             const { data } = await API.get(
               `/api/userresultdetails/get/answers/userresult/${userResultId}/length/${questionSetLength}?orgid=${orgid}`,
               {
@@ -145,14 +146,14 @@ const MultipleChoice = ({
             navigate("/login");
             return;
           }
-           // console.log(error);
+          // console.log(error);
         }
       }
     }
     getAnswers();
   }, [userResultId, questionId, updatedStatus]);
 
-   // console.log(selectedOption);
+  // console.log(selectedOption);
   const findSelectedOption =
     selectedOption?.find((question) => question.id === questionId)
       ?.selectedOption || null;
@@ -179,7 +180,7 @@ const MultipleChoice = ({
         navigate("/login");
         return;
       }
-       // console.log(error);
+      // console.log(error);
     }
   }
 
@@ -205,111 +206,111 @@ const MultipleChoice = ({
     return newStatus;
   }
 
-//   const handleOptionClick = async (option) => {
-//     const findQuestion = selectedOption.find(
-//       (question) => questionId === question.id
-//     );
+  //   const handleOptionClick = async (option) => {
+  //     const findQuestion = selectedOption.find(
+  //       (question) => questionId === question.id
+  //     );
 
-//     if (findQuestion) {
-//       setSelectedOption(
-//         selectedOption.map((question) =>
-//           question.id === questionId
-//             ? { ...question, selectedOption: option, status: 1 }
-//             : question
-//         )
-//       );
-//     } else {
-//       setSelectedOption([
-//         ...selectedOption,
-//         {
-//           id: questionId,
-//           selectedOption: option,
-//         },
-//       ]);
-//     }
-//     let isReviewed;
-//     let newStatus;
-//     if (status == 2 || status == 3) {
-//       isReviewed = 1;
-//       newStatus = 3;
-//     } else {
-//       isReviewed = 0;
-//       newStatus = 1;
-//     }
+  //     if (findQuestion) {
+  //       setSelectedOption(
+  //         selectedOption.map((question) =>
+  //           question.id === questionId
+  //             ? { ...question, selectedOption: option, status: 1 }
+  //             : question
+  //         )
+  //       );
+  //     } else {
+  //       setSelectedOption([
+  //         ...selectedOption,
+  //         {
+  //           id: questionId,
+  //           selectedOption: option,
+  //         },
+  //       ]);
+  //     }
+  //     let isReviewed;
+  //     let newStatus;
+  //     if (status == 2 || status == 3) {
+  //       isReviewed = 1;
+  //       newStatus = 3;
+  //     } else {
+  //       isReviewed = 0;
+  //       newStatus = 1;
+  //     }
 
-//     await testResultDtlSetData(option, isReviewed, newStatus);
-//      // console.log(selectedOption);
-//   };
+  //     await testResultDtlSetData(option, isReviewed, newStatus);
+  //      // console.log(selectedOption);
+  //   };
 
-const handleOptionClick = async (option) => {
-  const MAX_SELECTION_LIMIT = 3;
+  const handleOptionClick = async (option) => {
+    const MAX_SELECTION_LIMIT = 3;
 
- 
-  const findQuestion = selectedOption.find((question) => question.id === questionId);
-  let updatedOptions = ''
-  if (findQuestion) {
-    
-    const selectedOptionsArray = findQuestion.selectedOption?.split(separator).map(opt => opt.trim());
 
-    
-    const isOptionSelected = selectedOptionsArray?.includes(option);
-    
-    if (isOptionSelected) {
-      
-       updatedOptions = selectedOptionsArray.filter(opt => opt !== option).join(separator);
-      setSelectedOption(
-        selectedOption.map(question =>
-          question.id === questionId
-            ? { ...question, selectedOption: updatedOptions, status: 1 }
-            : question
-        )
-      );
+    const findQuestion = selectedOption.find((question) => question.id === questionId);
+    let updatedOptions = ''
+    if (findQuestion) {
+
+      const selectedOptionsArray = findQuestion.selectedOption?.split(separator).map(opt => opt.trim());
+
+
+      const isOptionSelected = selectedOptionsArray?.includes(option);
+
+      if (isOptionSelected) {
+
+        updatedOptions = selectedOptionsArray.filter(opt => opt !== option).join(separator);
+        setSelectedOption(
+          selectedOption.map(question =>
+            question.id === questionId
+              ? { ...question, selectedOption: updatedOptions, status: 1 }
+              : question
+          )
+        );
+      } else {
+
+        if (selectedOptionsArray?.length >= MAX_SELECTION_LIMIT) {
+          alert(`You can only select up to ${MAX_SELECTION_LIMIT} options.`);
+          return;
+        }
+        if (!selectedOptionsArray) {
+          updatedOptions = option
+        } else {
+          updatedOptions = [...selectedOptionsArray, option].join(separator);
+        }
+
+        setSelectedOption(
+          selectedOption?.map(question =>
+            question.id === questionId
+              ? { ...question, selectedOption: updatedOptions, status: ((question.status == 2 || question.status == 3) ? 3 : 1) }
+              : question
+          )
+        );
+      }
     } else {
-    
-      if (selectedOptionsArray?.length >= MAX_SELECTION_LIMIT) {
-        alert(`You can only select up to ${MAX_SELECTION_LIMIT} options.`);
-        return;
-      }
-      if(!selectedOptionsArray){
-        updatedOptions = option
-      }else{
-        updatedOptions = [...selectedOptionsArray, option].join(separator);
-      }
-       
-      setSelectedOption(
-        selectedOption?.map(question =>
-          question.id === questionId
-            ? { ...question, selectedOption: updatedOptions, status: ((question.status == 2 || question.status == 3) ? 3 : 1) }
-            : question
-        )
-      );
+
+      setSelectedOption([
+        ...selectedOption,
+        {
+          id: questionId,
+          selectedOption: option,
+          status: 1,
+        },
+      ]);
     }
-  } else {
-   
-    setSelectedOption([
-      ...selectedOption,
-      {
-        id: questionId,
-        selectedOption: option,
-        status: 1,
-      },
-    ]);
-  }
 
-  
-  let isReviewed;
-  let newStatus;
-  if (status == 2 || status == 3) {
-    isReviewed = 1;
-    newStatus = 3;
-  } else {
-    isReviewed = 0;
-    newStatus = 1;
-  }
 
-  await testResultDtlSetData(updatedOptions, isReviewed, newStatus);
-   // console.log(selectedOption);
-};
+    let isReviewed;
+    let newStatus;
+    if (status == 2 || status == 3) {
+      isReviewed = 1;
+      newStatus = 3;
+    } else {
+      isReviewed = 0;
+      newStatus = 1;
+    }
+
+    await testResultDtlSetData(updatedOptions, isReviewed, newStatus);
+    // console.log(selectedOption);
+  };
 
   async function testResultDtlSetData(
     findSelectedOption,
@@ -319,7 +320,7 @@ const handleOptionClick = async (option) => {
     try {
       if (token) {
         const status = await getUpdatedStatus(isReviewed, newstatus);
-         // console.log(status);
+        // console.log(status);
         const res = await API.put(
           "/api/userresultdetails",
           {
@@ -346,7 +347,7 @@ const handleOptionClick = async (option) => {
         navigate("/login");
         return;
       }
-       // console.log(error);
+      // console.log(error);
       throw error;
     }
   }
@@ -361,11 +362,11 @@ const handleOptionClick = async (option) => {
         reviewQuestions.map((question) =>
           question.id === questionId
             ? {
-                ...question,
-                selectedOption: findSelectedOption,
-                status: status,
-                option: options,
-              }
+              ...question,
+              selectedOption: findSelectedOption,
+              status: status,
+              option: options,
+            }
             : question
         )
       );
@@ -381,19 +382,19 @@ const handleOptionClick = async (option) => {
       ]);
     }
     const isReviewed = 1;
-     // console.log("status" + status);
-     // console.log("findselectedoption" + findSelectedOption);
+    // console.log("status" + status);
+    // console.log("findselectedoption" + findSelectedOption);
     let newstatus;
     findSelectedOption && (newstatus = 3);
-     // console.log("newstatus" + newstatus);
+    // console.log("newstatus" + newstatus);
     const response = await testResultDtlSetData(
       findSelectedOption,
       isReviewed,
       newstatus
     );
-     // console.log(" updatedstatus :" + updatedStatus);
+    // console.log(" updatedstatus :" + updatedStatus);
     if (response?.status == 200) {
-       // console.log("review");
+      // console.log("review");
       onNext();
     }
   };
@@ -418,21 +419,21 @@ const handleOptionClick = async (option) => {
     navigate("/");
   };
 
-   // console.log(selectedOption);
-   // console.log(reviewQuestions);
+  // console.log(selectedOption);
+  // console.log(reviewQuestions);
 
   const attempted = selectedOption.filter((q) => q.selectedOption !== null);
   const reviewed = selectedOption.filter((q) => q.status == 2 || q.status == 3);
-   // console.log(reviewed);
+  // console.log(reviewed);
   const skipped = selectedOption.filter((q) => q.status === 0);
-   // console.log(skipped);
+  // console.log(skipped);
 
   let totalAnswered = attempted.length;
   let totalReviewed = reviewed.length;
   let skippedQuestion = skipped.length;
 
   const onFinishQuiz = async () => {
-     // console.log("remaining:" + remainingTimeRef.current);
+    // console.log("remaining:" + remainingTimeRef.current);
 
     const response = await testResultDtlSetData(findSelectedOption);
     if (response?.status == 200) {
@@ -465,7 +466,7 @@ const handleOptionClick = async (option) => {
           className="card shadow p-4 "
           style={{ width: "90vw", borderRadius: "15px" }}
         >
-          <div className="card-body " style={{userSelect: "none"}}>
+          <div className="card-body " style={{ userSelect: "none" }}>
             <div className="d-flex justify-content-between items-center" >
               <h4 className="card-title text-center">
                 Question {index} of {totalQuestions}{" "}
@@ -489,7 +490,7 @@ const handleOptionClick = async (option) => {
               ) : null} */}
 
               <div className="card-title gap-2 d-flex align-items-center">
-              <svg
+                <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -497,32 +498,34 @@ const handleOptionClick = async (option) => {
                   className="bi bi-flag-fill pointer"
                   viewBox="0 0 16 16"
                   onClick={handleReviewClick}
-                  style={{ marginRight: "50px", color: selectedOption.some(
-                    (selected) =>
-                      selected.id === questionId &&
-                      (selected.status == 2 || selected.status == 3)
-                  ) ? 'blue' : '' }}
+                  style={{
+                    marginRight: "50px", color: selectedOption.some(
+                      (selected) =>
+                        selected.id === questionId &&
+                        (selected.status == 2 || selected.status == 3)
+                    ) ? 'blue' : ''
+                  }}
                 >
                   <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001" />
                 </svg>
                 <div className='d-flex '>
-                <button
-                  className="btn btn-success px-3 py-2 w-auto text-18"
-                  onClick={handleCancel}
-                >
-                  Cancel
-                </button>
-                &nbsp;
-                <button
-                  className="btn btn-success px-3 py-2 w-auto text-18"
-                  onClick={onFinishQuiz}
-                >
-                  Finish
-                </button>
+                  <button
+                    className="btn btn-success px-3 py-2 w-auto text-18"
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </button>
+                  &nbsp;
+                  <button
+                    className="btn btn-success px-3 py-2 w-auto text-18"
+                    onClick={onFinishQuiz}
+                  >
+                    Finish
+                  </button>
                 </div>
-                
+
                 {(totalReviewed > 0 || skippedQuestion > 0) &&
-                remainingTimeRef.current !== 0 ? (
+                  remainingTimeRef.current !== 0 ? (
                   <Modal open={open} onClose={onCloseModal} center>
                     <FinishExamModalPage
                       questionSetId={questionSetId}
@@ -552,6 +555,30 @@ const handleOptionClick = async (option) => {
               </div>
             </div>
             <hr />
+            <div className="alert alert-info py-2 px-3 mb-3" role="alert">
+              <strong>Instructions:</strong> Please read each question carefully. You can select multiple answers if applicable. Questions may carry negative marking.
+            </div>
+
+
+            <div className="d-flex justify-content-between mb-3 px-2">
+              <h6>
+                Marks:{" "}
+                <span className=" bg-success px-2 py-1 text-white" style={{ borderRadius: '5px' }}>
+                  {marks}
+                </span>
+              </h6>
+              <h6>
+                Negative Marks:{" "}
+                <span className=" bg-danger px-2 py-1 text-white" style={{ borderRadius: '5px' }}>
+
+                  {isNegative || isNegative !== null ? negativeMarks : 0}
+                </span>
+              </h6>
+            </div>
+            {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <p>Marks: <span style={{color:'green'}}>{marks}</span> </p>
+              <p>Negative Marks: <span style={{color:'red'}}>{isNegative ? negativeMarks : 0}</span></p>
+            </div> */}
             <div
               className="d-flex gap-4 justify-center "
               style={{ alignItems: "center" }}
@@ -638,14 +665,14 @@ const handleOptionClick = async (option) => {
               </div>
             </ul>
             <div className="d-flex justify-content-center">
-              <div className="d-flex justify-content-center align-items-center" style={{gap:'75px'}}>
+              <div className="d-flex justify-content-center align-items-center" style={{ gap: '75px' }}>
                 {index > 1 && (
                   <button
                     className="btn btn-primary p-2"
                     style={{
                       backgroundColor: "#6a1b9a",
                       borderColor: "#6a1b9a",
-                      width:'130px'
+                      width: '130px'
                     }}
                     onClick={handlePreviousClick}
                   >
@@ -662,7 +689,7 @@ const handleOptionClick = async (option) => {
                     style={{
                       backgroundColor: "#6a1b9a",
                       borderColor: "#6a1b9a",
-                      width:'130px'
+                      width: '130px'
                     }}
                     onClick={handleNextClick}
                   >
@@ -676,7 +703,7 @@ const handleOptionClick = async (option) => {
               </div>
 
               <div>
-               
+
               </div>
             </div>
           </div>

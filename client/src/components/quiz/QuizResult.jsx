@@ -304,11 +304,11 @@ const QuizResult = ({}) => {
   return (
     <>
       <div
-        className="d-flex  gap-4 justify-content-center align-items-center vh-100"
+        className="d-flex  gap-4 justify-content-center align-items-center "
         style={{ background: "rgb(26,6,79)", flexDirection: "column" }}
       >
         <div
-          className=" bg-white p-2 fw-500 text-18 w-60 btn btn-light "
+          className=" bg-white p-2 fw-500 text-18 w-60 btn btn-light mt-4"
           onClick={() => navigate("/")}
         >
           <FontAwesomeIcon icon={faArrowLeft} className="fa-lg ml-5" />
@@ -412,7 +412,7 @@ const QuizResult = ({}) => {
           </Modal>
         </div>
         <div
-          className="card shadow w-60 text-center p-4 "
+          className="card shadow w-60 text-center p-4 mb-4"
           style={{ maxWidth: "400px", width: "100%" }}
         >
           <h5 className="text-center my-2">
