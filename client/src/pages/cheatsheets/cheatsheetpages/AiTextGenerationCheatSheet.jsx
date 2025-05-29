@@ -67,6 +67,7 @@ const AiTextGenerationCheatSheet = () => {
       title="NLP Text Generation Cheat Sheet"
       description="Quick reference for generating coherent text using NLP techniques and Transformer-based models."
       sections={textGenerationSections}
+      cheatsheetId={2}
     />
   );
 };

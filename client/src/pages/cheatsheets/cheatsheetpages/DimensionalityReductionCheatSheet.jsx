@@ -734,6 +734,7 @@ const DimensionalityReductionCheatSheet = () => {
       title="Machine Learning: Supervised Classification Cheat Sheet"
       description="A comprehensive guide to supervised learning classification algorithms, techniques, evaluation metrics, and implementations."
       sections={dimensionalityReductionSections}
+      cheatsheetId={13}
     />
   );
 };

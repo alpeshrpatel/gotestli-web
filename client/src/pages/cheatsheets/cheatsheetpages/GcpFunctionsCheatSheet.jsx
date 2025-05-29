@@ -75,6 +75,7 @@ const GcpFunctionsCheatSheet = () => {
       title="Google Cloud Functions Cheat Sheet"
       description="Quick reference for Google Cloud Functions – serverless compute to run code in response to events."
       sections={gcpFunctionsSections}
+      cheatsheetId={19}
     />
   );
 };

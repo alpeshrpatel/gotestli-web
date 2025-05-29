@@ -155,6 +155,7 @@ const VueJsCheatSheet = () => {
       title="Vue.js Cheat Sheet"
       description="In-depth reference and quick guide for Vue.js development."
       sections={vueJsSections}
+      cheatsheetId={24}
     />
   );
 };

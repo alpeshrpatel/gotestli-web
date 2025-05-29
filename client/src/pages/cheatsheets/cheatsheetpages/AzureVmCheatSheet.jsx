@@ -58,6 +58,7 @@ const AzureVmCheatSheet = () => {
       title="Azure Virtual Machines Cheat Sheet"
       description="Comprehensive guide and reference to working with Microsoft Azure Virtual Machines."
       sections={azureVmSections}
+      cheatsheetId={8}
     />
   );
 };

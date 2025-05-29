@@ -96,6 +96,7 @@ const ReactJsCheatSheet = () => {
       title="React.js Cheat Sheet"
       description="Comprehensive guide and reference for React.js in modern web development."
       sections={reactJsSections}
+      cheatsheetId={23}
     />
   );
 };

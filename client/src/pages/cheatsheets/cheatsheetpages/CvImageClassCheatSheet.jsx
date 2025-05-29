@@ -249,6 +249,7 @@ const CvImageClassCheatSheet = () => {
       title="Computer Vision: Image Classification Cheat Sheet"
       description="A comprehensive guide to image classification concepts, techniques, and best practices in computer vision."
       sections={cvSections}
+      cheatsheetId={11}
     />
   );
 };

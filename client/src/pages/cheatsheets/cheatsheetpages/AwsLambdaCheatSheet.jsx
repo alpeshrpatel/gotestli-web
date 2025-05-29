@@ -137,6 +137,7 @@ const AwsLambdaCheatSheet = () => {
       title="AWS Lambda Cheat Sheet"
       description="A complete and concise guide to working with AWS Lambda in serverless applications."
       sections={lambdaSections}
+      cheatsheetId={5}
     />
   );
 };

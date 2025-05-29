@@ -131,6 +131,7 @@ const AngularJsCheatSheet = () => {
       title="AngularJS Cheat Sheet"
       description="Detailed reference for AngularJS, the JavaScript framework for building dynamic SPAs."
       sections={angularJsSections}
+      cheatsheetId={3}
     />
   );
 };

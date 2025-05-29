@@ -72,6 +72,7 @@ const AzureBlobCheatSheet = () => {
       title="Azure Blob Storage Cheat Sheet"
       description="Quick reference for working with Azure Blob Storage - secure, scalable object storage in Microsoft Azure."
       sections={azureBlobSections}
+      cheatsheetId={7}
     />
   );
 };

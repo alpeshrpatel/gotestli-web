@@ -124,6 +124,7 @@ const NextJsCheatSheet = () => {
       title="Next.js Cheat Sheet"
       description="Complete reference for building modern web applications with Next.js."
       sections={nextJsSections}
+      cheatsheetId={21}
     />
   );
 };

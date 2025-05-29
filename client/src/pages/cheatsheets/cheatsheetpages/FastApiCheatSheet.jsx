@@ -127,6 +127,7 @@ const FastApiCheatSheet = () => {
       title="FastAPI Framework Cheat Sheet"
       description="A comprehensive guide for building high-performance APIs using FastAPI."
       sections={fastapiSections}
+      cheatsheetId={16}
     />
   );
 };

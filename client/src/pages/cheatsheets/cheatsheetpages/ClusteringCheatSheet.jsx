@@ -551,6 +551,7 @@ const ClusteringCheatSheet = () => {
       title="Machine Learning: Unsupervised Clustering Cheat Sheet"
       description="A comprehensive guide to clustering algorithms, techniques, evaluation metrics, and implementations in unsupervised learning."
       sections={clusteringSections}
+      cheatsheetId={10}
     />
   );
 };
