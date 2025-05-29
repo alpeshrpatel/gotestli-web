@@ -121,6 +121,7 @@ const FlaskCheatSheet = () => {
       title="Flask Framework Cheat Sheet"
       description="A comprehensive guide for building web applications using Flask."
       sections={flaskSections}
+      cheatsheetId={17}
     />
   );
 };

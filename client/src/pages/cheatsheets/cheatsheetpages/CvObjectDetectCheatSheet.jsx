@@ -432,6 +432,7 @@ const CvObjectDetectCheatSheet = () => {
       title="Computer Vision: Object Detection Cheat Sheet"
       description="A comprehensive guide to object detection concepts, algorithms, techniques, and implementations in computer vision."
       sections={objectDetectionSections}
+      cheatsheetId={12}
     />
   );
 };

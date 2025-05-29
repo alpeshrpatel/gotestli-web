@@ -124,6 +124,7 @@ const DjangoCheatSheet = () => {
       title="Django Framework Cheat Sheet"
       description="Essential guide for building robust web applications with Django."
       sections={djangoSections}
+      cheatsheetId={14}
     />
   );
 };

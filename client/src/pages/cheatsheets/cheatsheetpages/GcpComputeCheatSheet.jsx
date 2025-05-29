@@ -61,6 +61,7 @@ const GcpComputeCheatSheet = () => {
       title="Google Cloud Compute Engine Cheat Sheet"
       description="Quick reference guide for Google Cloud Compute Engine - high-performance virtual machines on GCP."
       sections={gcpComputeSections}
+      cheatsheetId={18}
     />
   );
 };

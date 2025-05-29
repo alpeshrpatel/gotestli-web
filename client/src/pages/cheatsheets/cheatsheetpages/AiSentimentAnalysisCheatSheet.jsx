@@ -70,6 +70,7 @@ const AiSentimentAnalysisCheatSheet = () => {
       title="NLP Sentiment Analysis Cheat Sheet"
       description="Quick reference for Sentiment Analysis using Natural Language Processing – from rule-based to deep learning approaches."
       sections={sentimentAnalysisSections}
+      cheatsheetId={1}
     />
   );
 };

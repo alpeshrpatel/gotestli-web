@@ -733,6 +733,7 @@ const MlRegressionCheatSheet = () => {
       title="Machine Learning Regression Cheat Sheet"
       description="A comprehensive guide to regression techniques in machine learning."
       sections={regressionSections}
+      cheatsheetId={20}
     />
   );
 };

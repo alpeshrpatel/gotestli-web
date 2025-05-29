@@ -45,6 +45,7 @@ const AwsEC2CheatSheet = () => {
       title="AWS EC2 Cheat Sheet"
       description="Quick reference for working with Amazon EC2 - Elastic Compute Cloud."
       sections={ec2Sections}
+      cheatsheetId={4}
     />
   );
 };

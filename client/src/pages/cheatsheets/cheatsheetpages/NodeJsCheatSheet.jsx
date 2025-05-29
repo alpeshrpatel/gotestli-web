@@ -122,6 +122,7 @@ const NodeJsCheatSheet = () => {
       title="Node.js Cheat Sheet"
       description="Essential guide for building backend applications with Node.js."
       sections={nodeJsSections}
+      cheatsheetId={22}
     />
   );
 };

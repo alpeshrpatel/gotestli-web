@@ -40,6 +40,7 @@ const AwsS3CheatSheet = () => {
       title="AWS S3 Cheat Sheet"
       description="Quick reference for working with Amazon S3 - Simple Storage Service."
       sections={s3Sections}
+      cheatsheetId={6}
     />
   );
 };

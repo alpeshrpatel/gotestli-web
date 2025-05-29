@@ -1,7 +1,11 @@
 import { faCode } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CodeEditorCheatSheet from './cheatsheetpages/CodeEditorCheatSheet';
+import { faComment, faThumbsUp } from '@fortawesome/free-regular-svg-icons';
+import { IconButton } from '@mui/material';
+import CommentModal from './CommentModal';
+import { API } from '@/utils/AxiosInstance';
 
 // const CheatSheetLayout = ({ title, description, sections }) => {
 //   return (
@@ -23,8 +27,55 @@ import CodeEditorCheatSheet from './cheatsheetpages/CodeEditorCheatSheet';
 //     </div>
 //   );
 // };
+ const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user")) || "";
 
-const CheatSheetLayout = ({language='python', title, description, sections }) => {
+  const userId = user.id;
+
+const CheatSheetLayout = ({ language = 'python', title, description, sections, cheatsheetId }) => {
+  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
+  const [liked, setLiked] = useState(false);
+
+  useEffect(() => {
+    const fetchLikeCount = async () => {
+      try {
+        const response = await API.get(`/api/cheatsheet/social/${cheatsheetId}`);
+        console.log('Like count response:', response.data);
+        setLikesCount(response.data);
+      } catch (error) {
+        console.error('Error fetching like count:', error);
+      }
+    };
+
+    fetchLikeCount();
+  })
+
+  const handleCommentClick = () => {
+    setIsCommentModalOpen(true);
+  };
+
+  const handleCloseCommentModal = () => {
+    setIsCommentModalOpen(false);
+  };
+
+  const handleLike = async () => {
+    try {
+      const likeData = {
+        cheatsheet_id: cheatsheetId,
+        title: title,
+        likes_count: likesCount + 1,
+        created_by: userId,
+        modified_by: userId
+      };
+
+      await API.post(`/api/cheatsheet/social/`, likeData);
+      setLiked(true)
+      // fetchLikeCount(); 
+    } catch (error) {
+      console.error('Error submitting like:', error);
+    }
+  }
   return (
     <div style={{
       backgroundColor: '#f7f9fc',
@@ -51,7 +102,26 @@ const CheatSheetLayout = ({language='python', title, description, sections }) =>
             fontSize: '16px'
           }}>{description}</p>
         </header>
-        
+
+        <div className="flex items-center justify-between">
+
+          <div className="flex items-center space-x-2">
+            <h5>{liked}</h5>
+            <IconButton
+              onClick={handleLike}
+              sx={{ color: liked ? 'red[500]' : "gray" }}
+            >
+              <FontAwesomeIcon icon={faThumbsUp} />
+            </IconButton>
+            
+            <IconButton
+              onClick={handleCommentClick}
+              sx={{ color: 1 ? 'red[500]' : "gray" }}
+            >
+              <FontAwesomeIcon icon={faComment} />
+            </IconButton>
+          </div>
+        </div>
         <div style={{
           backgroundColor: 'white',
           borderRadius: '8px',
@@ -60,8 +130,8 @@ const CheatSheetLayout = ({language='python', title, description, sections }) =>
           border: '1px solid #e0e0e0'
         }}>
           {sections.map((section, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               style={{
                 padding: '24px',
                 borderBottom: index !== sections.length - 1 ? '1px solid #e0e0e0' : 'none'
@@ -75,29 +145,29 @@ const CheatSheetLayout = ({language='python', title, description, sections }) =>
                 display: 'flex',
                 alignItems: 'center'
               }}>
-                {section.heading.includes("Code") && 
+                {section.heading.includes("Code") &&
                   <span style={{ marginRight: '8px' }}>
-                    <FontAwesomeIcon  icon={faCode}  size="lg" color="#0066cc" />
+                    <FontAwesomeIcon icon={faCode} size="lg" color="#0066cc" />
                     {/* <Code size={20} color="#0066cc" /> */}
                   </span>
                 }
                 {section.heading}
               </h2>
-              
+
               {section.content && (
                 <div style={{
                   color: '#333333',
                   lineHeight: '1.6',
                   fontSize: '15px'
                 }}
-                dangerouslySetInnerHTML={{ 
-                  __html: section.content
-                    .replace(/\n/g, '<br/>')
-                    .replace(/\*\*(.*?)\*\*/g, '<strong style="font-weight: 600; color: #1a1a1a">$1</strong>')
+                  dangerouslySetInnerHTML={{
+                    __html: section.content
+                      .replace(/\n/g, '<br/>')
+                      .replace(/\*\*(.*?)\*\*/g, '<strong style="font-weight: 600; color: #1a1a1a">$1</strong>')
                     // .replace(/• /g, '<span style="display: block; margin-bottom: 6px; position: relative; paddingLeft: 20px">• </span>')
-                }} />
+                  }} />
               )}
-              
+
               {section.code && (
                 <div style={{
                   marginTop: '16px',
@@ -112,7 +182,7 @@ const CheatSheetLayout = ({language='python', title, description, sections }) =>
                     overflowX: 'auto',
                     margin: 0
                   }}>
-                     <CodeEditorCheatSheet language={language} code={section.code} />
+                    <CodeEditorCheatSheet language={language} code={section.code} />
                     {/* <code>{section.code}</code> */}
                   </pre>
                 </div>
@@ -120,7 +190,7 @@ const CheatSheetLayout = ({language='python', title, description, sections }) =>
             </div>
           ))}
         </div>
-        
+
         <footer style={{
           marginTop: '24px',
           textAlign: 'center',
@@ -129,6 +199,12 @@ const CheatSheetLayout = ({language='python', title, description, sections }) =>
         }}>
           <p>Last updated: May 23, 2025</p>
         </footer>
+        <CommentModal
+          isOpen={isCommentModalOpen}
+          onClose={handleCloseCommentModal}
+          cheatsheetId={cheatsheetId}
+          title={title}
+        />
       </div>
     </div>
   );
