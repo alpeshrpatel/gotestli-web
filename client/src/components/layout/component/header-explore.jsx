@@ -13,8 +13,9 @@ export const HeaderExplore = ({ allClasses }) => {
           onClick={() => setExploreActive((pre) => !pre)}
           className="d-flex items-center text-white"
           data-el-toggle=".js-explore-toggle"
+          style={{ fontSize: "14px", color: "black" }}
         >
-          <i className="icon icon-explore mr-15"></i>
+          <i className="icon icon-explore mr-10"></i>
           Explore
         </Link>
 

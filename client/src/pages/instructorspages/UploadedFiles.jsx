@@ -7,9 +7,9 @@ import { auth } from "@/firebase/Firebase";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Downloading } from "@mui/icons-material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { faArrowsRotate, faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
 import HandleDownload from "@/components/common/HandleDownload.js";
-import { TableCell } from "@mui/material";
+import { IconButton, TableCell } from "@mui/material";
 import CommonTable from "@/components/common/CommonTable";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SearchIcon from "@mui/icons-material/Search";
@@ -260,15 +260,26 @@ const UploadedFiles = () => {
                 It looks a bit empty here! 🌟 No fields matched!
               </h4>
             ) : (
-              <CommonTable
-                columns={columns}
-                // data={filteredData.length > 0 ? filteredData : uploadedData}
-                getRowId={getRowId}
-                renderRowCells={renderRowCells}
-                fetchData={getUploads}
-                searchQuery={searchQuery}
-              // tableData={filteredData.length > 0 ? filteredData : uploadedData}
-              />
+              <>
+                <div className=" mb-3">
+                  <div className="d-flex justify-content-end mb-2">
+                    <IconButton className="" onClick={() => getUploads()}>
+                      <FontAwesomeIcon icon={faArrowsRotate} />
+                    </IconButton>
+                  </div>
+                  <CommonTable
+                    columns={columns}
+                    // data={filteredData.length > 0 ? filteredData : uploadedData}
+                    getRowId={getRowId}
+                    renderRowCells={renderRowCells}
+                    fetchData={getUploads}
+                    searchQuery={searchQuery}
+                  // tableData={filteredData.length > 0 ? filteredData : uploadedData}
+                  />
+                </div>
+
+              </>
+
             )}
           </div>
         ) : (
