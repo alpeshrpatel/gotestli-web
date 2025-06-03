@@ -1,11 +1,12 @@
-import { faCode } from '@fortawesome/free-solid-svg-icons';
+import { faCode, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 import CodeEditorCheatSheet from './cheatsheetpages/CodeEditorCheatSheet';
-import { faComment, faThumbsUp } from '@fortawesome/free-regular-svg-icons';
-import { IconButton } from '@mui/material';
+import { faComment } from '@fortawesome/free-regular-svg-icons';
+import { IconButton, Typography } from '@mui/material';
 import CommentModal from './CommentModal';
 import { API } from '@/utils/AxiosInstance';
+import { showToast } from '@/utils/toastService';
 
 // const CheatSheetLayout = ({ title, description, sections }) => {
 //   return (
@@ -27,29 +28,46 @@ import { API } from '@/utils/AxiosInstance';
 //     </div>
 //   );
 // };
- const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user")) || "";
+const token = localStorage.getItem("token");
+const user = JSON.parse(localStorage.getItem("user")) || "";
 
-  const userId = user.id;
+const userId = user.id;
 
 const CheatSheetLayout = ({ language = 'python', title, description, sections, cheatsheetId }) => {
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [liked, setLiked] = useState(false);
+  const [commentsCount, setCommentsCount] = useState(0);
 
-  useEffect(() => {
-    const fetchLikeCount = async () => {
+  const fetchLikeCount = async () => {
+    try {
+      const response = await API.get(`/api/cheatsheet/social/${cheatsheetId}`);
+      console.log('Like count response:', response.data);
+       setLikesCount(response.data.likes_count || 0);
+    } catch (error) {
+      console.error('Error fetching like count:', error);
+      setLikesCount(0);
+    }
+  };
+
+   const fetchComments = async () => {
+      
       try {
-        const response = await API.get(`/api/cheatsheet/social/${cheatsheetId}`);
-        console.log('Like count response:', response.data);
-        setLikesCount(response.data);
+        const response = await API.get(`/api/cheatsheet/comment/${cheatsheetId}`);
+        console.log(response)
+        setCommentsCount(response?.data?.totalRecords || 0);
       } catch (error) {
-        console.error('Error fetching like count:', error);
-      }
+        console.error('Error fetching comments:', error);
+        showToast('error', 'Failed to fetch comments. Please try again later.');
+      } 
     };
 
+  useEffect(() => {
+
+
     fetchLikeCount();
-  })
+    fetchComments();
+  }, [])
 
   const handleCommentClick = () => {
     setIsCommentModalOpen(true);
@@ -57,6 +75,7 @@ const CheatSheetLayout = ({ language = 'python', title, description, sections, c
 
   const handleCloseCommentModal = () => {
     setIsCommentModalOpen(false);
+    fetchComments();
   };
 
   const handleLike = async () => {
@@ -68,10 +87,15 @@ const CheatSheetLayout = ({ language = 'python', title, description, sections, c
         created_by: userId,
         modified_by: userId
       };
+      if (likesCount > 0) {
+        await API.put(`/api/cheatsheet/social/${cheatsheetId}`, likeData);
+      } else {
+        await API.post(`/api/cheatsheet/social/`, likeData);
+      }
 
-      await API.post(`/api/cheatsheet/social/`, likeData);
       setLiked(true)
-      // fetchLikeCount(); 
+      setLikesCount(likesCount + 1);
+      fetchLikeCount();
     } catch (error) {
       console.error('Error submitting like:', error);
     }
@@ -103,23 +127,92 @@ const CheatSheetLayout = ({ language = 'python', title, description, sections, c
           }}>{description}</p>
         </header>
 
-        <div className="flex items-center justify-between">
+        {/* <div className="flex items-center justify-between">
 
           <div className="flex items-center space-x-2">
-            <h5>{liked}</h5>
-            <IconButton
-              onClick={handleLike}
-              sx={{ color: liked ? 'red[500]' : "gray" }}
-            >
-              <FontAwesomeIcon icon={faThumbsUp} />
-            </IconButton>
-            
+            <div className='d-flex align-items-center gap-2'>
+
+
+              <Typography variant="h5" gutterBottom>{likesCount}</Typography>
+              <IconButton
+                onClick={handleLike}
+                sx={{ color: liked ? 'red[500]' : "gray" }}
+              >
+                <FontAwesomeIcon icon={faThumbsUp} />
+              </IconButton>
+            </div>
             <IconButton
               onClick={handleCommentClick}
               sx={{ color: 1 ? 'red[500]' : "gray" }}
             >
               <FontAwesomeIcon icon={faComment} />
             </IconButton>
+          </div>
+        </div> */}
+        <div className="d-flex align-items-center justify-content-between py-2 px-1">
+          <div className="d-flex align-items-center gap-3">
+            {/* Like Section */}
+            <div className="d-flex align-items-center gap-1">
+              <IconButton
+                onClick={handleLike}
+                className="p-2 rounded-circle"
+                sx={{
+                  color: liked ? '#e74c3c' : '#6c757d',
+                  '&:hover': {
+                    backgroundColor: liked ? 'rgba(231, 76, 60, 0.1)' : 'rgba(108, 117, 125, 0.1)',
+                    transform: 'scale(1.05)'
+                  },
+                  transition: 'all 0.2s ease-in-out'
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={faThumbsUp}
+                  style={{ fontSize: '22px' }}
+                />
+              </IconButton>
+              <Typography
+                variant="body1"
+                className="fw-medium"
+                sx={{
+                  color: liked ? '#e74c3c' : '#6c757d',
+                  fontSize: '18px',
+                  minWidth: '20px'
+                }}
+              >
+                {likesCount}
+              </Typography>
+            </div>
+
+            {/* Comment Section */}
+            <IconButton
+              onClick={handleCommentClick}
+              className="p-2 rounded-circle"
+              sx={{
+                color: '#6c757d',
+                '&:hover': {
+                  backgroundColor: 'rgba(108, 117, 125, 0.1)',
+                  color: '#495057',
+                  transform: 'scale(1.05)'
+                },
+                transition: 'all 0.2s ease-in-out'
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faComment}
+                style={{ fontSize: '22px' }}
+              />
+            </IconButton>
+            <Typography
+                variant="body1"
+                className="fw-medium"
+                sx={{
+                  color: '#6c757d',
+                  fontSize: '18px',
+                  minWidth: '20px'
+                }}
+              >
+                {commentsCount}
+              </Typography>
           </div>
         </div>
         <div style={{

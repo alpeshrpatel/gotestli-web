@@ -92,7 +92,7 @@ export default function Menu({ allClasses, headerPosition }) {
         <div className="menu js-navList">
           <ul
             className={`${allClasses ? allClasses : ""}`}
-            style={{ paddingLeft: 0, display: "flex", gap: "15px" }}
+            style={{ paddingLeft: 0, display: "flex", gap: "15px", marginLeft: '1.5vw' }}
           >
             <li className="menu-item-has-children ">
               <Link

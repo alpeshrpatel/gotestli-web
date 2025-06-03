@@ -15,6 +15,7 @@ import CartButton from "@/components/common/CartButton";
 import SearchHeader from "./SearchHeader";
 import { HeaderExplore } from "../component/header-explore";
 import BusinessIcon from '@mui/icons-material/Business';
+import StudyMaterialMegamenu from "../component/StudyMaterialMegamenu";
 
 export default function Header({ userRole }) {
   const [activeMobileMenu, setActiveMobileMenu] = useState(false);
@@ -161,8 +162,8 @@ export default function Header({ userRole }) {
             </div> */}
           <div
             className={` ${isSmallScreen
-                ? `d-flex gap-4 `
-                : `row justify-content-between align-items-center`
+              ? `d-flex gap-4 `
+              : `row justify-content-between align-items-center`
               } `}
           >
             <div className="col-auto d-flex align-items-center ">
@@ -187,8 +188,11 @@ export default function Header({ userRole }) {
             <div className="col-auto d-flex align-items-center  ">
               {
                 userRole == 'instructor' ? (
-                  <div style={{ position: "absolute", left: '200px', display: isSmallScreen ? 'none' : '' }}>
+                  <div style={{ position: "absolute", left: '200px', display: isSmallScreen ? 'none' : 'flex', gap: '20px', alignItems: 'center' }}>
                     <HeaderExplore />
+                    <div className="d-flex align-items-center">
+                      <StudyMaterialMegamenu />
+                    </div>
                   </div>
 
                 ) : (
@@ -275,7 +279,7 @@ export default function Header({ userRole }) {
                           // className={menuItem == "Home" ? "activeMenu" : ""}
                           style={{ fontSize: "14px", whiteSpace: "nowrap" }}
                         >
-                        {isSmallScreen ? null : 'Join as an Organization'}  
+                          {isSmallScreen ? null : 'Join as an Organization'}
                         </Link>
                       </div>
                     ) : null
@@ -440,7 +444,7 @@ export default function Header({ userRole }) {
                       </div>
                     </div>
                   ) : (
-                    <div className="header-right__buttons d-flex items-center ml-30 md:d-none align-items-center" style={{fontSize: "14px"}}>
+                    <div className="header-right__buttons d-flex items-center ml-30 md:d-none align-items-center" style={{ fontSize: "14px" }}>
                       <Link
                         to="/login"
                         className="button -underline text-white"

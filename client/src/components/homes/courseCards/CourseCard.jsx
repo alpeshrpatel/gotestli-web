@@ -414,7 +414,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                     >
                       Creator:
                     </Typography>
-                    <Typography variant="body1" gutterBottom>
+                    <Typography variant="body1" gutterBottom sx={{wordWrap:'nowrap'}}>
                       {data.author}
                     </Typography>
                   </div>
@@ -431,7 +431,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                   >
                     Published on:
                   </Typography>
-                  <Typography variant="body1" gutterBottom>
+                  <Typography variant="body1" gutterBottom sx={{wordWrap:'nowrap'}}>
                     {formattedDate}
                   </Typography>
                 </div>
