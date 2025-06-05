@@ -18,6 +18,7 @@ import HandleDownload from "../common/HandleDownload";
 import { useNavigate } from "react-router-dom";
 import { showToast } from "@/utils/toastService";
 import FooterOne from "../layout/footers/FooterOne";
+import ExcelPreviewValidator from "./ExcelPreviewValidator";
 
 const UploadQuestionSet = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -207,7 +208,7 @@ const UploadQuestionSet = () => {
         className="mx-auto"
         style={{
           marginTop: "130px",
-          width: "70vw",
+          width: "80vw",
           padding: "30px",
           backgroundColor: "#bfdeee",
           borderRadius: "10px",
@@ -361,13 +362,13 @@ const UploadQuestionSet = () => {
           </Box>
           {/* <Typography variant="body1">Note.</Typography>
           <Typography variant="subtitle1">Note.</Typography> */}
-          <input
+          {/* <input
             type="file"
             onChange={handleFileChange}
             accept=".xlsx, .xls"
             style={{ margin: "20px auto", display: "block" }}
-          />
-          <div className="d-flex items-center justify-content-center gap-2">
+          /> */}
+          {/* <div className="d-flex items-center justify-content-center gap-2">
             <Button
               variant="contained"
               color="primary"
@@ -381,7 +382,9 @@ const UploadQuestionSet = () => {
             <Button variant="contained" onClick={handlePreview}>
               Preview
             </Button>
-          </div>
+          </div> */}
+
+          <ExcelPreviewValidator/>
 
           {/* Modal to display the Excel content */}
           <Modal open={open} onClose={handleClose}>
