@@ -15,6 +15,7 @@ import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import SubmitQuizModal from "./SubmitQuizModal/SubmitQuizModal";
 import { Radio, Typography } from "@mui/material";
 import CommentForQuestion from "../common/CommentForQuestion";
+import ProgressBar from "../common/ProgressBar";
 
 const ComprehensiveType = ({
   time,
@@ -38,6 +39,7 @@ const ComprehensiveType = ({
   const [answerPersist, setAnswerPersist] = useState([]);
   const [status, setStatus] = useState(0);
   const [updatedStatus, setUpdatedStatus] = useState(0);
+  const [progress, setProgress] = useState(0);
   const remainingTimeRef = useRef();
 
   const onOpenModal = () => setOpen(true);
@@ -62,7 +64,15 @@ const ComprehensiveType = ({
               Authorization: `Bearer ${token}`,
             },
           });
-          setOptions(response.data);
+           const shuffleArray = (arr) => {
+            return arr
+              .map((a) => [Math.random(), a])
+              .sort((a, b) => a[0] - b[0])
+              .map((a) => a[1]);
+          };
+
+          const shuffledOptions = shuffleArray(response.data || []);
+          setOptions(shuffledOptions);
         }
       } catch (error) {
         if (error.status == 403) {
@@ -152,6 +162,12 @@ const ComprehensiveType = ({
     getAnswers();
   }, [userResultId, questionId, updatedStatus]);
 
+  useEffect(() => {
+      if (totalAnswered > 0) {
+        setProgress(((totalAnswered) / totalQuestions) * 100);
+      }
+    });
+
    // console.log(selectedOption);
   const findSelectedOption =
     selectedOption?.find((question) => question.id === questionId)
@@ -206,6 +222,7 @@ const ComprehensiveType = ({
   }
 
   const handleOptionClick = async (option) => {
+   
     const findQuestion = selectedOption.find(
       (question) => questionId === question.id
     );
@@ -236,7 +253,7 @@ const ComprehensiveType = ({
       isReviewed = 0;
       newStatus = 1;
     }
-
+    setProgress(((totalAnswered + 1) / totalQuestions) * 100);
     await testResultDtlSetData(option, isReviewed, newStatus);
      // console.log(selectedOption);
   };
@@ -333,6 +350,7 @@ const ComprehensiveType = ({
     // if (response?.status == 200) {
     //   onNext();
     // }
+    setProgress(((totalAnswered + 1) / totalQuestions) * 100);
     onNext();
   };
 
@@ -341,6 +359,7 @@ const ComprehensiveType = ({
     // if (response?.status == 200) {
     //   onPrevious();
     // }
+    setProgress(((totalAnswered + 1) / totalQuestions) * 100);
     onPrevious();
   };
 
@@ -387,13 +406,15 @@ const ComprehensiveType = ({
   return (
     // linear-gradient(to bottom right, #a18cd1, #fbc2eb)
     <>
-      <div
-        className="d-flex justify-content-center align-items-center vh-100"
+     <div
+        className="d-flex flex-column justify-content-center align-items-center h-auto"
         style={{ background: "rgb(26,6,79)" }}
       >
+         <ProgressBar progress={progress}/>
+         
         <div
-          className="card shadow p-4 "
-          style={{ width: "90vw", borderRadius: "15px" ,userSelect: "none",}}
+          className="card shadow p-4 mb-5"
+          style={{ width: "90vw", borderRadius: "15px", userSelect: "none" }}
         >
           <div className="card-body ">
             <div className="d-flex justify-content-between items-center">

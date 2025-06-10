@@ -44,7 +44,7 @@ import QuizReport from "../QuizReport";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 
-const ExamInstructions = ({ id, time, questionSet, data, onCloseModal,totalMarks }) => {
+const ExamInstructions = ({ id, time, questionSet, data, onCloseModal, totalMarks }) => {
   const [startTestResultData, setStartTestResultData] = useState([]);
   const [inProgressQuizId, setInProgressQuizId] = useState();
   const [setQuestionsSet] = useState([]);
@@ -83,7 +83,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal,totalMarks
   let lastAttemptedQuestion;
   const org = JSON.parse(localStorage.getItem("org")) || "";
   let orgid = org?.id || 0;
- 
+
 
   useEffect(() => {
     // async function getPendingQuiz() {
@@ -173,22 +173,33 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal,totalMarks
       }
       getFollowersData();
     }
-//     function calculateTotalMarks() {
-//     if (questionSet && questionSet.length > 0) {
-//       const totalMarks = questionSet.reduce(
-//         (acc, question) => acc + question.marks,
-//         0
-//       );
-//       return totalMarks;
-//     }
-//     return 0;
-//   }
+    //     function calculateTotalMarks() {
+    //     if (questionSet && questionSet.length > 0) {
+    //       const totalMarks = questionSet.reduce(
+    //         (acc, question) => acc + question.marks,
+    //         0
+    //       );
+    //       return totalMarks;
+    //     }
+    //     return 0;
+    //   }
 
-//  totalMarks = calculateTotalMarks();
+    //  totalMarks = calculateTotalMarks();
 
   }, []);
 
-  console.log('totalMarks:',totalMarks)
+  console.log('totalMarks:', totalMarks)
+  console.log('type:', typeof questionSet)
+  const shuffleArray = (arr) => {
+            return arr
+              .map((a) => [Math.random(), a])
+              .sort((a, b) => a[0] - b[0])
+              .map((a) => a[1]);
+          };
+
+          const shuffledQuestions = shuffleArray(questionSet.res || []);
+          const shuffledQSetResponse = {...questionSet, res: shuffledQuestions };
+          console.log("Shuffled Questions:", shuffledQuestions);
 
   async function getLastAttemptedQuestionId(id) {
     if (id) {
@@ -254,9 +265,11 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal,totalMarks
             },
           }
         );
+        
         if (res.status == 200) {
+          
           navigate("/quiz/questions", {
-            state: { questionSetId: id, questionSet: questionSet, time: time },
+            state: { questionSetId: id, questionSet: shuffledQSetResponse, time: time },
           });
         }
         // console.log("Result Detail Submit Response:", res);

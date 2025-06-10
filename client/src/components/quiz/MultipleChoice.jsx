@@ -16,6 +16,7 @@ import SubmitQuizModal from "./SubmitQuizModal/SubmitQuizModal";
 import { Checkbox, Radio } from "@mui/material";
 import { separator } from "@/constants";
 import CommentForQuestion from "../common/CommentForQuestion";
+import ProgressBar from "../common/ProgressBar";
 
 const MultipleChoice = ({
   time,
@@ -38,6 +39,7 @@ const MultipleChoice = ({
   const [answerPersist, setAnswerPersist] = useState([]);
   const [status, setStatus] = useState(0);
   const [updatedStatus, setUpdatedStatus] = useState(0);
+  const [progress, setProgress] = useState(0);
   const remainingTimeRef = useRef();
 
   const onOpenModal = () => setOpen(true);
@@ -63,7 +65,15 @@ const MultipleChoice = ({
               Authorization: `Bearer ${token}`,
             },
           });
-          setOptions(response.data);
+           const shuffleArray = (arr) => {
+            return arr
+              .map((a) => [Math.random(), a])
+              .sort((a, b) => a[0] - b[0])
+              .map((a) => a[1]);
+          };
+
+          const shuffledOptions = shuffleArray(response.data || []);
+          setOptions(shuffledOptions);
         }
       } catch (error) {
         if (error.status == 403) {
@@ -108,6 +118,12 @@ const MultipleChoice = ({
     }
     getUserResultId();
   }, [questionId, questionSetId]);
+
+  useEffect(() => {
+    if (totalAnswered > 0) {
+      setProgress(((totalAnswered) / totalQuestions) * 100);
+    }
+  });
 
   useEffect(() => {
     async function getAnswers() {
@@ -307,7 +323,7 @@ const MultipleChoice = ({
       isReviewed = 0;
       newStatus = 1;
     }
-
+    setProgress(((totalAnswered + 1) / totalQuestions) * 100);
     await testResultDtlSetData(updatedOptions, isReviewed, newStatus);
     // console.log(selectedOption);
   };
@@ -404,6 +420,7 @@ const MultipleChoice = ({
     // if (response?.status == 200) {
     //   onNext();
     // }
+    setProgress(((totalAnswered + 1) / totalQuestions) * 100);
     onNext();
   };
 
@@ -412,6 +429,7 @@ const MultipleChoice = ({
     // if (response?.status == 200) {
     //   onPrevious();
     // }
+    setProgress(((totalAnswered + 1) / totalQuestions) * 100);
     onPrevious();
   };
 
@@ -428,7 +446,7 @@ const MultipleChoice = ({
   const skipped = selectedOption.filter((q) => q.status === 0);
   // console.log(skipped);
 
-  let totalAnswered = attempted.length;
+  var totalAnswered = attempted.length;
   let totalReviewed = reviewed.length;
   let skippedQuestion = skipped.length;
 
@@ -459,12 +477,14 @@ const MultipleChoice = ({
     // linear-gradient(to bottom right, #a18cd1, #fbc2eb)
     <>
       <div
-        className="d-flex justify-content-center align-items-center vh-100"
+        className="d-flex flex-column justify-content-center align-items-center h-auto"
         style={{ background: "rgb(26,6,79)" }}
       >
+        <ProgressBar progress={progress} />
+
         <div
-          className="card shadow p-4 "
-          style={{ width: "90vw", borderRadius: "15px" }}
+          className="card shadow p-4 mb-5"
+          style={{ width: "90vw", borderRadius: "15px", userSelect: "none" }}
         >
           <div className="card-body " style={{ userSelect: "none" }}>
             <div className="d-flex justify-content-between items-center" >

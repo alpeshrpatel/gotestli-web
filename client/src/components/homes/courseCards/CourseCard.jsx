@@ -178,7 +178,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
               },
             }
           );
-          console.log(response.data);
+          console.log('coursecard',response.data);
           setQuestionsSet(response.data);
           if (response?.data && response?.data.res?.length > 0) {
             console.log(totalMarks)
