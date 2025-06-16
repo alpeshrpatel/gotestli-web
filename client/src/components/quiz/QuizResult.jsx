@@ -21,6 +21,7 @@ import "react-responsive-modal/styles.css";
 import { Rating } from "react-simple-star-rating";
 import QuizReport from "./QuizReport";
 import { showToast } from "@/utils/toastService";
+import MarksArcCircle from "./MarksArcCircle";
 
 export const satisfactionTooltips = [
   "Very Unsatisfied",
@@ -89,7 +90,8 @@ const QuizResult = ({}) => {
     percentage = 0,
     passPercentage = 0,
     questionSetId,
-    userResultId
+    userResultId, achievedMarks = 0,
+    totalMarks = 0,
   } = location.state || {};
 
   if (!location.state) {
@@ -103,6 +105,7 @@ const QuizResult = ({}) => {
   let userId = user.id;
   const org = JSON.parse(localStorage.getItem("org")) || "";
   let orgid = org?.id || 0;
+ 
 
   useEffect(() => {
     if (percentage >= passPercentage) {
@@ -333,7 +336,8 @@ const QuizResult = ({}) => {
             className="card shadow w-60 text-center p-4 "
             style={{ maxWidth: "500px", width: "100%" }}
           >
-            <div className="mb-4 w-50 mx-auto">
+            <div className="mb-4 w-75 mx-auto d-flex flex-row gap-4">
+              <MarksArcCircle achievedMarks={achievedMarks} totalMarks={totalMarks}/>
               <CircularProgressbar
                 value={percentage}
                 text={`${Math.round(percentage)}%`}

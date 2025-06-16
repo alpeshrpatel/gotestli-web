@@ -6,26 +6,40 @@ import "react-responsive-pagination/themes/classic.css";
 // import Pagination from "../common/Pagination";
 import PaginationTwo from "../common/PaginationTwo";
 import {
+  Card,
+  CardContent,
   Checkbox,
   FormControl,
   FormControlLabel,
   FormGroup,
+  Grid,
   Radio,
   RadioGroup,
   Switch,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import QuestionSetDetailForm from "./QuestionSetDetailForm";
 import Header from "../layout/headers/Header";
-import { useNavigate } from "react-router-dom";
+import { json, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BootstrapTooltip } from "../common/Tooltip";
 import { showToast } from "@/utils/toastService";
 import FooterOne from "../layout/footers/FooterOne";
+import QuizGuidelines from "./QuizGuideLines";
+import QuizAnalysisDisplay from "./QuizAnalysisDisplay";
+import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
+import AiQuizToggle from "./AiQuizToggle";
+
 // import axios from "axios";
+
+const SELECTED_QUESTIONS_KEY = "makeQuestionSet_selectedQuestions";
+const COMPLEXITY_COUNTER_KEY = "makeQuestionSet_complexityCounter";
+
+const COLORS = [  "#FF6347", "#6A5ACD", "#20B2AA", "#FF69B4", "#FFD700", "#ADFF2F"];
 
 const MakeQuestionSet = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -48,8 +62,12 @@ const MakeQuestionSet = () => {
   const [pageCapicity, setPageCapicity] = useState(10);
   const [viewQuestion, setViewQuestion] = useState(true);
   const [totalRecords, setTotalRecords] = useState();
-  const [loading,setLoading] = useState(false)
-  const [selectedViewOfActiveOrRetr,setSelectedViewOfActiveOrRetr] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [selectedViewOfActiveOrRetr, setSelectedViewOfActiveOrRetr] = useState('')
+  const [errors, setErrors] = useState([]);
+  const [analysisData, setAnalysisData] = useState(null);
+  const [complexityCounterPieChartData, setComplexityCounterPieChartData] = useState([]);
+  const [aiMode, setAiMode] = useState(false);
   const navigate = useNavigate();
 
   const onOpenModal = () => setOpen(true);
@@ -65,6 +83,7 @@ const MakeQuestionSet = () => {
   const indexOfFirstRecord = indexOfLastRecord - pageCapicity;
   // let shouldRenderPagination = questions.length > pageCapicity;
   let shouldRenderPagination = 1;
+  // let complexityCounterPieChartData = []
 
   const fetchData = async () => {
     setLoading(true)
@@ -74,25 +93,24 @@ const MakeQuestionSet = () => {
       if (token) {
         setLoading(true)
         let queryParams = `start=${start}&end=${end}`;
-        
-        // Add search term if exists
+
+
         if (searchTerm) {
           queryParams += `&search=${encodeURIComponent(searchTerm)}`;
         }
-        
-        // Add complexity filter if exists
-        console.log(complexityFilter)
+
+
         if (complexityFilter) {
           queryParams += `&complexity=${encodeURIComponent(complexityFilter)}`;
         }
-        
+
         // Add view filter (active/retired)
         if (selectedViewOfActiveOrRetr === "active") {
           queryParams += "&status=1";
         } else if (selectedViewOfActiveOrRetr === "retired") {
           queryParams += "&status=0";
         }
-        
+
         // Add category filter if exists
         if (filter) {
           const filteredCategory = categories.find(
@@ -132,22 +150,90 @@ const MakeQuestionSet = () => {
     }
   };
   useEffect(() => {
-   
     fetchData();
-  }, [pageCapicity,currentPage]);
-
-  
+  }, [pageCapicity, currentPage]);
 
   useEffect(() => {
     fetchData();
   }, [currentPage, pageCapicity]);
 
 
-  // Update filtered questions whenever filters change
+
   useEffect(() => {
     fetchData();
-  }, [searchTerm, complexityFilter, viewQuestion, questionSetsQuestions,selectedViewOfActiveOrRetr]);
+  }, [searchTerm, complexityFilter, viewQuestion, questionSetsQuestions, selectedViewOfActiveOrRetr]);
 
+  useEffect(() => {
+
+    if (selectedQuestions.length === 0) {
+      const savedSelectedQuestions = localStorage.getItem(SELECTED_QUESTIONS_KEY);
+
+      if (savedSelectedQuestions) {
+        try {
+          const parsedQuestions = JSON.parse(savedSelectedQuestions);
+          console.log("Parsed selected questions:", parsedQuestions);
+          setSelectedQuestions(parsedQuestions);
+        } catch (error) {
+          console.error("Error parsing saved selected questions:", error);
+          localStorage.removeItem(SELECTED_QUESTIONS_KEY);
+        }
+      }
+    }
+    console.log("Selected questions:", selectedQuestions);
+
+    if (complexityCounter.easy === 0 && complexityCounter.medium === 0 && complexityCounter.hard === 0) {
+      const savedComplexityCounter = localStorage.getItem(COMPLEXITY_COUNTER_KEY);
+      console.log("Saved complexity counter:", savedComplexityCounter);
+      if (savedComplexityCounter) {
+        try {
+          const parsedCounter = JSON.parse(savedComplexityCounter);
+          setComplexityCounter(parsedCounter);
+        } catch (error) {
+          console.error("Error parsing saved complexity counter:", error);
+          localStorage.removeItem(COMPLEXITY_COUNTER_KEY);
+        }
+      }
+    }
+      setComplexityCounterPieChartData( [
+    {
+      name: "Easy",
+      value: complexityCounter.easy || 0,
+      color: COLORS.easy,
+      percentage: selectedQuestions.length > 0 ? Math.round((complexityCounter.easy / selectedQuestions.length) * 100) : 0,
+    },
+    {
+      name: "Medium",
+      value: complexityCounter.medium || 0,
+      color: COLORS.medium,
+      percentage: selectedQuestions.length > 0 ? Math.round((complexityCounter.medium / selectedQuestions.length) * 100) : 0,
+    },
+    {
+      name: "Hard",
+      value: complexityCounter.hard || 0,
+      color: COLORS.hard,
+      percentage: selectedQuestions.length > 0 ? Math.round((complexityCounter.hard / selectedQuestions.length) * 100) : 0,
+    },
+  ])
+  }, [pageCapicity, currentPage, selectedQuestions.length]);
+
+
+  useEffect(() => {
+    if (selectedQuestions.length > 0) {
+      localStorage.setItem(SELECTED_QUESTIONS_KEY, JSON.stringify(selectedQuestions));
+    } else {
+      localStorage.removeItem(SELECTED_QUESTIONS_KEY);
+    }
+  }, [selectedQuestions]);
+
+
+  useEffect(() => {
+    if (selectedQuestions.length > 0) {
+       localStorage.setItem(COMPLEXITY_COUNTER_KEY, JSON.stringify(complexityCounter));
+    } else {
+      localStorage.removeItem(COMPLEXITY_COUNTER_KEY);
+    }
+   
+  }, [selectedQuestions]);
 
   useEffect(() => {
     setFilteredFromAll(questions);
@@ -158,17 +244,17 @@ const MakeQuestionSet = () => {
     questionSets.forEach((q) => {
       getQuestionsFromQSetId(q.question_set_id);
     });
-  }, [questionSets,pageCapicity,currentPage]);
+  }, [questionSets, pageCapicity, currentPage]);
 
   // useEffect(() => {
   //   if (filteredFromAll) {
   //     setLoading(false); 
-      
+
   //   }
   // }, [filteredFromAll]);
 
   // const applyFilters = (sourceQuestions = questions) => {
-    
+
   //   let result = [...sourceQuestions];
   //   console.log(' before applyfilter result length:',result.length)
   //   // Apply search filter
@@ -177,7 +263,7 @@ const MakeQuestionSet = () => {
   //       question.question?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   //     );
   //   }
-    
+
   //   // Apply category filter
   //   // if (filter !== "") {
   //   //   result = result.filter(question =>
@@ -186,7 +272,7 @@ const MakeQuestionSet = () => {
   //   //     )
   //   //   );
   //   // }
-    
+
   //   // Apply complexity filter
   //   if (complexityFilter) {
   //      result = result?.filter((question) => {
@@ -208,7 +294,7 @@ const MakeQuestionSet = () => {
   //       return matchesSearch && matchesCategory && matchesComplexity;
   //     });
   //   }
-    
+
   //   // Apply view filter (all, active, retired)
   //   if(selectedViewOfActiveOrRetr){
   //     if (selectedViewOfActiveOrRetr === "all") {
@@ -226,8 +312,8 @@ const MakeQuestionSet = () => {
   //       result = result?.filter((question) => !question.status_id);
   //     }
   //   }
-   
-    
+
+
   //   // Update total records and filtered questions
   //   setTotalRecords(result.length);
   //   console.log('applyfilter:',result)
@@ -239,6 +325,97 @@ const MakeQuestionSet = () => {
   //   result = questions
   // };
 
+  //  complexityCounterPieChartData = [
+  //   {
+  //     name: "Easy",
+  //     value: complexityCounter.easy || 0,
+  //     color: COLORS.easy,
+  //     percentage: selectedQuestions.length > 0 ? Math.round((complexityCounter.easy / selectedQuestions.length) * 100) : 0,
+  //   },
+  //   {
+  //     name: "Medium",
+  //     value: complexityCounter.medium || 0,
+  //     color: COLORS.medium,
+  //     percentage: selectedQuestions.length > 0 ? Math.round((complexityCounter.medium / selectedQuestions.length) * 100) : 0,
+  //   },
+  //   {
+  //     name: "Hard",
+  //     value: complexityCounter.hard || 0,
+  //     color: COLORS.hard,
+  //     percentage: selectedQuestions.length > 0 ? Math.round((complexityCounter.hard / selectedQuestions.length) * 100) : 0,
+  //   },
+  // ];
+
+
+  // const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+  //   const RADIAN = Math.PI / 180;
+  //   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  //   const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  //   const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  //   const complexityName = complexityCounterPieChartData[index]?.name || "";
+
+  // return (
+  //   <text
+  //     x={x}
+  //     y={y}
+  //     fill="white"
+  //     textAnchor={x > cx ? 'start' : 'end'}
+  //     dominantBaseline="central"
+  //     fontSize="12"
+  //     fontWeight="bold"
+  //   >
+  //     {`${complexityName}: ${(percent * 100).toFixed(0)}%`}
+  //   </text>
+  // );
+  // };
+
+  // Custom legend component
+
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+    const RADIAN = Math.PI / 180;
+    // Position labels outside the pie chart
+    const radius = outerRadius + 30; // Add padding outside the pie
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    const complexityName = complexityCounterPieChartData[index]?.name || "";
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill="black" 
+        textAnchor={x > cx ? 'start' : 'end'}
+        dominantBaseline="central"
+        fontSize="12"
+        fontWeight="bold"
+      >
+        {`${complexityName}: ${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
+
+  const CustomLegend = (props) => {
+    const { payload } = props;
+    return (
+      <Box display="flex" justifyContent="center" gap={3} mt={2}>
+        {payload.map((entry, index) => (
+          <Box key={index} display="flex" alignItems="center" gap={1}>
+            <Box
+              width={16}
+              height={16}
+              bgcolor={entry.color}
+              borderRadius="50%"
+            />
+            <Typography variant="body2" color="textSecondary">
+              {entry.value}: {complexityCounterPieChartData[index].value}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
+    );
+  };
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -284,7 +461,7 @@ const MakeQuestionSet = () => {
       getQuestionSetId(filteredCategory.id);
     }
   };
-   
+
 
   const getQuestionsFromQSetId = async (questionId) => {
     try {
@@ -322,13 +499,13 @@ const MakeQuestionSet = () => {
       const complexityKey = question?.complexity?.toLowerCase();
       return selectedQuestions.includes(question)
         ? {
-            ...prevCount,
-            [complexityKey]: (prevCount[complexityKey] || 0) - 1,
-          }
+          ...prevCount,
+          [complexityKey]: (prevCount[complexityKey] || 0) - 1,
+        }
         : {
-            ...prevCount,
-            [complexityKey]: (prevCount[complexityKey] || 0) + 1,
-          };
+          ...prevCount,
+          [complexityKey]: (prevCount[complexityKey] || 0) + 1,
+        };
     });
     setSelectedQuestions((prevSelectedQuestions) =>
       prevSelectedQuestions?.includes(question)
@@ -346,7 +523,7 @@ const MakeQuestionSet = () => {
         ))
   );
 
-  console.log(filteredFromAll);
+
   const questionSetStore = async (jsonData) => {
     try {
       if (token) {
@@ -412,8 +589,59 @@ const MakeQuestionSet = () => {
     //   }
     //   // console.log(error);
     // }
+    if(aiMode){
+    if (selectedQuestions.length < 5) {
+      setErrors(prev => ['Please select at least 5 questions to create a question set.'])
+      return;
+    } else if (selectedQuestions.length > 100) {
+      setErrors(prev => ['You can select a maximum of 100 questions.'])
+      return;
+    } else if (!validateDifficultyDistribution(selectedQuestions)) {
+      setErrors(prev => ['Please ensure 40% easy, 40% medium, and 20% hard questions are selected.'])
+      return;
+    }
+    setErrors([]);
+    const aiAnalysisResponse = await API.post('/api/groq/analyze/question/topics', {
+      questions: selectedQuestions
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    setAnalysisData(aiAnalysisResponse);
+    console.log('aiAnalysisResponse', aiAnalysisResponse);
+    if (aiAnalysisResponse?.data?.data?.topicDistribution?.balanced) {
+      onOpenModal()
+    }
+  }else {
     onOpenModal()
+  }
+    // onOpenModal()
   };
+
+  const validateDifficultyDistribution = (questions) => {
+    console.log('questions', questions);
+    const total = questions.length;
+    const easyCount = questions.filter(q => q.complexity?.toLowerCase() === 'easy').length;
+    const mediumCount = questions.filter(q => q.complexity?.toLowerCase() === 'medium').length;
+    const hardCount = questions.filter(q => q.complexity?.toLowerCase() === 'hard').length;
+
+    const easyPercentage = (easyCount / total) * 100;
+    const mediumPercentage = (mediumCount / total) * 100;
+    const hardPercentage = (hardCount / total) * 100;
+
+    console.log('easyPercentage', easyPercentage);
+    console.log('mediumPercentage', mediumPercentage);
+    console.log('hardPercentage', hardPercentage);
+    // Allow some tolerance (±5%) for the percentages
+    const tolerance = 5;
+
+    return (
+      Math.abs(easyPercentage - 40) <= tolerance &&
+      Math.abs(mediumPercentage - 40) <= tolerance &&
+      Math.abs(hardPercentage - 20) <= tolerance
+    );
+  }
 
   const handlePageChange = (event) => {
     const value = event.target.value;
@@ -422,7 +650,7 @@ const MakeQuestionSet = () => {
   // console.log(pageCapicity);
 
   const handleComplexityFilter = (event) => {
-    
+
     const selectedFilter = event.target.value;
     // setComplexityFilter((prev) => (prev.toLowerCase().includes(selectedFilter.toLowerCase())) ? prev.replace(selectedFilter,'') : prev?.join(selectedFilter))
     let updatedComplexity = "";
@@ -460,7 +688,7 @@ const MakeQuestionSet = () => {
     // });
     // setQuestions(filteredQuestions)
     // setFilteredFromAll(filteredQuestions);
-    
+
     // setTotalRecords(filteredQuestions.length)
   };
 
@@ -537,6 +765,18 @@ const MakeQuestionSet = () => {
     // setQuestions(filteredFromAll)
     // setTotalRecords(filteredQuestions.length)
   };
+
+  const handleResetSelectedQUestions = () => {
+    setSelectedQuestions([]);
+    setComplexityCounter({
+      easy: 0,
+      medium: 0,
+      hard: 0,
+    });
+    localStorage.removeItem(SELECTED_QUESTIONS_KEY);
+    localStorage.removeItem(COMPLEXITY_COUNTER_KEY);
+    setErrors([]);
+  }
   // console.log('sdgsg',filteredFromAll);
   // console.log('total records',totalRecords);
   // console.log('last sdgsg',filteredFromAll.slice(indexOfFirstRecord, indexOfLastRecord));
@@ -553,7 +793,7 @@ const MakeQuestionSet = () => {
           borderRadius: "10px",
           boxShadow:
             "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);",
-            marginBottom:'20px',
+          marginBottom: '20px',
         }}
       >
         <Typography
@@ -562,29 +802,40 @@ const MakeQuestionSet = () => {
         >
           Make Question Set
         </Typography>
-        <div>
-          <TextField
-            id="outlined-search"
-            label="Search Questions"
-            type="search"
-            className="searchInput mb-2"
-            onChange={handleSearch}
-          />
-        </div>
+        <AiQuizToggle aiMode={aiMode} setAiMode={setAiMode}/>
+        {
+          aiMode && (
+            <QuizGuidelines />
+          )
+        }
+        
+        <div className="d-flex justify-content-center gap-4 align-items-center mb-3">
+          <div className={`col-md-12 ${selectedQuestions.length > 0 ? 'col-lg-8' : 'col-lg-12'} `}>
 
-        <select
-          value={filter}
-          onChange={handleFilter}
-          className="filterDropdown mb-2"
-        >
-          <option value="">All</option>
-          {categories?.map((category, index) => (
-            <option key={index} value={category?.title?.toLowerCase()}>
-              {category.title}
-            </option>
-          ))}
-        </select>
-        {/* <div style={{display:'flex'}}>
+
+            <div>
+              <TextField
+                id="outlined-search"
+                label="Search Questions"
+                type="search"
+                className="searchInput mb-2"
+                onChange={handleSearch}
+              />
+            </div>
+
+            <select
+              value={filter}
+              onChange={handleFilter}
+              className="filterDropdown mb-2"
+            >
+              <option value="">All</option>
+              {categories && categories.length > 0 && categories?.map((category, index) => (
+                <option key={index} value={category?.title?.toLowerCase()}>
+                  {category.title}
+                </option>
+              ))}
+            </select>
+            {/* <div style={{display:'flex'}}>
           <div style={{width:'33vw',display:'flex',gap:4,alignItems:'center'}}>
             <Typography variant="h6" gutterBottom>Easy</Typography>
             <div style={{border:'1px solid black', padding:'1px 6px', margin:'10px 0'}}>{complexityCounter.easy}</div>
@@ -598,166 +849,166 @@ const MakeQuestionSet = () => {
             <div style={{border:'1px solid black', padding:'1px 6px', margin:'10px 0'}}>{complexityCounter.hard}</div>
           </div>
         </div> */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-evenly",
-            padding: "10px",
-            background: "#f8f9fa",
-            borderRadius: "6px",
-            flexWrap: "wrap",
-          }}
-        >
-          {/* Easy Section */}
-          <div
-            style={{
-              // width: "20%",
-              display: "flex",
-              gap: "10px",
-              alignItems: "center",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-              <Checkbox
-                value="easy"
-                checked={complexityFilter?.toLowerCase()?.includes("easy")}
-                onChange={handleComplexityFilter}
-              />
-
-              <label
-                htmlFor="easy"
-                style={{
-                  fontSize: "1rem",
-                  fontWeight: "bold",
-                  color: "#155724",
-                  marginBottom: 0,
-                }}
-              >
-                Easy
-              </label>
-            </div>
             <div
               style={{
-                border: "1px solid #155724",
-                padding: "4px 12px",
-                backgroundColor: "#d4edda",
-                borderRadius: "4px",
-                color: "#155724",
-                fontWeight: "bold",
+                display: "flex",
+                justifyContent: "space-evenly",
+                padding: "10px",
+                background: "#f8f9fa",
+                borderRadius: "6px",
+                flexWrap: "wrap",
               }}
             >
-              {complexityCounter.easy}
-            </div>
-          </div>
-
-          {/* Medium Section */}
-          <div
-            style={{
-              // width: "20%",
-              display: "flex",
-              gap: "10px",
-              alignItems: "center",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-              <Checkbox
-                value="medium"
-                checked={complexityFilter.includes("medium")}
-                onChange={handleComplexityFilter}
-              />
-              <label
-                htmlFor="medium"
+              {/* Easy Section */}
+              <div
                 style={{
-                  fontSize: "1rem",
-                  fontWeight: "bold",
-                  color: "#856404",
-                  marginBottom: 0,
+                  // width: "20%",
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "center",
                 }}
               >
-                Medium
-              </label>
-            </div>
-            <div
-              style={{
-                border: "1px solid #856404",
-                padding: "4px 12px",
-                backgroundColor: "#fff3cd",
-                borderRadius: "4px",
-                color: "#856404",
-                fontWeight: "bold",
-              }}
-            >
-              {complexityCounter.medium}
-            </div>
-          </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                  <Checkbox
+                    value="easy"
+                    checked={complexityFilter?.toLowerCase()?.includes("easy")}
+                    onChange={handleComplexityFilter}
+                  />
 
-          {/* Hard Section */}
-          <div
-            style={{
-              // width: "20%",
-              display: "flex",
-              gap: "10px",
-              alignItems: "center",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-              <Checkbox
-                value="hard"
-                checked={complexityFilter.includes("hard")}
-                onChange={handleComplexityFilter}
-              />
-              <label
-                htmlFor="hard"
+                  <label
+                    htmlFor="easy"
+                    style={{
+                      fontSize: "1rem",
+                      fontWeight: "bold",
+                      color: "#155724",
+                      marginBottom: 0,
+                    }}
+                  >
+                    Easy
+                  </label>
+                </div>
+                <div
+                  style={{
+                    border: "1px solid #155724",
+                    padding: "4px 12px",
+                    backgroundColor: "#d4edda",
+                    borderRadius: "4px",
+                    color: "#155724",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {complexityCounter.easy}
+                </div>
+              </div>
+
+              {/* Medium Section */}
+              <div
                 style={{
-                  fontSize: "1rem",
-                  fontWeight: "bold",
-                  color: "#721c24",
-                  marginBottom: 0,
+                  // width: "20%",
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "center",
                 }}
               >
-                Hard
-              </label>
-            </div>
-            <div
-              style={{
-                border: "1px solid #721c24",
-                padding: "4px 12px",
-                backgroundColor: "#f8d7da",
-                borderRadius: "4px",
-                color: "#721c24",
-                fontWeight: "bold",
-              }}
-            >
-              {complexityCounter.hard}
-            </div>
-          </div>
-        </div>
-        <div className="d-flex " style={{ justifyContent: "flex-start" }}>
-          <div className="d-flex" style={{ justifyContent: "flex-start" }}>
-            <FormControl>
-              <RadioGroup
-                aria-labelledby="view-questions-radio-group-label"
-                defaultValue="all" // Default to "All" questions
-                name="view-questions-radio-group"
-                onChange={(e) => handleViewChange(e.target.value)}
-                style={{ flexDirection: "row" }} // Horizontal layout
-              >
-                <FormControlLabel value="all" control={<Radio />} label="All" />
-                <FormControlLabel
-                  value="active"
-                  control={<Radio />}
-                  label="Active"
-                />
-                <FormControlLabel
-                  value="retired"
-                  control={<Radio />}
-                  label="Retired"
-                />
-              </RadioGroup>
-            </FormControl>
-          </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                  <Checkbox
+                    value="medium"
+                    checked={complexityFilter.includes("medium")}
+                    onChange={handleComplexityFilter}
+                  />
+                  <label
+                    htmlFor="medium"
+                    style={{
+                      fontSize: "1rem",
+                      fontWeight: "bold",
+                      color: "#856404",
+                      marginBottom: 0,
+                    }}
+                  >
+                    Medium
+                  </label>
+                </div>
+                <div
+                  style={{
+                    border: "1px solid #856404",
+                    padding: "4px 12px",
+                    backgroundColor: "#fff3cd",
+                    borderRadius: "4px",
+                    color: "#856404",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {complexityCounter.medium}
+                </div>
+              </div>
 
-          {/* <BootstrapTooltip title={'Toggle to see active or retire questions.'}>
+              {/* Hard Section */}
+              <div
+                style={{
+                  // width: "20%",
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "center",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                  <Checkbox
+                    value="hard"
+                    checked={complexityFilter.includes("hard")}
+                    onChange={handleComplexityFilter}
+                  />
+                  <label
+                    htmlFor="hard"
+                    style={{
+                      fontSize: "1rem",
+                      fontWeight: "bold",
+                      color: "#721c24",
+                      marginBottom: 0,
+                    }}
+                  >
+                    Hard
+                  </label>
+                </div>
+                <div
+                  style={{
+                    border: "1px solid #721c24",
+                    padding: "4px 12px",
+                    backgroundColor: "#f8d7da",
+                    borderRadius: "4px",
+                    color: "#721c24",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {complexityCounter.hard}
+                </div>
+              </div>
+            </div>
+            <div className="d-flex " style={{ justifyContent: "flex-start" }}>
+              <div className="d-flex" style={{ justifyContent: "flex-start" }}>
+                <FormControl>
+                  <RadioGroup
+                    aria-labelledby="view-questions-radio-group-label"
+                    defaultValue="all" // Default to "All" questions
+                    name="view-questions-radio-group"
+                    onChange={(e) => handleViewChange(e.target.value)}
+                    style={{ flexDirection: "row" }} // Horizontal layout
+                  >
+                    <FormControlLabel value="all" control={<Radio />} label="All" />
+                    <FormControlLabel
+                      value="active"
+                      control={<Radio />}
+                      label="Active"
+                    />
+                    <FormControlLabel
+                      value="retired"
+                      control={<Radio />}
+                      label="Retired"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </div>
+
+              {/* <BootstrapTooltip title={'Toggle to see active or retire questions.'}>
                       <Switch
                         checked={viewQuestion}
                         onChange={(e) =>
@@ -766,88 +1017,164 @@ const MakeQuestionSet = () => {
                         inputProps={{ "aria-label": "controlled" }}
                       />
                       </BootstrapTooltip> */}
-        </div>
+            </div>
 
-        <div className="checkboxContainer mt-3">
-          <ul>
-            { 
-             !loading && filteredFromAll.length > 0  ? (
-              filteredFromAll
-                // .slice(indexOfFirstRecord, indexOfLastRecord)
-                .map((question, index) => (
-                  <div
-                    key={index}
-                    className="checkboxItem gap-2 text-black d-flex justify-content-between"
+            <div className="checkboxContainer mt-3">
+              <ul>
+                {
+                  !loading && filteredFromAll.length > 0 ? (
+                    filteredFromAll
+                      // .slice(indexOfFirstRecord, indexOfLastRecord)
+                      .map((question, index) => (
+                        <div
+                          key={index}
+                          className="checkboxItem gap-2 text-black d-flex justify-content-between"
+                        >
+                          <div
+                            className="d-flex gap-2 "
+                            style={{ alignItems: "center" }}
+                          >
+                            <BootstrapTooltip
+                              title={"Toggle to activate or retire this question."}
+                            >
+                              <Switch
+                                checked={question.status_id}
+                                onChange={(e) =>
+                                  handleActiveChange(question.id, e.target.checked)
+                                }
+                                inputProps={{ "aria-label": "controlled" }}
+                              />
+                            </BootstrapTooltip>
+                            {question.status_id == 1 ? (
+                              <input
+                                className="p-2 border-0"
+                                type="checkbox"
+                                // checked={selectedQuestions.includes(question)}
+                                checked={selectedQuestions.some(selectedQ => selectedQ.id === question.id)}
+                                onChange={() => handleCheckboxChange(question)}
+                              />
+                            ) : ' '}
+
+                            <label>{question.question}</label>
+                          </div>
+                          <h6>{question.complexity}</h6>
+                        </div>
+                      ))) : (
+                    totalRecords ? 'Loading......' : 'No Questions Found!'
+                  )
+                }
+              </ul>
+              {shouldRenderPagination && (
+                <div className="w-75 m-auto d-flex align-items-center justify-content-center">
+                  <PaginationTwo
+                    pageNumber={currentPage}
+                    setPageNumber={setCurrentPage}
+                    data={filteredFromAll}
+                    pageCapacity={pageCapicity}
+                    totalRecords={totalRecords}
+                  />
+                  <select
+                    className="filterDropdown"
+                    value={pageCapicity}
+                    onChange={handlePageChange}
+                    style={{ margin: "auto 30px", width: '100px' }}
                   >
-                    <div
-                      className="d-flex gap-2 "
-                      style={{ alignItems: "center" }}
-                    >
-                      <BootstrapTooltip
-                        title={"Toggle to activate or retire this question."}
-                      >
-                        <Switch
-                          checked={question.status_id}
-                          onChange={(e) =>
-                            handleActiveChange(question.id, e.target.checked)
-                          }
-                          inputProps={{ "aria-label": "controlled" }}
-                        />
-                      </BootstrapTooltip>
-                      {question.status_id == 1 ? (
-                        <input
-                          className="p-2 border-0"
-                          type="checkbox"
-                          checked={selectedQuestions.includes(question)}
-                          onChange={() => handleCheckboxChange(question)}
-                        />
-                      ) : ' '}
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                </div>
+              )}
+              {
+                errors && errors.length > 0 && (
+                  <div className="error-details" style={{
+                    background: 'white',
+                    border: '2px solid #ff6b6b',
+                    borderRadius: '10px',
+                    padding: '20px', alignContent: 'center', marginTop: '20px'
+                  }}>
+                    <h4 className="text-red-5 fs-5">⚠️ Please Note:</h4>
 
-                      <label>{question.question}</label>
-                    </div>
-                    <h6>{question.complexity}</h6>
+                    {errors && errors.map((error, index) => (
+                      <div key={index} className="error-row">
+
+                        <ul>
+                          {/* {errors.map((err, errIndex) => ( */}
+                          <li key={index}>{error}</li>
+                          {/* ))} */}
+                        </ul>
+                      </div>
+                    ))}
                   </div>
-                ))) : (
-                 totalRecords ? 'Loading......' : 'No Questions Found!'
                 )
               }
-          </ul>
-          {shouldRenderPagination && (
-            <div className="w-75 m-auto d-flex align-items-center justify-content-center">
-              <PaginationTwo
-                pageNumber={currentPage}
-                setPageNumber={setCurrentPage}
-                data={filteredFromAll}
-                pageCapacity={pageCapicity}
-                totalRecords={totalRecords}
-              />
-              <select
-                className="filterDropdown"
-                value={pageCapicity}
-                onChange={handlePageChange}
-                style={{ margin: "auto 30px",width:'100px' }}
-              >
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-            </div>
-          )}
+              {
+                analysisData && aiMode && (
+                  <QuizAnalysisDisplay analysisData={analysisData} />
+                )
+              }
 
-          {selectedQuestions.length > 0 && (
-            <button
-              className="button -md px-24 py-20 text-green-5 -outline-green-5  text-16 fw-bolder lh-sm mt-4 mx-auto"
-              onClick={handleSubmit}
-            >
-              Create QuestionSet
-            </button>
-          )}
+
+              {selectedQuestions.length > 0 && (
+                <div className="d-flex flex-row align-items-center justify-content-center gap-4 mx-auto ">
+                  <button
+                    className="button -md px-24 py-20 text-green-5 -outline-green-5  text-16 fw-bolder lh-sm mt-4 "
+                    // style={{ cursor: analysisData?.data?.data?.topicDistribution?.balanced ? 'pointer' : 'not-allowed' }}
+
+                    onClick={handleSubmit}
+                  >
+                    Create QuestionSet
+                  </button>
+                  <button className="button -sm px-24 py-10 text-red-3 -outline-red-3 mt-4  fw-bolder  text-14 mx-auto"
+                    // style={{ cursor: analysisData?.data?.data?.topicDistribution?.balanced ? 'pointer' : 'not-allowed' }}
+
+                    onClick={handleResetSelectedQUestions}
+                  >
+                    Reset
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+          {
+            selectedQuestions.length > 0 && (
+              <Grid item className="col-md-12 col-lg-4">
+                <Card sx={{ height: "500px" }}>
+                  <CardContent>
+                    <Typography variant="h6">Selected Questions (%)</Typography>
+                    <div style={{ width: "100%", height: 400 }}>
+                      <ResponsiveContainer>
+                        <PieChart>
+                          <Pie
+                            data={complexityCounterPieChartData}
+                            cx="50%" // Center horizontally
+                            cy="50%" // Center vertically
+                            labelLine={false}
+                            label={renderCustomizedLabel}
+                            outerRadius={60} // Reduced to make room for external labels
+                            fill="#8884d8"
+                            dataKey="value"
+                          >
+                            {complexityCounterPieChartData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Grid>
+            )
+          }
+
         </div>
+
       </div>
       <Modal
         open={open}
-        onClose={() => {}}
+        onClose={() => { }}
         showCloseIcon={false}
         // onClose={onCloseModal}
         center
