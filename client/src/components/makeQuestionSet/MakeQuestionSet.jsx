@@ -29,7 +29,7 @@ import { toast } from "react-toastify";
 import { BootstrapTooltip } from "../common/Tooltip";
 import { showToast } from "@/utils/toastService";
 import FooterOne from "../layout/footers/FooterOne";
-import QuizGuidelines from "./QuizGuideLines";
+import QuizGuidelines from "./QuizGuidelines";
 import QuizAnalysisDisplay from "./QuizAnalysisDisplay";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 import AiQuizToggle from "./AiQuizToggle";
