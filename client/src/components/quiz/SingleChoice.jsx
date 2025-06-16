@@ -13,9 +13,10 @@ import QuestionSet from "./QuestionSet";
 import { useNavigate } from "react-router-dom";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import SubmitQuizModal from "./SubmitQuizModal/SubmitQuizModal";
-import { Radio } from "@mui/material";
+import { IconButton, Radio } from "@mui/material";
 import CommentForQuestion from "../common/CommentForQuestion";
 import ProgressBar from "../common/ProgressBar";
+import { faFlag } from "@fortawesome/free-regular-svg-icons";
 
 const SingleChoice = ({
   time,
@@ -446,6 +447,19 @@ const SingleChoice = ({
               ) : null} */}
 
               <div className="card-title gap-2 d-flex align-items-center">
+                {/* <IconButton onClick={handleReviewClick} sx={{
+                    marginRight: "50px",
+                    color: selectedOption.some(
+                      (selected) =>
+                        selected.id === questionId &&
+                        (selected.status == 2 || selected.status == 3)
+                    )
+                      ? "#6a1b9a"
+                      : "",
+                  }}>
+                  <FontAwesomeIcon icon={faFlag} />
+                </IconButton> */}
+                
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"

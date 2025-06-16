@@ -83,7 +83,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal, totalMark
   let lastAttemptedQuestion;
   const org = JSON.parse(localStorage.getItem("org")) || "";
   let orgid = org?.id || 0;
-
+  localStorage.setItem("totalMarks", totalMarks);
 
   useEffect(() => {
     // async function getPendingQuiz() {
@@ -190,16 +190,20 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal, totalMark
 
   console.log('totalMarks:', totalMarks)
   console.log('type:', typeof questionSet)
+  // const shuffleArray = (arr) => {
+  //           return arr
+  //             .map((a) => [Math.random(), a])
+  //             .sort((a, b) => a[0] - b[0])
+  //             .map((a) => a[1]);
+  //         };
   const shuffleArray = (arr) => {
-            return arr
-              .map((a) => [Math.random(), a])
-              .sort((a, b) => a[0] - b[0])
-              .map((a) => a[1]);
-          };
+    return arr.sort((a, b) => a.marks - b.marks)
+  }
 
-          const shuffledQuestions = shuffleArray(questionSet.res || []);
-          const shuffledQSetResponse = {...questionSet, res: shuffledQuestions };
-          console.log("Shuffled Questions:", shuffledQuestions);
+
+  const shuffledQuestions = shuffleArray(questionSet.res || []);
+  const shuffledQSetResponse = { ...questionSet, res: shuffledQuestions };
+  console.log("Shuffled Questions:", shuffledQuestions);
 
   async function getLastAttemptedQuestionId(id) {
     if (id) {
@@ -265,9 +269,9 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal, totalMark
             },
           }
         );
-        
+
         if (res.status == 200) {
-          
+
           navigate("/quiz/questions", {
             state: { questionSetId: id, questionSet: shuffledQSetResponse, time: time },
           });
@@ -401,7 +405,8 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal, totalMark
         time: time,
         timerOn: timerOnValue,
         lastAttemptedQuestion: lastAttemptIndex,
-        questionsData: data
+        questionsData: data,
+        totalMarks: totalMarks,
       },
     });
   };

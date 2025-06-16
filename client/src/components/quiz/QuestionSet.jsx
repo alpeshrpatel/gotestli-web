@@ -146,7 +146,7 @@ const QuestionSet = () => {
     questionSet,
     time,
     timerOn,
-    lastAttemptedQuestion, questionsData
+    lastAttemptedQuestion, questionsData,totalMarks
   } = location.state;
   const org = JSON.parse(localStorage.getItem("org")) || "";
   let orgid = org?.id || 0;

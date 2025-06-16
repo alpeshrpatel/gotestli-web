@@ -45,6 +45,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   const [ratingsData, setRatingsData] = useState([]);
   const [totalRatings, setTotalRatings] = useState(0);
   const [purchasedQSet, setPurchasedQSet] = useState([]);
+  const [totalMarks, setTotalMarks] = useState(0);
 
   const navigate = useNavigate();
 
@@ -54,7 +55,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   const userRole = user?.role;
   const org = JSON.parse(localStorage.getItem("org")) || "";
   let orgid = org?.id || 0;
-  let totalMarks = 0;
+  // let totalMarks = 0;
 
   useEffect(() => {
     async function getRating() {
@@ -181,11 +182,12 @@ export default function CourceCard({ view, search = null, role, data, index }) {
           console.log('coursecard',response.data);
           setQuestionsSet(response.data);
           if (response?.data && response?.data.res?.length > 0) {
-            console.log(totalMarks)
-             totalMarks = response.data.res.reduce(
+           
+            let totalMarksCalc = response.data.res.reduce(
               (acc, question) => acc + question.marks,
               0
             );
+            setTotalMarks(totalMarksCalc);
 
           }
 

@@ -42,11 +42,13 @@ const SubmitQuizModal = ({
         },
       });
 
-       // console.log(data);
+        console.log(data);
       const correct = data.correct;
       const wrong = data.wrong;
       const percentage = data.percentage;
       const passPercentage = data.passPercentage;
+      const achievedMarks = data.achievedMarks;
+      const totalMarks = data.totalMarks;
        // console.log(correct);
        // console.log(wrong);
 
@@ -65,7 +67,9 @@ const SubmitQuizModal = ({
           percentage: percentage,
           passPercentage: passPercentage,
           questionSetId:questionSetId,
-          userResultId:userResultId
+          userResultId:userResultId,
+          achievedMarks: achievedMarks,
+          totalMarks: totalMarks,
 
         },
       });
