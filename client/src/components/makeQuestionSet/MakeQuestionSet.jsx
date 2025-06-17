@@ -68,6 +68,13 @@ const MakeQuestionSet = () => {
   const [analysisData, setAnalysisData] = useState(null);
   const [complexityCounterPieChartData, setComplexityCounterPieChartData] = useState([]);
   const [aiMode, setAiMode] = useState(false);
+   const [customSettings, setCustomSettings] = useState({
+      easyPercentage: 40,
+      mediumPercentage: 40,
+      hardPercentage: 20,
+      minQuestions: 10,
+      minTopics: 3
+    });
   const navigate = useNavigate();
 
   const onOpenModal = () => setOpen(true);
@@ -590,7 +597,7 @@ const MakeQuestionSet = () => {
     //   // console.log(error);
     // }
     if(aiMode){
-    if (selectedQuestions.length < 5) {
+    if (selectedQuestions.length < customSettings.minQuestions) {
       setErrors(prev => ['Please select at least 5 questions to create a question set.'])
       return;
     } else if (selectedQuestions.length > 100) {
@@ -602,14 +609,15 @@ const MakeQuestionSet = () => {
     }
     setErrors([]);
     const aiAnalysisResponse = await API.post('/api/groq/analyze/question/topics', {
-      questions: selectedQuestions
+      questions: selectedQuestions,
+      topics: customSettings.minTopics
     }, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
     setAnalysisData(aiAnalysisResponse);
-    console.log('aiAnalysisResponse', aiAnalysisResponse);
+   
     if (aiAnalysisResponse?.data?.data?.topicDistribution?.balanced) {
       onOpenModal()
     }
@@ -630,16 +638,13 @@ const MakeQuestionSet = () => {
     const mediumPercentage = (mediumCount / total) * 100;
     const hardPercentage = (hardCount / total) * 100;
 
-    console.log('easyPercentage', easyPercentage);
-    console.log('mediumPercentage', mediumPercentage);
-    console.log('hardPercentage', hardPercentage);
     // Allow some tolerance (±5%) for the percentages
     const tolerance = 5;
 
     return (
-      Math.abs(easyPercentage - 40) <= tolerance &&
-      Math.abs(mediumPercentage - 40) <= tolerance &&
-      Math.abs(hardPercentage - 20) <= tolerance
+      Math.abs(easyPercentage - customSettings.easyPercentage) <= tolerance &&
+      Math.abs(mediumPercentage - customSettings.mediumPercentage) <= tolerance &&
+      Math.abs(hardPercentage - customSettings.hardPercentage) <= tolerance
     );
   }
 
@@ -805,7 +810,7 @@ const MakeQuestionSet = () => {
         <AiQuizToggle aiMode={aiMode} setAiMode={setAiMode}/>
         {
           aiMode && (
-            <QuizGuidelines />
+            <QuizGuidelines customSettings={customSettings} setCustomSettings={setCustomSettings}/>
           )
         }
         
