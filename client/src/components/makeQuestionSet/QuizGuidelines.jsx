@@ -159,7 +159,7 @@
 //                 e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
 //                 e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
 //                 e.currentTarget.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.4)';
-                
+
 //                 const iconContainer = e.currentTarget.querySelector('.icon-container');
 //                 const emoji = e.currentTarget.querySelector('.emoji');
 //                 if (iconContainer) iconContainer.style.transform = 'scale(1.1)';
@@ -170,7 +170,7 @@
 //                 e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
 //                 e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
 //                 e.currentTarget.style.boxShadow = 'none';
-                
+
 //                 const iconContainer = e.currentTarget.querySelector('.icon-container');
 //                 const emoji = e.currentTarget.querySelector('.emoji');
 //                 if (iconContainer) iconContainer.style.transform = 'scale(1)';
@@ -186,7 +186,7 @@
 //                 transition: 'opacity 0.3s ease',
 //                 zIndex: 1
 //               }}></div>
-              
+
 //               {/* Content */}
 //               <div style={cardContentStyle}>
 //                 {/* Icon Container */}
@@ -199,12 +199,12 @@
 //                 >
 //                   <span style={{ color: 'white', fontSize: '1.25rem' }}>✓</span>
 //                 </div>
-                
+
 //                 {/* Text */}
 //                 <div style={textStyle}>
 //                   {guideline.text}
 //                 </div>
-                
+
 //                 {/* Emoji */}
 //                 <div className="emoji" style={emojiStyle}>
 //                   {guideline.icon}
@@ -247,7 +247,7 @@
 //             transform: translateY(0);
 //           }
 //         }
-        
+
 //         @keyframes pulse {
 //           0%, 100% {
 //             opacity: 1;
@@ -272,7 +272,7 @@
 
 import React, { useState } from 'react';
 
-const QuizGuidelines = ({customSettings, setCustomSettings}) => {
+const QuizGuidelines = ({ customSettings, setCustomSettings }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   // const [customSettings, setCustomSettings] = useState({
   //   easyPercentage: 40,
@@ -290,7 +290,7 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
     },
     {
       text: `Minimum ${customSettings.minQuestions} questions per quiz`,
-      icon: "✅", 
+      icon: "✅",
       color: "linear-gradient(135deg, #3b82f6, #1d4ed8)"
     },
     {
@@ -328,15 +328,16 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
   };
 
   const containerStyle = {
-    minHeight: '100vh',
+    minHeight: '40vh',
     background: 'linear-gradient(135deg, #0f172a 0%, #581c87 50%, #0f172a 100%)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '2rem',
+    padding: '1rem',
+    paddingTop: '1.5rem',
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     borderRadius: '10px',
-    marginBottom: '2rem',
+    marginBottom: '1rem',
   };
 
   const mainContentStyle = {
@@ -346,14 +347,14 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
 
   const headerStyle = {
     textAlign: 'center',
-    marginBottom: '3rem'
+    marginBottom: '2rem'
   };
 
   const titleStyle = {
     fontSize: '1.5rem',
     fontWeight: 'bold',
     color: 'white',
-    marginBottom: '1rem',
+    marginBottom: '0.5rem',
     letterSpacing: '-0.025em',
     background: 'linear-gradient(135deg, #a855f7, #ec4899)',
     WebkitBackgroundClip: 'text',
@@ -372,7 +373,7 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
   const guidelinesContainerStyle = {
     display: 'flex',
     flexDirection: 'column',
-    gap: '1.5rem'
+    gap: '0.5rem'
   };
 
   const cardBaseStyle = {
@@ -382,7 +383,7 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
     background: 'rgba(255, 255, 255, 0.05)',
     backdropFilter: 'blur(10px)',
     border: '1px solid rgba(255, 255, 255, 0.1)',
-    padding: '1.5rem',
+    padding: '1rem',
     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     cursor: 'pointer'
   };
@@ -398,7 +399,7 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
   const iconContainerBaseStyle = {
     flexShrink: 0,
     width: '48px',
-    height: '48px',
+    height: '30px',
     borderRadius: '50%',
     display: 'flex',
     alignItems: 'center',
@@ -423,7 +424,7 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
 
   const footerStyle = {
     textAlign: 'center',
-    marginTop: '3rem'
+    marginTop: '1rem'
   };
 
   const footerContentStyle = {
@@ -493,7 +494,7 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
   };
 
   const formGroupStyle = {
-    marginBottom: '1.5rem'
+    marginBottom: '1rem'
   };
 
   const labelStyle = {
@@ -565,8 +566,8 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
       <div style={mainContentStyle}>
         {/* Header */}
         <div style={headerStyle}>
-          <h1 style={{fontSize: '1.5rem', fontWeight: 'bold', color: 'white', marginBottom: '0.5rem'}}>
-            Quiz Creation <span style={titleStyle}>Guidelines</span> 
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white', marginBottom: '0.5rem' }}>
+            Quiz Creation <span style={titleStyle}>Guidelines</span>
           </h1>
           <div style={dividerStyle}></div>
         </div>
@@ -586,7 +587,7 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
                 e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
                 e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
                 e.currentTarget.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.4)';
-                
+
                 const iconContainer = e.currentTarget.querySelector('.icon-container');
                 const emoji = e.currentTarget.querySelector('.emoji');
                 if (iconContainer) iconContainer.style.transform = 'scale(1.1)';
@@ -597,7 +598,7 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
                 e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
                 e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
                 e.currentTarget.style.boxShadow = 'none';
-                
+
                 const iconContainer = e.currentTarget.querySelector('.icon-container');
                 const emoji = e.currentTarget.querySelector('.emoji');
                 if (iconContainer) iconContainer.style.transform = 'scale(1)';
@@ -613,11 +614,11 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
                 transition: 'opacity 0.3s ease',
                 zIndex: 1
               }}></div>
-              
+
               {/* Content */}
               <div style={cardContentStyle}>
                 {/* Icon Container */}
-                <div 
+                <div
                   className="icon-container"
                   style={{
                     ...iconContainerBaseStyle,
@@ -626,12 +627,12 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
                 >
                   <span style={{ color: 'white', fontSize: '1.25rem' }}>✓</span>
                 </div>
-                
+
                 {/* Text */}
                 <div style={textStyle}>
                   {guideline.text}
                 </div>
-                
+
                 {/* Emoji */}
                 <div className="emoji" style={emojiStyle}>
                   {guideline.icon}
@@ -655,7 +656,7 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
               animationDelay: '0.5s'
             }}></div>
           </div>
-          <div 
+          <div
             style={customizeLinkStyle}
             onClick={() => setIsModalOpen(true)}
             onMouseEnter={(e) => e.target.style.color = '#ec4899'}
@@ -687,7 +688,7 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
                 <div style={labelStyle}>Question Difficulty Distribution (%)</div>
                 <div style={percentageGroupStyle}>
                   <div>
-                    <div style={{...labelStyle, fontSize: '0.75rem', marginBottom: '0.25rem'}}>Easy</div>
+                    <div style={{ ...labelStyle, fontSize: '0.75rem', marginBottom: '0.25rem' }}>Easy</div>
                     <input
                       type="number"
                       min="0"
@@ -706,7 +707,7 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
                     />
                   </div>
                   <div>
-                    <div style={{...labelStyle, fontSize: '0.75rem', marginBottom: '0.25rem'}}>Medium</div>
+                    <div style={{ ...labelStyle, fontSize: '0.75rem', marginBottom: '0.25rem' }}>Medium</div>
                     <input
                       type="number"
                       min="0"
@@ -725,7 +726,7 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
                     />
                   </div>
                   <div>
-                    <div style={{...labelStyle, fontSize: '0.75rem', marginBottom: '0.25rem'}}>Hard</div>
+                    <div style={{ ...labelStyle, fontSize: '0.75rem', marginBottom: '0.25rem' }}>Hard</div>
                     <input
                       type="number"
                       min="0"
@@ -744,50 +745,53 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
                     />
                   </div>
                 </div>
-                <div style={{fontSize: '0.75rem', color: customSettings.easyPercentage + customSettings.mediumPercentage + customSettings.hardPercentage === 100 ? '#10b981' : '#ef4444', marginTop: '0.5rem'}}>
-                  Total: {customSettings.easyPercentage + customSettings.mediumPercentage + customSettings.hardPercentage}% 
+                <div style={{ fontSize: '0.75rem', color: customSettings.easyPercentage + customSettings.mediumPercentage + customSettings.hardPercentage === 100 ? '#10b981' : '#ef4444', marginTop: '0.5rem' }}>
+                  Total: {customSettings.easyPercentage + customSettings.mediumPercentage + customSettings.hardPercentage}%
                   {customSettings.easyPercentage + customSettings.mediumPercentage + customSettings.hardPercentage !== 100 && ' (Must equal 100%)'}
                 </div>
               </div>
+              <div style={{ display: 'flex', gap: '15px' }}>
 
-              {/* Minimum Questions */}
-              <div style={formGroupStyle}>
-                <div style={labelStyle}>Minimum Questions per Quiz</div>
-                <input
-                  type="number"
-                  min="1"
-                  value={customSettings.minQuestions}
-                  onChange={(e) => handleSettingsChange('minQuestions', e.target.value)}
-                  style={inputStyle}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#a855f7';
-                    e.target.style.boxShadow = '0 0 0 3px rgba(168, 85, 247, 0.1)';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                    e.target.style.boxShadow = 'none';
-                  }}
-                />
-              </div>
 
-              {/* Minimum Topics */}
-              <div style={formGroupStyle}>
-                <div style={labelStyle}>Minimum Number of Topics</div>
-                <input
-                  type="number"
-                  min="1"
-                  value={customSettings.minTopics}
-                  onChange={(e) => handleSettingsChange('minTopics', e.target.value)}
-                  style={inputStyle}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#a855f7';
-                    e.target.style.boxShadow = '0 0 0 3px rgba(168, 85, 247, 0.1)';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                    e.target.style.boxShadow = 'none';
-                  }}
-                />
+                {/* Minimum Questions */}
+                <div style={formGroupStyle}>
+                  <div style={labelStyle}>Minimum Questions per Quiz</div>
+                  <input
+                    type="number"
+                    min="1"
+                    value={customSettings.minQuestions}
+                    onChange={(e) => handleSettingsChange('minQuestions', e.target.value)}
+                    style={inputStyle}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#a855f7';
+                      e.target.style.boxShadow = '0 0 0 3px rgba(168, 85, 247, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                  />
+                </div>
+
+                {/* Minimum Topics */}
+                <div style={formGroupStyle}>
+                  <div style={labelStyle}>Minimum Number of Topics</div>
+                  <input
+                    type="number"
+                    min="1"
+                    value={customSettings.minTopics}
+                    onChange={(e) => handleSettingsChange('minTopics', e.target.value)}
+                    style={inputStyle}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#a855f7';
+                      e.target.style.boxShadow = '0 0 0 3px rgba(168, 85, 247, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                  />
+                </div>
               </div>
 
               {/* Buttons */}
@@ -799,7 +803,7 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
                   onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
                   onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
                 >
-                  Reset to Defaults
+                  Reset
                 </button>
                 <button
                   type="button"
@@ -823,7 +827,7 @@ const QuizGuidelines = ({customSettings, setCustomSettings}) => {
                   onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
                   onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
                 >
-                  Save Changes
+                  Save
                 </button>
               </div>
             </div>

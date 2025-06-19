@@ -36,13 +36,22 @@ import SearchIcon from "@mui/icons-material/Search";
 import QuizReport from "@/components/quiz/QuizReport";
 import { showToast } from "@/utils/toastService";
 
-const metadata = {
-  title:
-    " student Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
-  description:
-    "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges.",
-};
+// const metadata = {
+//   title:
+//     " student Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
+//   description:
+//     "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges.",
+// };
 
+const pageMetadata = {
+  title: "My Quizzes - GoTestli Student Dashboard | Track Your Quiz Progress & Results",
+  description: "Access your personalized quiz dashboard on GoTestli. View completed quizzes, track your progress, review scores, and discover new assessments. Monitor your learning journey and improve your knowledge with detailed quiz analytics.",
+  keywords: "student quiz dashboard, my quizzes gotestli, quiz results, student progress tracking, quiz history, completed quizzes, quiz scores, student portal, learning progress, quiz analytics for students, quiz performance, student assessment results, quiz dashboard, educational progress tracking, student quiz management",
+  canonical: "https://gotestli.com/student/quizzes",
+  category: "Student Dashboard",
+  subject: "Student Quizzes, Quiz Results, Progress Tracking, Student Performance",
+  audience: "Students, Learners, Quiz Takers, Educational Participants"
+};
 const columns = [
   { id: "index", label: "#", sortable: false },
   { id: "title", label: "Quiz Title", sortable: true },
@@ -438,7 +447,7 @@ const StudentQuizzes = () => {
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Preloader />
-      <MetaComponent meta={metadata} />
+      <MetaComponent meta={pageMetadata} />
       <Header userRole={userRole} />
 
       <div className="content-wrapper js-content-wrapper overflow-hidden w-100" style={{ flex: 1 }}>

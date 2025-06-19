@@ -7,9 +7,18 @@ import "./homepage.css";
 import { API } from "@/utils/AxiosInstance";
 import { auth } from "@/firebase/Firebase";
 
-const metadata = {
-  title: " Instructor Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
-  description: "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges."
+// const metadata = {
+//   title: " Instructor Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
+//   description: "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges."
+// };
+const pageMetadata = {
+  title: "Instructor Home - GoTestli Quiz Platform | Create, Manage & Track Educational Quizzes",
+  description: "Welcome to your GoTestli instructor dashboard. Create engaging quizzes, manage student assessments, track performance analytics, and deliver exceptional e-learning experiences with our comprehensive quiz creation and management tools.",
+  keywords: "instructor dashboard, gotestli instructor, quiz creator dashboard, teacher quiz platform, educational quiz management, instructor home, quiz creation tools, student assessment platform, quiz analytics, instructor portal, teaching dashboard, quiz maker for educators, classroom quiz platform, online assessment tools, instructor quiz management",
+  canonical: "https://gotestli.com/instructor/home",
+  category: "Instructor Dashboard",
+  subject: "Instructor Home, Quiz Management, Educational Dashboard, Teaching Tools",
+  audience: "Instructors, Teachers, Educators, Course Creators, Training Professionals"
 };
 
 
@@ -44,7 +53,7 @@ const HomePage = () => {
   return (
     <div>
       <Preloader />
-      <MetaComponent meta={metadata} />
+      <MetaComponent meta={pageMetadata} />
       <Header />
 
       <div className="content-wrapper js-content-wrapper overflow-hidden w-100">
