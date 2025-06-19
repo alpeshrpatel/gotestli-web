@@ -31,15 +31,16 @@ import { showToast } from "@/utils/toastService";
 import FooterOne from "../layout/footers/FooterOne";
 import QuizGuidelines from "./QuizGuidelines";
 import QuizAnalysisDisplay from "./QuizAnalysisDisplay";
-import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
+import { Cell, Pie, PieChart, ResponsiveContainer, Legend } from "recharts";
 import AiQuizToggle from "./AiQuizToggle";
+import ResponsivePieChart from "../common/ResponsivePieChart";
 
 // import axios from "axios";
 
 const SELECTED_QUESTIONS_KEY = "makeQuestionSet_selectedQuestions";
 const COMPLEXITY_COUNTER_KEY = "makeQuestionSet_complexityCounter";
 
-const COLORS = [  "#FF6347", "#6A5ACD", "#20B2AA", "#FF69B4", "#FFD700", "#ADFF2F"];
+const COLORS = ["#FF6347", "#6A5ACD", "#20B2AA", "#FF69B4", "#FFD700", "#ADFF2F"];
 
 const MakeQuestionSet = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -68,13 +69,14 @@ const MakeQuestionSet = () => {
   const [analysisData, setAnalysisData] = useState(null);
   const [complexityCounterPieChartData, setComplexityCounterPieChartData] = useState([]);
   const [aiMode, setAiMode] = useState(false);
-   const [customSettings, setCustomSettings] = useState({
-      easyPercentage: 40,
-      mediumPercentage: 40,
-      hardPercentage: 20,
-      minQuestions: 10,
-      minTopics: 3
-    });
+  const [customSettings, setCustomSettings] = useState({
+    easyPercentage: 40,
+    mediumPercentage: 40,
+    hardPercentage: 20,
+    minQuestions: 10,
+    minTopics: 3
+  });
+  const [dimensions, setDimensions] = useState({ width: 400, height: 400 });
   const navigate = useNavigate();
 
   const onOpenModal = () => setOpen(true);
@@ -201,26 +203,26 @@ const MakeQuestionSet = () => {
         }
       }
     }
-      setComplexityCounterPieChartData( [
-    {
-      name: "Easy",
-      value: complexityCounter.easy || 0,
-      color: COLORS.easy,
-      percentage: selectedQuestions.length > 0 ? Math.round((complexityCounter.easy / selectedQuestions.length) * 100) : 0,
-    },
-    {
-      name: "Medium",
-      value: complexityCounter.medium || 0,
-      color: COLORS.medium,
-      percentage: selectedQuestions.length > 0 ? Math.round((complexityCounter.medium / selectedQuestions.length) * 100) : 0,
-    },
-    {
-      name: "Hard",
-      value: complexityCounter.hard || 0,
-      color: COLORS.hard,
-      percentage: selectedQuestions.length > 0 ? Math.round((complexityCounter.hard / selectedQuestions.length) * 100) : 0,
-    },
-  ])
+    setComplexityCounterPieChartData([
+      {
+        name: "Easy",
+        value: complexityCounter.easy || 0,
+        color: '#FF6347',
+        percentage: selectedQuestions.length > 0 ? Math.round((complexityCounter.easy / selectedQuestions.length) * 100) : 0,
+      },
+      {
+        name: "Medium",
+        value: complexityCounter.medium || 0,
+        color: '#6A5ACD',
+        percentage: selectedQuestions.length > 0 ? Math.round((complexityCounter.medium / selectedQuestions.length) * 100) : 0,
+      },
+      {
+        name: "Hard",
+        value: complexityCounter.hard || 0,
+        color: '#20B2AA',
+        percentage: selectedQuestions.length > 0 ? Math.round((complexityCounter.hard / selectedQuestions.length) * 100) : 0,
+      },
+    ])
   }, [pageCapicity, currentPage, selectedQuestions.length]);
 
 
@@ -235,11 +237,11 @@ const MakeQuestionSet = () => {
 
   useEffect(() => {
     if (selectedQuestions.length > 0) {
-       localStorage.setItem(COMPLEXITY_COUNTER_KEY, JSON.stringify(complexityCounter));
+      localStorage.setItem(COMPLEXITY_COUNTER_KEY, JSON.stringify(complexityCounter));
     } else {
       localStorage.removeItem(COMPLEXITY_COUNTER_KEY);
     }
-   
+
   }, [selectedQuestions]);
 
   useEffect(() => {
@@ -377,52 +379,144 @@ const MakeQuestionSet = () => {
   // );
   // };
 
-  // Custom legend component
+   
+
+  // Sample data with some zero values to demonstrate the solution
+  // const complexityCounterPieChartData = [
+  //   { name: 'Easy', value: 25, color: '#22c55e' },
+  //   { name: 'Medium', value: 45, color: '#f59e0b' },
+  //   { name: 'Hard', value: 30, color: '#ef4444' },
+  //   { name: 'Expert', value: 0, color: '#8b5cf6' }, // Zero value example
+  // ];
+
+  // Filter out zero values for the pie chart, but keep them for labels
+  const nonZeroData = complexityCounterPieChartData.filter(item => item.value > 0);
+  const hasZeroData = complexityCounterPieChartData.some(item => item.value === 0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const container = document.getElementById('chart-container');
+      if (container) {
+        const rect = container.getBoundingClientRect();
+        setDimensions({
+          width: Math.max(300, rect.width),
+          height: Math.max(300, rect.height)
+        });
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
     const RADIAN = Math.PI / 180;
-    // Position labels outside the pie chart
-    const radius = outerRadius + 30; // Add padding outside the pie
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-    const complexityName = complexityCounterPieChartData[index]?.name || "";
+    
+    // Calculate responsive radius based on container size
+    const baseRadius = Math.min(dimensions.width, dimensions.height) * 0.15;
+    const radius = outerRadius + baseRadius;
+    
+    // Calculate label position
+    let x = cx + radius * Math.cos(-midAngle * RADIAN);
+    let y = cy + radius * Math.sin(-midAngle * RADIAN);
+    
+    // Anti-collision logic: adjust positions to prevent overlap
+    const labelHeight = 16; // Approximate height of text
+    const minDistance = 20; // Minimum distance between labels
+    
+    // Get the actual data item (from nonZeroData since that's what's being rendered)
+    const dataItem = nonZeroData[index];
+    const complexityName = dataItem?.name || "";
+    const actualValue = dataItem?.value || 0;
+    
+    // Calculate total for percentage
+    const total = complexityCounterPieChartData.reduce((sum, item) => sum + item.value, 0);
+    const actualPercent = total > 0 ? (actualValue / total) * 100 : 0;
 
     return (
       <text
         x={x}
         y={y}
-        fill="black" 
+        fill="#374151"
         textAnchor={x > cx ? 'start' : 'end'}
         dominantBaseline="central"
-        fontSize="12"
-        fontWeight="bold"
+        fontSize={Math.max(10, Math.min(14, dimensions.width / 30))}
+        fontWeight="600"
+        className="select-none"
       >
-        {`${complexityName}: ${(percent * 100).toFixed(0)}%`}
+        {`${complexityName}: ${actualPercent.toFixed(0)}%`}
       </text>
     );
   };
 
-  const CustomLegend = (props) => {
-    const { payload } = props;
+  const CustomLegend = () => {
     return (
-      <Box display="flex" justifyContent="center" gap={3} mt={2}>
-        {payload.map((entry, index) => (
-          <Box key={index} display="flex" alignItems="center" gap={1}>
-            <Box
-              width={16}
-              height={16}
-              bgcolor={entry.color}
-              borderRadius="50%"
-            />
-            <Typography variant="body2" color="textSecondary">
-              {entry.value}: {complexityCounterPieChartData[index].value}
-            </Typography>
-          </Box>
-        ))}
-      </Box>
+      <div className="flex flex-wrap justify-center gap-4 mt-4">
+        {complexityCounterPieChartData.map((item, index) => {
+          const total = complexityCounterPieChartData.reduce((sum, dataItem) => sum + dataItem.value, 0);
+          const percentage = total > 0 ? ((item.value / total) * 100).toFixed(0) : 0;
+          
+          return (
+            <div key={index} className="flex items-center gap-2">
+              <div 
+                className="w-3 h-3 rounded-full"
+                style={{ backgroundColor: item.color }}
+              />
+              <span className="text-sm font-medium text-gray-700">
+                {item.name}: {percentage}% ({item.value})
+              </span>
+            </div>
+          );
+        })}
+      </div>
     );
   };
+
+  // const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+  //   const RADIAN = Math.PI / 180;
+  //   // Position labels outside the pie chart
+  //   const radius = outerRadius + 30; // Add padding outside the pie
+  //   const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  //   const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  //   const complexityName = complexityCounterPieChartData[index]?.name || "";
+
+  //   return (
+  //     <text
+  //       x={x}
+  //       y={y}
+  //       fill="black"
+  //       textAnchor={x > cx ? 'start' : 'end'}
+  //       dominantBaseline="central"
+  //       fontSize="12"
+  //       fontWeight="bold"
+  //     >
+  //       {`${complexityName}: ${(percent * 100).toFixed(0)}%`}
+  //     </text>
+  //   );
+  // };
+
+  // const CustomLegend = (props) => {
+  //   const { payload } = props;
+  //   return (
+  //     <Box display="flex" justifyContent="center" gap={3} mt={2}>
+  //       {payload.map((entry, index) => (
+  //         <Box key={index} display="flex" alignItems="center" gap={1}>
+  //           <Box
+  //             width={16}
+  //             height={16}
+  //             bgcolor={entry.color}
+  //             borderRadius="50%"
+  //           />
+  //           <Typography variant="body2" color="textSecondary">
+  //             {entry.value}: {complexityCounterPieChartData[index].value}
+  //           </Typography>
+  //         </Box>
+  //       ))}
+  //     </Box>
+  //   );
+  // };
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -596,34 +690,34 @@ const MakeQuestionSet = () => {
     //   }
     //   // console.log(error);
     // }
-    if(aiMode){
-    if (selectedQuestions.length < customSettings.minQuestions) {
-      setErrors(prev => ['Please select at least 5 questions to create a question set.'])
-      return;
-    } else if (selectedQuestions.length > 100) {
-      setErrors(prev => ['You can select a maximum of 100 questions.'])
-      return;
-    } else if (!validateDifficultyDistribution(selectedQuestions)) {
-      setErrors(prev => ['Please ensure 40% easy, 40% medium, and 20% hard questions are selected.'])
-      return;
-    }
-    setErrors([]);
-    const aiAnalysisResponse = await API.post('/api/groq/analyze/question/topics', {
-      questions: selectedQuestions,
-      topics: customSettings.minTopics
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    setAnalysisData(aiAnalysisResponse);
-   
-    if (aiAnalysisResponse?.data?.data?.topicDistribution?.balanced) {
+    if (aiMode) {
+      if (selectedQuestions.length < customSettings.minQuestions) {
+        setErrors(prev => ['Please select at least 5 questions to create a question set.'])
+        return;
+      } else if (selectedQuestions.length > 100) {
+        setErrors(prev => ['You can select a maximum of 100 questions.'])
+        return;
+      } else if (!validateDifficultyDistribution(selectedQuestions)) {
+        setErrors(prev => ['Please ensure 40% easy, 40% medium, and 20% hard questions are selected.'])
+        return;
+      }
+      setErrors([]);
+      const aiAnalysisResponse = await API.post('/api/groq/analyze/question/topics', {
+        questions: selectedQuestions,
+        topics: customSettings.minTopics
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      setAnalysisData(aiAnalysisResponse);
+
+      if (aiAnalysisResponse?.data?.data?.topicDistribution?.balanced) {
+        onOpenModal()
+      }
+    } else {
       onOpenModal()
     }
-  }else {
-    onOpenModal()
-  }
     // onOpenModal()
   };
 
@@ -807,15 +901,15 @@ const MakeQuestionSet = () => {
         >
           Make Question Set
         </Typography>
-        <AiQuizToggle aiMode={aiMode} setAiMode={setAiMode}/>
+        <AiQuizToggle aiMode={aiMode} setAiMode={setAiMode} />
         {
           aiMode && (
-            <QuizGuidelines customSettings={customSettings} setCustomSettings={setCustomSettings}/>
+            <QuizGuidelines customSettings={customSettings} setCustomSettings={setCustomSettings} />
           )
         }
-        
+
         <div className="d-flex justify-content-center gap-4 align-items-center mb-3">
-          <div className={`col-md-12 ${selectedQuestions.length > 0 ? 'col-lg-8' : 'col-lg-12'} `}>
+          <div>
 
 
             <div>
@@ -1025,50 +1119,104 @@ const MakeQuestionSet = () => {
             </div>
 
             <div className="checkboxContainer mt-3">
-              <ul>
-                {
-                  !loading && filteredFromAll.length > 0 ? (
-                    filteredFromAll
-                      // .slice(indexOfFirstRecord, indexOfLastRecord)
-                      .map((question, index) => (
-                        <div
-                          key={index}
-                          className="checkboxItem gap-2 text-black d-flex justify-content-between"
-                        >
+              <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'center', gap: '20px', marginBottom:'15px' }}>
+                <ul className={`col-md-12 ${selectedQuestions.length > 0 ? 'col-lg-8' : 'col-lg-12'} `}>
+                  {
+                    !loading && filteredFromAll.length > 0 ? (
+                      filteredFromAll
+                        // .slice(indexOfFirstRecord, indexOfLastRecord)
+                        .map((question, index) => (
                           <div
-                            className="d-flex gap-2 "
-                            style={{ alignItems: "center" }}
+                            key={index}
+                            className="checkboxItem gap-2 text-black d-flex justify-content-between"
                           >
-                            <BootstrapTooltip
-                              title={"Toggle to activate or retire this question."}
+                            <div
+                              className="d-flex gap-2 "
+                              style={{ alignItems: "center" }}
                             >
-                              <Switch
-                                checked={question.status_id}
-                                onChange={(e) =>
-                                  handleActiveChange(question.id, e.target.checked)
-                                }
-                                inputProps={{ "aria-label": "controlled" }}
-                              />
-                            </BootstrapTooltip>
-                            {question.status_id == 1 ? (
-                              <input
-                                className="p-2 border-0"
-                                type="checkbox"
-                                // checked={selectedQuestions.includes(question)}
-                                checked={selectedQuestions.some(selectedQ => selectedQ.id === question.id)}
-                                onChange={() => handleCheckboxChange(question)}
-                              />
-                            ) : ' '}
+                              <BootstrapTooltip
+                                title={"Toggle to activate or retire this question."}
+                              >
+                                <Switch
+                                  checked={question.status_id}
+                                  onChange={(e) =>
+                                    handleActiveChange(question.id, e.target.checked)
+                                  }
+                                  inputProps={{ "aria-label": "controlled" }}
+                                />
+                              </BootstrapTooltip>
+                              {question.status_id == 1 ? (
+                                <input
+                                  className="p-2 border-0"
+                                  type="checkbox"
+                                  // checked={selectedQuestions.includes(question)}
+                                  checked={selectedQuestions.some(selectedQ => selectedQ.id === question.id)}
+                                  onChange={() => handleCheckboxChange(question)}
+                                />
+                              ) : ' '}
 
-                            <label>{question.question}</label>
+                              <label>{question.question}</label>
+                            </div>
+                            <h6>{question.complexity}</h6>
                           </div>
-                          <h6>{question.complexity}</h6>
-                        </div>
-                      ))) : (
-                    totalRecords ? 'Loading......' : 'No Questions Found!'
+                        ))) : (
+                      totalRecords ? 'Loading......' : 'No Questions Found!'
+                    )
+                  }
+                </ul>
+
+                {
+                  selectedQuestions.length > 0 && (
+                    // <Grid item className="col-md-12 col-lg-4">
+                    //   <Card sx={{ height: "500px" }}>
+                    //     <CardContent>
+                    //       <Typography variant="h6">Selected Questions (%)</Typography>
+                    //       <div style={{ width: "100%", height: 400 }}>
+                    //         <ResponsiveContainer>
+                    //           <PieChart>
+                    //             <Pie
+                    //               data={complexityCounterPieChartData}
+                    //               cx="50%" // Center horizontally
+                    //               cy="50%" // Center vertically
+                    //               labelLine={false}
+                    //               label={renderCustomizedLabel}
+                    //               outerRadius='60%' // Reduced to make room for external labels
+                    //               fill="#8884d8"
+                    //               dataKey="value"
+                    //             >
+                    //               {complexityCounterPieChartData.map((entry, index) => (
+                    //                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    //               ))}
+                    //             </Pie>
+                    //             <Tooltip
+                    //               formatter={(value, name) => [`${value}%`, name]}
+                    //               contentStyle={{
+                    //                 backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    //                 border: '1px solid #ccc',
+                    //                 borderRadius: '4px'
+                    //               }}
+                    //             />
+                    //             <Legend
+                    //               verticalAlign="bottom"
+                    //               height={36}
+                    //               wrapperStyle={{
+                    //                 paddingTop: '10px',
+                    //                 fontSize: '12px'
+                    //               }}
+                    //               iconSize={8}
+                    //             />
+                    //           </PieChart>
+                    //         </ResponsiveContainer>
+                    //       </div>
+                    //     </CardContent>
+                    //   </Card>
+                    // </Grid>
+                    <ResponsivePieChart complexityCounterPieChartData={complexityCounterPieChartData}/>
                   )
                 }
-              </ul>
+
+              </div>
+
               {shouldRenderPagination && (
                 <div className="w-75 m-auto d-flex align-items-center justify-content-center">
                   <PaginationTwo
@@ -1142,7 +1290,7 @@ const MakeQuestionSet = () => {
               )}
             </div>
           </div>
-          {
+          {/* {
             selectedQuestions.length > 0 && (
               <Grid item className="col-md-12 col-lg-4">
                 <Card sx={{ height: "500px" }}>
@@ -1172,7 +1320,7 @@ const MakeQuestionSet = () => {
                 </Card>
               </Grid>
             )
-          }
+          } */}
 
         </div>
 
