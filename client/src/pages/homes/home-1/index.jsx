@@ -24,11 +24,44 @@ import FeedbackButton from "@/components/common/FeedbackButton";
 import PayPalButton from "@/components/common/PayPalButton";
 import PaymentComponent from "@/components/common/PaymentComponent";
 
-const metadata = {
-  title: " Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
+// const metadata = {
+//   title: " Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
+//   description:
+//     "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges.",
+// };
+
+// const pageMetadata = {
+//   title: "GoTestli - Ultimate Quiz & LMS Platform | Transform E-Learning with Interactive Assessments",
+//   description: "Elevate your e-learning experience with GoTestli's impressive LMS template. Create stunning online courses, interactive quizzes, and comprehensive educational platforms. Perfect for schools, educators, and training organizations.",
+//   keywords: "gotestli lms platform, e-learning template, online course platform, quiz lms system, educational platform template, interactive learning management, online education template, lms for schools, e-learning solution, quiz creation lms, educational technology platform, online learning template, course management system",
+//   canonical: "https://gotestli.com/home-1",
+//   category: "LMS Landing Page",
+//   subject: "LMS Platform, E-Learning Template, Online Education, Course Management",
+//   audience: "Educational Institutions, Course Creators, Training Organizations, E-Learning Developers, School Administrators"
+// };
+// const pageMetadata = {
+//   title: "GoTestli – Best Quiz App for Learning, Trivia & LMS Platform | Transform E-Learning",
+//   description:
+//     "Elevate e-learning with GoTestli, the best quiz maker app for learning and trivia. Create interactive online courses, engaging quizzes, and a complete LMS platform designed for schools, educators, and training organizations.",
+//   keywords:
+//     "best quiz app for learning, best quiz maker app, quiz app for trivia, gotestli lms platform, e-learning template, online course platform, quiz lms system, educational platform template, interactive learning management, online education template, lms for schools, e-learning solution, quiz creation lms, educational technology platform, course management system",
+//   canonical: "https://gotestli.com/home-1",
+//   category: "LMS, Quiz Platform, E-Learning, Interactive Assessments",
+//   subject: "LMS Platform, E-Learning Tools, Quiz Maker, Online Education, Course Management",
+//   audience: "Educators, Course Creators, Training Organizations, E-Learning Professionals, School Administrators, Students"
+// };
+const pageMetadata = {
+  title: "Question Bank | Best Quiz Maker App for Learning & Trivia – GoTestli Instructor Panel",
   description:
-    "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges.",
+    "Create, edit, and organize quiz questions on GoTestli, the best quiz app for learning and trivia. Build comprehensive question banks with multimedia, manage multiple choice questions, and streamline your quiz creation process with powerful instructor tools.",
+  keywords:
+    "best quiz app for learning, best quiz maker app, quiz app for trivia, instructor question bank, create quiz questions, question management, gotestli questions, quiz question builder, question library, multiple choice questions, quiz creation tools, question editing, instructor panel, educational content creation, quiz bank management, question organization",
+  canonical: "https://gotestli.com/instructor/questions",
+  category: "Instructor Tools, Question Management, Quiz Content Development",
+  subject: "Question Banks, Quiz Creation, Instructor Tools, Educational Content",
+  audience: "Instructors, Teachers, Educators, Content Creators, Quiz Makers, E-Learning Professionals"
 };
+
 
 export default function HomePage1() {
   // const [userRole, setUserRole] = useState("");
@@ -75,7 +108,7 @@ export default function HomePage1() {
       ) : (
         <>
           <Preloader />
-          <MetaComponent meta={metadata} />
+          <MetaComponent meta={pageMetadata} />
           <Header userRole = {userRole}/>
 
           <div className="content-wrapper  js-content-wrapper overflow-hidden w-100">

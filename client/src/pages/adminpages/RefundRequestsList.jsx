@@ -14,6 +14,29 @@ import { doc, setDoc } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
+
+// const pageMetadata = {
+//   title: "Refund Requests Management - GoTestli Admin Panel | Process & Track Payment Refunds",
+//   description: "Manage and process refund requests on GoTestli platform. View pending refunds, track refund status, approve or deny requests, and maintain financial transaction records for quiz platform subscriptions and purchases.",
+//   keywords: "gotestli refund requests, refund management admin, payment refunds, subscription refunds, refund processing, financial administration, refund status tracking, payment disputes, refund approval system, billing administration, transaction management, refund queue",
+//   canonical: "https://gotestli.com/admin/refund-requests",
+//   category: "Financial Administration",
+//   subject: "Refund Management, Payment Processing, Financial Administration, Transaction Control",
+//   audience: "Platform Administrators, Financial Managers, Billing Support Staff, Customer Service Team"
+// };
+
+const pageMetadata = {
+  title: "Refund Requests Management | Best Quiz Maker App Admin Panel – GoTestli",
+  description:
+    "Manage refund requests on GoTestli, the best quiz app for learning and trivia. Process payments, track refund statuses, approve or deny requests, and maintain complete financial records for subscriptions and quiz purchases.",
+  keywords:
+    "best quiz app for learning, best quiz maker app, quiz app for trivia, gotestli refund requests, refund management admin, payment refunds, subscription refund processing, financial administration, refund approval system, transaction management, billing control panel, payment disputes, quiz platform refunds",
+  canonical: "https://gotestli.com/admin/refund-requests",
+  category: "Financial Administration, Refund Management, Transaction Control",
+  subject: "Refund Processing, Payment Management, Financial Administration, Quiz Platform Billing",
+  audience: "Platform Administrators, Finance Managers, Billing Support, Customer Service Teams, Accountants"
+};
+
 const RefundRequestsList = () => {
     const location = useLocation()
     // const { RefundRequestsList } = location.state
@@ -221,7 +244,7 @@ const RefundRequestsList = () => {
 
     return (
         <div className="barba-container" data-barba="container">
-            {/* <MetaComponent meta={metadata} /> */}
+            <MetaComponent meta={pageMetadata} />
             <main className="main-content">
                 <Preloader />
                 <Header userRole={userRole} />

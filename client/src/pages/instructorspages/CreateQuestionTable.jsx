@@ -23,6 +23,16 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-responsive-modal";
 import { toast } from "react-toastify";
 
+const pageMetadata = {
+  title: "Question Bank - GoTestli Instructor Panel | Create & Manage Quiz Questions",
+  description: "Create, edit, and organize your quiz questions on GoTestli. Build comprehensive question banks, manage multiple choice questions, add multimedia content, and streamline your quiz creation process with our powerful question management tools.",
+  keywords: "instructor question bank, create quiz questions, question management, gotestli questions, quiz question builder, question library, multiple choice questions, quiz creation tools, question editing, instructor question panel, educational content creation, quiz bank management, question organization",
+  canonical: "https://gotestli.com/instructor/questions",
+  category: "Instructor Tools",
+  subject: "Question Management, Quiz Creation, Content Development, Question Bank",
+  audience: "Instructors, Teachers, Educators, Content Creators, Quiz Makers"
+};
+
 const CreateQuestionTable = () => {
   const [emptyRow, setEmptyRow] = useState([
     {
@@ -780,7 +790,7 @@ const CreateQuestionTable = () => {
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Preloader />
-      {/* <MetaComponent meta={metadata} /> */}
+      <MetaComponent meta={pageMetadata} />
       <Header userRole={userRole} />
       <Modal
         open={open}
