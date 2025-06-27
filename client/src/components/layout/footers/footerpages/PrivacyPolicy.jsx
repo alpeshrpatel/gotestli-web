@@ -4,10 +4,31 @@ import React from 'react';
 import Header from '../../headers/Header';
 import FooterOne from '../FooterOne';
 
-const metadata = {
-    title: " Privacy Policy || GoTestli - Ultimate School & General Purpose Quiz Platform",
-    description:
-        "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges.",
+// const metadata = {
+//     title: " Privacy Policy || GoTestli - Ultimate School & General Purpose Quiz Platform",
+//     description:
+//         "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges.",
+// };
+
+// const pageMetadata = {
+//   title: "Privacy Policy - GoTestli Quiz Platform | Data Protection & User Privacy Rights",
+//   description: "Read GoTestli's comprehensive privacy policy. Learn how we collect, use, protect, and manage your personal data on our quiz platform. Understand your privacy rights and our commitment to data security in educational environments.",
+//   keywords: "gotestli privacy policy, data protection, user privacy, privacy rights, data security, educational data privacy, quiz platform privacy, personal information protection, data collection policy, privacy compliance, student data privacy, GDPR compliance, educational privacy policy",
+//   canonical: "https://gotestli.com/privacy-policy",
+//   category: "Legal & Compliance",
+//   subject: "Privacy Policy, Data Protection, User Rights, Privacy Compliance",
+//   audience: "All Users, Educators, Students, Parents, School Administrators, Legal Compliance Officers"
+// };
+const pageMetadata = {
+  title: "Privacy Policy | GoTestli – Secure Quiz App for Learning, Trivia & Assessment",
+  description:
+    "Explore the privacy policy of GoTestli, the best quiz app for learning and trivia. Learn how we protect your data and ensure privacy for students, educators, and users of our quiz maker platform. GDPR-compliant and secure by design.",
+  keywords:
+    "GoTestli privacy policy, best quiz app for learning, best quiz maker app, quiz app for trivia, user privacy rights, student data protection, educational data privacy, GDPR compliance, secure quiz platform, privacy compliance, data collection policy, online learning privacy, educational platform data policy, personal information security",
+  canonical: "https://gotestli.com/privacy-policy",
+  category: "Privacy, Legal, Compliance",
+  subject: "Privacy Policy, Data Security, Educational Compliance, User Rights, Data Management",
+  audience: "All Users, Parents, Students, Teachers, School Administrators, Legal Officers, Privacy Advocates"
 };
 
 const PrivacyPolicy = () => {
@@ -15,7 +36,7 @@ const PrivacyPolicy = () => {
     const userRole = user.role;
     return (
         <div className="main-content" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <MetaComponent meta={metadata} />
+            <MetaComponent meta={pageMetadata} />
             <Preloader />
 
             <Header userRole={userRole} />

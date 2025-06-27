@@ -20,6 +20,28 @@ import { renderTemplate } from '@/utils/renderTemplate'
 const APP_ID = 1;
 const API_TOKEN = '7b9e6c5f-8a1d-4d3e-b5f2-c9a8e7d6b5c4';
 
+// const pageMetadata = {
+//   title: "Organizations Management - GoTestli Admin Panel | Manage Partner Institutions & Schools",
+//   description: "Admin dashboard for managing onboarded organizations on GoTestli platform. View, monitor, and administer educational institutions, schools, and partner organizations using our comprehensive quiz platform.",
+//   keywords: "gotestli organizations admin, platform administration, manage institutions, school administration, educational organizations management, partner institutions, admin panel organizations, platform governance, institutional management, organization dashboard, admin control panel, educational partners management",
+//   canonical: "https://gotestli.com/admin/organizations",
+//   category: "Admin Management",
+//   subject: "Organizations Administration, Institutional Management, Platform Governance, Admin Control",
+//   audience: "Platform Administrators, System Admins, GoTestli Management Team, Support Staff"
+// };
+const pageMetadata = {
+  title: "Organizations Management | Best Quiz App for Learning & Trivia Admin Panel – GoTestli",
+  description:
+    "Access the admin dashboard of GoTestli, the best quiz app for learning and trivia, to manage educational institutions, schools, and partner organizations. Monitor and administer your organization’s quizzes and learning analytics seamlessly.",
+  keywords:
+    "best quiz app for learning, best quiz maker app, quiz app for trivia, GoTestli organizations admin, platform administration, manage institutions, school management, educational organizations, partner institutions management, admin panel organizations, institutional dashboard, platform governance, admin control panel, educational partners",
+  canonical: "https://gotestli.com/admin/organizations",
+  category: "Admin Management, Platform Governance, Institutional Administration",
+  subject: "Organizations Management, Admin Dashboard, Educational Institutions, Platform Administration",
+  audience: "Platform Administrators, System Admins, GoTestli Management, Educational Organization Managers, Support Staff"
+};
+
+
 const OrganizationList = () => {
     const location = useLocation()
     // const { organizationList } = location.state
@@ -282,7 +304,7 @@ const OrganizationList = () => {
     );
     return (
         <div className="barba-container" data-barba="container">
-            {/* <MetaComponent meta={metadata} /> */}
+            <MetaComponent meta={pageMetadata} />
             <main className="main-content">
                 <Preloader />
                 <Header userRole={userRole} />

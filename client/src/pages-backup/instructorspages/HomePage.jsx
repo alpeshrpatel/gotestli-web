@@ -11,14 +11,25 @@ import { auth } from "@/firebase/Firebase";
 //   title: " Instructor Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
 //   description: "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges."
 // };
+// const pageMetadata = {
+//   title: "Instructor Home - GoTestli Quiz Platform | Create, Manage & Track Educational Quizzes",
+//   description: "Welcome to your GoTestli instructor dashboard. Create engaging quizzes, manage student assessments, track performance analytics, and deliver exceptional e-learning experiences with our comprehensive quiz creation and management tools.",
+//   keywords: "instructor dashboard, gotestli instructor, quiz creator dashboard, teacher quiz platform, educational quiz management, instructor home, quiz creation tools, student assessment platform, quiz analytics, instructor portal, teaching dashboard, quiz maker for educators, classroom quiz platform, online assessment tools, instructor quiz management",
+//   canonical: "https://gotestli.com/instructor/home",
+//   category: "Instructor Dashboard",
+//   subject: "Instructor Home, Quiz Management, Educational Dashboard, Teaching Tools",
+//   audience: "Instructors, Teachers, Educators, Course Creators, Training Professionals"
+// };
 const pageMetadata = {
-  title: "Instructor Home - GoTestli Quiz Platform | Create, Manage & Track Educational Quizzes",
-  description: "Welcome to your GoTestli instructor dashboard. Create engaging quizzes, manage student assessments, track performance analytics, and deliver exceptional e-learning experiences with our comprehensive quiz creation and management tools.",
-  keywords: "instructor dashboard, gotestli instructor, quiz creator dashboard, teacher quiz platform, educational quiz management, instructor home, quiz creation tools, student assessment platform, quiz analytics, instructor portal, teaching dashboard, quiz maker for educators, classroom quiz platform, online assessment tools, instructor quiz management",
+  title: "Instructor Home – GoTestli Quiz Platform | Create, Manage & Analyze Educational Quizzes",
+  description:
+    "Welcome to your GoTestli instructor dashboard. Effortlessly create engaging quizzes, manage student assessments, analyze performance data, and deliver exceptional e-learning experiences with our powerful quiz creation and management tools.",
+  keywords:
+    "instructor dashboard, gotestli instructor home, quiz creator dashboard, teacher quiz platform, educational quiz management, quiz creation tools, student assessment platform, quiz analytics, instructor portal, teaching dashboard, online quiz builder, classroom quiz platform, instructor tools, educational technology, online assessment tools",
   canonical: "https://gotestli.com/instructor/home",
-  category: "Instructor Dashboard",
-  subject: "Instructor Home, Quiz Management, Educational Dashboard, Teaching Tools",
-  audience: "Instructors, Teachers, Educators, Course Creators, Training Professionals"
+  category: "Instructor Dashboard, Educational Management, Teaching Tools",
+  subject: "Instructor Home, Quiz Management, Teaching Dashboard, E-Learning Tools",
+  audience: "Instructors, Teachers, Educators, Course Creators, Training Professionals, Educational Institutions"
 };
 
 

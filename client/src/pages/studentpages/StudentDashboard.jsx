@@ -17,15 +17,27 @@ import NotFoundPage from "../not-found";
 //   description:
 //     "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges.",
 // };
+// const pageMetadata = {
+//   title: "Student Dashboard - GoTestli Quiz Platform | Your Learning Hub & Progress Center",
+//   description: "Welcome to your GoTestli student dashboard. Access your quizzes, track learning progress, view upcoming assessments, review performance analytics, and manage your educational journey all in one place.",
+//   keywords: "student dashboard gotestli, learning dashboard, student portal, quiz dashboard, student progress hub, learning analytics, student performance tracking, educational dashboard, quiz management for students, student learning center, academic progress tracker, quiz platform dashboard, student assessment portal, learning progress overview",
+//   canonical: "https://gotestli.com/student/dashboard",
+//   category: "Student Dashboard",
+//   subject: "Student Dashboard, Learning Hub, Progress Tracking, Student Portal",
+//   audience: "Students, Learners, Quiz Participants, Educational Users"
+// };
 const pageMetadata = {
-  title: "Student Dashboard - GoTestli Quiz Platform | Your Learning Hub & Progress Center",
-  description: "Welcome to your GoTestli student dashboard. Access your quizzes, track learning progress, view upcoming assessments, review performance analytics, and manage your educational journey all in one place.",
-  keywords: "student dashboard gotestli, learning dashboard, student portal, quiz dashboard, student progress hub, learning analytics, student performance tracking, educational dashboard, quiz management for students, student learning center, academic progress tracker, quiz platform dashboard, student assessment portal, learning progress overview",
+  title: "Student Dashboard – GoTestli: Track Learning & Master Trivia with the Best Quiz App",
+  description:
+    "Welcome to your GoTestli student dashboard, your hub for the best quiz app for learning and trivia. Access your quizzes, track progress, view upcoming assessments, analyze performance, and manage your educational journey with our powerful quiz maker tools.",
+  keywords:
+    "best quiz app for learning, quiz app for trivia, student dashboard gotestli, learning dashboard, student portal, quiz dashboard, student progress hub, learning analytics, student performance tracking, educational dashboard, quiz management for students, academic progress tracker, quiz platform dashboard, student assessment portal, best quiz maker app",
   canonical: "https://gotestli.com/student/dashboard",
-  category: "Student Dashboard",
+  category: "Student Dashboard, Learning Progress, Quiz Management",
   subject: "Student Dashboard, Learning Hub, Progress Tracking, Student Portal",
-  audience: "Students, Learners, Quiz Participants, Educational Users"
+  audience: "Students, Learners, Quiz Participants, Educational Users, Trivia Enthusiasts"
 };
+
 
 
 export default function StudentDashboard() {

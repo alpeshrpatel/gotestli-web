@@ -15,12 +15,34 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import SearchIcon from "@mui/icons-material/Search";
 import { showToast } from "@/utils/toastService";
 
-const metadata = {
-  title:
-    " Instructor Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
+// const metadata = {
+//   title:
+//     " Instructor Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
+//   description:
+//     "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges.",
+// };
+
+// const pageMetadata = {
+//   title: "Instructor Home - GoTestli Quiz Platform | Your Teaching Dashboard & Quiz Management Hub",
+//   description: "Welcome to your GoTestli instructor home. Access your teaching dashboard, create engaging quizzes, manage student assessments, track performance analytics, and deliver exceptional educational experiences with our comprehensive quiz creation tools.",
+//   keywords: "instructor home gotestli, teaching dashboard, instructor portal, quiz creator home, educator dashboard, instructor hub, teaching platform, quiz management for instructors, instructor control panel, educational dashboard, teaching tools, instructor workspace, quiz platform for teachers",
+//   canonical: "https://gotestli.com/instructor/home",
+//   category: "Instructor Dashboard",
+//   subject: "Instructor Home, Teaching Dashboard, Quiz Management, Educator Portal",
+//   audience: "Instructors, Teachers, Educators, Course Creators, Training Professionals"
+// };
+const pageMetadata = {
+  title: "Instructor Home | Best Quiz App for Learning & Trivia – GoTestli Teaching Dashboard",
   description:
-    "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges.",
+    "Welcome to your GoTestli instructor home, the best quiz maker app for learning and trivia. Access your teaching dashboard, create engaging quizzes, manage student assessments, and track analytics with powerful tools to deliver exceptional educational experiences.",
+  keywords:
+    "best quiz app for learning, best quiz maker app, quiz app for trivia, instructor home gotestli, teaching dashboard, instructor portal, quiz creator home, educator dashboard, instructor hub, quiz management for instructors, teaching tools, instructor workspace, quiz platform for teachers",
+  canonical: "https://gotestli.com/instructor/home",
+  category: "Instructor Dashboard, Teaching Management, Quiz Creation",
+  subject: "Instructor Home, Teaching Dashboard, Quiz Management, Educator Tools",
+  audience: "Instructors, Teachers, Educators, Course Creators, Training Professionals, E-Learning Experts"
 };
+
 
 const columns = [
   { id: "index", label: "#", sortable: false },
@@ -386,7 +408,7 @@ const HomePage = () => {
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Preloader />
-      <MetaComponent meta={metadata} />
+      <MetaComponent meta={pageMetadata} />
       <Header userRole={userRole} />
 
       <div className="content-wrapper js-content-wrapper overflow-hidden w-100" style={{ flex: 1 }}>

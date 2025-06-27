@@ -35,15 +35,28 @@ import { useEffect, useState } from "react";
 //     "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges.",
 // };
 
+// const pageMetadata = {
+//   title: "GoTestli - Ultimate Quiz Platform for Schools & Education | Create Engaging Online Assessments",
+//   description: "Transform education with GoTestli's powerful quiz platform. Create interactive quizzes, manage assessments, and boost student engagement. Perfect for schools, teachers, and educational institutions. Start your free trial today!",
+//   keywords: "online quiz platform, educational quiz maker, school quiz software, quiz creation platform, interactive assessments, gotestli quiz app, e-learning platform, student engagement tools, classroom quizzes, educational technology, online assessment tools, quiz builder, learning management system, digital education platform, quiz platform for schools",
+//   canonical: "https://gotestli.com",
+//   category: "Landing Page",
+//   subject: "Quiz Platform, Educational Technology, Online Assessments, E-learning Solutions",
+//   audience: "Educators, Teachers, Students, School Administrators, Educational Institutions, Training Organizations"
+// };
 const pageMetadata = {
-  title: "GoTestli - Ultimate Quiz Platform for Schools & Education | Create Engaging Online Assessments",
-  description: "Transform education with GoTestli's powerful quiz platform. Create interactive quizzes, manage assessments, and boost student engagement. Perfect for schools, teachers, and educational institutions. Start your free trial today!",
-  keywords: "online quiz platform, educational quiz maker, school quiz software, quiz creation platform, interactive assessments, gotestli quiz app, e-learning platform, student engagement tools, classroom quizzes, educational technology, online assessment tools, quiz builder, learning management system, digital education platform, quiz platform for schools",
+  title: "GoTestli - Best Quiz App for Learning, Trivia & Assessments | Create Engaging Online Quizzes",
+  description:
+    "GoTestli is the best quiz app for learning and trivia. Create interactive assessments and quizzes for schools, teachers, and educational institutions. Trusted quiz maker app for engaging digital learning.",
+  keywords:
+    "best quiz app for learning, best quiz maker app, quiz app for trivia, online quiz platform, educational quiz maker, school quiz software, create quizzes online, interactive assessments, student engagement, digital education platform, LMS quiz tool, e-learning app, test creator, classroom quizzes",
   canonical: "https://gotestli.com",
-  category: "Landing Page",
-  subject: "Quiz Platform, Educational Technology, Online Assessments, E-learning Solutions",
-  audience: "Educators, Teachers, Students, School Administrators, Educational Institutions, Training Organizations"
+  category: "Quiz App, Learning Platform, Educational Assessment",
+  subject: "Quiz Platform, Educational Technology, Trivia Games, E-learning Tools, Online Assessments",
+  audience:
+    "Students, Teachers, Educators, School Admins, Corporate Trainers, Educational Institutions, EdTech Users"
 };
+
 export default function HomePage1() {
   const [userRole, setUserRole] = useState("");
 

@@ -692,13 +692,13 @@ const MakeQuestionSet = () => {
     // }
     if (aiMode) {
       if (selectedQuestions.length < customSettings.minQuestions) {
-        setErrors(prev => ['Please select at least 5 questions to create a question set.'])
+        setErrors(prev => [`Please select at least ${customSettings.minQuestions} questions to create a question set.`])
         return;
       } else if (selectedQuestions.length > 100) {
         setErrors(prev => ['You can select a maximum of 100 questions.'])
         return;
       } else if (!validateDifficultyDistribution(selectedQuestions)) {
-        setErrors(prev => ['Please ensure 40% easy, 40% medium, and 20% hard questions are selected.'])
+        setErrors(prev => [`Please ensure ${customSettings.easyPercentage}% easy, ${customSettings.mediumPercentage}% medium, and ${customSettings.hardPercentage}% hard questions are selected.`])
         return;
       }
       setErrors([]);

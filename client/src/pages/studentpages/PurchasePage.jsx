@@ -9,6 +9,27 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+// const pageMetadata = {
+//   title: "My Purchased Quizzes - GoTestli Student Portal | Access Your Bought Quiz Collection",
+//   description: "Access your purchased quiz collection on GoTestli. View all quizzes you've bought, track your progress, retake assessments, and manage your paid educational content. Get the most out of your quiz investments.",
+//   keywords: "purchased quizzes gotestli, bought quizzes, my quiz purchases, paid quizzes, quiz collection, student purchases, owned quizzes, quiz library, purchased assessments, quiz transactions, student quiz inventory, bought educational content",
+//   canonical: "https://gotestli.com/student/purchased-quizzes",
+//   category: "Student Purchases",
+//   subject: "Purchased Quizzes, Quiz Collection, Student Purchases, Paid Content",
+//   audience: "Students, Quiz Purchasers, Learners, Educational Content Buyers"
+// };
+const pageMetadata = {
+  title: "My Purchased Quizzes – GoTestli: Access Your Bought Learning & Trivia Quizzes",
+  description:
+    "Explore your purchased quizzes on GoTestli, the best quiz app for learning and trivia. Access your bought quizzes, track progress, retake engaging assessments, and manage your paid educational content with our powerful quiz platform.",
+  keywords:
+    "best quiz app for learning, quiz app for trivia, purchased quizzes gotestli, bought quizzes, my quiz purchases, paid quizzes, quiz collection, student purchases, owned quizzes, quiz library, purchased assessments, quiz transactions, student quiz inventory, bought educational content, best quiz maker app",
+  canonical: "https://gotestli.com/student/purchased-quizzes",
+  category: "Student Purchases, Quiz Collection, E-Learning Platform",
+  subject: "Purchased Quizzes, Quiz Library, Learning Content, Student Paid Assessments",
+  audience: "Students, Quiz Purchasers, Learners, Educational Content Buyers, Trivia Enthusiasts"
+};
+
 const PurchasePage = () => {
   const [checkOut, setCheckOut] = useState(false);
   const user = JSON.parse(localStorage.getItem("user")) || "";
@@ -49,7 +70,7 @@ const PurchasePage = () => {
 
   return (
     <div className="barba-container" data-barba="container">
-      {/* <MetaComponent meta={metadata} /> */}
+      <MetaComponent meta={pageMetadata} />
       <main className="main-content">
         <Preloader />
         <Header userRole={userRole} />
