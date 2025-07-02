@@ -20,12 +20,12 @@ import { Button, useTheme } from "@mui/material";
 // };
 
 const pageMetadata = {
-  title: "GoTestli – Best Quiz App for Learning & Trivia | Interactive LMS Platform for E-Learning",
+  title: "Gotestli – Best Quiz App for Learning & Trivia | Interactive LMS Platform for E-Learning",
   description:
-    "Transform e-learning with GoTestli, the best quiz maker app for learning and trivia. Create interactive online courses, engaging quizzes, and a complete LMS platform for schools, educators, and training organizations.",
+    "Transform e-learning with Gotestli, the best quiz maker app for learning and trivia. Create interactive online courses, engaging quizzes, and a complete LMS platform for schools, educators, and training organizations.",
   keywords:
     "best quiz app for learning, best quiz maker app, quiz app for trivia, GoTestli LMS platform, e-learning template, online course builder, interactive quizzes, educational platform, learning management system, quiz creation LMS, LMS for schools, online education tools, course management software, e-learning solution, digital classroom platform",
-  canonical: "https://gotestli.com/home-1",
+  canonical: "https://gotestli.com/",
   category: "LMS, E-Learning, Interactive Quizzes, Educational Technology",
   subject: "Quiz Platform, Learning Management System, E-Learning Tools, Online Education",
   audience: "Educators, Schools, Training Organizations, E-Learning Professionals, Course Creators, School Administrators"

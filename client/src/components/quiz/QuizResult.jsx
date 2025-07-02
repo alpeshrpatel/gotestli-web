@@ -39,28 +39,28 @@ export const contentQualityTooltips = [
   "Excellent",
 ];
 
-const QuizResult = ({}) => {
+const QuizResult = ({ }) => {
   const [isCelebOn, setIsCelebOn] = useState(false);
   const hasFetchedBadgeData = useRef(false);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [open, setOpen] = useState(false);
   const [openReport, setOpenReport] = useState(false);
-  const [givenReview,setGivenReview] = useState();
+  const [givenReview, setGivenReview] = useState();
   const [rating, setRating] = useState({
     satisfaction: 0,
     difficulty: 0,
     contentQuality: 0,
   });
-  
+
   const [review, setReview] = useState('');
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [downloadData, setDownloadData] = useState({
     quizTitle: "",
     studentName: "",
     category: "",
-    instructor:""
+    instructor: ""
   });
-  
+
   const maxCharacters = 500;
   const handleRating = (name, newRating) => {
     setRating((prev) => ({ ...prev, [name]: newRating }));
@@ -95,7 +95,7 @@ const QuizResult = ({}) => {
   } = location.state || {};
 
   if (!location.state) {
-     // console.log("No state available, redirecting...");
+    // console.log("No state available, redirecting...");
     navigate("/");
     return <div>No data available</div>;
   }
@@ -105,7 +105,7 @@ const QuizResult = ({}) => {
   let userId = user.id;
   const org = JSON.parse(localStorage.getItem("org")) || "";
   let orgid = org?.id || 0;
- 
+
 
   useEffect(() => {
     if (percentage >= passPercentage) {
@@ -119,12 +119,12 @@ const QuizResult = ({}) => {
       async function getQuizTitle() {
         try {
           if (token) {
-            const res = await API.get(`/api/questionset/${questionSetId}?orgid=${orgid}`, {
+            const res = await API.get(`/api/questionset/allquestions/qset/${questionSetId}?orgid=${orgid}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             });
-             // console.log(res.data);
+            // console.log(res.data);
             let tags = res.data?.tags?.split(",");
             setDownloadData((prev) => ({
               ...prev,
@@ -138,7 +138,7 @@ const QuizResult = ({}) => {
                 Authorization: `Bearer ${token}`,
               },
             });
-             // console.log(data.first_name + " " + data.last_name);
+            // console.log(data.first_name + " " + data.last_name);
             setDownloadData((prev) => ({ ...prev, studentName: data.first_name + " " + data.last_name }));
             setIsDataLoaded(true);
           }
@@ -155,16 +155,16 @@ const QuizResult = ({}) => {
       }
       getQuizTitle();
 
-      async function getReviewIfGiven(){
+      async function getReviewIfGiven() {
         try {
-          if(token){
-            const {data} = await API.get(`/api/reviews/qset/${questionSetId}/user/${userId}`,{
+          if (token) {
+            const { data } = await API.get(`/api/reviews/qset/${questionSetId}/user/${userId}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             })
-            if(data){
-               // console.log(data)
+            if (data) {
+              // console.log(data)
               setGivenReview(data);
             }
           }
@@ -173,7 +173,7 @@ const QuizResult = ({}) => {
             localStorage.removeItem("user");
             localStorage.removeItem("token");
             // showToast("error","Invaild token!");
-            navigate("/login"); 
+            navigate("/login");
             return;
           }
           throw error;
@@ -206,7 +206,7 @@ const QuizResult = ({}) => {
               {},
               { headers: { Authorization: `Bearer ${token}` } }
             );
-            showToast("success","Achievement saved!");
+            showToast("success", "Achievement saved!");
           }
         }
       } catch (error) {
@@ -238,7 +238,7 @@ const QuizResult = ({}) => {
     hidden: { opacity: 0, scale: 0.5 },
     visible: {
       opacity: 1,
-      scale: [1, 1.2, 1], 
+      scale: [1, 1.2, 1],
       transition: { duration: 1.5, ease: "easeInOut" },
     },
     exit: { opacity: 0, scale: 0.5, transition: { duration: 1 } },
@@ -247,7 +247,7 @@ const QuizResult = ({}) => {
   const submitSurvey = async () => {
     try {
       if (token) {
-        if(!givenReview){
+        if (!givenReview) {
           const res = await API.post(
             "/api/reviews",
             {
@@ -266,19 +266,19 @@ const QuizResult = ({}) => {
             }
           );
           if (res.status == 200) {
-            showToast("success","Thank you for giving review!");
+            showToast("success", "Thank you for giving review!");
             navigate("/");
           }
-        }else{
+        } else {
           const res = await API.put(
             `/api/reviews/update/qset/${questionSetId}/user/${userId}`,
             {
-             
+
               satisfaction: rating.satisfaction,
               difficulty: rating.difficulty,
               content_quality: rating.contentQuality,
               review: review,
-              
+
             },
             {
               headers: {
@@ -287,11 +287,11 @@ const QuizResult = ({}) => {
             }
           );
           if (res.status == 200) {
-            showToast("success","Review updated!");
+            showToast("success", "Review updated!");
             navigate("/");
           }
         }
-        
+
       }
     } catch (error) {
       if (error.status == 403) {
@@ -322,7 +322,7 @@ const QuizResult = ({}) => {
           <button
             className="button -sm px-24 py-25 -outline-green-4 text-green-4  text-18 fw-700 lh-sm "
             onClick={() =>
-              downloadCertificate(downloadData.studentName, percentage, downloadData.quizTitle, downloadData.category,downloadData.instructor)
+              downloadCertificate(downloadData.studentName, percentage, downloadData.quizTitle, downloadData.category, downloadData.instructor)
             }
           >
             {/* <i className="fa-solid fa-circle-down text-24 me-2" aria-hidden="true"></i> */}
@@ -337,7 +337,7 @@ const QuizResult = ({}) => {
             style={{ maxWidth: "500px", width: "100%" }}
           >
             <div className="mb-4 w-75 mx-auto d-flex flex-row gap-4">
-              <MarksArcCircle achievedMarks={achievedMarks} totalMarks={totalMarks}/>
+              <MarksArcCircle achievedMarks={achievedMarks} totalMarks={totalMarks} />
               <CircularProgressbar
                 value={percentage}
                 text={`${Math.round(percentage)}%`}
@@ -353,9 +353,8 @@ const QuizResult = ({}) => {
               />
             </div>
             <div
-              className={`mb-4 p-2 ${
-                isPassed ? "bg-success" : "bg-danger"
-              } text-white`}
+              className={`mb-4 p-2 ${isPassed ? "bg-success" : "bg-danger"
+                } text-white`}
             >
               {isPassed ? (
                 <span className="text-18 ">
@@ -401,9 +400,9 @@ const QuizResult = ({}) => {
           </div>
         )}
         <div
-         className="card shadow w-60 text-center p-4 "
-        
-          style={{ maxWidth: "400px", width: "100%",}}
+          className="card shadow w-60 text-center p-4 "
+
+          style={{ maxWidth: "400px", width: "100%", }}
         >
           <button
             className="button -sm px-24 py-25 -outline-blue-3 text-blue-3 text-16 fw-bolder lh-sm "
@@ -411,8 +410,13 @@ const QuizResult = ({}) => {
           >
             View Report
           </button>
-          <Modal open={openReport} onClose={onCloseReportModal} center>
-              <QuizReport attemptId={userResultId} />
+          <Modal open={openReport} onClose={onCloseReportModal} center styles={{
+            modal: {
+              width: '90%',
+              maxWidth: '2000px',
+            },
+          }}>
+            <QuizReport attemptId={userResultId} />
           </Modal>
         </div>
         <div
@@ -430,7 +434,7 @@ const QuizResult = ({}) => {
             {
               givenReview ? 'Edit Review' : 'Start Review'
             }
-            
+
           </button>
           <Modal open={open} onClose={onCloseModal} center>
             <div className="col-12 rounded p-5 border-1">
@@ -453,7 +457,7 @@ const QuizResult = ({}) => {
                 initialValue={rating.difficulty}
                 ratingValue={rating.difficulty}
                 size={50}
-                tooltipArray={ difficultyTooltips}
+                tooltipArray={difficultyTooltips}
                 showTooltip
                 activeColor="#ffd700"
                 emptyColor="#d3d3d3"

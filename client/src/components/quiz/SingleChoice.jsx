@@ -56,6 +56,7 @@ const SingleChoice = ({
   const org = JSON.parse(localStorage.getItem("org")) || "";
   let orgid = org?.id || 0;
 
+  console.log("questionId:", questionId);
   useEffect(() => {
     async function getOptions() {
       try {
@@ -372,8 +373,8 @@ const SingleChoice = ({
     navigate("/");
   };
 
-  // console.log(selectedOption);
-  // console.log(reviewQuestions);
+  console.log(selectedOption);
+  
 
   const attempted = selectedOption.filter((q) => q.selectedOption !== null);
   const reviewed = selectedOption.filter((q) => q.status == 2 || q.status == 3);

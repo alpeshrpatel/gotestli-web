@@ -275,7 +275,7 @@ const StudentQuizzes = () => {
     async function getQuestions() {
       try {
         if (token) {
-          const response = await API.get(`/api/questionset/questions/${id}?orgid=${orgid}`, {
+          const response = await API.get(`/api/questionset/allquestions/qset/${id}?orgid=${orgid}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -630,7 +630,12 @@ const StudentQuizzes = () => {
           </button>
         </div>
       </Modal>
-      <Modal open={openReport} onClose={onCloseReportModal} center>
+      <Modal open={openReport} onClose={onCloseReportModal} center styles={{
+            modal: {
+              width: '90%',
+              maxWidth: '2000px',
+            },
+          }}>
         <QuizReport attemptId={selectedAttemptId} />
       </Modal>
        <FooterOne />

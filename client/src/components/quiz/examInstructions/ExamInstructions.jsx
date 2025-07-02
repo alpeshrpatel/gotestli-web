@@ -385,6 +385,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal, totalMark
       navigate("/login");
       return;
     }
+    console.log("In progress quiz ID:", inProgressQuizId);
     // async function getQuestionsSet() {
 
     //   try {
@@ -841,9 +842,15 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal, totalMark
         </div>
       )}
       <Modal open={open} onClose={onCloseReportModal} center styles={{
+        // modal: {
+        //   width: getModalWidth,
+        // },
+
         modal: {
-          width: getModalWidth,
+          width: '90%',
+          maxWidth: '2000px',
         },
+
       }}>
         <QuizReport attemptId={selectedAttemptId} />
       </Modal>
