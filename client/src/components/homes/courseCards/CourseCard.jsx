@@ -171,8 +171,16 @@ export default function CourceCard({ view, search = null, role, data, index }) {
     async function getQuestions() {
       try {
         if (token) {
+          // const response = await API.get(
+          //   `/api/questionset/questions/${data.id}?orgid=${orgid}`,
+          //   {
+          //     headers: {
+          //       Authorization: `Bearer ${token}`,
+          //     },
+          //   }
+          // );
           const response = await API.get(
-            `/api/questionset/questions/${data.id}?orgid=${orgid}`,
+            `/api/questionset/allquestions/qset/${data.id}?orgid=${orgid}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -275,6 +283,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   console.log('questionset: ', questionSet)
   return (
     <>
+    
       <Modal open={open} onClose={onCloseModal} center>
         <ExamInstructions
           id={data.id}
@@ -286,23 +295,45 @@ export default function CourceCard({ view, search = null, role, data, index }) {
         />
       </Modal>
 
-      <div
+      {/* <div
         className={`col-lg-3 col-md-6 pointer ${search ? `col-lg-4 col-md-6 ` : `col-lg-3 col-md-6`
           } ${view == `list` && `col-lg-12`}`}
         onClick={onOpenModal}
-      >
+      > */}
+     <div
+  className={`col-lg col-md-6 pointer ${search ? `col-lg col-md-6 ` : `col-lg col-md-6`
+    } ${view == `list` && `col-lg-12`}`}
+  style={{
+    ...(window.innerWidth >= 992 && view !== 'list' ? { flex: '0 0 20%', maxWidth: '20%' } : {})
+  }}
+  onClick={onOpenModal}
+>
         {view == "card" ? (
           <div className="coursesCard -type-1">
             <Card
               sx={{ maxWidth: 345, height: "100%" }}
               className="coursesCard -type-1"
             >
-              <CardHeader
-                subheader={
-                  <div className="d-flex justify-content-between">
+              
+              <div className="relative">
+                <div className="coursesCard__image cardImage overflow-hidden rounded-8  ">
+                  <CardMedia
+                    component="img"
+                    // height="194"
+                    sx={{ height: "170px", width: "400px" }}
+                    image={data.image}
+                    alt="Paella dish"
+                  />
+
+                  <div className="coursesCard__image_overlay rounded-8"></div>
+                </div>
+              </div>
+              {/* <CardHeader
+                subheader={ */}
+                  <div className="d-flex justify-content-between p-2">
                     <div
                       className="text-17 lh-15 fw-500 text-dark-1 text-truncate"
-                      style={{ maxWidth: "200px" }}
+                      style={{ maxWidth: "400px" }}
                     // data-toggle="tooltip" data-placement="top" title={data.title}
                     >
                       <BootstrapTooltip title={data.title}>
@@ -318,23 +349,10 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                       </IconButton>
                     ) : null}
                   </div>
-                }
-              />
-              <div className="relative">
-                <div className="coursesCard__image cardImage overflow-hidden rounded-8  ">
-                  <CardMedia
-                    component="img"
-                    // height="194"
-                    sx={{ height: "170px", width: "400px" }}
-                    image={data.image}
-                    alt="Paella dish"
-                  />
-
-                  <div className="coursesCard__image_overlay rounded-8"></div>
-                </div>
-              </div>
+              {/* //   }
+              // /> */}
               <div
-                className="mt-2 ms-2"
+                className="ms-2"
                 style={{
                   display: "flex",
                   justifyContent: "between",

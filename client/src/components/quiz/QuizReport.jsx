@@ -41,7 +41,7 @@ const QuizReport = ({ attemptId }) => {
 
 
   return (
-    <div className="container-fluid shadow mt-4" >
+    <div className="container-fluid w-100 shadow mt-4" >
       {userResults.length > 0 &&
         userResults.map((result, id) => (
           <Flashcard

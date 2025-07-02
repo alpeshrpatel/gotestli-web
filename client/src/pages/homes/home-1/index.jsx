@@ -51,16 +51,17 @@ import PaymentComponent from "@/components/common/PaymentComponent";
 //   audience: "Educators, Course Creators, Training Organizations, E-Learning Professionals, School Administrators, Students"
 // };
 const pageMetadata = {
-  title: "Question Bank | Best Quiz Maker App for Learning & Trivia – GoTestli Instructor Panel",
+  title: "Gotestli – Best Quiz App for Learning & Trivia | Interactive LMS Platform for E-Learning",
   description:
-    "Create, edit, and organize quiz questions on GoTestli, the best quiz app for learning and trivia. Build comprehensive question banks with multimedia, manage multiple choice questions, and streamline your quiz creation process with powerful instructor tools.",
+    "Transform e-learning with Gotestli, the best quiz maker app for learning and trivia. Create interactive online courses, engaging quizzes, and a complete LMS platform for schools, educators, and training organizations.",
   keywords:
-    "best quiz app for learning, best quiz maker app, quiz app for trivia, instructor question bank, create quiz questions, question management, gotestli questions, quiz question builder, question library, multiple choice questions, quiz creation tools, question editing, instructor panel, educational content creation, quiz bank management, question organization",
-  canonical: "https://gotestli.com/instructor/questions",
-  category: "Instructor Tools, Question Management, Quiz Content Development",
-  subject: "Question Banks, Quiz Creation, Instructor Tools, Educational Content",
-  audience: "Instructors, Teachers, Educators, Content Creators, Quiz Makers, E-Learning Professionals"
+    "best quiz app for learning, best quiz maker app, quiz app for trivia, GoTestli LMS platform, e-learning template, online course builder, interactive quizzes, educational platform, learning management system, quiz creation LMS, LMS for schools, online education tools, course management software, e-learning solution, digital classroom platform",
+  canonical: "https://gotestli.com/",
+  category: "LMS, E-Learning, Interactive Quizzes, Educational Technology",
+  subject: "Quiz Platform, Learning Management System, E-Learning Tools, Online Education",
+  audience: "Educators, Schools, Training Organizations, E-Learning Professionals, Course Creators, School Administrators"
 };
+
 
 
 export default function HomePage1() {

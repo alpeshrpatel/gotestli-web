@@ -39,12 +39,12 @@ export default function Courses({ userRole }) {
   const navigate = useNavigate();
   const loaderRef = useRef(null);
 
-  const limit = 2;
-    const start = (page - 1) * limit;
-    const end = page * limit;
+  const limit = 4;
+  const start = (page - 1) * limit;
+  const end = page * limit;
 
   const token = localStorage.getItem("token");
-  const org = JSON.parse(localStorage.getItem("org")) || ""; 
+  const org = JSON.parse(localStorage.getItem("org")) || "";
   let orgid = org?.id || 0;
   useEffect(() => {
     async function getCategory() {
@@ -60,14 +60,23 @@ export default function Courses({ userRole }) {
     try {
       setLoading(true);
       const { data } = await API.get(`/api/questionset?start=${start}&end=${end}&limit=${limit}&orgid=${orgid}`);
+      console.log("Fetched questions set:", data);
       if (Array.isArray(data)) {
         const newQuizzes = data
         // setFiltered(data);
         if (newQuizzes.length === 0) {
           setHasMore(false);
         } else {
-          setFiltered(prevQuizzes => [...prevQuizzes, ...newQuizzes]);
-          setPage(prevPage => prevPage + 1);
+          if (page === 1) {
+            
+            setFiltered(newQuizzes);
+            setPage(prevPage => prevPage + 1);
+
+          } else {
+            setFiltered(prevQuizzes => [...prevQuizzes, ...newQuizzes]);
+            setPage(prevPage => prevPage + 1);
+          }
+
         }
       } else {
         console.error("Expected an array, got:", data);
@@ -77,10 +86,10 @@ export default function Courses({ userRole }) {
       console.error("Error fetching questions set:", error);
       setFiltered([]);
     }
-     setLoading(false);
+    setLoading(false);
   }
 
-    useEffect(() => {
+  useEffect(() => {
     const observer = new IntersectionObserver(
       entries => {
         const target = entries[0];
@@ -90,12 +99,12 @@ export default function Courses({ userRole }) {
       },
       { threshold: 0.1 }
     );
-    
+
     const currentLoaderRef = loaderRef.current;
     if (currentLoaderRef) {
       observer.observe(currentLoaderRef);
     }
-    
+
     return () => {
       if (currentLoaderRef) {
         observer.unobserve(currentLoaderRef);
@@ -182,7 +191,7 @@ export default function Courses({ userRole }) {
         (set) => set.created_by == userId
       ));
   }
-
+console.log('hello')
   // console.log(questionSetByInstructor);
   // console.log(value);
 
@@ -242,7 +251,7 @@ export default function Courses({ userRole }) {
       </div>
 
       <div
-        className="pt-40 m-auto row y-gap-30 w-75 pl-0 pr-0"
+        className="pt-40 m-auto row y-gap-30 pl-0 pr-0" style={{ width: '95vw' }}
         data-aos="fade-right"
         data-aos-offset="80"
         data-aos-duration={800}
@@ -412,22 +421,22 @@ export default function Courses({ userRole }) {
           </h4>
         )}
         {loading && (
-        <div className="flex justify-center my-4">
-          <div className="w-6 h-6 border-2 border-t-blue-500 rounded-full animate-spin"></div>
-        </div>
-      )}
-      
-      {!loading && hasMore && (
-        <div ref={loaderRef} className="h-10" />
-      )}
-      
-      {!hasMore && filtered.length > 0 && (
-        <p className="text-center text-gray-500 my-4">No more quizzes to load</p>
-      )}
-      
-      {!loading && filtered.length === 0 && (
-        <p className="text-center text-gray-500 my-4">No quizzes available</p>
-      )}
+          <div className="flex justify-center my-4">
+            <div className="w-6 h-6 border-2 border-t-blue-500 rounded-full animate-spin"></div>
+          </div>
+        )}
+
+        {!loading && hasMore && (
+          <div ref={loaderRef} className="h-10" />
+        )}
+
+        {!hasMore && filtered.length > 0 && (
+          <p className="text-center text-gray-500 my-4">No more quizzes to load</p>
+        )}
+
+        {!loading && filtered.length === 0 && (
+          <p className="text-center text-gray-500 my-4">No quizzes available</p>
+        )}
         {/* { filtered &&
           filtered.map((elm, index) => (
             <CourceCard
