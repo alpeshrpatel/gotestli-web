@@ -108,8 +108,9 @@ const CheatSheetLayout = ({ language = 'python', title, description, sections, c
       fontFamily: 'Arial, sans-serif'
     }}>
       <div style={{
-        maxWidth: '1000px',
+        maxWidth: '2000px',
         margin: '0 auto',
+        width:'90%'
       }}>
         <header style={{
           marginBottom: '32px',

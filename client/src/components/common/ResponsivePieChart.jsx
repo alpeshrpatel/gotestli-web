@@ -166,7 +166,7 @@ const ResponsivePieChart = ({complexityCounterPieChartData}) => {
               cy="50%"
               labelLine={false}
               label={renderCustomizedLabel}
-              outerRadius={Math.min(dimensions.width, dimensions.height) * 0.2}
+              outerRadius={Math.min(dimensions.width, dimensions.height) * 0.25}
               fill="#8884d8"
               dataKey="value"
               stroke="#ffffff"

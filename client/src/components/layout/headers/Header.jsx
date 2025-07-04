@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import SearchToggle from "../component/SearchToggle";
 import CartToggle from "../component/CartToggle";
@@ -39,7 +39,9 @@ export default function Header({ userRole }) {
   };
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const linkRef = useRef(null);
 
+  
   useEffect(() => {
     menuList.forEach((elm) => {
       elm?.links?.forEach((elm2) => {
@@ -127,6 +129,7 @@ export default function Header({ userRole }) {
           style={{
             paddingX: isSmallScreen ? "0px" : "20px",
             margin: isSmallScreen ? " 0 0px" : "0 20px",
+            fontWeight: "500",
           }}
         >
           {/* <div className="row justify-between items-center"> */}
