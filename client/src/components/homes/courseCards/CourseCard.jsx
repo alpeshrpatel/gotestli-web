@@ -46,6 +46,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   const [totalRatings, setTotalRatings] = useState(0);
   const [purchasedQSet, setPurchasedQSet] = useState([]);
   const [totalMarks, setTotalMarks] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   const navigate = useNavigate();
 
@@ -56,6 +57,14 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   const org = JSON.parse(localStorage.getItem("org")) || "";
   let orgid = org?.id || 0;
   // let totalMarks = 0;
+
+   
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     async function getRating() {
@@ -281,6 +290,19 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   // ];
   console.log('data: ', data)
   console.log('questionset: ', questionSet)
+   const getCardStyle = () => {
+    if (window.innerWidth >= 992 && view !== 'list') {
+      return { flex: '0 0 20%', maxWidth: '20%' };
+    } else {
+      if (windowWidth >= 768) {
+        return { flex: '0 0 calc(33.333% - 16px)', maxWidth: 'calc(33.333% - 16px)', minWidth: '250px' };
+      } else if (windowWidth >= 576) {
+        return { flex: '0 0 calc(50% - 12px)', maxWidth: 'calc(50% - 12px)', minWidth: '250px' };
+      } else {
+        return { flex: '0 0 100%', maxWidth: '100%', minWidth: '250px' };
+      }
+    }
+  };
   return (
     <>
     
@@ -301,11 +323,12 @@ export default function CourceCard({ view, search = null, role, data, index }) {
         onClick={onOpenModal}
       > */}
      <div
-  className={`col-lg col-md-6 pointer ${search ? `col-lg col-md-6 ` : `col-lg col-md-6`
-    } ${view == `list` && `col-lg-12`}`}
-  style={{
-    ...(window.innerWidth >= 992 && view !== 'list' ? { flex: '0 0 20%', maxWidth: '20%' } : {})
-  }}
+  // className={`col-lg col-md-6 pointer ${search ? `col-lg col-md-6 ` : `col-lg col-md-6`
+  //   } ${view == `list` && `col-lg-12`}`}
+  // style={{
+  //   ...(window.innerWidth >= 992 && view !== 'list' ? {flex: '0 0 20%', maxWidth: '20%'} : { maxWidth: '30%',minWidth:'250px' })
+  // }}
+   style={view === 'list' ? {} : getCardStyle()}
   onClick={onOpenModal}
 >
         {view == "card" ? (

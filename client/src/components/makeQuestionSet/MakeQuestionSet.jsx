@@ -1120,7 +1120,7 @@ const MakeQuestionSet = () => {
 
             <div className="checkboxContainer mt-3">
               <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'center', gap: '20px', marginBottom:'15px' }}>
-                <ul className={`col-md-12 ${selectedQuestions.length > 0 ? 'col-lg-8' : 'col-lg-12'} `}>
+                <ul className={`col-md-12 ${selectedQuestions.length > 0 ? 'col-lg-9' : 'col-lg-12'} `}>
                   {
                     !loading && filteredFromAll.length > 0 ? (
                       filteredFromAll

@@ -1,14 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
 export const HeaderExplore = ({ allClasses }) => {
   const [exploreActive, setExploreActive] = useState(false);
   const { pathname } = useLocation();
+  const linkRef = React.useRef(null);
+
+  useEffect(() => {
+          const handleClick = (event) => {
+              if (linkRef.current && linkRef.current.contains(event.target)) {
+                  return;
+              }
+              setExploreActive((prev) => {
+                  if (prev) {
+                      return false;
+                  }
+                  // return prev;
+              });
+          };
+          window.addEventListener('click', handleClick);
+          return () => {
+              window.removeEventListener('click', handleClick);
+          };
+      }, []);
+  
   return (
     <>
-      <div className={`${allClasses ? allClasses : ""}`}>
+      <div className={`${allClasses ? allClasses : ""}`} style={{fontSize: "14px"}}>
         <Link
+        ref={linkRef}
           to="#"
           onClick={() => setExploreActive((pre) => !pre)}
           className="d-flex items-center text-white"
@@ -45,7 +66,7 @@ export const HeaderExplore = ({ allClasses }) => {
                 data-barba
                 to="/create/question"
                 className={pathname == "/create/question" ? "activeMenu" : ""}
-                style={{ fontSize: "18px", whiteSpace: "nowrap" }}
+                style={{ whiteSpace: "nowrap" }}
               >
                 Question{" "}
                 {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
@@ -54,7 +75,7 @@ export const HeaderExplore = ({ allClasses }) => {
                 data-barba
                 to="/create/questionset"
                 className={pathname == "/create/questionset" ? "activeMenu" : ""}
-                style={{ fontSize: "18px", whiteSpace: "nowrap" }}
+                style={{ whiteSpace: "nowrap" }}
               >
                 QuestionSet{" "}
                 {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
@@ -62,7 +83,7 @@ export const HeaderExplore = ({ allClasses }) => {
             </div>
           </div>
 
-          <div className="explore__item">
+          <div className="explore__item" style={{fontSize: "14px"}}>
             <Link
               to="#"
               className="d-flex items-center justify-between text-dark-1"
@@ -74,7 +95,7 @@ export const HeaderExplore = ({ allClasses }) => {
                 data-barba
                 to="/upload/questionset"
                 className={pathname == "/upload/questionset" ? "activeMenu" : ""}
-                style={{ fontSize: "18px", whiteSpace: "nowrap" }}
+                style={{  whiteSpace: "nowrap" }}
               >
                 Upload QuestionSet{" "}
                 {/* <i className="icon-chevron-right text-13 ml-10"></i> */}

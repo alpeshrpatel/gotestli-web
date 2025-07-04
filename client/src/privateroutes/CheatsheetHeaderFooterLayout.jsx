@@ -6,7 +6,7 @@ const CheatSheetHeaderFooterLayout = () => {
   return (
     <div className="flex flex-col min-h-screen" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Header />
-      <main className="container-fluid mx-auto py-8 px-6 flex-grow " style={{ marginTop: "15vh",flex: 1 }}>
+      <main className=" mx-auto py-8 px-6 flex-grow " style={{ marginTop: "15vh",flex: 1,width:'90%' }}>
         <Outlet />
       </main>
       <FooterOne />
