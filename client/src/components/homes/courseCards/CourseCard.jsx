@@ -288,8 +288,8 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   //   { stars: 2, percentage: 0 },
   //   { stars: 1, percentage: 0 },
   // ];
-  console.log('data: ', data)
-  console.log('questionset: ', questionSet)
+  // console.log('data: ', data)
+  // console.log('questionset: ', questionSet)
    const getCardStyle = () => {
     if (window.innerWidth >= 992 && view !== 'list') {
       return { flex: '0 0 20%', maxWidth: '20%' };

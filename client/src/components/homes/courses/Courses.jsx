@@ -40,8 +40,8 @@ export default function Courses({ userRole }) {
   const loaderRef = useRef(null);
 
   const limit = 4;
-  const start = (page - 1) * limit;
-  const end = page * limit;
+  // const start = (page - 1) * limit;
+  // const end = page * limit;
 
   const token = localStorage.getItem("token");
   const org = JSON.parse(localStorage.getItem("org")) || "";
@@ -59,6 +59,8 @@ export default function Courses({ userRole }) {
     if (loading || !hasMore) return;
     try {
       setLoading(true);
+      const start = (page - 1) * limit;
+    const end = page * limit;
       const { data } = await API.get(`/api/questionset?start=${start}&end=${end}&limit=${limit}&orgid=${orgid}`);
       console.log("Fetched questions set:", data);
       if (Array.isArray(data)) {
@@ -123,6 +125,7 @@ export default function Courses({ userRole }) {
     if (title == "All Categories") {
       setSelectedCategory(filtered);
     } else {
+      console.log("Selected Category:", title);
       try {
         if (token) {
           const { data } = await API.get(
@@ -147,20 +150,20 @@ export default function Courses({ userRole }) {
         console.error("Failed to fetch student data:", error);
       }
       try {
-        if (token) {
+        // if (token) {
           const res = await API.get(
             `/api/category/selected/questionsets/${title}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
+            // {
+            //   headers: {
+            //     Authorization: `Bearer ${token}`,
+            //   },
+            // }
           );
-          // console.log(res);
+           console.log('selectedcategoryres',res);
           if (res.data) {
             setSelectedCategory(res.data);
           }
-        }
+        // }
       } catch (error) {
         if (error.status == 403) {
           localStorage.removeItem("user");
@@ -175,6 +178,7 @@ export default function Courses({ userRole }) {
 
     setValue(newValue);
   };
+  console.log("Selected Category:", selectedCategory);
   const user = auth?.currentUser?.displayName;
   const userData = JSON.parse(localStorage.getItem("user")) || "";
   // const userRole = userData.role;
@@ -191,7 +195,7 @@ export default function Courses({ userRole }) {
         (set) => set.created_by == userId
       ));
   }
-console.log('hello')
+
   // console.log(questionSetByInstructor);
   // console.log(value);
 

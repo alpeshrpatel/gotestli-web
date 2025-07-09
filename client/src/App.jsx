@@ -160,6 +160,8 @@ import ExpressJsCheatSheet from "./pages/cheatsheets/cheatsheetpages/ExpressJsCh
 import DjangoCheatSheet from "./pages/cheatsheets/cheatsheetpages/DjangoCheatSheet";
 import FlaskCheatSheet from "./pages/cheatsheets/cheatsheetpages/FlaskCheatSheet";
 import FastApiCheatSheet from "./pages/cheatsheets/cheatsheetpages/FastApiCheatSheet";
+import StudentsList from "./pages/adminpages/StudentsList";
+import InstructorsList from "./pages/adminpages/InstructorsList";
 // import AppProvider from "./utils/AppContext";
 
 function App() {
@@ -481,6 +483,19 @@ function App() {
                     <ProtectedRoute element={<RefundRequestsList />} role="admin" />
                   }
                 />
+                <Route
+                  path="/admin/students/list"
+                  element={
+                    <ProtectedRoute element={<StudentsList />} role="admin" />
+                  }
+                />
+                <Route
+                  path="/admin/instructors/list"
+                  element={
+                    <ProtectedRoute element={<InstructorsList />} role="admin" />
+                  }
+                />
+                
 
                 {/* Instructor Routes */}
                 <Route

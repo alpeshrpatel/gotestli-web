@@ -832,6 +832,10 @@ export default function AdminDashboardOne() {
                   navigate('/admin/organization-list/approval', { state: { organizationList: organizationList } });
                 } else if (elm?.title === 'Refund Requests') {
                   navigate('/admin/refund/requests');
+                }else if (elm?.title === 'Students') {
+                  navigate('/admin/students/list');
+                }else if (elm?.title === 'Instructors') {
+                  navigate('/admin/instructors/list');  
                 }
               }}>
               <div className="d-flex justify-between items-center py-35 px-30 rounded-16 -dark-bg-dark-1 shadow-4" style={{ backgroundColor: (elm?.title === 'Organizations' || elm?.title === 'Refund Requests') ? '#D9EAFD' : '' }}>

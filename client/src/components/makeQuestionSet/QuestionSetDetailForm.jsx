@@ -9,6 +9,8 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { showToast } from "@/utils/toastService";
 import { renderTemplate } from "@/utils/renderTemplate";
 import emailTemplates from "../../../../email_templates/emailtemplates";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 
 const APP_ID = 1;
@@ -35,13 +37,14 @@ const QuestionSetDetailForm = ({
     no_of_question: selectedQuestions.length,
     tags: "",
     is_demo: true,
-    totalmarks: "",
+    totalmarks: selectedQuestions?.map((question) => question.marks).reduce((a, b) => a + b, 0),
     pass_percentage: "",
     org_id: 0
   });
   const [tagsId, setTagsId] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const updateStatusId = () => {
@@ -125,6 +128,48 @@ const QuestionSetDetailForm = ({
     }
   };
 
+  const validate = () => {
+    const newErrors = {};
+
+    if (!formData.title && formData.title.length == 0)
+      newErrors.question_type_id = "Title is required";
+    if (formData.title.length > 200)
+      newErrors.title = "Title should not exceed 100 characters";
+    if (formData.title.length < 5)
+      newErrors.title = "Title should be at least 5 characters long";
+    if (!formData.image) newErrors.image = "Image URL is required";
+    if (formData.image.length > 900 && formData.image.length < 10)
+      newErrors.image = "Image URL should not exceed 900 characters";
+    if (!formData.short_desc)
+      newErrors.short_desc = "Short Description is required";
+    if (formData.short_desc.length > 500)
+      newErrors.short_desc = "Short Description should not exceed 200 characters";
+    if (formData.short_desc.length < 10)
+      newErrors.short_desc = "Short Description should be at least 10 characters long";
+    if (!formData.description)
+      newErrors.description = "Description is required";
+    if (formData.description.length > 1000)
+      newErrors.description = "Description should not exceed 1000 characters";
+    if (formData.description.length < 20)
+      newErrors.description = "Description should be at least 20 characters long";
+    if (!formData.start_date) newErrors.start_date = "Start Date is required";
+    if (!formData.end_date) newErrors.end_date = "End Date is required";
+    if (!formData.time_duration)
+      newErrors.time_duration = "Time Duration is required";
+    if (formData.time_duration < 0 || formData.time_duration > 200)
+      newErrors.time_duration = "Time Duration should be between 0 and 200 minutes";
+    if (!formData.pass_percentage)
+      newErrors.pass_percentage = "Pass Percentage is required";
+    if (formData.pass_percentage < 0 || formData.pass_percentage > 100)
+      newErrors.pass_percentage = "Pass Percentage should be between 0 and 100";
+
+
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formDataWithTime = {
@@ -133,14 +178,15 @@ const QuestionSetDetailForm = ({
       end_time: endTime,
       created_by: userId,
       modified_by: userId,
-      org_id: orgid
+      org_id: orgid,
+      totalmarks: selectedQuestions?.map((question) => question.marks).reduce((a, b) => a + b, 0),
     };
 
     // console.log(formDataWithTime);
     // console.log(formData);
     // console.log(questionSetId, tagsId);
     try {
-      if (token) {
+      if (token && validate()) {
         const response = await API.post("/api/questionset", formDataWithTime, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -189,17 +235,17 @@ const QuestionSetDetailForm = ({
           if (data?.length > 0) {
             await data?.forEach(async (follower) => {
               const quizAlertEmail = emailTemplates.quizAlertEmail;
-              const dynamicData ={
+              const dynamicData = {
                 first_name: follower.first_name,
                 last_name: follower.last_name,
                 title: formData.title,
                 author: formData.author,
               }
               const renderedContent = {
-                    subject: renderTemplate(quizAlertEmail.subject, dynamicData),
-                    body_text: renderTemplate(quizAlertEmail.body_text, dynamicData),
-                    body_html: renderTemplate(quizAlertEmail.body_html, dynamicData),
-                  };
+                subject: renderTemplate(quizAlertEmail.subject, dynamicData),
+                body_text: renderTemplate(quizAlertEmail.body_text, dynamicData),
+                body_html: renderTemplate(quizAlertEmail.body_html, dynamicData),
+              };
 
               const res = await API.post(
                 `https://api.communication.gotestli.com/api/send/email`,
@@ -213,60 +259,60 @@ const QuestionSetDetailForm = ({
                       name: follower.first_name,
                     }
                   ],
-//                   content: {
-//                     subject: `📢 New Quiz Alert from ${formData.author}! 🚀 Check it Out Now!`,
-//                     body_text: `
-//                           Hi ${follower.first_name},
-                          
-//                           Great news! ${formData.author} just released a brand new quiz: "${formData.title}" on Gotestli, and you're invited to be one of the first to check it out. 🎉
-                          
-//                           By staying updated, you get:
-//                           - 🌟 Exclusive access to fresh quizzes
-//                           - 📈 A chance to improve your knowledge and skills
-//                           - 🎯 Opportunities to engage and learn with other members of the Gotestli community
-                          
-//                           Don't miss out on the fun and the learning. Dive into the latest quiz now and see how well you can do!
-                          
-//                           Wishing you success,
-// The GoTestLI Team
+                  //                   content: {
+                  //                     subject: `📢 New Quiz Alert from ${formData.author}! 🚀 Check it Out Now!`,
+                  //                     body_text: `
+                  //                           Hi ${follower.first_name},
 
-// ---------------------
-// GoTestli
-// Test Your Limits, Expand Your Knowledge
-// https://gotestli.com
-//                             `,
-//                     body_html: `
-//                           <p>Hi <b>${follower.first_name}</b>,</p>
-                          
-//                           <p>Great news! <b>${formData.author}</b> just released a brand new quiz: "<b>${formData.title}</b>" on Gotestli, and you're invited to be one of the first to check it out. 🎉</p>
-                          
-//                           <p>By staying updated, you get:</p>
-//                           <ul>
-//                             <li>🌟 Exclusive access to fresh quizzes</li>
-//                             <li>📈 A chance to improve your knowledge and skills</li>
-//                             <li>🎯 Opportunities to engage and learn with other members of the Gotestli community</li>
-//                           </ul>
-                          
-//                           <p>Don't miss out on the fun and the learning. Dive into the latest quiz now and see how well you can do!</p>
-                          
-//                           <p>Happy learning,<br/>
-//                            <p>Wishing you success,<br/>  
-// <p>GoTestli Team</p>
-// <hr style="margin: 30px 0;" />
+                  //                           Great news! ${formData.author} just released a brand new quiz: "${formData.title}" on Gotestli, and you're invited to be one of the first to check it out. 🎉
 
-// <div style="font-size: 13px; color: #888; text-align: center;">
-//   <img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
-//   <p><b>GoTestli</b><br/>
-//   Test Your Limits, Expand Your Knowledge<br/>
-//   <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
-//   <p style="margin-top: 10px; font-size: 12px;">
-   
-//     <a href="mailto:gotestli07@gmail.com" style="color: #666; text-decoration: none; margin: 0 5px;">✉️ gotestli07@gmail.com</a>
-//   </p>
-  
-// </div>
-//                             `,
-//                   },
+                  //                           By staying updated, you get:
+                  //                           - 🌟 Exclusive access to fresh quizzes
+                  //                           - 📈 A chance to improve your knowledge and skills
+                  //                           - 🎯 Opportunities to engage and learn with other members of the Gotestli community
+
+                  //                           Don't miss out on the fun and the learning. Dive into the latest quiz now and see how well you can do!
+
+                  //                           Wishing you success,
+                  // The GoTestLI Team
+
+                  // ---------------------
+                  // GoTestli
+                  // Test Your Limits, Expand Your Knowledge
+                  // https://gotestli.com
+                  //                             `,
+                  //                     body_html: `
+                  //                           <p>Hi <b>${follower.first_name}</b>,</p>
+
+                  //                           <p>Great news! <b>${formData.author}</b> just released a brand new quiz: "<b>${formData.title}</b>" on Gotestli, and you're invited to be one of the first to check it out. 🎉</p>
+
+                  //                           <p>By staying updated, you get:</p>
+                  //                           <ul>
+                  //                             <li>🌟 Exclusive access to fresh quizzes</li>
+                  //                             <li>📈 A chance to improve your knowledge and skills</li>
+                  //                             <li>🎯 Opportunities to engage and learn with other members of the Gotestli community</li>
+                  //                           </ul>
+
+                  //                           <p>Don't miss out on the fun and the learning. Dive into the latest quiz now and see how well you can do!</p>
+
+                  //                           <p>Happy learning,<br/>
+                  //                            <p>Wishing you success,<br/>  
+                  // <p>GoTestli Team</p>
+                  // <hr style="margin: 30px 0;" />
+
+                  // <div style="font-size: 13px; color: #888; text-align: center;">
+                  //   <img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
+                  //   <p><b>GoTestli</b><br/>
+                  //   Test Your Limits, Expand Your Knowledge<br/>
+                  //   <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
+                  //   <p style="margin-top: 10px; font-size: 12px;">
+
+                  //     <a href="mailto:gotestli07@gmail.com" style="color: #666; text-decoration: none; margin: 0 5px;">✉️ gotestli07@gmail.com</a>
+                  //   </p>
+
+                  // </div>
+                  //                             `,
+                  //                   },
                   content: renderedContent,
                 },
                 // {
@@ -372,7 +418,7 @@ const QuestionSetDetailForm = ({
           type="text"
           name="title"
           id="title"
-          required
+          // required
           style={{
             padding: "10px",
             border: "1px solid #ced4da",
@@ -386,6 +432,11 @@ const QuestionSetDetailForm = ({
           value={formData.title}
           onChange={handleChange}
         />
+        {
+          errors.title && (
+            <span style={{ color: 'red', fontSize: '13px' }}> <FontAwesomeIcon icon={faCircleExclamation} /> {errors.title}</span>
+          )
+        }
         {/* <TextField
           required
           id="outlined-required"
@@ -421,7 +472,7 @@ const QuestionSetDetailForm = ({
             type="url"
             name="image"
             id="image"
-            required
+            // required
             style={{
               padding: "10px",
               border: "1px solid #ced4da",
@@ -435,7 +486,13 @@ const QuestionSetDetailForm = ({
             value={formData.image}
             onChange={handleChange}
           />
+          {
+            errors.image && (
+              <span style={{ color: 'red', fontSize: '13px' }}> <FontAwesomeIcon icon={faCircleExclamation} /> {errors.image}</span>
+            )
+          }
           <span className="mt-2"><span style={{ color: 'red', fontWeight: '500' }}>Note. </span>Add an image URL or provide a public image URL.</span>
+
           {/* <TextField
           required
           id="outlined-required"
@@ -521,7 +578,7 @@ const QuestionSetDetailForm = ({
           type="text"
           name="short_desc"
           id="short_desc"
-          required
+          // required
           style={{
             padding: "10px",
             border: "1px solid #ced4da",
@@ -535,6 +592,11 @@ const QuestionSetDetailForm = ({
           value={formData.short_desc}
           onChange={handleChange}
         />
+        {
+          errors.short_desc && (
+            <span style={{ color: 'red', fontSize: '13px' }}> <FontAwesomeIcon icon={faCircleExclamation} /> {errors.short_desc}</span>
+          )
+        }
         {/* <TextField
           required
           id="outlined-required"
@@ -567,7 +629,7 @@ const QuestionSetDetailForm = ({
         <textarea
           name="description"
           id="description"
-          required
+          // required
           style={{
             padding: "10px",
             border: "1px solid #ced4da",
@@ -581,6 +643,11 @@ const QuestionSetDetailForm = ({
           value={formData.description}
           onChange={handleChange}
         />
+        {
+          errors.description && (
+            <span style={{ color: 'red', fontSize: '13px' }}> <FontAwesomeIcon icon={faCircleExclamation} /> {errors.description}</span>
+          )
+        }
         {/* <TextField
           id="outlined-multiline-flexible"
           label="Description"
@@ -618,7 +685,7 @@ const QuestionSetDetailForm = ({
             type="date"
             name="start_date"
             id="start_date"
-            required
+            // required
             style={{
               padding: "10px",
               border: "1px solid #ced4da",
@@ -632,6 +699,11 @@ const QuestionSetDetailForm = ({
             value={formData.start_date}
             onChange={handleChange}
           />
+          {
+            errors.start_date && (
+              <span style={{ color: 'red', fontSize: '13px' }}> <FontAwesomeIcon icon={faCircleExclamation} /> {errors.start_date}</span>
+            )
+          }
           {/* <TextField
             required
             id="outlined-required"
@@ -673,7 +745,7 @@ const QuestionSetDetailForm = ({
             type="date"
             name="end_date"
             id="end_date"
-            required
+            // required
             style={{
               padding: "10px",
               border: "1px solid #ced4da",
@@ -687,6 +759,11 @@ const QuestionSetDetailForm = ({
             value={formData.end_date}
             onChange={handleChange}
           />
+          {
+            errors.end_date && (
+              <span style={{ color: 'red', fontSize: '13px' }}><FontAwesomeIcon icon={faCircleExclamation} /> {errors.end_date}</span>
+            )
+          }
           {/* <TextField
             required
             id="outlined-required"
@@ -729,7 +806,7 @@ const QuestionSetDetailForm = ({
             id="time_duration"
             min="0"
             max="200"
-            required
+            // required
             style={{
               padding: "10px",
               border: "1px solid #ced4da",
@@ -743,6 +820,11 @@ const QuestionSetDetailForm = ({
             value={formData.time_duration}
             onChange={handleChange}
           />
+          {
+            errors.time_duration && (
+              <span style={{ color: 'red', fontSize: '13px' }}> <FontAwesomeIcon icon={faCircleExclamation} /> {errors.time_duration}</span>
+            )
+          }
           {/* <TextField
           required
           id="outlined-number"
@@ -786,7 +868,7 @@ const QuestionSetDetailForm = ({
           <input
             type="number"
             readOnly
-            required
+            // required
             style={{
               padding: "10px",
               border: "1px solid #ced4da",
@@ -833,6 +915,7 @@ const QuestionSetDetailForm = ({
             Total Marks
           </label>
           <input
+            readOnly
             type="number"
             name="totalmarks"
             id="totalmarks"
@@ -897,7 +980,7 @@ const QuestionSetDetailForm = ({
             id="pass_percentage"
             min="0"
             max="100"
-            required
+            // required
             style={{
               padding: "10px",
               border: "1px solid #ced4da",
@@ -911,6 +994,11 @@ const QuestionSetDetailForm = ({
             value={formData.pass_percentage}
             onChange={handleChange}
           />
+          {
+            errors.pass_percentage && (
+              <span style={{ color: 'red', fontSize: '13px' }}> <FontAwesomeIcon icon={faCircleExclamation} /> {errors.pass_percentage}</span>
+            )
+          }
           {/* <TextField
             required
             id="outlined-number"
