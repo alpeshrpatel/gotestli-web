@@ -4,13 +4,13 @@ import { API } from "@/utils/AxiosInstance";
 import { auth } from "@/firebase/Firebase";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Checkbox, FormControlLabel, TextField } from "@mui/material";
+import { Button, Checkbox, Chip, FormControlLabel, TextField } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import { showToast } from "@/utils/toastService";
 import { renderTemplate } from "@/utils/renderTemplate";
 import emailTemplates from "../../../../email_templates/emailtemplates";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { faCircleExclamation, faLightbulb, faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 
 const APP_ID = 1;
@@ -45,6 +45,71 @@ const QuestionSetDetailForm = ({
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [errors, setErrors] = useState({});
+  const [aiSuggestions, setAiSuggestions] = useState({
+    title: [],
+    short_desc: [],
+    description: []
+  });
+  const [isGeneratingAI, setIsGeneratingAI] = useState({
+    title: false,
+    short_desc: false,
+    description: false
+  });
+  const [showSuggestions, setShowSuggestions] = useState({
+    title: false,
+    short_desc: false,
+    description: false
+  });
+
+  const generateAISuggestions = async (field) => {
+    setIsGeneratingAI(prev => ({ ...prev, [field]: true }));
+
+    try {
+
+      const response = await API.post('/api/groq/questionset/detail/suggestions', { selectedQuestions, field },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+        }
+
+      );
+
+      if (!response.data.success) {
+        throw new Error('Failed to generate AI suggestions');
+      }
+
+      // const data = await response.data?.slice(1, 4); // Assuming the response is an array of suggestions
+      // const suggestions = data.choices[0].message.content
+      //   .split('\n')
+      //   .filter(line => line.trim().length > 0)
+      //   .slice(0, 3);
+      const suggestions = response.data.data.slice(1, 4).map(item => item.trim());
+      console.log(response.data.data);
+      setAiSuggestions(prev => ({
+        ...prev,
+        [field]: suggestions
+      }));
+
+      setShowSuggestions(prev => ({ ...prev, [field]: true }));
+
+    } catch (error) {
+      console.error('Error generating AI suggestions:', error);
+      showToast("error", "Failed to generate AI suggestions");
+    } finally {
+      setIsGeneratingAI(prev => ({ ...prev, [field]: false }));
+    }
+  };
+
+  // Apply AI suggestion to form field
+  const applySuggestion = (field, suggestion) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: suggestion
+    }));
+    setShowSuggestions(prev => ({ ...prev, [field]: false }));
+  };
 
   useEffect(() => {
     const updateStatusId = () => {
@@ -403,17 +468,41 @@ const QuestionSetDetailForm = ({
           value={formData.title}
           onChange={handleChange}
         /> */}
-        <label
-          htmlFor="title"
-          style={{
-            marginBottom: "5px",
-            fontWeight: "600",
-            color: "#333",
-            fontSize: "14px",
-          }}
-        >
-          Title
-        </label>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '5px' }}>
+
+          <label
+            htmlFor="title"
+            style={{
+              marginBottom: "5px",
+              fontWeight: "600",
+              color: "#333",
+              fontSize: "14px",
+            }}
+          >
+            Title
+          </label>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={() => generateAISuggestions('title')}
+            disabled={isGeneratingAI.title}
+            style={{
+              fontSize: '12px',
+              padding: '4px 8px',
+              minWidth: 'auto',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            {isGeneratingAI.title ? (
+              <FontAwesomeIcon icon={faSpinner} spin />
+            ) : (
+              // <FontAwesomeIcon icon={faLightbulb}/>
+              <img style={{width:"25px",height:'20px'}} src="/assets/img/bulb.png"/>
+            )}
+            &nbsp;AI Suggest
+          </Button>
+        </div>
         <input
           type="text"
           name="title"
@@ -437,6 +526,27 @@ const QuestionSetDetailForm = ({
             <span style={{ color: 'red', fontSize: '13px' }}> <FontAwesomeIcon icon={faCircleExclamation} /> {errors.title}</span>
           )
         }
+        {showSuggestions.title && aiSuggestions.title.length > 0 && (
+          <div style={{ marginTop: '10px' }}>
+            <small style={{ color: '#666', fontSize: '13px' }}>AI Suggestions:</small>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '5px' }}>
+              {aiSuggestions.title.map((suggestion, index) => (
+                <Chip
+                  key={index}
+                  label={suggestion}
+                  variant="outlined"
+                  size="small"
+                  onClick={() => applySuggestion('title', suggestion)}
+                  style={{
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                    maxWidth: '100%'
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
         {/* <TextField
           required
           id="outlined-required"
@@ -563,17 +673,39 @@ const QuestionSetDetailForm = ({
           onChange={handleChange}
           required
         /> */}
-        <label
-          htmlFor="short_desc"
-          style={{
-            marginBottom: "5px",
-            fontWeight: "600",
-            color: "#333",
-            fontSize: "14px",
-          }}
-        >
-          Short Description
-        </label>
+
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '5px' }}>
+
+          <label
+            htmlFor="short_desc"
+            style={{
+              marginBottom: "5px",
+              fontWeight: "600",
+              color: "#333",
+              fontSize: "14px",
+            }}
+          >
+            Short Description
+          </label>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={() => generateAISuggestions('short_desc')}
+            disabled={isGeneratingAI.short_desc}
+            style={{
+              fontSize: '12px',
+              padding: '4px 8px',
+              minWidth: 'auto'
+            }}
+          >
+            {isGeneratingAI.short_desc ? (
+              <FontAwesomeIcon icon={faSpinner} spin />
+            ) : (
+              <img style={{width:"25px",height:'20px'}} src="/assets/img/bulb.png"/>
+            )}
+            &nbsp;AI Suggest
+          </Button>
+        </div>
         <input
           type="text"
           name="short_desc"
@@ -597,6 +729,27 @@ const QuestionSetDetailForm = ({
             <span style={{ color: 'red', fontSize: '13px' }}> <FontAwesomeIcon icon={faCircleExclamation} /> {errors.short_desc}</span>
           )
         }
+        {showSuggestions.short_desc && aiSuggestions.short_desc.length > 0 && (
+          <div style={{ marginTop: '10px' }}>
+            <small style={{ color: '#666', fontSize: '13px' }}>AI Suggestions:</small>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '5px' }}>
+              {aiSuggestions.short_desc.map((suggestion, index) => (
+                <Chip
+                  key={index}
+                  label={suggestion}
+                  variant="outlined"
+                  size="small"
+                  onClick={() => applySuggestion('short_desc', suggestion)}
+                  style={{
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                    maxWidth: '100%'
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
         {/* <TextField
           required
           id="outlined-required"
@@ -615,7 +768,10 @@ const QuestionSetDetailForm = ({
           value={formData.description}
           onChange={handleChange}
         ></textarea> */}
-        <label
+        
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '5px' }}>
+
+          <label
           htmlFor="description"
           style={{
             marginBottom: "5px",
@@ -626,6 +782,25 @@ const QuestionSetDetailForm = ({
         >
           Description
         </label>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={() => generateAISuggestions('description')}
+            disabled={isGeneratingAI.description}
+            style={{
+              fontSize: '12px',
+              padding: '4px 8px',
+              minWidth: 'auto'
+            }}
+          >
+            {isGeneratingAI.description ? (
+              <FontAwesomeIcon icon={faSpinner} spin />
+            ) : (
+              <img style={{width:"25px",height:'20px'}} src="/assets/img/bulb.png"/>
+            )}
+            &nbsp;AI Suggest
+          </Button>
+        </div>
         <textarea
           name="description"
           id="description"
@@ -648,6 +823,27 @@ const QuestionSetDetailForm = ({
             <span style={{ color: 'red', fontSize: '13px' }}> <FontAwesomeIcon icon={faCircleExclamation} /> {errors.description}</span>
           )
         }
+         {showSuggestions.description && aiSuggestions.description.length > 0 && (
+          <div style={{ marginTop: '10px' }}>
+            <small style={{ color: '#666', fontSize: '13px' }}>AI Suggestions:</small>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '5px' }}>
+              {aiSuggestions.description.map((suggestion, index) => (
+                <Chip
+                  key={index}
+                  label={suggestion}
+                  variant="outlined"
+                  size="small"
+                  onClick={() => applySuggestion('description', suggestion)}
+                  style={{
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                    maxWidth: '100%'
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
         {/* <TextField
           id="outlined-multiline-flexible"
           label="Description"
