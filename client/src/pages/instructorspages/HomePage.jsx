@@ -17,14 +17,14 @@ import { showToast } from "@/utils/toastService";
 
 // const metadata = {
 //   title:
-//     " Instructor Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
+//     " Instructor Home || Gotestli - Ultimate School & General Purpose Quiz Platform",
 //   description:
-//     "Empower learning with GoTestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges.",
+//     "Empower learning with Gotestli, the ultimate quiz app designed for schools and beyond. Engage, educate, and excel with our versatile platform, perfect for classrooms and general knowledge challenges.",
 // };
 
 // const pageMetadata = {
-//   title: "Instructor Home - GoTestli Quiz Platform | Your Teaching Dashboard & Quiz Management Hub",
-//   description: "Welcome to your GoTestli instructor home. Access your teaching dashboard, create engaging quizzes, manage student assessments, track performance analytics, and deliver exceptional educational experiences with our comprehensive quiz creation tools.",
+//   title: "Instructor Home - Gotestli Quiz Platform | Your Teaching Dashboard & Quiz Management Hub",
+//   description: "Welcome to your Gotestli instructor home. Access your teaching dashboard, create engaging quizzes, manage student assessments, track performance analytics, and deliver exceptional educational experiences with our comprehensive quiz creation tools.",
 //   keywords: "instructor home gotestli, teaching dashboard, instructor portal, quiz creator home, educator dashboard, instructor hub, teaching platform, quiz management for instructors, instructor control panel, educational dashboard, teaching tools, instructor workspace, quiz platform for teachers",
 //   canonical: "https://gotestli.com/instructor/home",
 //   category: "Instructor Dashboard",
@@ -32,9 +32,9 @@ import { showToast } from "@/utils/toastService";
 //   audience: "Instructors, Teachers, Educators, Course Creators, Training Professionals"
 // };
 const pageMetadata = {
-  title: "Instructor Home | Best Quiz App for Learning & Trivia – GoTestli Teaching Dashboard",
+  title: "Instructor Home | Best Quiz App for Learning & Trivia – Gotestli Teaching Dashboard",
   description:
-    "Welcome to your GoTestli instructor home, the best quiz maker app for learning and trivia. Access your teaching dashboard, create engaging quizzes, manage student assessments, and track analytics with powerful tools to deliver exceptional educational experiences.",
+    "Welcome to your Gotestli instructor home, the best quiz maker app for learning and trivia. Access your teaching dashboard, create engaging quizzes, manage student assessments, and track analytics with powerful tools to deliver exceptional educational experiences.",
   keywords:
     "best quiz app for learning, best quiz maker app, quiz app for trivia, instructor home gotestli, teaching dashboard, instructor portal, quiz creator home, educator dashboard, instructor hub, quiz management for instructors, teaching tools, instructor workspace, quiz platform for teachers",
   canonical: "https://gotestli.com/instructor/home",
@@ -51,6 +51,8 @@ const columns = [
   { id: "no_of_question", label: "Total Questions", sortable: true },
   { id: "time_duration", label: "Duration", sortable: true },
   { id: "totalmarks", label: "Total Marks", sortable: true },
+  { id: "start_date", label: "Start Date", sortable: true },
+  { id: "end_date", label: "End Date", sortable: true },
   { id: "is_demo", label: "Visible", sortable: true },
   { id: "questions", label: "Questions", sortable: false },
   { id: "attempted", label: "Total Attempted", sortable: false },
@@ -68,8 +70,11 @@ const HomePage = () => {
     short_desc: "",
     time_duration: 0,
     is_demo: "",
+    start_date: questionSets.start_date || new Date().toISOString().split('T')[0],
+    end_date: questionSets.end_date || new Date().toISOString().split('T')[0],
   });
   const [searchQuery, setSearchQuery] = useState("");
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
@@ -138,6 +143,7 @@ const HomePage = () => {
   // }
 
   async function handleQSetChange(name, value) {
+    console.log("handleQSetChange", name, value);
     setChangedQSet((prev) => ({
       ...prev,
       [name]: value !== undefined ? value : "",
@@ -145,12 +151,15 @@ const HomePage = () => {
   }
 
   function handleEdit(set) {
+    console.log("handleEdit", set);
     setEditOn(set.id);
     setChangedQSet({
       title: set.title || "",
       short_desc: set.short_desc || "",
       time_duration: set.time_duration || "",
       is_demo: set.is_demo || false,
+      start_date: set?.start_date?.split('T')[0] || '',
+      end_date: set?.end_date?.split('T')[0] || '',
     });
   }
   async function handleDelete(set) {
@@ -205,13 +214,25 @@ const HomePage = () => {
           }
         );
         setEditOn(null);
-        if (res.status == 200) {
-          setQuestionSets((prev) =>
-            prev.map((qSet) =>
-              qSet.id == set.id ? { ...qSet, ...changedQSet } : qSet
-            )
-          );
-        }
+        // if (res.status == 200) {
+        setQuestionSets((prev) =>
+          prev.map((qSet) =>
+            qSet.id == set.id ? { ...qSet, ...changedQSet } : qSet
+          )
+        );
+         setChangedQSet({
+          title: "",
+          short_desc: "",
+          time_duration: 0,
+          is_demo: "",
+          start_date: new Date().toISOString().split('T')[0],
+          end_date: new Date().toISOString().split('T')[0],
+        });
+        
+        // Trigger refresh of the table
+        setRefreshTrigger(prev => prev + 1);
+        // getQuestionSets();
+        // }
       }
 
     } catch (error) {
@@ -336,6 +357,30 @@ const HomePage = () => {
         )}
       </TableCell>
       <TableCell>{set.totalmarks}</TableCell>
+      <TableCell>
+        {editOn === set.id ? (
+          <input
+            type="date"
+            min={new Date().toISOString().split('T')[0]}
+            value={changedQSet.start_date || set.start_date?.split('T')[0]}
+            onChange={(e) => handleQSetChange("start_date", e.target.value)}
+          />
+        ) : (
+          set.start_date?.split('T')[0]
+        )}
+      </TableCell>
+      <TableCell>
+        {editOn === set.id ? (
+          <input
+            type="date"
+            min={new Date().toISOString().split('T')[0]}
+            value={changedQSet.end_date || set.end_date?.split('T')[0]}
+            onChange={(e) => handleQSetChange("end_date", e.target.value)}
+          />
+        ) : (
+          set.end_date?.split('T')[0]
+        )}
+      </TableCell>
       <TableCell>
         {editOn === set.id ? (
           <>
@@ -598,6 +643,8 @@ const HomePage = () => {
                 renderRowCells={renderRowCells}
                 fetchData={getQuestionSets}
                 searchQuery={searchQuery}
+                externalData={filteredData} 
+                refreshTrigger={refreshTrigger}
               // tableData={filteredData.length > 0 ? filteredData : questionSets}
               />
             )}

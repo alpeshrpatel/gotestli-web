@@ -162,6 +162,7 @@ import FlaskCheatSheet from "./pages/cheatsheets/cheatsheetpages/FlaskCheatSheet
 import FastApiCheatSheet from "./pages/cheatsheets/cheatsheetpages/FastApiCheatSheet";
 import StudentsList from "./pages/adminpages/StudentsList";
 import InstructorsList from "./pages/adminpages/InstructorsList";
+import QuestionSetsList from "./pages/adminpages/QuestionSetsList";
 // import AppProvider from "./utils/AppContext";
 
 function App() {
@@ -171,7 +172,7 @@ function App() {
   // const location = useLocation();
   useEffect(() => {
     setLoading(true);
-    const timer = setTimeout(() => setLoading(false), 1000);
+    const timer = setTimeout(() => setLoading(false), 200);
 
     AOS.init({
       duration: 700,
@@ -496,6 +497,12 @@ function App() {
                   }
                 />
                 
+                <Route
+                  path="/admin/questionsets/list"
+                  element={
+                    <ProtectedRoute element={<QuestionSetsList />} role="admin" />
+                  }
+                />
 
                 {/* Instructor Routes */}
                 <Route

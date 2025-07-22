@@ -339,10 +339,10 @@ const QuestionSetDetailForm = ({
                   //                           Don't miss out on the fun and the learning. Dive into the latest quiz now and see how well you can do!
 
                   //                           Wishing you success,
-                  // The GoTestLI Team
+                  // The Gotestli Team
 
                   // ---------------------
-                  // GoTestli
+                  // Gotestli
                   // Test Your Limits, Expand Your Knowledge
                   // https://gotestli.com
                   //                             `,
@@ -362,12 +362,12 @@ const QuestionSetDetailForm = ({
 
                   //                           <p>Happy learning,<br/>
                   //                            <p>Wishing you success,<br/>  
-                  // <p>GoTestli Team</p>
+                  // <p>Gotestli Team</p>
                   // <hr style="margin: 30px 0;" />
 
                   // <div style="font-size: 13px; color: #888; text-align: center;">
-                  //   <img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
-                  //   <p><b>GoTestli</b><br/>
+                  //   <img src="https://gotestli.com/assets/img/header-logo3.png" alt="Gotestli Logo" width="120" style="margin-bottom: 10px;" />
+                  //   <p><b>Gotestli</b><br/>
                   //   Test Your Limits, Expand Your Knowledge<br/>
                   //   <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
                   //   <p style="margin-top: 10px; font-size: 12px;">

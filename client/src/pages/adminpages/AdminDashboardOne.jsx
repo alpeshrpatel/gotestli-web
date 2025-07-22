@@ -71,7 +71,7 @@ export default function AdminDashboardOne() {
             }
           );
           const res = await API.get(
-            `/api/questionset/active/allqset/orgid/${org.id || 0}`,
+            `/api/questionset/active/allqset/?orgid=${org.id || 0}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -99,6 +99,7 @@ export default function AdminDashboardOne() {
           );
           console.log(transactionsResponse);
           // setTotalAttemptCnt(res.data.attempt_count);
+          console.log(res.data);
           setQuestionSets(res.data);
           setUserResults(response.data)
           let studentCnt = 0;
@@ -836,6 +837,8 @@ export default function AdminDashboardOne() {
                   navigate('/admin/students/list');
                 }else if (elm?.title === 'Instructors') {
                   navigate('/admin/instructors/list');  
+                }else if (elm?.title === 'QuestionSets') {
+                  navigate('/admin/questionsets/list');
                 }
               }}>
               <div className="d-flex justify-between items-center py-35 px-30 rounded-16 -dark-bg-dark-1 shadow-4" style={{ backgroundColor: (elm?.title === 'Organizations' || elm?.title === 'Refund Requests') ? '#D9EAFD' : '' }}>
