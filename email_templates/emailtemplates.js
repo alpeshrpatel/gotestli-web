@@ -16,10 +16,10 @@ const emailTemplates = {
       Stay tuned, and keep an eye on your inbox for some great surprises!
       
       Wishing you success,
-The GoTestLI Team
+The Gotestli Team
 
 ---------------------
-GoTestli
+Gotestli
 Test Your Limits, Expand Your Knowledge
 https://gotestli.com
       `,
@@ -38,12 +38,12 @@ https://gotestli.com
       <p>Stay tuned and keep an eye on your inbox for some amazing updates!</p>
       
      <p>Wishing you success,<br/>  
-<p>GoTestli Team</p>
+<p>Gotestli Team</p>
 <hr style="margin: 30px 0;" />
 
 <div style="font-size: 13px; color: #888; text-align: center;">
-<img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
-<p><b>GoTestli</b><br/>
+<img src="https://gotestli.com/assets/img/header-logo3.png" alt="Gotestli Logo" width="120" style="margin-bottom: 10px;" />
+<p><b>Gotestli</b><br/>
 Test Your Limits, Expand Your Knowledge<br/>
 <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
 <p style="margin-top: 10px; font-size: 12px;">
@@ -73,10 +73,10 @@ Test Your Limits, Expand Your Knowledge<br/>
     Please respond to the user at your earliest convenience.
     
     Wishing you success,
-The GoTestLI Team
+The Gotestli Team
 
 ---------------------
-GoTestli
+Gotestli
 Test Your Limits, Expand Your Knowledge
 https://gotestli.com
     `,
@@ -100,12 +100,12 @@ https://gotestli.com
     <p>Please respond to the user at your earliest convenience.</p>
     
     <p>Wishing you success,<br/>  
-<p>GoTestli Team</p>
+<p>Gotestli Team</p>
 <hr style="margin: 30px 0;" />
 
 <div style="font-size: 13px; color: #888; text-align: center;">
-<img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
-<p><b>GoTestli</b><br/>
+<img src="https://gotestli.com/assets/img/header-logo3.png" alt="Gotestli Logo" width="120" style="margin-bottom: 10px;" />
+<p><b>Gotestli</b><br/>
 Test Your Limits, Expand Your Knowledge<br/>
 <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
 <p style="margin-top: 10px; font-size: 12px;">
@@ -139,10 +139,10 @@ Test Your Limits, Expand Your Knowledge<br/>
 // Please review the error details and correct the file if necessary. If you need any assistance, feel free to reach out!
 
 // Wishing you success,
-// The GoTestLI Team
+// The Gotestli Team
 
 // ---------------------
-// GoTestli
+// Gotestli
 // Test Your Limits, Expand Your Knowledge
 // https://gotestli.com
 // `,
@@ -171,12 +171,12 @@ Test Your Limits, Expand Your Knowledge<br/>
 // <p>Please review the error details and correct the file if necessary. If you need any assistance, feel free to reach out!</p>
 
 // <p>Wishing you success,<br/>  
-// <p>GoTestli Team</p>
+// <p>Gotestli Team</p>
 // <hr style="margin: 30px 0;" />
 
 // <div style="font-size: 13px; color: #888; text-align: center;">
-// <img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
-// <p><b>GoTestli</b><br/>
+// <img src="https://gotestli.com/assets/img/header-logo3.png" alt="Gotestli Logo" width="120" style="margin-bottom: 10px;" />
+// <p><b>Gotestli</b><br/>
 // Test Your Limits, Expand Your Knowledge<br/>
 // <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
 // <p style="margin-top: 10px; font-size: 12px;">
@@ -202,10 +202,10 @@ Test Your Limits, Expand Your Knowledge<br/>
               Don't miss out on the fun and the learning. Dive into the latest quiz now and see how well you can do!
               
               Wishing you success,
-The GoTestLI Team
+The Gotestli Team
 
 ---------------------
-GoTestli
+Gotestli
 Test Your Limits, Expand Your Knowledge
 https://gotestli.com
                 `,
@@ -225,12 +225,12 @@ https://gotestli.com
               
               <p>Happy learning,<br/>
                <p>Wishing you success,<br/>  
-<p>GoTestli Team</p>
+<p>Gotestli Team</p>
 <hr style="margin: 30px 0;" />
 
 <div style="font-size: 13px; color: #888; text-align: center;">
-<img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
-<p><b>GoTestli</b><br/>
+<img src="https://gotestli.com/assets/img/header-logo3.png" alt="Gotestli Logo" width="120" style="margin-bottom: 10px;" />
+<p><b>Gotestli</b><br/>
 Test Your Limits, Expand Your Knowledge<br/>
 <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
 <p style="margin-top: 10px; font-size: 12px;">
@@ -263,10 +263,10 @@ Test Your Limits, Expand Your Knowledge<br/>
                                 As per our policy, refund requests need to be processed within 2 business days of submission.
                                 
                                 Wishing you success,
-The GoTestLI Team
+The Gotestli Team
 
 ---------------------
-GoTestli
+Gotestli
 Test Your Limits, Expand Your Knowledge
 https://gotestli.com
                                 
@@ -294,12 +294,12 @@ https://gotestli.com
                                   <p>As per our policy, refund requests need to be processed within 2 business days of submission.</p>
                                 
                                    <p>Wishing you success,<br/>  
-<p>GoTestli Team</p>
+<p>Gotestli Team</p>
 <hr style="margin: 30px 0;" />
 
 <div style="font-size: 13px; color: #888; text-align: center;">
-<img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
-<p><b>GoTestli</b><br/>
+<img src="https://gotestli.com/assets/img/header-logo3.png" alt="Gotestli Logo" width="120" style="margin-bottom: 10px;" />
+<p><b>Gotestli</b><br/>
 Test Your Limits, Expand Your Knowledge<br/>
 <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
 <p style="margin-top: 10px; font-size: 12px;">
@@ -317,11 +317,11 @@ Test Your Limits, Expand Your Knowledge<br/>
   },
   refundRequestStudentEmail: {
     to: 'gotestli07@gmail.com', // recipient email
-    subject: `📝 Your Refund Request Has Been Received - GoTestli`,
+    subject: `📝 Your Refund Request Has Been Received - Gotestli`,
     body_text:
       `Dear Student,
       
-      Thank you for submitting your refund request with GoTestli. We have received your request and it is now being processed.
+      Thank you for submitting your refund request with Gotestli. We have received your request and it is now being processed.
       
       🔍 Your Request Details:
       - User Email: {{email}}
@@ -339,10 +339,10 @@ Test Your Limits, Expand Your Knowledge<br/>
       We appreciate your patience during this process.
       
       Wishing you success,
-      The GoTestLI Team
+      The Gotestli Team
       
       ---------------------
-      GoTestli
+      Gotestli
       Test Your Limits, Expand Your Knowledge
       https://gotestli.com
       
@@ -352,7 +352,7 @@ Test Your Limits, Expand Your Knowledge<br/>
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <p>Dear <strong>Student</strong>,</p>
       
-        <p>Thank you for submitting your refund request with GoTestli. We have received your request and it is now being processed.</p>
+        <p>Thank you for submitting your refund request with Gotestli. We have received your request and it is now being processed.</p>
       
         <div style="background-color: #f8f9fa; border-left: 5px solid #3f51b5; padding: 15px; margin: 20px 0;">
           <p><strong>🔍 Your Request Details:</strong></p>
@@ -375,12 +375,12 @@ Test Your Limits, Expand Your Knowledge<br/>
         <p>We appreciate your patience during this process.</p>
       
         <p>Wishing you success,<br/>  
-      <p>GoTestli Team</p>
+      <p>Gotestli Team</p>
       <hr style="margin: 30px 0;" />
       
       <div style="font-size: 13px; color: #888; text-align: center;">
-        <img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
-        <p><b>GoTestli</b><br/>
+        <img src="https://gotestli.com/assets/img/header-logo3.png" alt="Gotestli Logo" width="120" style="margin-bottom: 10px;" />
+        <p><b>Gotestli</b><br/>
         Test Your Limits, Expand Your Knowledge<br/>
         <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
         <p style="margin-top: 10px; font-size: 12px;">
@@ -397,11 +397,11 @@ Test Your Limits, Expand Your Knowledge<br/>
         `,
   },
   userOrgAcessEmail: {
-    subject: `🎊 Welcome to GoTestli! Your Organization Access is Ready 🚀`,
+    subject: `🎊 Welcome to Gotestli! Your Organization Access is Ready 🚀`,
     body_text:
       `Dear {{selectedRole === 'instructor' ? 'Instructor' : 'Student'}},
 
-We’re excited to welcome you to GoTestli! Your organization, {{org_name}}, is now onboarded, and your access has been set up. You’re just a step away from unlocking powerful tools designed to enhance learning and assessments.
+We’re excited to welcome you to Gotestli! Your organization, {{org_name}}, is now onboarded, and your access has been set up. You’re just a step away from unlocking powerful tools designed to enhance learning and assessments.
 
 Here are your login details:
 
@@ -425,15 +425,15 @@ As a {{selectedRole}}, you will have access to:
 💡 **Next Steps:**  
 📅 Join us for a live onboarding session on **Wednesday, March 12th at 10:00 AM EST**, where our specialists will guide you through the platform.  
 
-In the meantime, check out our **Getting Started Guide** (https://help.gotestli.com/getting-started) and **Resource Center** (https://help.gotestli.com/resources) to familiarize yourself with GoTestli.  
+In the meantime, check out our **Getting Started Guide** (https://help.gotestli.com/getting-started) and **Resource Center** (https://help.gotestli.com/resources) to familiarize yourself with Gotestli.  
 
 We’re thrilled to have you on board and can’t wait to see you excel!  
 
 Wishing you success,
-The GoTestLI Team
+The Gotestli Team
 
 ---------------------
-GoTestli
+Gotestli
 Test Your Limits, Expand Your Knowledge
 https://gotestli.com
 
@@ -442,7 +442,7 @@ https://gotestli.com
     body_html: `
 <p>Dear <strong>{{selectedRole === 'instructor' ? 'Instructor' : 'Student'}}</strong>,</p>
 
-<p>We’re excited to welcome you to <strong>GoTestli</strong>! Your organization, <strong>{{org_name}}</strong>, is now onboarded, and your access has been set up. You’re just a step away from unlocking powerful tools designed to enhance learning and assessments.</p>
+<p>We’re excited to welcome you to <strong>Gotestli</strong>! Your organization, <strong>{{org_name}}</strong>, is now onboarded, and your access has been set up. You’re just a step away from unlocking powerful tools designed to enhance learning and assessments.</p>
 
 <div style="background-color: #f8f9fa; border-left: 5px solid #4CAF50; padding: 15px; margin: 20px 0;">
 <p><strong>🔑 Login Credentials</strong></p>
@@ -471,12 +471,12 @@ https://gotestli.com
 <p>We’re thrilled to have you on board and can’t wait to see you excel!</p>
 
 <p>Wishing you success,<br/>  
-<p>GoTestli Team</p>
+<p>Gotestli Team</p>
 <hr style="margin: 30px 0;" />
 
 <div style="font-size: 13px; color: #888; text-align: center;">
-<img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
-<p><b>GoTestli</b><br/>
+<img src="https://gotestli.com/assets/img/header-logo3.png" alt="Gotestli Logo" width="120" style="margin-bottom: 10px;" />
+<p><b>Gotestli</b><br/>
 Test Your Limits, Expand Your Knowledge<br/>
 <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
 <p style="margin-top: 10px; font-size: 12px;">
@@ -493,16 +493,16 @@ Test Your Limits, Expand Your Knowledge<br/>
 `,
   },
   adminOrgAccessEmail : {
-    subject: `🎉 Welcome Aboard GoTestli! Your Organization is Now Approved ✅`,
+    subject: `🎉 Welcome Aboard Gotestli! Your Organization is Now Approved ✅`,
     body_text: `
 Dear Partner,
-Fantastic news! 🚀 Your organization {{org_name}} has been officially approved for onboarding to the GoTestli platform. We're thrilled to welcome you to our community of innovative educators and learners!
+Fantastic news! 🚀 Your organization {{org_name}} has been officially approved for onboarding to the Gotestli platform. We're thrilled to welcome you to our community of innovative educators and learners!
 Your dedicated admin portal is now active and ready for you to explore. Here are your credentials to get started:
 🔐 ADMIN LOGIN DETAILS:
 URL: https://{{subdomain}}.gotestli.com
 Username: {{email}}
 Temporary Password: {{password}} (Please change upon first login)
-With GoTestli, you now have access to:
+With Gotestli, you now have access to:
 
 📊 Comprehensive assessment creation tools
 📈 Real-time analytics and performance tracking
@@ -512,21 +512,21 @@ With GoTestli, you now have access to:
 
 We've scheduled a personalized onboarding session for your team on Wednesday, March 12th at 10:00 AM EST. Our implementation specialist will guide you through platform setup and answer any questions you may have.
 In the meantime, feel free to explore our Getting Started Guide (https://help.gotestli.com/getting-started) and Resource Center (https://help.gotestli.com/resources).
-We're excited to see the engaging learning experiences you'll create with GoTestli!
+We're excited to see the engaging learning experiences you'll create with Gotestli!
 Welcome aboard,
-The GoTestli Team
+The Gotestli Team
 Need assistance? Contact our support team at support@gotestli.com or call (800) 555-TEST.
 Wishing you success,
-The GoTestLI Team
+The Gotestli Team
 
 ---------------------
-GoTestli
+Gotestli
 Test Your Limits, Expand Your Knowledge
 https://gotestli.com
   `,
     body_html: `
 <p>Dear Partner,</p>
-<p>Fantastic news! 🚀 Your organization <b>{{org_name}}</b> has been <b>officially approved</b> for onboarding to the GoTestli platform. We're thrilled to welcome you to our community of innovative educators and learners!</p>
+<p>Fantastic news! 🚀 Your organization <b>{{org_name}}</b> has been <b>officially approved</b> for onboarding to the Gotestli platform. We're thrilled to welcome you to our community of innovative educators and learners!</p>
 <p>Your dedicated admin portal is now <b>active and ready</b> for you to explore. Here are your credentials to get started:</p>
 <div style="background-color: #f8f9fa; border-left: 4px solid #4CAF50; padding: 15px; margin: 20px 0;">
   <p><b>🔐 Admin Login Details:</b></p>
@@ -534,7 +534,7 @@ https://gotestli.com
   Username: <b>{{email}}</b><br>
   Temporary Password: <b>{{password}}</b> (Please change upon first login)</p>
 </div>
-<p>With GoTestli, you now have access to:</p>
+<p>With Gotestli, you now have access to:</p>
 <ul>
   <li>📊 Comprehensive assessment creation tools</li>
   <li>📈 Real-time analytics and performance tracking</li>
@@ -543,19 +543,19 @@ https://gotestli.com
   <li>🎓 Extensive quiz and learning resources library</li>
 </ul>
 
-<p>We're excited to see the engaging learning experiences you'll create with GoTestli!</p>
+<p>We're excited to see the engaging learning experiences you'll create with Gotestli!</p>
 <p>Welcome aboard,<br>
-<b>The GoTestli Team</b></p>
+<b>The Gotestli Team</b></p>
 <p style="font-size: 12px; color: #666;">
 Need assistance? Contact our support team at <a href="mailto:gotestli07@gmail.com">gotestli07@gmail.com</a> or call (800) 555-TEST.
 </p>
  <p>Wishing you success,<br/>  
-<p>GoTestli Team</p>
+<p>Gotestli Team</p>
 <hr style="margin: 30px 0;" />
 
 <div style="font-size: 13px; color: #888; text-align: center;">
-<img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
-<p><b>GoTestli</b><br/>
+<img src="https://gotestli.com/assets/img/header-logo3.png" alt="Gotestli Logo" width="120" style="margin-bottom: 10px;" />
+<p><b>Gotestli</b><br/>
 Test Your Limits, Expand Your Knowledge<br/>
 <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
 <p style="margin-top: 10px; font-size: 12px;">
@@ -587,10 +587,10 @@ quizReminderEmail: {
   Instructor ✨
 
   Wishing you success,
-The GoTestLI Team
+The Gotestli Team
 
 ---------------------
-GoTestli
+Gotestli
 Test Your Limits, Expand Your Knowledge
 https://gotestli.com
     `,
@@ -615,12 +615,12 @@ https://gotestli.com
     <b>Instructor</b> ✨</p>
     <br/>
      <p>Wishing you success,<br/>  
-<p>GoTestli Team</p>
+<p>Gotestli Team</p>
 <hr style="margin: 30px 0;" />
 
 <div style="font-size: 13px; color: #888; text-align: center;">
-<img src="https://gotestli.com/assets/img/header-logo3.png" alt="GoTestLI Logo" width="120" style="margin-bottom: 10px;" />
-<p><b>GoTestli</b><br/>
+<img src="https://gotestli.com/assets/img/header-logo3.png" alt="Gotestli Logo" width="120" style="margin-bottom: 10px;" />
+<p><b>Gotestli</b><br/>
 Test Your Limits, Expand Your Knowledge<br/>
 <a href="https://gotestli.com" style="color: #ff6600; text-decoration: none;">www.gotestli.com</a></p>
 <p style="margin-top: 10px; font-size: 12px;">

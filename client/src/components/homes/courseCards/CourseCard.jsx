@@ -378,9 +378,9 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                 className="ms-2"
                 style={{
                   display: "flex",
-                  justifyContent: "between",
+                  // justifyContent: "between",
                   alignItems: "center",
-                  gap: "20px",
+                  gap: "0.3rem",
                 }}
               >
                 <BootstrapTooltip

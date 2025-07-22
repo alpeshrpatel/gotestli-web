@@ -21,7 +21,9 @@ const CommonTable = ({
   renderRowCells, 
   fetchData,
   initialData = [],
-  searchQuery = ''
+  searchQuery = '',
+  externalData = null, 
+  refreshTrigger = null 
 }) => {
   let rowsPerPageOptions = [5, 10, 25]
   let initialRowsPerPage = 5
@@ -76,6 +78,20 @@ const CommonTable = ({
       setTotalCount(initialData.length);
     }
   }, [initialData, fetchData]);
+
+   useEffect(() => {
+    if (externalData && Array.isArray(externalData)) {
+      setData(externalData);
+      setTotalCount(externalData.length);
+    }
+  }, [externalData]);
+
+  // Handle refresh trigger (optional way to force refresh)
+  useEffect(() => {
+    if (refreshTrigger !== null && fetchData) {
+      fetchDataFromAPI();
+    }
+  }, [refreshTrigger]);
   
 console.log('all data:',data)
   const handleSortRequest = (property) => {

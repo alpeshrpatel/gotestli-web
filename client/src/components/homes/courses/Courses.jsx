@@ -26,6 +26,9 @@ import ListIcon from "@mui/icons-material/List";
 import TableHeader from "../courseCards/TableHeader";
 import ListView from "../courseCards/ListView";
 import TableBodyContent from "../courseCards/TableBodyContent";
+import { showToast } from "@/utils/toastService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 export default function Courses({ userRole }) {
   const [filtered, setFiltered] = useState([]);
@@ -36,6 +39,8 @@ export default function Courses({ userRole }) {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+  const [recommendations, setRecommendations] = useState([]);
+  const [recommendationLoading, setRecommendationLoading] = useState(false);
   const navigate = useNavigate();
   const loaderRef = useRef(null);
 
@@ -45,6 +50,7 @@ export default function Courses({ userRole }) {
 
   const token = localStorage.getItem("token");
   const org = JSON.parse(localStorage.getItem("org")) || "";
+  const userValue = JSON.parse(localStorage.getItem("user")) || "";
   let orgid = org?.id || 0;
   useEffect(() => {
     async function getCategory() {
@@ -53,6 +59,9 @@ export default function Courses({ userRole }) {
       // console.log(data);
     }
     getCategory();
+    if (userRole && userRole === "student") {
+      recommendCall();
+    }
   }, []);
 
   async function getQuestionsSet() {
@@ -60,7 +69,7 @@ export default function Courses({ userRole }) {
     try {
       setLoading(true);
       const start = (page - 1) * limit;
-    const end = page * limit;
+      const end = page * limit;
       const { data } = await API.get(`/api/questionset?start=${start}&end=${end}&limit=${limit}&orgid=${orgid}`);
       console.log("Fetched questions set:", data);
       if (Array.isArray(data)) {
@@ -70,7 +79,7 @@ export default function Courses({ userRole }) {
           setHasMore(false);
         } else {
           if (page === 1) {
-            
+
             setFiltered(newQuizzes);
             setPage(prevPage => prevPage + 1);
 
@@ -89,6 +98,66 @@ export default function Courses({ userRole }) {
       setFiltered([]);
     }
     setLoading(false);
+  }
+
+  const recommendCall = async () => {
+    setRecommendationLoading(true);
+    try {
+      // await API.post('/api/recommend/quizzes')
+      const response = await API.post(`/api/recommend/users?email=${userValue.email}`);
+
+
+
+      console.log('Recommendations:', response.data);
+
+
+      const titles = response?.data?.map(item => item.title).filter(Boolean);
+
+      if (titles.length === 0) {
+        setRecommendations([]);
+        return;
+      }
+
+
+      const questionSetRecommendationResults = await Promise.all(
+        titles.map(async (title) => {
+          console.log(`Fetching questions for ${title}...`);
+          try {
+            const questionResponse = await API.get(`/api/questionset/getquestionsetbytitle/recommendations?title=${encodeURIComponent(title)}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              }
+            });
+            console.log(`Fetched questions for ${title}:`, questionResponse.data);
+            return questionResponse.data;
+          } catch (err) {
+            console.error(`Failed to fetch questions for ${title}:`, err);
+            return { title, data: null, error: err.message };
+          }
+        })
+      );
+      // const questionSetPromises = titles.map(async (title) => {
+
+      // });
+
+      // const questionSetResults = await Promise.all(questionSetPromises);
+
+
+
+
+      // const questionSetsMap = questionSetResults.reduce((acc, result) => {
+      //   acc[result.title] = result.data;
+      //   return acc;
+      // }, {});
+
+      setRecommendations(questionSetRecommendationResults);
+
+
+    } catch (error) {
+      console.error("Error fetching recommendations:", error);
+      showToast("error", "Failed to fetch recommendations. Please try again later." + error.message);
+    }
+    setRecommendationLoading(false);
   }
 
   useEffect(() => {
@@ -151,18 +220,18 @@ export default function Courses({ userRole }) {
       }
       try {
         // if (token) {
-          const res = await API.get(
-            `/api/category/selected/questionsets/${title}`,
-            // {
-            //   headers: {
-            //     Authorization: `Bearer ${token}`,
-            //   },
-            // }
-          );
-           console.log('selectedcategoryres',res);
-          if (res.data) {
-            setSelectedCategory(res.data);
-          }
+        const res = await API.get(
+          `/api/category/selected/questionsets/${title}`,
+          // {
+          //   headers: {
+          //     Authorization: `Bearer ${token}`,
+          //   },
+          // }
+        );
+        console.log('selectedcategoryres', res);
+        if (res.data) {
+          setSelectedCategory(res.data);
+        }
         // }
       } catch (error) {
         if (error.status == 403) {
@@ -196,7 +265,8 @@ export default function Courses({ userRole }) {
       ));
   }
 
-  // console.log(questionSetByInstructor);
+  console.log('qs by ins', filtered);
+  console.log('recommendations for student', recommendations);
   // console.log(value);
 
   const handleViewChange = (viewType) => setView(viewType);
@@ -206,6 +276,44 @@ export default function Courses({ userRole }) {
       className="layout-pt-lg layout-pb-lg"
       style={{ paddingTop: "10px", paddingBottom: "40px" }}
     >
+      
+      {
+        userRole === "student" && (
+          <div>
+            <h3 className=" sectionTitle__title text-30 sm:text-24  text-center">Recommended Quizzes for You  <img style={{ width: "30px", height: '35px' }} src="/assets/img/bulb.png" /></h3>
+            <div
+              className="pt-40 m-auto row y-gap-30 pl-0 pr-0" style={{ width: '95vw' }}
+              data-aos="fade-right"
+              data-aos-offset="80"
+              data-aos-duration={200}
+            >
+              {
+                !recommendationLoading && recommendations && recommendations.length > 0 ? (
+                  recommendations.map((elm, index) => (
+                    <CourceCard
+                      view={'card'}
+                      role={userRole}
+                      key={index}
+                      data={elm}
+                      index={index}
+                      data-aos="fade-right"
+                      data-aos-duration={(index + 1) * 300}
+                    />
+                  ))
+                ) : recommendationLoading ? (
+                  <div className="flex justify-center my-4 text-center">
+                    <FontAwesomeIcon icon={faSpinner} spin size="24" />
+                    {/* <div className="w-6 h-6 border-2 border-t-blue-500 rounded-full animate-spin"></div> */}
+                  </div>
+                )
+                  : (
+                    <p className="text-center text-gray-500 my-4">No recommendations available</p>
+                  )
+              }
+            </div>
+          </div>
+        )
+      }
       <div className="row justify-center text-center">
         <div className="col-auto">
           <div className="sectionTitle mt-4 ">

@@ -23,6 +23,7 @@ import Loader from "@/components/common/Loader";
 import FeedbackButton from "@/components/common/FeedbackButton";
 import PayPalButton from "@/components/common/PayPalButton";
 import PaymentComponent from "@/components/common/PaymentComponent";
+import { API } from "@/utils/AxiosInstance";
 
 // const metadata = {
 //   title: " Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
@@ -102,6 +103,7 @@ export default function HomePage1() {
     // Handle payment error
   };
 
+  
   return (
     <>
       {isLoading ? (
@@ -123,6 +125,9 @@ export default function HomePage1() {
             )}
 
             <div className={`${userRole && `mt-80`}`}></div>
+            {/* <button style={{fontSize: '16px', padding: '10px 20px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer',marginX:'auto',marginTop:'20px'}} onClick={() => recommendCall()}>
+              Recommend Quizzes
+            </button> */}
             <Courses userRole={userRole}/>
             {/* <TestimonialsOne />
         <FeaturesOne />
