@@ -100,7 +100,7 @@ export default function AdminDashboardOne() {
           console.log(transactionsResponse);
           // setTotalAttemptCnt(res.data.attempt_count);
           console.log(res.data);
-          setQuestionSets(res.data);
+          setQuestionSets(res?.data?.res);
           setUserResults(response.data)
           let studentCnt = 0;
           let insCnt = 0;
@@ -151,28 +151,28 @@ export default function AdminDashboardOne() {
               {
                 id: 1,
                 title: "Students",
-                value: studentCnt,
+                value: studentCnt || 0,
                 iconClass: "icon-online-learning-4",
                 link: "/admin/students-list"
               },
               {
                 id: 2,
                 title: "Instructors",
-                value: insCnt,
+                value: insCnt || 0,
                 iconClass: "icon-friend",
                 link: "/admin/instructors-list"
               },
               {
                 id: 3,
                 title: "QuestionSets",
-                value: res.data.length,
+                value: res.data.res.length || 0,
                 iconClass: "icon-creative-web",
                 link: "/admin/questionsets"
               },
               {
                 id: 4,
                 title: "Quiz Attempts",
-                value: response.data.length,
+                value: response.data.length || 0,
                 iconClass: "icon-edit",
                 link: "/admin/attempts"
               },
@@ -198,35 +198,35 @@ export default function AdminDashboardOne() {
               {
                 id: 1,
                 title: "Students",
-                value: studentCnt,
+                value: studentCnt || 0,
                 iconClass: "icon-online-learning-4",
                 link: "/admin/students-list"
               },
               {
                 id: 2,
                 title: "Instructors",
-                value: insCnt,
+                value: insCnt || 0,
                 iconClass: "icon-friend",
                 link: "/admin/instructors-list"
               },
               {
                 id: 3,
                 title: "QuestionSets",
-                value: res.data.length,
+                value: res?.data?.res?.length || 0,
                 iconClass: "icon-creative-web",
                 link: "/admin/questionsets"
               },
               {
                 id: 4,
                 title: "Quiz Attempts",
-                value: response.data.length,
+                value: response?.data?.length || 0,
                 iconClass: "icon-edit",
                 link: "/admin/attempts"
               },
               {
                 id: 5,
                 title: "Refund Requests",
-                value: transactionsResponse?.data?.totalRecords,
+                value: transactionsResponse?.data?.totalRecords || 0,
                 iconClass: "icon-save-money",
                 link: "/admin/refund/requests"
               },
