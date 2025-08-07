@@ -41,6 +41,7 @@ export default function AdminDashboardOne() {
   const [selectedRole, setSelectedRole] = useState();
   const [userName, setUserName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingRecommendationsRefresh, setIsLoadingRecommendationsRefresh] = useState(null);
   const navigate = useNavigate()
 
   const token = localStorage.getItem("token");
@@ -505,6 +506,51 @@ export default function AdminDashboardOne() {
     return "80%"; // Small screens
   };
 
+  const handleRefreshRecommendationsQuizzes = async () => {
+    try {
+      setIsLoadingRecommendationsRefresh('quizzes');
+      const response = await API.post(
+        `/api/recommend/quizzes`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
+      if (response.status == 200) {
+        showToast('success', 'Recommendations refreshed successfully!')
+      }
+    } catch (error) {
+      console.log(error)
+      showToast('error', error.message)
+    }
+    setIsLoadingRecommendationsRefresh(null);
+  }
+
+   const handleRefreshRecommendationsUsers = async () => {
+    try {
+      setIsLoadingRecommendationsRefresh('users');
+      const response = await API.post(
+        `/api/recommend/update/collections`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
+      if (response.status == 200) {
+        showToast('success', 'Recommendations refreshed successfully!')
+      }
+    } catch (error) {
+      console.log(error)
+      showToast('error', error.message)
+    }
+    setIsLoadingRecommendationsRefresh(null);
+  }
   const handleStartCronJob = async () => {
     try {
       const response = await API.post(
@@ -686,7 +732,7 @@ export default function AdminDashboardOne() {
             <h1 className="text-30 lh-12 fw-700">Dashboard</h1>
             <div className="mt-10">Welcome to Admin Dashboard.</div>
           </div>
-          <div>
+          <div style={{ display: 'flex', gap: '10px' }}>
           <button
             className={`button -sm px-12 py-20 -outline-green-5 text-green-5 text-16 fw-bolder lh-sm  `}
             // disabled={!selectedRole}
@@ -694,6 +740,28 @@ export default function AdminDashboardOne() {
             onClick={handleStartCronJob}
           >
             Start Cron Job
+          </button>
+          <button
+            className={`button -sm px-12 py-20 -outline-green-5 text-green-5 text-16 fw-bolder lh-sm  `}
+            // disabled={!selectedRole}
+            // onClick={onOpenModal}
+            onClick={handleRefreshRecommendationsQuizzes}
+          >
+            {
+              isLoadingRecommendationsRefresh === 'quizzes' ? <CircularProgress size={20} sx={{ color: "inherit" }} /> : 'Refresh Quizzes'
+            }
+            
+          </button>
+          <button
+            className={`button -sm px-12 py-20 -outline-green-5 text-green-5 text-16 fw-bolder lh-sm  `}
+            // disabled={!selectedRole}
+            // onClick={onOpenModal}
+            onClick={handleRefreshRecommendationsUsers}
+          >
+            {
+              isLoadingRecommendationsRefresh === 'users' ? <CircularProgress size={20} sx={{ color: "inherit" }} /> : 'Refresh Users'
+            }
+           
           </button>
           </div>
 
