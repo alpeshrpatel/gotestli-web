@@ -111,7 +111,7 @@ export default function LoginForm() {
 console.log(errorMessage)
   return (
     <>
-      <div className="form-page__content lg:py-50" style={{ backgroundColor: "#bfdeee" }}>
+      <div className="form-page__content lg:py-50" style={{ backgroundColor: "#bfdeee", paddingTop:'75px' }}>
         <div className="container mt-5" style={{ backgroundColor: "#bfdeee", border: 'none' }}>
           <div className="row justify-center items-center ">
             <div className="col-xl-12 col-lg-12">
