@@ -3,6 +3,7 @@ import Wrapper from "./Wrapper";
 import HomePage1 from "./homes/home-1";
 import MetaComponent from "@/components/common/MetaComponent";
 import { Button, useTheme } from "@mui/material";
+import ConsentBanner from "@/ConsentBanner";
 
 // const metadata = {
 //   title: " Home || GoTestli - Ultimate School & General Purpose Quiz Platform",
@@ -36,6 +37,7 @@ export default function index() {
   const theme = useTheme();
   return (
     <Wrapper >
+      <ConsentBanner />
       <MetaComponent meta={pageMetadata} />
       <HomePage1 />
     </Wrapper>
