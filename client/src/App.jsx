@@ -163,6 +163,7 @@ import FastApiCheatSheet from "./pages/cheatsheets/cheatsheetpages/FastApiCheatS
 import StudentsList from "./pages/adminpages/StudentsList";
 import InstructorsList from "./pages/adminpages/InstructorsList";
 import QuestionSetsList from "./pages/adminpages/QuestionSetsList";
+import EmailMarketingPage from "./pages/adminpages/EmailMarketingPage";
 // import AppProvider from "./utils/AppContext";
 
 function App() {
@@ -501,6 +502,12 @@ function App() {
                   path="/admin/questionsets/list"
                   element={
                     <ProtectedRoute element={<QuestionSetsList />} role="admin" />
+                  }
+                />
+                <Route
+                  path="/admin/bulk/email/marketing"
+                  element={
+                    <ProtectedRoute element={<EmailMarketingPage />} role="admin" />
                   }
                 />
 
