@@ -576,6 +576,7 @@ const EmailMarketingDashboard = () => {
     const [emailList, setEmailList] = useState([]);
     const [subject, setSubject] = useState('');
     const [emailBody, setEmailBody] = useState('');
+    const [emailHtmlBody, setEmailHtmlBody] = useState('');
     const [senderEmail, setSenderEmail] = useState('');
     const [senderName, setSenderName] = useState('');
     const [isSending, setIsSending] = useState(false);
@@ -666,7 +667,7 @@ const EmailMarketingDashboard = () => {
                     const renderedContent = {
                         subject: subject,
                         body_text: emailBody,
-                        body_html: emailBody.replace(/\n/g, '<br/>'),
+                        body_html:emailHtmlBody || emailBody.replace(/\n/g, '<br/>'),
                     };
                     const resp = await API.post("https://api.communication.gotestli.com/api/send/email",
                         {
@@ -1168,6 +1169,27 @@ const EmailMarketingDashboard = () => {
 
                                                     <div className="col-12">
                                                         <label className="form-label fw-semibold text-dark mb-2">
+                                                            <span className="me-2">💬</span>Email Content(HTML) *
+                                                        </label>
+                                                        <textarea
+                                                            className="form-control border-0 shadow-sm transition-all"
+                                                            rows="10"
+                                                            value={emailHtmlBody}
+                                                            onChange={(e) => setEmailHtmlBody(e.target.value)}
+                                                            placeholder=""
+                                                            style={{
+                                                                borderRadius: '12px',
+                                                                background: 'rgba(102, 126, 234, 0.05)',
+                                                                border: '2px solid transparent',
+                                                                resize: 'vertical',
+                                                                minHeight: '200px'
+                                                            }}
+                                                        />
+                                                    </div>
+                                                
+
+                                                    <div className="col-12">
+                                                        <label className="form-label fw-semibold text-dark mb-2">
                                                             <span className="me-2">💬</span>Email Content *
                                                         </label>
                                                         <textarea
@@ -1177,16 +1199,16 @@ const EmailMarketingDashboard = () => {
                                                             onChange={(e) => setEmailBody(e.target.value)}
                                                             placeholder="Ready to turn studying into an engaging experience?
 
-GoTestLi is the ultimate quiz marketplace where learning meets fun. Take quizzes created by expert instructors and watch your knowledge grow.
+                                                                GoTestLi is the ultimate quiz marketplace where learning meets fun. Take quizzes created by expert instructors and watch your knowledge grow.
 
-🌟 Key Features:
-• Expert-created quizzes
-• Progress tracking
-• Interactive learning
-• Community-driven content
+                                                                🌟 Key Features:
+                                                                • Expert-created quizzes
+                                                                • Progress tracking
+                                                                • Interactive learning
+                                                                • Community-driven content
 
-Happy Learning,
-The GoTestLi Team"
+                                                                Happy Learning,
+                                                                The GoTestLi Team"
                                                             style={{
                                                                 borderRadius: '12px',
                                                                 background: 'rgba(102, 126, 234, 0.05)',
@@ -1274,7 +1296,11 @@ The GoTestLi Team"
                                                                 lineHeight: '1.6',
                                                                 color: '#495057'
                                                             }}>
-                                                                {emailBody ? (
+                                                                {
+                                                                    emailHtmlBody ? (
+                                                                        <div dangerouslySetInnerHTML={{ __html: emailHtmlBody }} />
+                                                                    ) :
+                                                                emailBody ? (
                                                                     <div style={{ whiteSpace: 'pre-wrap' }}>{emailBody}</div>
                                                                 ) : (
                                                                     <em className="text-muted">Email content will appear here...</em>
