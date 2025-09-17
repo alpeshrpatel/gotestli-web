@@ -756,6 +756,14 @@ export default function AdminDashboardOne() {
             className={`button -sm px-12 py-20 -outline-green-5 text-green-5 text-16 fw-bolder lh-sm  `}
             // disabled={!selectedRole}
             // onClick={onOpenModal}
+             onClick={() => navigate('/admin/bulk/email/marketing')}
+          >
+            Start Email Marketing
+          </button>
+          <button
+            className={`button -sm px-12 py-20 -outline-green-5 text-green-5 text-16 fw-bolder lh-sm  `}
+            // disabled={!selectedRole}
+            // onClick={onOpenModal}
             onClick={handleRefreshRecommendationsUsers}
           >
             {
