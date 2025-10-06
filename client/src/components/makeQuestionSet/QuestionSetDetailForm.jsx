@@ -79,14 +79,16 @@ const QuestionSetDetailForm = ({
       if (!response.data.success) {
         throw new Error('Failed to generate AI suggestions');
       }
+      console.log(response.data);
 
       // const data = await response.data?.slice(1, 4); // Assuming the response is an array of suggestions
       // const suggestions = data.choices[0].message.content
       //   .split('\n')
       //   .filter(line => line.trim().length > 0)
       //   .slice(0, 3);
-      const suggestions = response.data.data.slice(1, 4).map(item => item.trim());
-      console.log(response.data.data);
+      // const suggestions = response.data.data.slice(1, 4).map(item => item.trim());
+      const suggestions = response.data.data[0].split(',').map(item => item.trim());
+      console.log(suggestions);
       setAiSuggestions(prev => ({
         ...prev,
         [field]: suggestions

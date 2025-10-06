@@ -587,7 +587,10 @@ const EmailMarketingDashboard = () => {
 
     const APP_ID = 1;
     const API_TOKEN = '7b9e6c5f-8a1d-4d3e-b5f2-c9a8e7d6b5c4';
-    const ADMIN_EMAIL = 'hello@gotestli.com'
+    const ADMIN_EMAIL = 'hello@gotestli.com';
+//     const APP_ID = 3;
+// const API_TOKEN = 'a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6';
+// const ADMIN_EMAIL = 'homes@heerrealtor.com';
 
     const headers = {
         "X-API-Token": API_TOKEN,
@@ -1138,7 +1141,7 @@ const EmailMarketingDashboard = () => {
                                                         </label>
                                                         <input
                                                             type="email"
-                                                            readOnly
+                                                            // readOnly
                                                             className="form-control form-control-lg border-0 shadow-sm"
                                                             value={ADMIN_EMAIL}
                                                             style={{
