@@ -13,6 +13,7 @@ import {
   faArrowRight      // ArrowRight
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import AnimatedButton from "@/components/common/AnimatedButton";
 
 
 
@@ -56,94 +57,94 @@ const { title, text_underline, info_hero, starts } = hero_content;
 
 const ChevronRight = ({ size = 20, className = "" }) => (
   <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <path d="m9 18 6-6-6-6"/>
+    <path d="m9 18 6-6-6-6" />
   </svg>
 );
 
 const BookOpen = ({ size = 24, className = "" }) => (
   <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
   </svg>
 );
 
 const Award = ({ size = 24, className = "" }) => (
   <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <circle cx="12" cy="8" r="6"/>
-    <path d="m15.45 10.5 3.55 3v4.5l-3.55-1L12 19.5l-3.45-2.5L5 18.5V14l3.55-3.5"/>
+    <circle cx="12" cy="8" r="6" />
+    <path d="m15.45 10.5 3.55 3v4.5l-3.55-1L12 19.5l-3.45-2.5L5 18.5V14l3.55-3.5" />
   </svg>
 );
 
 const Users = ({ size = 24, className = "" }) => (
   <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-    <circle cx="9" cy="7" r="4"/>
-    <path d="m22 21-1.5-1.5a4 4 0 0 0-2.5-1"/>
-    <circle cx="17" cy="7" r="4"/>
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="m22 21-1.5-1.5a4 4 0 0 0-2.5-1" />
+    <circle cx="17" cy="7" r="4" />
   </svg>
 );
 
 const TrendingUp = ({ size = 24, className = "" }) => (
   <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <polyline points="22,7 13.5,15.5 8.5,10.5 2,17" fill="none" stroke="currentColor" strokeWidth="2"/>
-    <polyline points="16,7 22,7 22,13" fill="none" stroke="currentColor" strokeWidth="2"/>
+    <polyline points="22,7 13.5,15.5 8.5,10.5 2,17" fill="none" stroke="currentColor" strokeWidth="2" />
+    <polyline points="16,7 22,7 22,13" fill="none" stroke="currentColor" strokeWidth="2" />
   </svg>
 );
 
 const Play = ({ size = 24, className = "" }) => (
   <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <polygon points="5,3 19,12 5,21"/>
+    <polygon points="5,3 19,12 5,21" />
   </svg>
 );
 
 const CheckCircle = ({ size = 24, className = "" }) => (
   <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" fill="none" stroke="currentColor" strokeWidth="2"/>
-    <polyline points="22,4 12,14.01 9,11.01" fill="none" stroke="currentColor" strokeWidth="2"/>
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" fill="none" stroke="currentColor" strokeWidth="2" />
+    <polyline points="22,4 12,14.01 9,11.01" fill="none" stroke="currentColor" strokeWidth="2" />
   </svg>
 );
 
 const ArrowRight = ({ size = 20, className = "" }) => (
   <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M5 12h14" fill="none" stroke="currentColor" strokeWidth="2"/>
-    <path d="m12 5 7 7-7 7" fill="none" stroke="currentColor" strokeWidth="2"/>
+    <path d="M5 12h14" fill="none" stroke="currentColor" strokeWidth="2" />
+    <path d="m12 5 7 7-7 7" fill="none" stroke="currentColor" strokeWidth="2" />
   </svg>
 );
 
 
 
-  const learningSteps = [
-    {
-      title: "Sign Up & Profile Setup",
-      description: "Create your personalized learning profile",
-      icon: Users,
-      color: "linear-gradient(135deg, #3b82f6, #06b6d4)"
-    },
-    {
-      title: "Choose Your Path",
-      description: "Select subjects and difficulty levels",
-      icon: BookOpen,
-      color: "linear-gradient(135deg, #8b5cf6, #ec4899)"
-    },
-    {
-      title: "Take Practice Tests",
-      description: "Interactive quizzes and mock exams",
-      icon: Play,
-      color: "linear-gradient(135deg, #10b981, #14b8a6)"
-    },
-    {
-      title: "Track Progress",
-      description: "Monitor your improvement over time",
-      icon: TrendingUp,
-      color: "linear-gradient(135deg, #f59e0b, #ef4444)"
-    },
-    {
-      title: "Achieve Goals",
-      description: "Earn certificates and badges",
-      icon: Award,
-      color: "linear-gradient(135deg, #eab308, #f59e0b)"
-    }
-  ];
+const learningSteps = [
+  {
+    title: "Sign Up & Profile Setup",
+    description: "Create your personalized learning profile",
+    icon: Users,
+    color: "linear-gradient(135deg, #3b82f6, #06b6d4)"
+  },
+  {
+    title: "Choose Your Path",
+    description: "Select subjects and difficulty levels",
+    icon: BookOpen,
+    color: "linear-gradient(135deg, #8b5cf6, #ec4899)"
+  },
+  {
+    title: "Take Practice Tests",
+    description: "Interactive quizzes and mock exams",
+    icon: Play,
+    color: "linear-gradient(135deg, #10b981, #14b8a6)"
+  },
+  {
+    title: "Track Progress",
+    description: "Monitor your improvement over time",
+    icon: TrendingUp,
+    color: "linear-gradient(135deg, #f59e0b, #ef4444)"
+  },
+  {
+    title: "Achieve Goals",
+    description: "Earn certificates and badges",
+    icon: Award,
+    color: "linear-gradient(135deg, #eab308, #f59e0b)"
+  }
+];
 
 
 const HomeHero = () => {
@@ -237,7 +238,7 @@ const HomeHero = () => {
                   data-aos-duration="200"
                   className="masthead__buttons  d-flex gap-4 justify-content-center "
                 >
-                  <div className="col-6 col-sm-auto ">
+                  <div className="col-4 col-sm-auto ">
                     <Link
                       data-barba
                       to="/signup"
@@ -246,7 +247,7 @@ const HomeHero = () => {
                       Join For Free
                     </Link>
                   </div>
-                  <div className="col-6 col-sm-auto">
+                  <div className="col-4 col-sm-auto">
                     <Link
                       data-barba
                       to="/signup"
@@ -255,6 +256,17 @@ const HomeHero = () => {
                       Find Quizzes
                     </Link>
                   </div>
+                  <div className="col-4 col-sm-auto">
+                    {/* <Link
+                      data-barba
+                      to="/play"
+                      className={`button ${isSmallScreen ? `-sm` : `-md`} -outline-green-1 text-green-1`}
+                    >
+                      Play Quizzes
+                    </Link> */}
+                      <AnimatedButton />
+                  </div>
+                
                 </div>
                 {/* <div
                   data-aos="fade-up"
@@ -508,7 +520,7 @@ const HomeHero = () => {
           }
         }
           `}
-        </style>
+          </style>
         </div>
 
         {/* animated shape start */}

@@ -122,6 +122,7 @@ import React, { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import Loader from "@/components/common/Loader";
 import { showToast } from "@/utils/toastService";
+import LoginPage from "@/pages/others/login";
 
 const ProtectedRoute = ({ element, role }) => {
   const [loading, setLoading] = useState(true);
@@ -181,7 +182,7 @@ const ProtectedRoute = ({ element, role }) => {
   }
 
   // Case 4: Role mismatch - redirect to appropriate home page
-  if (role && userRole !== role) {
+  if ((role && userRole !== role) || (role && element == <LoginPage />)) {
     if (userRole === 'instructor') {
       return <Navigate to="/instructor/home" />;
     } else if (userRole === 'admin') {

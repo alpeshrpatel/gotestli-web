@@ -7,13 +7,16 @@ import "./homepage.css";
 import { API } from "@/utils/AxiosInstance";
 import { auth } from "@/firebase/Firebase";
 import { Button, IconButton, Switch, TableCell } from "@mui/material";
-import { Delete, Edit, SaveAsRounded } from "@mui/icons-material";
+import { Delete, Edit, Gamepad, SaveAsRounded } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import CommonTable from "@/components/common/CommonTable";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SearchIcon from "@mui/icons-material/Search";
 import { showToast } from "@/utils/toastService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGamepad } from "@fortawesome/free-solid-svg-icons";
+import GameConfigModal from "./GameConfigModal";
 
 // const metadata = {
 //   title:
@@ -56,6 +59,7 @@ const columns = [
   { id: "is_demo", label: "Visible", sortable: true },
   { id: "questions", label: "Questions", sortable: false },
   { id: "attempted", label: "Total Attempted", sortable: false },
+  { id: 'is_gamified', label: 'Gamified', sortable: true },
   { id: "actions", label: "Actions", sortable: false },
   { id: "active", label: "Active", sortable: false }
 ];
@@ -75,6 +79,8 @@ const HomePage = () => {
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [isGameConfigModalOpen, setIsGameConfigModalOpen] = useState(null);
+  const [ViewGamePin, setViewGamePin] = useState(null);
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const userRole = user.role;
@@ -128,7 +134,7 @@ const HomePage = () => {
 
     getQuestionSets();
   }, [searchQuery]);
-  console.log('qs', questionSets)
+  // console.log('qs', questionSets)
   // async function handleRowClick(id, index) {
   //   setExpandedRow(index === expandedRow ? null : index);
   //   if (index !== expandedRow) {
@@ -220,7 +226,7 @@ const HomePage = () => {
             qSet.id == set.id ? { ...qSet, ...changedQSet } : qSet
           )
         );
-         setChangedQSet({
+        setChangedQSet({
           title: "",
           short_desc: "",
           time_duration: 0,
@@ -228,7 +234,7 @@ const HomePage = () => {
           start_date: new Date().toISOString().split('T')[0],
           end_date: new Date().toISOString().split('T')[0],
         });
-        
+
         // Trigger refresh of the table
         setRefreshTrigger(prev => prev + 1);
         // getQuestionSets();
@@ -258,6 +264,15 @@ const HomePage = () => {
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value.toLowerCase());
   };
+
+  const handleGamification = async (qSetId) => {
+    setIsGameConfigModalOpen(qSetId);
+    try {
+      
+    } catch (error) {
+      
+    }
+  }
 
   // const filteredData = questionSets?.filter((quiz) =>
   //   // Object.values(quiz).some((value) =>
@@ -418,6 +433,57 @@ const HomePage = () => {
         View
       </TableCell>
       <TableCell>
+        {
+          set.is_gamified ? <IconButton onClick={() => setViewGamePin(set.game_pin)} size="12" style={{borderRadius: '5px', fontSize:'15px'}}> View PIN</IconButton>: (
+            // <IconButton onClick={() => handleGamification(set.id)}>
+            //  <FontAwesomeIcon icon={faGamepad} size="24"/>  Activate Gameplay
+            // </IconButton> 
+            <IconButton
+              onClick={() => handleGamification(set.id)}
+              style={{
+                background: 'linear-gradient(45deg, rgba(71, 139, 229, 0.15), rgba(107, 163, 247, 0.3), rgba(187, 82, 199, 0.3), rgba(46, 213, 115, 0.3))',
+                backgroundSize: '300% 300%',
+                animation: 'gradientShift 3s ease infinite',
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'hidden',
+                borderRadius: '8px',
+                fontSize: '14px',
+                color: '#333',
+                padding: '8px 10px',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.05)';
+                e.currentTarget.style.boxShadow = '0 8px 20px rgba(107, 163, 247, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              <style>{`
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  `}</style>
+              <FontAwesomeIcon icon={faGamepad} size="24" style={{
+                animation: 'pulse 2s ease-in-out infinite'
+              }} />
+              Activate Gameplay
+              <style>{`
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+  `}</style>
+            </IconButton>
+            
+          )
+        }
+      </TableCell>
+      <TableCell>
         <div className=" d-flex ms-1 " style={{ alignItems: "center" }}>
           {editOn == set.id ? (
             <Button
@@ -449,6 +515,9 @@ const HomePage = () => {
       </TableCell>
     </>
   );
+
+ 
+  console.log(ViewGamePin)
 
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
@@ -643,7 +712,7 @@ const HomePage = () => {
                 renderRowCells={renderRowCells}
                 fetchData={getQuestionSets}
                 searchQuery={searchQuery}
-                externalData={filteredData} 
+                externalData={filteredData}
                 refreshTrigger={refreshTrigger}
               // tableData={filteredData.length > 0 ? filteredData : questionSets}
               />
@@ -659,6 +728,33 @@ const HomePage = () => {
 
 
       </div>
+      {/* {isGameConfigModalOpen && (
+        <GameConfigModal
+          onClose={() => setIsGameConfigModalOpen(null)}
+          qSetId={isGameConfigModalOpen}
+          ViewGamePin={ViewGamePin}
+        />
+      )}
+      {
+        ViewGamePin && (
+          <GameConfigModal
+          onClose={() => setIsGameConfigModalOpen(null)}
+          qSetId={isGameConfigModalOpen}
+          ViewGamePin={ViewGamePin}
+        />
+        )
+      } */}
+      {(isGameConfigModalOpen || ViewGamePin) && (
+  <GameConfigModal
+    onClose={() => {
+      setIsGameConfigModalOpen(null);
+      
+      setViewGamePin(null);
+    }}
+    qSetId={isGameConfigModalOpen}
+    ViewGamePin={ViewGamePin}
+  />
+)}
       <FooterOne />
     </div>
   );

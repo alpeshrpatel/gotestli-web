@@ -205,11 +205,11 @@
 //               className='submenuOne'
 //               style={{ paddingLeft: 0, display: "flex", gap: "15px" }}
 //             >
-             
+
 //               {
 //                 userRole == 'student' && (
 //                   <>
-                   
+
 //                     <li className="menu-item-has-children " style={{ display: 'flex', flexDirection: 'column', gap: '4vh' }}>
 //                       <Link
 //                         data-barba
@@ -658,7 +658,7 @@
 //                     className={
 //                       submenu == "Contact" ? "activeMenu" : "inActiveMenu"
 //                     }
-                    
+
 //                   >
 //                     Contact<div className="icon-chevron-right text-11"></div>
 //                   </Link>
@@ -794,7 +794,7 @@ export default function MobileMenu({
   setActiveMobileMenu,
   activeMobileMenu,
   userRole,
-  handleSignOut, 
+  handleSignOut,
   isSmallScreen
 }) {
   const [showMenu, setShowMenu] = useState(false);
@@ -822,7 +822,7 @@ export default function MobileMenu({
   useEffect(() => {
     setShowMenu(true);
   }, []);
-  
+
   const { pathname } = useLocation();
 
   return (
@@ -845,17 +845,15 @@ export default function MobileMenu({
           <div className="d-flex d-xl-none items-center px-20 py-20 border-bottom-light">
             <Link
               to="/login"
-              className={`button -sm -purple-1 text-white fw-500 w-10 text-dark-1 ${
-                pathname == "/login" ? "activeMenu" : "inActiveMenu"
-              }`}
+              className={`button -sm -purple-1 text-white fw-500 w-10 text-dark-1 ${pathname == "/login" ? "activeMenu" : "inActiveMenu"
+                }`}
             >
               Log in
             </Link>
             <Link
               to="/signup"
-              className={`button -sm -green-1 text-white fw-500 w-10 text-dark-1 ml-30 ${
-                pathname == "/signup" ? "activeMenu" : "inActiveMenu"
-              }`}
+              className={`button -sm -green-1 text-white fw-500 w-10 text-dark-1 ml-30 ${pathname == "/signup" ? "activeMenu" : "inActiveMenu"
+                }`}
             >
               Sign Up
             </Link>
@@ -961,6 +959,17 @@ export default function MobileMenu({
                       style={{ fontSize: "18px", whiteSpace: "nowrap" }}
                     >
                       Create QuestionSet
+                    </Link>
+                  </li>
+                  <li className="menu-item-has-children">
+                    <Link
+                      data-barba
+                      to="/create/gamequiz"
+                      className={pathname == "/create/gamequiz" ? "activeMenu" : ""}
+                      style={{ whiteSpace: "nowrap" }}
+                    >
+                      Game Quiz{" "}
+                      {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
                     </Link>
                   </li>
                   <li className="menu-item-has-children">
