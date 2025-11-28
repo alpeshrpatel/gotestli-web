@@ -203,7 +203,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal, totalMark
 
   const shuffledQuestions = shuffleArray(questionSet.res || []);
   const shuffledQSetResponse = { ...questionSet, res: shuffledQuestions };
-  console.log("Shuffled Questions:", shuffledQuestions);
+  // console.log("Shuffled Questions:", shuffledQuestions);
 
   async function getLastAttemptedQuestionId(id) {
     if (id) {
@@ -411,6 +411,12 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal, totalMark
       },
     });
   };
+
+  const handlePlayQuiz = () => {
+    navigate("/play", {
+      state: { questionSetId: questionSetId, userId: userId },
+    });
+  }
 
   const handleFollowClick = async (instructor_id) => {
     const followed = followersData?.some(
@@ -715,6 +721,12 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal, totalMark
                         Resume Quiz
                       </button>
                     )}
+                    <button
+                        className=" button -sm px-24 py-20 -blue-3 text-white text-blue-3 text-16 mx-auto mt-4 "
+                        onClick={handlePlayQuiz}
+                      >
+                        Play Quiz
+                      </button>
                   </Grid>
                 </Grid>
               </Grid>

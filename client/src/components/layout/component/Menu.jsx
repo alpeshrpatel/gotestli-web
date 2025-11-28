@@ -80,7 +80,7 @@ export default function Menu({ allClasses, headerPosition }) {
       <div className="header-menu__content">
         <div className="mobile-bg js-mobile-bg"></div>
 
-        <div className="d-none xl:d-flex items-center px-20 py-20 border-bottom-light" style={{fontSize:'14px'}}>
+        <div className="d-none xl:d-flex items-center px-20 py-20 border-bottom-light" style={{ fontSize: '14px' }}>
           <Link to="/login" className="text-dark-1">
             Log in
           </Link>
@@ -98,10 +98,10 @@ export default function Menu({ allClasses, headerPosition }) {
               <Link
                 data-barba
                 to={`${userRole == "admin"
-                    ? `/admin/dashboard`
-                    : userRole == "instructor"
-                      ? `/instructor/home`
-                      : `/`
+                  ? `/admin/dashboard`
+                  : userRole == "instructor"
+                    ? `/instructor/home`
+                    : `/`
                   }`}
                 // className={menuItem == "Home" ? "activeMenu" : ""}
                 style={{ fontSize: "14px", whiteSpace: "nowrap" }}
@@ -312,6 +312,17 @@ export default function Menu({ allClasses, headerPosition }) {
                 <li className="menu-item-has-children">
                   <Link
                     data-barba
+                    to="/create/gamequiz"
+                    className={pathname == "/create/gamequiz" ? "activeMenu" : ""}
+                    style={{ whiteSpace: "nowrap" }}
+                  >
+                    Game Quiz{" "}
+                    {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
+                  </Link>
+                </li>
+                <li className="menu-item-has-children">
+                  <Link
+                    data-barba
                     to="/upload/questionset"
                     className={
                       menuItem == "Create QuestionSet" ? "activeMenu" : ""
@@ -327,11 +338,11 @@ export default function Menu({ allClasses, headerPosition }) {
 
             {/* <li className="menu-item-has-children"> */}
             <div className="d-flex align-items-center">
-            <StudyMaterialMegamenu/>
+              <StudyMaterialMegamenu />
             </div>
-             
-              
-             
+
+
+
             {/* </li> */}
 
             {/* <li className="menu-item-has-children">

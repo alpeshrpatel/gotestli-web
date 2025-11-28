@@ -80,6 +80,15 @@ export const HeaderExplore = ({ allClasses }) => {
                 QuestionSet{" "}
                 {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
               </Link>
+              <Link
+                data-barba
+                to="/create/gamequiz"
+                className={pathname == "/create/gamequiz" ? "activeMenu" : ""}
+                style={{ whiteSpace: "nowrap" }}
+              >
+                Game Quiz{" "}
+                {/* <i className="icon-chevron-right text-13 ml-10"></i> */}
+              </Link>
             </div>
           </div>
 
