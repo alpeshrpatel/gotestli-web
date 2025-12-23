@@ -311,6 +311,7 @@ function App() {
 
   const user = JSON.parse(localStorage.getItem("user")) || "";
   const org = JSON.parse(localStorage.getItem("org")) || "";
+  
   const userRole = user.role;
   console.log(org)
   const protocol = window.location.protocol;
@@ -403,6 +404,7 @@ function App() {
                 <Routes>
                  
                         {/* Public Routes */}
+                        
 
                         <Route path="/" element={<HomePage1 />} />
                         {/* )} */}
@@ -410,6 +412,9 @@ function App() {
                    <Route path="/login" element={<LoginPage />} />
                    <Route path="/admin/login" element={<AdminLoginPage />} /> 
                          <Route path="/signup" element={<SignupPage />} />
+                         <Route
+                          path="/forget-password"
+                          element={<ForgetPasswordPage />} />
                         {/* <Route path="/login" element={<ProtectedRoute element={<LoginPage />} />} />
     <Route path="/admin/login" element={<ProtectedRoute element={<AdminLoginPage />} />} />
     <Route path="/signup" element={<ProtectedRoute element={<SignupPage />} />} />
@@ -700,8 +705,8 @@ function App() {
                       <>
 
                         {/* <Route path="*" element={<LoginPage />} /> */}
-                        <Route path="/login" element={<LoginPage />} />
-                        <Route path="/admin/login" element={<AdminLoginPage />} />
+                        {/* <Route path="/login" element={<LoginPage />} />
+                        <Route path="/admin/login" element={<AdminLoginPage />} /> */}
                         <>
     {/* <Route path="/login" element={<ProtectedRoute element={<LoginPage />} />} />
     <Route path="/admin/login" element={<ProtectedRoute element={<AdminLoginPage />} />} />

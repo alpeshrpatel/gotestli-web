@@ -35,6 +35,8 @@ const MultiPlayerQuiz = () => {
   const [pinError, setPinError] = useState('');
   const [nicknameError, setNicknameError] = useState('');
   const [leaderboard, setLeaderboard] = useState([]);
+  const [index, setIndex] = useState(0);
+  const [timeLeftOnOptionSelect, setTimeLeftOnOptionSelect] = useState(0);
   // const navigate = useNavigate();
   // const {
 
@@ -74,7 +76,7 @@ const MultiPlayerQuiz = () => {
     };
 
     fetchQuestionSet();
-  }, [questionSetId]);
+  }, []);
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -189,13 +191,18 @@ const MultiPlayerQuiz = () => {
 
   const handleAnswer = (index) => {
     if (showCorrect) return;
+    setIndex(index);
     setSelectedAnswer(index);
+    setTimeLeftOnOptionSelect(timeLeft);
+    if(timeLeft > 0 ) {
+      return;
+    }
     setShowCorrect(true);
 
     // Simulate score calculation
     const isCorrect = index === quizData.questions[currentQuestion].correct;
     const basePoints = quizData.gameScore || 100;
-    const timeBonus = timeLeft * 10;
+    const timeBonus = timeLeftOnOptionSelect * basePoints/10;
     const pointsEarned = isCorrect ? basePoints + timeBonus : 0;
     // const pointsEarned = isCorrect ? Math.max(100, timeLeft * 10) : 0;
 
@@ -205,13 +212,15 @@ const MultiPlayerQuiz = () => {
       if (currentQuestion < quizData.questions.length - 1) {
         nextQuestion();
       } else {
-        endGame();
+        // endGame();
       }
     }, 2500);
   };
 
   const handleTimeUp = () => {
+
     setShowCorrect(true);
+    handleAnswer(index)
     setTimeout(() => {
       if (currentQuestion < quizData.questions.length - 1) {
         nextQuestion();
@@ -660,7 +669,15 @@ const MultiPlayerQuiz = () => {
       borderRadius: '15px',
       padding: '15px',
       marginTop: '20px'
-    }
+    },
+     optionSelected: {
+      background: 'rgba(71, 139, 229, 0.3)',
+      border: '2px solid #6ba3f7',
+      transform: 'scale(1.05)',
+      boxShadow: '0 10px 30px rgba(71, 139, 229, 0.4)',
+      color: 'white'
+    },
+
   };
 
   const LobbyScreen = () => (
@@ -766,6 +783,7 @@ const MultiPlayerQuiz = () => {
                       e.target.style.borderColor = '#e597ec';
                     }
                   }}
+  
                   onMouseLeave={(e) => {
                     if (!showCorrect && selectedAnswer !== index) {
                       e.target.style.transform = 'scale(1)';

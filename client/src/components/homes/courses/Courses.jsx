@@ -70,8 +70,9 @@ export default function Courses({ userRole }) {
       setLoading(true);
       const start = (page - 1) * limit;
       const end = page * limit;
+      console.log("Fetching questions set for page:", page, "start:", start, "end:", end);
       const { data } = await API.get(`/api/questionset?start=${start}&end=${end}&limit=${limit}&orgid=${orgid}`);
-      console.log("Fetched questions set:", data);
+      // console.log("Fetched questions set:", data);
       if (Array.isArray(data)) {
         const newQuizzes = data
         // setFiltered(data);
@@ -108,7 +109,7 @@ export default function Courses({ userRole }) {
 
 
 
-      console.log('Recommendations:', response.data);
+      // console.log('Recommendations:', response.data);
 
 
       const titles = response?.data?.map(item => item.title).filter(Boolean);
@@ -121,14 +122,14 @@ export default function Courses({ userRole }) {
 
       const questionSetRecommendationResults = await Promise.all(
         titles.map(async (title) => {
-          console.log(`Fetching questions for ${title}...`);
+          // console.log(`Fetching questions for ${title}...`);
           try {
             const questionResponse = await API.get(`/api/questionset/getquestionsetbytitle/recommendations?title=${encodeURIComponent(title)}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               }
             });
-            console.log(`Fetched questions for ${title}:`, questionResponse.data);
+            // console.log(`Fetched questions for ${title}:`, questionResponse.data);
             return questionResponse.data;
           } catch (err) {
             console.error(`Failed to fetch questions for ${title}:`, err);
@@ -194,7 +195,7 @@ export default function Courses({ userRole }) {
     if (title == "All Categories") {
       setSelectedCategory(filtered);
     } else {
-      console.log("Selected Category:", title);
+      // console.log("Selected Category:", title);
       try {
         if (token) {
           const { data } = await API.get(
@@ -228,7 +229,7 @@ export default function Courses({ userRole }) {
           //   },
           // }
         );
-        console.log('selectedcategoryres', res);
+        // console.log('selectedcategoryres', res);
         if (res.data) {
           setSelectedCategory(res.data);
         }
@@ -247,7 +248,7 @@ export default function Courses({ userRole }) {
 
     setValue(newValue);
   };
-  console.log("Selected Category:", selectedCategory);
+  // console.log("Selected Category:", selectedCategory);
   const user = auth?.currentUser?.displayName;
   const userData = JSON.parse(localStorage.getItem("user")) || "";
   // const userRole = userData.role;
@@ -265,8 +266,8 @@ export default function Courses({ userRole }) {
       ));
   }
 
-  console.log('qs by ins', filtered);
-  console.log('recommendations for student', recommendations);
+  // console.log('qs by ins', filtered);
+  // console.log('recommendations for student', recommendations);
   // console.log(value);
 
   const handleViewChange = (viewType) => setView(viewType);

@@ -34,6 +34,7 @@ import ListTable from "./TableBodyContent";
 import TableBodyContent from "./TableBodyContent";
 import ListView from "./ListView";
 import RatingMeter from "@/components/common/RatingMeter";
+import CourseTags from "./CourseTags";
 
 export default function CourceCard({ view, search = null, role, data, index }) {
   const [rating, setRating] = useState(0);
@@ -58,7 +59,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   let orgid = org?.id || 0;
   // let totalMarks = 0;
 
-   
+
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -82,7 +83,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
           const avgRatingResponse = await API.get(
             `/api/reviews/get/rating/ratingmeter/${data.id}`
           );
-          console.log(avgRatingResponse?.data);
+          // console.log(avgRatingResponse?.data);
           const ratingCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
 
           avgRatingResponse?.data?.forEach((obj) => {
@@ -104,7 +105,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
             };
           });
           setRatingsData(ratingsDataArr);
-          console.log(ratingsDataArr);
+          // console.log(ratingsDataArr);
           setRating(response.data?.rating);
         }
       } catch (error) {
@@ -159,7 +160,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
               },
             }
           );
-          console.log(data);
+          // console.log(data);
           setPurchasedQSet(data);
         }
       } catch (error) {
@@ -196,10 +197,10 @@ export default function CourceCard({ view, search = null, role, data, index }) {
               },
             }
           );
-          console.log('coursecard',response.data);
+          // console.log('coursecard', response.data);
           setQuestionsSet(response.data);
           if (response?.data && response?.data.res?.length > 0) {
-           
+
             let totalMarksCalc = response.data.res.reduce(
               (acc, question) => acc + question.marks,
               0
@@ -290,7 +291,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   // ];
   // console.log('data: ', data)
   // console.log('questionset: ', questionSet)
-   const getCardStyle = () => {
+  const getCardStyle = () => {
     if (window.innerWidth >= 992 && view !== 'list') {
       return { flex: '0 0 20%', maxWidth: '20%' };
     } else {
@@ -305,7 +306,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   };
   return (
     <>
-    
+
       <Modal open={open} onClose={onCloseModal} center>
         <ExamInstructions
           id={data.id}
@@ -322,15 +323,15 @@ export default function CourceCard({ view, search = null, role, data, index }) {
           } ${view == `list` && `col-lg-12`}`}
         onClick={onOpenModal}
       > */}
-     <div
-  // className={`col-lg col-md-6 pointer ${search ? `col-lg col-md-6 ` : `col-lg col-md-6`
-  //   } ${view == `list` && `col-lg-12`}`}
-  // style={{
-  //   ...(window.innerWidth >= 992 && view !== 'list' ? {flex: '0 0 20%', maxWidth: '20%'} : { maxWidth: '30%',minWidth:'250px' })
-  // }}
-   style={view === 'list' ? {} : getCardStyle()}
-  onClick={onOpenModal}
->
+      <div
+        // className={`col-lg col-md-6 pointer ${search ? `col-lg col-md-6 ` : `col-lg col-md-6`
+        //   } ${view == `list` && `col-lg-12`}`}
+        // style={{
+        //   ...(window.innerWidth >= 992 && view !== 'list' ? {flex: '0 0 20%', maxWidth: '20%'} : { maxWidth: '30%',minWidth:'250px' })
+        // }}
+        style={view === 'list' ? {} : getCardStyle()}
+        onClick={onOpenModal}
+      >
         {view == "card" ? (
           <div className="coursesCard -type-1">
             <Card
@@ -338,8 +339,14 @@ export default function CourceCard({ view, search = null, role, data, index }) {
               className="coursesCard -type-1"
             >
               
+
               <div className="relative">
-                <div className="coursesCard__image cardImage overflow-hidden rounded-8  ">
+                <div className="coursesCard__image cardImage overflow-hidden rounded-8  position-relative">
+                  <CourseTags
+                data={data}
+                rating={parseFloat(rating)}
+                totalRatings={totalRatings}
+              />
                   <CardMedia
                     component="img"
                     // height="194"
@@ -353,25 +360,25 @@ export default function CourceCard({ view, search = null, role, data, index }) {
               </div>
               {/* <CardHeader
                 subheader={ */}
-                  <div className="d-flex justify-content-between p-2">
-                    <div
-                      className="text-17 lh-15 fw-500 text-dark-1 text-truncate"
-                      style={{ maxWidth: "400px" }}
-                    // data-toggle="tooltip" data-placement="top" title={data.title}
-                    >
-                      <BootstrapTooltip title={data.title}>
-                        {data.title}
-                      </BootstrapTooltip>
-                    </div>
-                    {userRole == "student" ? (
-                      <IconButton
-                        onClick={handleWishlistToggle}
-                        sx={{ color: isWishlisted ? red[500] : "gray" }}
-                      >
-                        <FontAwesomeIcon icon={faHeart} />
-                      </IconButton>
-                    ) : null}
-                  </div>
+              <div className="d-flex justify-content-between p-2">
+                <div
+                  className="text-17 lh-15 fw-500 text-dark-1 text-truncate"
+                  style={{ maxWidth: "400px" }}
+                // data-toggle="tooltip" data-placement="top" title={data.title}
+                >
+                  <BootstrapTooltip title={data.title}>
+                    {data.title}
+                  </BootstrapTooltip>
+                </div>
+                {userRole == "student" ? (
+                  <IconButton
+                    onClick={handleWishlistToggle}
+                    sx={{ color: isWishlisted ? red[500] : "gray" }}
+                  >
+                    <FontAwesomeIcon icon={faHeart} />
+                  </IconButton>
+                ) : null}
+              </div>
               {/* //   }
               // /> */}
               <div
@@ -457,7 +464,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                     >
                       Creator:
                     </Typography>
-                    <Typography variant="body1" gutterBottom sx={{wordWrap:'nowrap'}}>
+                    <Typography variant="body1" gutterBottom sx={{ wordWrap: 'nowrap' }}>
                       {data.author}
                     </Typography>
                   </div>
@@ -474,7 +481,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
                   >
                     Published on:
                   </Typography>
-                  <Typography variant="body1" gutterBottom sx={{wordWrap:'nowrap'}}>
+                  <Typography variant="body1" gutterBottom sx={{ wordWrap: 'nowrap' }}>
                     {formattedDate}
                   </Typography>
                 </div>

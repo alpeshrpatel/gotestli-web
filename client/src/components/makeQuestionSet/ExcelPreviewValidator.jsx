@@ -1053,6 +1053,7 @@ const ExcelPreviewValidator = () => {
               <th>Row</th>
               <th>Question</th>
               <th>Description</th>
+              <th>Explanation</th>
               <th>Options</th>
               <th>Answer</th>
               <th>Difficulty</th>
