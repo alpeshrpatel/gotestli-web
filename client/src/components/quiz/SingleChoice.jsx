@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
+  faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FinishExamModalPage from "./FinishExamModal/FinishExamModalPage";
@@ -17,6 +18,7 @@ import { IconButton, Radio } from "@mui/material";
 import CommentForQuestion from "../common/CommentForQuestion";
 import ProgressBar from "../common/ProgressBar";
 import { faFlag } from "@fortawesome/free-regular-svg-icons";
+import { BootstrapTooltip } from "../common/Tooltip";
 
 const SingleChoice = ({
   time,
@@ -29,7 +31,7 @@ const SingleChoice = ({
   index,
   onNext,
   onPrevious,
-  marks = 0, isNegative = 0, negativeMarks = 0,
+  marks = 0, isNegative = 0, negativeMarks = 0, explanation, isPractice = false
 }) => {
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState([]);
@@ -40,6 +42,7 @@ const SingleChoice = ({
   const [status, setStatus] = useState(0);
   const [updatedStatus, setUpdatedStatus] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [isExplanationVisible, setIsExplanationVisible] = useState(false);
   const remainingTimeRef = useRef();
 
   const onOpenModal = () => setOpen(true);
@@ -66,7 +69,7 @@ const SingleChoice = ({
               Authorization: `Bearer ${token}`,
             },
           });
-           const shuffleArray = (arr) => {
+          const shuffleArray = (arr) => {
             return arr
               .map((a) => [Math.random(), a])
               .sort((a, b) => a[0] - b[0])
@@ -165,10 +168,10 @@ const SingleChoice = ({
   }, [userResultId, questionId, updatedStatus]);
 
   useEffect(() => {
-      if (totalAnswered > 0) {
-        setProgress(((totalAnswered) / totalQuestions) * 100);
-      }
-    });
+    if (totalAnswered > 0) {
+      setProgress(((totalAnswered) / totalQuestions) * 100);
+    }
+  });
 
   // console.log(selectedOption);
   const findSelectedOption =
@@ -224,7 +227,7 @@ const SingleChoice = ({
   }
 
   const handleOptionClick = async (option) => {
-    
+
     const findQuestion = selectedOption.find(
       (question) => questionId === question.id
     );
@@ -234,10 +237,10 @@ const SingleChoice = ({
         selectedOption.map((question) =>
           question.id === questionId
             ? {
-                ...question,
-                selectedOption: option,
-                status: question.status == 2 || question.status == 3 ? 3 : 1,
-              }
+              ...question,
+              selectedOption: option,
+              status: question.status == 2 || question.status == 3 ? 3 : 1,
+            }
             : question
         )
       );
@@ -259,7 +262,7 @@ const SingleChoice = ({
       isReviewed = 0;
       newStatus = 1;
     }
-     setProgress(((totalAnswered + 1) / totalQuestions) * 100);
+    setProgress(((totalAnswered + 1) / totalQuestions) * 100);
     await testResultDtlSetData(option, isReviewed, newStatus);
     // console.log(selectedOption);
   };
@@ -304,7 +307,11 @@ const SingleChoice = ({
     }
   }
 
+  console.log(selectedOption)
+  console.log(selectedOption.some((selected) => selected.id === questionId))
+
   const handleReviewClick = async () => {
+    setIsExplanationVisible(false);
     const findQuestion = reviewQuestions.find(
       (question) => questionId === question.id
     );
@@ -314,11 +321,11 @@ const SingleChoice = ({
         reviewQuestions.map((question) =>
           question.id === questionId
             ? {
-                ...question,
-                selectedOption: findSelectedOption,
-                status: status,
-                option: options,
-              }
+              ...question,
+              selectedOption: findSelectedOption,
+              status: status,
+              option: options,
+            }
             : question
         )
       );
@@ -356,6 +363,7 @@ const SingleChoice = ({
     // if (response?.status == 200) {
     //   onNext();
     // }
+    setIsExplanationVisible(false);
     setProgress(((totalAnswered + 1) / totalQuestions) * 100);
     onNext();
   };
@@ -365,16 +373,22 @@ const SingleChoice = ({
     // if (response?.status == 200) {
     //   onPrevious();
     // }
+    setIsExplanationVisible(false);
     setProgress(((totalAnswered + 1) / totalQuestions) * 100);
     onPrevious();
   };
 
   const handleCancel = async () => {
+    setIsExplanationVisible(false);
     navigate("/");
   };
 
+  const handleCheckAnswerClick = async () => {
+    setIsExplanationVisible(true);
+  }
+
   console.log(selectedOption);
-  
+
 
   const attempted = selectedOption.filter((q) => q.selectedOption !== null);
   const reviewed = selectedOption.filter((q) => q.status == 2 || q.status == 3);
@@ -388,7 +402,7 @@ const SingleChoice = ({
 
   const onFinishQuiz = async () => {
     // console.log("remaining:" + remainingTimeRef.current);
-
+    setIsExplanationVisible(false);
     const response = await testResultDtlSetData(findSelectedOption);
     if (response?.status == 200) {
       onOpenModal();
@@ -417,15 +431,41 @@ const SingleChoice = ({
         className="d-flex flex-column justify-content-center align-items-center h-auto"
         style={{ background: "rgb(26,6,79)" }}
       >
-         <ProgressBar progress={progress}/>
-         
+        <ProgressBar progress={progress} />
+
         <div
           className="card shadow p-4 mb-5"
           style={{ width: "90vw", borderRadius: "15px", userSelect: "none" }}
         >
-         
+
+          {/* <h5></h5> */}
+
           <div className="card-body ">
+            {isPractice && (
+              <div className="d-flex gap-1.5 align-items-center">
+
+                <div className="text-14 d-flex justify-content-between align-items-center fw-semibold" style={{ backgroundColor: '#c0c4fc', borderRadius: '5px', width: '120px' }}>
+
+                  <span className="mx-auto">Practice Mode</span>
+
+                </div>
+                <BootstrapTooltip title="Practice answering questions in a low-stakes environment and review each answer before moving on to the next question.">
+                  <FontAwesomeIcon
+                    icon={faInfoCircle}
+                    color="#c0c4fc"
+                    className="ms-2 text-black"
+                  // title="Practice mode allows you to attempt without evaluation"
+                  />
+                </BootstrapTooltip>
+
+              </div>
+            )
+
+            }
+
+
             <div className="d-flex justify-content-between items-center flex-wrap">
+
               <h4 className="card-title text-center">
                 Question {index} of {totalQuestions}{" "}
               </h4>
@@ -460,7 +500,7 @@ const SingleChoice = ({
                   }}>
                   <FontAwesomeIcon icon={faFlag} />
                 </IconButton> */}
-                
+
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -484,23 +524,23 @@ const SingleChoice = ({
                 </svg>
                 {/* <i className="icon-flag pointer" aria-hidden="true" style={{fontSize:'25px',marginRight:'70px',marginTop:'50px',color:'red', backgroundColor:'blue'}}></i> */}
                 <div className='d-flex '>
-                <button
-                  className="btn btn-success px-3 py-2 w-auto text-18"
-                  onClick={handleCancel}
-                >
-                  Cancel
-                </button>
-                &nbsp;
-                <button
-                  className="btn btn-success px-3 py-2 w-auto text-18"
-                  onClick={onFinishQuiz}
-                >
-                  Finish
-                </button>
+                  <button
+                    className="btn btn-success px-3 py-2 w-auto text-18"
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </button>
+                  &nbsp;
+                  <button
+                    className="btn btn-success px-3 py-2 w-auto text-18"
+                    onClick={onFinishQuiz}
+                  >
+                    Finish
+                  </button>
                 </div>
-                
+
                 {(totalReviewed > 0 || skippedQuestion > 0) &&
-                remainingTimeRef.current !== 0 ? (
+                  remainingTimeRef.current !== 0 ? (
                   <Modal open={open} onClose={onCloseModal} center>
                     <FinishExamModalPage
                       questionSetId={questionSetId}
@@ -530,7 +570,7 @@ const SingleChoice = ({
               </div>
             </div>
             <hr />
-             <div className="alert alert-info py-2 px-3 mb-3" role="alert">
+            <div className="alert alert-info py-2 px-3 mb-3" role="alert">
               <strong>Instructions:</strong> Please read each question carefully. You can select multiple answers if applicable. Questions may carry negative marking.
             </div>
 
@@ -668,10 +708,36 @@ const SingleChoice = ({
                     />
                   </button>
                 )}
+                {isPractice && selectedOption.some((selected) => selected.id === questionId && selected.selectedOption != null) && (
+                  <button
+                    className="btn btn-primary p-2"
+                    style={{
+                      backgroundColor: "#6a1b9a",
+                      borderColor: "#6a1b9a",
+                      width: "150px",
+                    }}
+                    onClick={handleCheckAnswerClick}
+                  >
+                    Check Answer
+                    <FontAwesomeIcon
+                      icon={faAngleDoubleRight}
+                      className="fa-lg ml-5"
+                    />
+                  </button>
+                )
+                }
               </div>
 
-              <div></div>
+
             </div>
+            {isExplanationVisible && (<div className="mt-4 " style={{ border: '1px solid black', borderRadius: '10px', backgroundColor: '#f8f9fa' }}>
+              {(
+                <div className="p-3 m-2" >
+                  <h5>Explanation:</h5>
+                  <p>{explanation || "No explanation available."}</p>
+                </div>
+              )}
+            </div>)}
           </div>
         </div>
       </div>

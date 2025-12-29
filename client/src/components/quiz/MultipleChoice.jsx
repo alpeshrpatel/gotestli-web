@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
+  faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FinishExamModalPage from "./FinishExamModal/FinishExamModalPage";
@@ -17,6 +18,7 @@ import { Checkbox, Radio } from "@mui/material";
 import { separator } from "@/constants";
 import CommentForQuestion from "../common/CommentForQuestion";
 import ProgressBar from "../common/ProgressBar";
+import { BootstrapTooltip } from "../common/Tooltip";
 
 const MultipleChoice = ({
   time,
@@ -29,7 +31,7 @@ const MultipleChoice = ({
   index,
   onNext,
   onPrevious,
-  marks = 0, isNegative = false, negativeMarks = 0,
+  marks = 0, isNegative = false, negativeMarks = 0, explanation, isPractice = false
 }) => {
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState([]);
@@ -40,6 +42,7 @@ const MultipleChoice = ({
   const [status, setStatus] = useState(0);
   const [updatedStatus, setUpdatedStatus] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [isExplanationVisible, setIsExplanationVisible] = useState(false);
   const remainingTimeRef = useRef();
 
   const onOpenModal = () => setOpen(true);
@@ -65,7 +68,7 @@ const MultipleChoice = ({
               Authorization: `Bearer ${token}`,
             },
           });
-           const shuffleArray = (arr) => {
+          const shuffleArray = (arr) => {
             return arr
               .map((a) => [Math.random(), a])
               .sort((a, b) => a[0] - b[0])
@@ -369,6 +372,7 @@ const MultipleChoice = ({
   }
 
   const handleReviewClick = async () => {
+    setIsExplanationVisible(false);
     const findQuestion = reviewQuestions.find(
       (question) => questionId === question.id
     );
@@ -420,6 +424,7 @@ const MultipleChoice = ({
     // if (response?.status == 200) {
     //   onNext();
     // }
+    setIsExplanationVisible(false);
     setProgress(((totalAnswered + 1) / totalQuestions) * 100);
     onNext();
   };
@@ -429,14 +434,19 @@ const MultipleChoice = ({
     // if (response?.status == 200) {
     //   onPrevious();
     // }
+    setIsExplanationVisible(false);
     setProgress(((totalAnswered + 1) / totalQuestions) * 100);
     onPrevious();
   };
 
   const handleCancel = async () => {
+    setIsExplanationVisible(false);
     navigate("/");
   };
 
+  const handleCheckAnswerClick = async () => {
+    setIsExplanationVisible(true);
+  }
   // console.log(selectedOption);
   // console.log(reviewQuestions);
 
@@ -452,7 +462,7 @@ const MultipleChoice = ({
 
   const onFinishQuiz = async () => {
     // console.log("remaining:" + remainingTimeRef.current);
-
+    setIsExplanationVisible(false);
     const response = await testResultDtlSetData(findSelectedOption);
     if (response?.status == 200) {
       onOpenModal();
@@ -487,6 +497,27 @@ const MultipleChoice = ({
           style={{ width: "90vw", borderRadius: "15px", userSelect: "none" }}
         >
           <div className="card-body " style={{ userSelect: "none" }}>
+            {isPractice && (
+              <div className="d-flex gap-1.5 align-items-center">
+
+                <div className="text-14 d-flex justify-content-between align-items-center fw-semibold" style={{ backgroundColor: '#c0c4fc', borderRadius: '5px', width: '120px' }}>
+
+                  <span className="mx-auto">Practice Mode</span>
+
+                </div>
+                <BootstrapTooltip title="Practice answering questions in a low-stakes environment and review each answer before moving on to the next question.">
+                  <FontAwesomeIcon
+                    icon={faInfoCircle}
+                    color="#c0c4fc"
+                    className="ms-2 text-black"
+                  // title="Practice mode allows you to attempt without evaluation"
+                  />
+                </BootstrapTooltip>
+
+              </div>
+            )
+
+            }
             <div className="d-flex justify-content-between items-center" >
               <h4 className="card-title text-center">
                 Question {index} of {totalQuestions}{" "}
@@ -720,12 +751,38 @@ const MultipleChoice = ({
                     />
                   </button>
                 )}
+                {isPractice && selectedOption.some((selected) => selected.id === questionId && selected.selectedOption != null) && (
+                                  <button
+                                    className="btn btn-primary p-2"
+                                    style={{
+                                      backgroundColor: "#6a1b9a",
+                                      borderColor: "#6a1b9a",
+                                      width: "150px",
+                                    }}
+                                    onClick={handleCheckAnswerClick}
+                                  >
+                                    Check Answer
+                                    <FontAwesomeIcon
+                                      icon={faAngleDoubleRight}
+                                      className="fa-lg ml-5"
+                                    />
+                                  </button>
+                                )
+                                }
               </div>
 
               <div>
 
               </div>
             </div>
+             {isExplanationVisible && (<div className="mt-4 " style={{ border: '1px solid black', borderRadius: '10px', backgroundColor: '#f8f9fa' }}>
+              {(
+                <div className="p-3 m-2" >
+                  <h5>Explanation:</h5>
+                  <p>{explanation || "No explanation available."}</p>
+                </div>
+              )}
+            </div>)}
           </div>
         </div>
       </div>

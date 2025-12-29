@@ -146,7 +146,7 @@ const QuestionSet = () => {
     questionSet,
     time,
     timerOn,
-    lastAttemptedQuestion, questionsData,totalMarks
+    lastAttemptedQuestion, questionsData,totalMarks, isPractice=false
   } = location.state;
   const org = JSON.parse(localStorage.getItem("org")) || "";
   let orgid = org?.id || 0;
@@ -256,6 +256,8 @@ const QuestionSet = () => {
             marks={questions[questionNumber - 1].marks}
             isNegative={questions[questionNumber - 1].is_negative}
             negativeMarks={questions[questionNumber - 1].negative_marks}
+            explanation={questions[questionNumber - 1].explanation}
+            isPractice={isPractice}
           />
         ) : (
           questions[questionNumber - 1].question_type_id == "7" ? (
@@ -273,6 +275,8 @@ const QuestionSet = () => {
               marks={questions[questionNumber - 1].marks}
               isNegative={questions[questionNumber - 1].is_negative}
               negativeMarks={questions[questionNumber - 1].negative_marks}
+              explanation={questions[questionNumber - 1].explanation}
+              isPractice={isPractice}
             />
           ) : (
             <SingleChoice
@@ -289,6 +293,8 @@ const QuestionSet = () => {
               marks={questions[questionNumber - 1].marks}
               isNegative={questions[questionNumber - 1].is_negative}
               negativeMarks={questions[questionNumber - 1].negative_marks}
+              explanation={questions[questionNumber - 1].explanation}
+              isPractice={isPractice}
             />
           )
 

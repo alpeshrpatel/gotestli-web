@@ -252,7 +252,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal, totalMark
     setOpen(true);
   };
 
-  async function testResultDtlSetData(userId, questionSetId, userResultId) {
+  async function testResultDtlSetData(userId, questionSetId, userResultId, isPractice = false) {
     try {
       if (token) {
         const res = await API.post(
@@ -273,7 +273,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal, totalMark
         if (res.status == 200) {
 
           navigate("/quiz/questions", {
-            state: { questionSetId: id, questionSet: shuffledQSetResponse, time: time },
+            state: { questionSetId: id, questionSet: shuffledQSetResponse, time: time, isPractice: isPractice },
           });
         }
         // console.log("Result Detail Submit Response:", res);
@@ -316,11 +316,11 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal, totalMark
     }
   }
 
-  const handleStartQuiz = async () => {
+  const handleStartQuiz = async (isPractice = false) => {
     if (!data?.is_demo) {
       const purchases = await getPurchases();
       //  if(Array.isArray(purchases)){
-      console.log(purchases)
+      // console.log(purchases)
       if (Array.isArray(purchases) && purchases?.some((item) => item?.questionset_id == questionSetId)) {
 
       } else {
@@ -366,7 +366,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal, totalMark
         // console.log("Start Quiz Response:", res);
         userResultId = res.data.userResultId;
 
-        await testResultDtlSetData(userId, questionSetId, userResultId);
+        await testResultDtlSetData(userId, questionSetId, userResultId, isPractice);
       }
     } catch (error) {
       if (error.status == 403) {
@@ -726,6 +726,16 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal, totalMark
                         onClick={handlePlayQuiz}
                       >
                         Play Quiz
+                      </button>
+                       <button
+                        className=" button -sm px-24 py-20 -red-3 text-white text-red-3 text-16 mx-auto mt-4 "
+                        onClick={
+                          userRole == "student"
+                            ? () => handleStartQuiz(true)
+                            : () => navigate("/login")
+                        }
+                      >
+                        Practice Quiz
                       </button>
                   </Grid>
                 </Grid>

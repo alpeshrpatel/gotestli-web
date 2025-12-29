@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
+  faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FinishExamModalPage from "./FinishExamModal/FinishExamModalPage";
@@ -16,6 +17,7 @@ import SubmitQuizModal from "./SubmitQuizModal/SubmitQuizModal";
 import { Radio, Typography } from "@mui/material";
 import CommentForQuestion from "../common/CommentForQuestion";
 import ProgressBar from "../common/ProgressBar";
+import { BootstrapTooltip } from "../common/Tooltip";
 
 const ComprehensiveType = ({
   time,
@@ -29,7 +31,7 @@ const ComprehensiveType = ({
   index,
   onNext,
   onPrevious,
-  marks = 0, isNegative = 0, negativeMarks = 0,
+  marks = 0, isNegative = 0, negativeMarks = 0, explanation, isPractice = false
 }) => {
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState([]);
@@ -40,6 +42,7 @@ const ComprehensiveType = ({
   const [status, setStatus] = useState(0);
   const [updatedStatus, setUpdatedStatus] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [isExplanationVisible, setIsExplanationVisible] = useState(false);
   const remainingTimeRef = useRef();
 
   const onOpenModal = () => setOpen(true);
@@ -64,7 +67,7 @@ const ComprehensiveType = ({
               Authorization: `Bearer ${token}`,
             },
           });
-           const shuffleArray = (arr) => {
+          const shuffleArray = (arr) => {
             return arr
               .map((a) => [Math.random(), a])
               .sort((a, b) => a[0] - b[0])
@@ -82,7 +85,7 @@ const ComprehensiveType = ({
           navigate("/login");
           return;
         }
-         // console.log(error);
+        // console.log(error);
       }
     }
     getOptions();
@@ -100,7 +103,7 @@ const ComprehensiveType = ({
                 },
               }
             );
-             // console.log(data[0]?.id);
+            // console.log(data[0]?.id);
             setUserResultId(data[0]?.id);
           }
         } catch (error) {
@@ -111,7 +114,7 @@ const ComprehensiveType = ({
             navigate("/login");
             return;
           }
-           // console.log(error);
+          // console.log(error);
         }
       }
     }
@@ -123,7 +126,7 @@ const ComprehensiveType = ({
       if (userResultId) {
         try {
           if (token) {
-             // console.log(userResultId);
+            // console.log(userResultId);
             const { data } = await API.get(
               `/api/userresultdetails/get/answers/userresult/${userResultId}/length/${questionSetLength}?orgid=${orgid}`,
               {
@@ -155,7 +158,7 @@ const ComprehensiveType = ({
             navigate("/login");
             return;
           }
-           // console.log(error);
+          // console.log(error);
         }
       }
     }
@@ -163,12 +166,12 @@ const ComprehensiveType = ({
   }, [userResultId, questionId, updatedStatus]);
 
   useEffect(() => {
-      if (totalAnswered > 0) {
-        setProgress(((totalAnswered) / totalQuestions) * 100);
-      }
-    });
+    if (totalAnswered > 0) {
+      setProgress(((totalAnswered) / totalQuestions) * 100);
+    }
+  });
 
-   // console.log(selectedOption);
+  // console.log(selectedOption);
   const findSelectedOption =
     selectedOption?.find((question) => question.id === questionId)
       ?.selectedOption || null;
@@ -195,7 +198,7 @@ const ComprehensiveType = ({
         navigate("/login");
         return;
       }
-       // console.log(error);
+      // console.log(error);
     }
   }
 
@@ -222,7 +225,7 @@ const ComprehensiveType = ({
   }
 
   const handleOptionClick = async (option) => {
-   
+
     const findQuestion = selectedOption.find(
       (question) => questionId === question.id
     );
@@ -255,7 +258,7 @@ const ComprehensiveType = ({
     }
     setProgress(((totalAnswered + 1) / totalQuestions) * 100);
     await testResultDtlSetData(option, isReviewed, newStatus);
-     // console.log(selectedOption);
+    // console.log(selectedOption);
   };
 
   async function testResultDtlSetData(
@@ -266,7 +269,7 @@ const ComprehensiveType = ({
     try {
       if (token) {
         const status = await getUpdatedStatus(isReviewed, newstatus);
-         // console.log(status);
+        // console.log(status);
         const res = await API.put(
           "/api/userresultdetails",
           {
@@ -293,12 +296,13 @@ const ComprehensiveType = ({
         navigate("/login");
         return;
       }
-       // console.log(error);
+      // console.log(error);
       throw error;
     }
   }
 
   const handleReviewClick = async () => {
+    setIsExplanationVisible(false);
     const findQuestion = reviewQuestions.find(
       (question) => questionId === question.id
     );
@@ -308,11 +312,11 @@ const ComprehensiveType = ({
         reviewQuestions.map((question) =>
           question.id === questionId
             ? {
-                ...question,
-                selectedOption: findSelectedOption,
-                status: status,
-                option: options,
-              }
+              ...question,
+              selectedOption: findSelectedOption,
+              status: status,
+              option: options,
+            }
             : question
         )
       );
@@ -328,19 +332,19 @@ const ComprehensiveType = ({
       ]);
     }
     const isReviewed = 1;
-     // console.log("status" + status);
-     // console.log("findselectedoption" + findSelectedOption);
+    // console.log("status" + status);
+    // console.log("findselectedoption" + findSelectedOption);
     let newstatus;
     findSelectedOption && (newstatus = 3);
-     // console.log("newstatus" + newstatus);
+    // console.log("newstatus" + newstatus);
     const response = await testResultDtlSetData(
       findSelectedOption,
       isReviewed,
       newstatus
     );
-     // console.log(" updatedstatus :" + updatedStatus);
+    // console.log(" updatedstatus :" + updatedStatus);
     if (response?.status == 200) {
-       // console.log("review");
+      // console.log("review");
       onNext();
     }
   };
@@ -350,6 +354,7 @@ const ComprehensiveType = ({
     // if (response?.status == 200) {
     //   onNext();
     // }
+    setIsExplanationVisible(false);
     setProgress(((totalAnswered + 1) / totalQuestions) * 100);
     onNext();
   };
@@ -359,30 +364,35 @@ const ComprehensiveType = ({
     // if (response?.status == 200) {
     //   onPrevious();
     // }
+    setIsExplanationVisible(false);
     setProgress(((totalAnswered + 1) / totalQuestions) * 100);
     onPrevious();
   };
 
   const handleCancel = async () => {
+    setIsExplanationVisible(false);
     navigate("/");
   };
 
-   // console.log(selectedOption);
-   // console.log(reviewQuestions);
+  const handleCheckAnswerClick = async () => {
+    setIsExplanationVisible(true);
+  }
+  // console.log(selectedOption);
+  // console.log(reviewQuestions);
 
   const attempted = selectedOption.filter((q) => q.selectedOption !== null);
   const reviewed = selectedOption.filter((q) => q.status == 2 || q.status == 3);
-   // console.log(reviewed);
+  // console.log(reviewed);
   const skipped = selectedOption.filter((q) => q.status === 0);
-   // console.log(skipped);
+  // console.log(skipped);
 
   let totalAnswered = attempted.length;
   let totalReviewed = reviewed.length;
   let skippedQuestion = skipped.length;
 
   const onFinishQuiz = async () => {
-     // console.log('remaining:'+remainingTimeRef.current)
-    
+    // console.log('remaining:'+remainingTimeRef.current)
+    setIsExplanationVisible(false);
     const response = await testResultDtlSetData(findSelectedOption);
     if (response?.status == 200) {
       onOpenModal();
@@ -394,7 +404,7 @@ const ComprehensiveType = ({
     if (remainingTime === 0) {
       return <div className="timer text-14 fw-500 text-center">Time Up...</div>;
     }
-  
+
     return (
       <div className="timer">
         <div className="text text-10 fw-500">Remaining</div>
@@ -406,17 +416,38 @@ const ComprehensiveType = ({
   return (
     // linear-gradient(to bottom right, #a18cd1, #fbc2eb)
     <>
-     <div
+      <div
         className="d-flex flex-column justify-content-center align-items-center h-auto"
         style={{ background: "rgb(26,6,79)" }}
       >
-         <ProgressBar progress={progress}/>
-         
+        <ProgressBar progress={progress} />
+
         <div
           className="card shadow p-4 mb-5"
           style={{ width: "90vw", borderRadius: "15px", userSelect: "none" }}
         >
           <div className="card-body ">
+            {isPractice && (
+              <div className="d-flex gap-1.5 align-items-center">
+
+                <div className="text-14 d-flex justify-content-between align-items-center fw-semibold" style={{ backgroundColor: '#c0c4fc', borderRadius: '5px', width: '120px' }}>
+
+                  <span className="mx-auto">Practice Mode</span>
+
+                </div>
+                <BootstrapTooltip title="Practice answering questions in a low-stakes environment and review each answer before moving on to the next question.">
+                  <FontAwesomeIcon
+                    icon={faInfoCircle}
+                    color="#c0c4fc"
+                    className="ms-2 text-black"
+                  // title="Practice mode allows you to attempt without evaluation"
+                  />
+                </BootstrapTooltip>
+
+              </div>
+            )
+
+            }
             <div className="d-flex justify-content-between items-center">
               <h4 className="card-title text-center">
                 Question {index} of {totalQuestions}{" "}
@@ -442,9 +473,9 @@ const ComprehensiveType = ({
                   null
                 )
               } */}
-             
+
               <div className="card-title gap-2 d-flex align-items-center">
-              <svg
+                <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -452,30 +483,32 @@ const ComprehensiveType = ({
                   className="bi bi-flag-fill pointer"
                   viewBox="0 0 16 16"
                   onClick={handleReviewClick}
-                  style={{ marginRight: "50px", color: selectedOption.some(
-                    (selected) =>
-                      selected.id === questionId &&
-                      (selected.status == 2 || selected.status == 3)
-                  ) ? 'blue' : '' }}
+                  style={{
+                    marginRight: "50px", color: selectedOption.some(
+                      (selected) =>
+                        selected.id === questionId &&
+                        (selected.status == 2 || selected.status == 3)
+                    ) ? 'blue' : ''
+                  }}
                 >
                   <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001" />
                 </svg>
                 <div className='d-flex '>
-                <button
-                  className="btn btn-success px-3 py-2 w-auto text-18"
-                  onClick={handleCancel}
-                >
-                  Cancel
-                </button>
-                &nbsp;
-                <button
-                  className="btn btn-success px-3 py-2 w-auto text-18"
-                  onClick={onFinishQuiz}
-                >
-                  Finish
-                </button>
+                  <button
+                    className="btn btn-success px-3 py-2 w-auto text-18"
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </button>
+                  &nbsp;
+                  <button
+                    className="btn btn-success px-3 py-2 w-auto text-18"
+                    onClick={onFinishQuiz}
+                  >
+                    Finish
+                  </button>
                 </div>
-                {((totalReviewed > 0 || skippedQuestion > 0) && remainingTimeRef.current !== 0 ) ? (
+                {((totalReviewed > 0 || skippedQuestion > 0) && remainingTimeRef.current !== 0) ? (
                   <Modal open={open} onClose={onCloseModal} center>
                     <FinishExamModalPage
                       questionSetId={questionSetId}
@@ -505,7 +538,7 @@ const ComprehensiveType = ({
               </div>
             </div>
             <hr />
-             <div className="alert alert-info py-2 px-3 mb-3" role="alert">
+            <div className="alert alert-info py-2 px-3 mb-3" role="alert">
               <strong>Instructions:</strong> Please read each question carefully. You can select multiple answers if applicable. Questions may carry negative marking.
             </div>
 
@@ -527,7 +560,7 @@ const ComprehensiveType = ({
             </div>
             <h6> <strong>Note.</strong> Read this paragraph carefully and attempt below questions.</h6>
             <Typography className="card-text text-center mt-2 mb-2 " color='InfoText' variant='h8'>
-            {paragraph}
+              {paragraph}
             </Typography>
             {/* <h6 className="card-text  mt-2 mb-2 ">{paragraph}</h6> */}
             <hr />
@@ -560,7 +593,7 @@ const ComprehensiveType = ({
                 </li>
               ))}
             </ul> */}
-             <ul className="list-group list-group-flush mt-3 mb-4">
+            <ul className="list-group list-group-flush mt-3 mb-4">
               <div className="row">
                 {options?.map((option, id) => (
                   <div className={`col-12 col-md-6 mb-2`} key={id}>
@@ -596,14 +629,14 @@ const ComprehensiveType = ({
               </div>
             </ul>
             <div className="d-flex justify-content-center">
-              <div className="d-flex justify-content-center align-items-center" style={{gap:'75px'}}>
+              <div className="d-flex justify-content-center align-items-center" style={{ gap: '75px' }}>
                 {index > 1 && (
                   <button
                     className="btn btn-primary p-2"
                     style={{
                       backgroundColor: "#6a1b9a",
                       borderColor: "#6a1b9a",
-                      width:'130px'
+                      width: '130px'
                     }}
                     onClick={handlePreviousClick}
                   >
@@ -620,7 +653,7 @@ const ComprehensiveType = ({
                     style={{
                       backgroundColor: "#6a1b9a",
                       borderColor: "#6a1b9a",
-                      width:'130px'
+                      width: '130px'
                     }}
                     onClick={handleNextClick}
                   >
@@ -631,12 +664,38 @@ const ComprehensiveType = ({
                     />
                   </button>
                 )}
+                {isPractice && selectedOption.some((selected) => selected.id === questionId && selected.selectedOption != null) && (
+                  <button
+                    className="btn btn-primary p-2"
+                    style={{
+                      backgroundColor: "#6a1b9a",
+                      borderColor: "#6a1b9a",
+                      width: "150px",
+                    }}
+                    onClick={handleCheckAnswerClick}
+                  >
+                    Check Answer
+                    <FontAwesomeIcon
+                      icon={faAngleDoubleRight}
+                      className="fa-lg ml-5"
+                    />
+                  </button>
+                )
+                }
               </div>
 
               <div>
-               
+
               </div>
             </div>
+            {isExplanationVisible && (<div className="mt-4 " style={{ border: '1px solid black', borderRadius: '10px', backgroundColor: '#f8f9fa' }}>
+              {(
+                <div className="p-3 m-2" >
+                  <h5>Explanation:</h5>
+                  <p>{explanation || "No explanation available."}</p>
+                </div>
+              )}
+            </div>)}
           </div>
         </div>
       </div>
