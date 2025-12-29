@@ -707,7 +707,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal, totalMark
                         className="button -sm px-24 py-20 -green-5 text-white text-green-5 text-16 mx-auto mt-4"
                         onClick={
                           userRole == "student"
-                            ? handleStartQuiz
+                            ? () => handleStartQuiz(false)
                             : () => navigate("/login")
                         }
                       >
