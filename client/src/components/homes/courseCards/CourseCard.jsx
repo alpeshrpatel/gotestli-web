@@ -75,13 +75,17 @@ export default function CourceCard({ view, search = null, role, data, index }) {
     if (pendingQuiz && token) {
       // const { qsetId } = JSON.parse(pendingQuiz);
       const qSetId = JSON.parse(pendingQuiz)?.data?.id
+      const quizData = JSON.parse(pendingQuiz)?.data;
+      setSelectedQuiz(JSON.parse(pendingQuiz)?.data);
+      console.log("pendingQuiz found with quiz id:", qSetId);
       localStorage.removeItem('pendingQuiz');
-
-      if (qSetId == data.id) {
+      console.log("data.id:", data.id);
+      console.log("selectedQuiz:", quizData);
+      if (qSetId) {
         console.log("Opening modal for quiz id:", qSetId);
-        console.log(selectedQuiz)
+        console.log(quizData)
         // Only open modal for the matching card
-        setSelectedQuiz(data);
+        // setSelectedQuiz(data);
         setOpen(true);
       }
     }
@@ -245,7 +249,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
           // );
           console.log("data.id:", data.id);
           const response = await API.get(
-            `/api/questionset/allquestions/qset/${data.id}?orgid=${orgid}`,
+            `/api/questionset/allquestions/qset/${selectedQuiz.id || data.id}?orgid=${orgid}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -254,7 +258,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
           );
           // console.log('coursecard', response.data);
           setQuestionsSet(response.data);
-          setSelectedQuiz(data);
+          // setSelectedQuiz(data);
           if (response?.data && response?.data.res?.length > 0) {
 
             let totalMarksCalc = response.data.res.reduce(
@@ -365,7 +369,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
 
       <Modal open={open} onClose={onCloseModal} center>
         {
-          selectedQuiz && (
+          selectedQuiz ? (
             <ExamInstructions
               id={selectedQuiz.id}
               time={selectedQuiz.time_duration}
@@ -374,16 +378,25 @@ export default function CourceCard({ view, search = null, role, data, index }) {
               onCloseModal={onCloseModal}
               totalMarks={totalMarks}
             />
+          ) : (
+            <ExamInstructions
+              id={data.id}
+              time={data.time_duration}
+              questionSet={questionSet}
+              data={data}
+              onCloseModal={onCloseModal}
+              totalMarks={totalMarks}
+            />
           )
         }
-        <ExamInstructions
+        {/* <ExamInstructions
           id={data.id}
           time={data.time_duration}
           questionSet={questionSet}
           data={data}
           onCloseModal={onCloseModal}
           totalMarks={totalMarks}
-        />
+        /> */}
       </Modal>
 
       {/* <div
