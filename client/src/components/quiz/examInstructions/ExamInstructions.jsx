@@ -334,6 +334,7 @@ const ExamInstructions = ({ id, time, questionSet, data, onCloseModal, totalMark
 
 
     }
+    
     if (userRole !== "student") {
       navigate("/login");
       return;

@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
@@ -48,8 +48,11 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   const [purchasedQSet, setPurchasedQSet] = useState([]);
   const [totalMarks, setTotalMarks] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [selectedQuiz, setSelectedQuiz] = useState(null);
+
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
@@ -66,6 +69,50 @@ export default function CourceCard({ view, search = null, role, data, index }) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    const pendingQuiz = localStorage.getItem('pendingQuiz');
+    if (pendingQuiz && token) {
+      // const { qsetId } = JSON.parse(pendingQuiz);
+      const qSetId = JSON.parse(pendingQuiz)?.data?.id
+      localStorage.removeItem('pendingQuiz');
+
+      if (qSetId == data.id) {
+        console.log("Opening modal for quiz id:", qSetId);
+        console.log(selectedQuiz)
+        // Only open modal for the matching card
+        setSelectedQuiz(data);
+        setOpen(true);
+      }
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   console.log("location.state:", location.state);
+  //   const pendingQuiz = localStorage.getItem('pendingQuiz');
+  //   if (pendingQuiz) {
+  //     const quizData = JSON.parse(pendingQuiz)?.data;
+  //     // const questionSetData = JSON.parse(pendingQuiz)?.questionSet || [];
+
+  //     localStorage.removeItem('pendingQuiz');
+
+
+  //     console.log("quizData:", quizData);
+  //     data = quizData;
+
+  //     // Set the question set data
+  //     // setQuestionsSet(questionSetData);
+
+  //     // Open the modal with the quiz data
+
+  //     setOpen(true);
+
+  //     onOpenModal;
+
+  //     // Clear the state to prevent reopening on refresh
+  //     // navigate(location.pathname, { replace: true, state: {} });
+  //   }
+  // }, []);
 
   useEffect(() => {
     async function getRating() {
@@ -178,8 +225,15 @@ export default function CourceCard({ view, search = null, role, data, index }) {
   }, [isWishlisted]);
 
   const onOpenModal = () => {
+
     async function getQuestions() {
       try {
+        if (!token) {
+          localStorage.setItem('pendingQuiz', JSON.stringify({
+            data: data,
+            // questionSet: questionSet
+          }));
+        }
         if (token) {
           // const response = await API.get(
           //   `/api/questionset/questions/${data.id}?orgid=${orgid}`,
@@ -189,6 +243,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
           //     },
           //   }
           // );
+          console.log("data.id:", data.id);
           const response = await API.get(
             `/api/questionset/allquestions/qset/${data.id}?orgid=${orgid}`,
             {
@@ -199,6 +254,7 @@ export default function CourceCard({ view, search = null, role, data, index }) {
           );
           // console.log('coursecard', response.data);
           setQuestionsSet(response.data);
+          setSelectedQuiz(data);
           if (response?.data && response?.data.res?.length > 0) {
 
             let totalMarksCalc = response.data.res.reduce(
@@ -308,6 +364,18 @@ export default function CourceCard({ view, search = null, role, data, index }) {
     <>
 
       <Modal open={open} onClose={onCloseModal} center>
+        {
+          selectedQuiz && (
+            <ExamInstructions
+              id={selectedQuiz.id}
+              time={selectedQuiz.time_duration}
+              questionSet={questionSet}
+              data={selectedQuiz}
+              onCloseModal={onCloseModal}
+              totalMarks={totalMarks}
+            />
+          )
+        }
         <ExamInstructions
           id={data.id}
           time={data.time_duration}
@@ -338,15 +406,15 @@ export default function CourceCard({ view, search = null, role, data, index }) {
               sx={{ maxWidth: 345, height: "100%" }}
               className="coursesCard -type-1"
             >
-              
+
 
               <div className="relative">
                 <div className="coursesCard__image cardImage overflow-hidden rounded-8  position-relative">
                   <CourseTags
-                data={data}
-                rating={parseFloat(rating)}
-                totalRatings={totalRatings}
-              />
+                    data={data}
+                    rating={parseFloat(rating)}
+                    totalRatings={totalRatings}
+                  />
                   <CardMedia
                     component="img"
                     // height="194"

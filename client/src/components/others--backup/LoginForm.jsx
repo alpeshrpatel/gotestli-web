@@ -64,6 +64,7 @@ export default function LoginForm() {
           const resData = await API.get(`/api/users/generate/token/${data.id}`);
           // console.log(resDat
           localStorage.setItem('token', resData.data?.token);
+         
           localStorage.setItem("user", JSON.stringify({ id: data.id, role: userRole, email: data.email }))
           if (data.org_id) {
             localStorage.setItem("org", JSON.stringify({ id: data.org_id, role: userRole, email: data.email, subdomain: data.company, logo: data.profile_pic, org_name: data.first_name }))
@@ -74,7 +75,17 @@ export default function LoginForm() {
       } else {
         console.log("No user is logged in ");
       }
-
+       const pendingQuiz = localStorage.getItem('pendingQuiz');
+       console.log("pendingQuiz:", pendingQuiz);
+          if (pendingQuiz && userRole === 'student') {
+            // Navigate back with the quiz data
+            navigate('/', {
+              state: { data: JSON.parse(pendingQuiz)?.data, questionSet: JSON.parse(pendingQuiz)?.questionSet },
+              replace: true
+            });
+            // Clear the pending quiz
+            // localStorage.removeItem('pendingQuiz');
+          }
       console.log("Logged in Successfully!!");
       setIsLoading(false);
     } catch (error) {
@@ -108,10 +119,10 @@ export default function LoginForm() {
     }
 
   }
-console.log(errorMessage)
+  console.log(errorMessage)
   return (
     <>
-      <div className="form-page__content lg:py-50" style={{ backgroundColor: "#bfdeee", paddingTop:'75px' }}>
+      <div className="form-page__content lg:py-50" style={{ backgroundColor: "#bfdeee", paddingTop: '75px' }}>
         <div className="container mt-5" style={{ backgroundColor: "#bfdeee", border: 'none' }}>
           <div className="row justify-center items-center ">
             <div className="col-xl-12 col-lg-12">
@@ -126,16 +137,16 @@ console.log(errorMessage)
                 {
                   errorMessage ? (
                     <div className=" text-white p-3 rounded-lg text-center font-medium" style={{ backgroundColor: "#FF8282", borderRadius: '20px', marginBottom: '20px' }}>
-                        Authentication Error: You attempted to log in as a {selectedRole}, but your account is not registered as a {selectedRole}. Please select the correct role and try again.
+                      Authentication Error: You attempted to log in as a {selectedRole}, but your account is not registered as a {selectedRole}. Please select the correct role and try again.
                     </div>
                   ) : (
                     <div className=" text-white p-3 rounded-lg text-center font-medium" style={{ backgroundColor: "#877cf6", borderRadius: '20px', marginBottom: '20px' }}>
-                    Select your Role to continue
-                  </div>
+                      Select your Role to continue
+                    </div>
                   )
                 }
 
-               
+
                 <div className="col-lg-12  rounded " style={{ display: 'flex', alignItems: 'center', border: 'none', justifyContent: 'space-between' }}>
                   <FormControl>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginLeft: '0', gap: '20px' }}>
