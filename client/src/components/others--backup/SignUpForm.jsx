@@ -109,7 +109,7 @@ export default function SignUpForm() {
   };
   // console.log(selectedRole);
   return (
-    <div className="form-page__content lg:py-50" style={{ backgroundColor: "#bfdeee" }}>
+    <div className="form-page__content lg:py-50 hide-scrollbar" style={{ backgroundColor: "#bfdeee" }}>
       <div className="container mt-5" style={{ backgroundColor: "#bfdeee",border:'none' }}>
         <div className="row justify-center items-center">
           <div className="col-xl-12 col-lg-12">
@@ -126,14 +126,61 @@ export default function SignUpForm() {
                 className="contact-form respondForm__form row y-gap-20 pt-30 "
                 onSubmit={handleSubmit}
               >
-                <div className="col-lg-12" style={{display:'flex',alignItems:'center'}}>
+                <div className="col-lg-12" >
+                  <div style={{ marginBottom: "25px" }}>
+                    <p style={{ fontWeight: "600", marginBottom: "10px" }}>
+                      Select how you want to sign up
+                    </p>
+
+                    <div style={{ display: "flex", gap: "20px" }}>
+                      {/* Student Card */}
+                      <div
+                        onClick={() => setSelectedRole("student")}
+                        style={{
+                          flex: 1,
+                          padding: "16px",
+                          borderRadius: "12px",
+                          cursor: "pointer",
+                          border: selectedRole === "student" ? "2px solid #877cf6" : "1px solid #ced4da",
+                          backgroundColor: selectedRole === "student" ? "#f4f2ff" : "#fff",
+                          boxShadow: selectedRole === "student" ? "0 4px 12px rgba(135,124,246,0.2)" : "none",
+                          transition: "all 0.2s ease",
+                        }}
+                      >
+                        <h4 style={{ marginBottom: "6px" }}>🎓 Student</h4>
+                        <p style={{ fontSize: "13px", color: "#555" }}>
+                          Take quizzes, attend exams, view results
+                        </p>
+                      </div>
+
+                      {/* Instructor Card */}
+                      <div
+                        onClick={() => setSelectedRole("instructor")}
+                        style={{
+                          flex: 1,
+                          padding: "16px",
+                          borderRadius: "12px",
+                          cursor: "pointer",
+                          border: selectedRole === "instructor" ? "2px solid #877cf6" : "1px solid #ced4da",
+                          backgroundColor: selectedRole === "instructor" ? "#f4f2ff" : "#fff",
+                          boxShadow: selectedRole === "instructor" ? "0 4px 12px rgba(135,124,246,0.2)" : "none",
+                          transition: "all 0.2s ease",
+                        }}
+                      >
+                        <h4 style={{ marginBottom: "6px" }}>👨‍🏫 Instructor</h4>
+                        <p style={{ fontSize: "13px", color: "#555" }}>
+                          Create question sets, manage students
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                   {/* <FormLabel
                     id="demo-radio-buttons-group-label"
                     className="text-16 lh-1 fw-500 text-dark-1 mb-10"
                   >
                     Role *
                   </FormLabel> */}
-                  <label
+                  {/* <label
                     htmlFor="email"
                     style={{
                       marginBottom: "5px",
@@ -175,7 +222,7 @@ export default function SignUpForm() {
                         />
                       </RadioGroup>
                     </FormControl>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="col-lg-6 ">
