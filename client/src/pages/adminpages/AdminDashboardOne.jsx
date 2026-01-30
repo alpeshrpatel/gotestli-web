@@ -25,6 +25,7 @@ import { generateStrongTempPassword } from "@/utils/TemporaryPasswordGenerator";
 import { showToast } from "@/utils/toastService";
 import emailTemplates from "../../../../email_templates/emailtemplates";
 import { renderTemplate } from "@/utils/renderTemplate";
+import AddCategoryModal from "./AddCategoryModal";
 
 
 const APP_ID = 1;
@@ -42,6 +43,7 @@ export default function AdminDashboardOne() {
   const [userName, setUserName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingRecommendationsRefresh, setIsLoadingRecommendationsRefresh] = useState(null);
+  const [categoryModalOpen, setCategoryModalOpen] = useState(false);
   const navigate = useNavigate()
 
   const token = localStorage.getItem("token");
@@ -274,6 +276,23 @@ export default function AdminDashboardOne() {
   };
 
   const onCloseModal = () => setOpen(false);
+
+   const handleOpenCategoryModal = () => {
+    setCategoryModalOpen(true);
+  };
+
+  const handleCloseCategoryModal = () => {
+    setCategoryModalOpen(false);
+  };
+
+  const handleCategoryCreated = (newCategory) => {
+    // Optional: Handle the newly created category
+    // You can refresh data, update state, etc.
+    console.log('New category created:', newCategory);
+    
+    // Example: Refresh dashboard data if needed
+    // getDashboardData();
+  };
 
   let names = userName?.split(" ");
   let firstname = names[0];
@@ -574,6 +593,11 @@ export default function AdminDashboardOne() {
 
   return (
     <div className=" w-100" style={{ marginTop: "90px" }}>
+       <AddCategoryModal
+        open={categoryModalOpen}
+        onClose={handleCloseCategoryModal}
+        onCategoryCreated={handleCategoryCreated}
+      />
       <Modal
         open={open}
         // onClose={() => { }}
@@ -733,6 +757,13 @@ export default function AdminDashboardOne() {
             <div className="mt-10">Welcome to Admin Dashboard.</div>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
+            <button
+              className="button -sm px-12 py-20 -outline-purple-1 text-purple-1 text-16 fw-bolder lh-sm"
+              onClick={handleOpenCategoryModal}
+            >
+              <i className="icon-plus mr-5"></i>
+              Add Category
+            </button>
           <button
             className={`button -sm px-12 py-20 -outline-green-5 text-green-5 text-16 fw-bolder lh-sm  `}
             // disabled={!selectedRole}
@@ -1107,3 +1138,7 @@ export default function AdminDashboardOne() {
     </div>
   );
 }
+
+
+
+
